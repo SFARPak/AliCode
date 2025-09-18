@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.19.2'
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.8.1
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build extension
+      run: pnpm bundle
+
+    - name: Package extension
+      run: cd src && npm run vsix
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: bin/*.vsix
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
