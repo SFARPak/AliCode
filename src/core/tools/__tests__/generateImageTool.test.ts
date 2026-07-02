@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { generateImageTool } from "../generateImageTool"
+import { generateImageTool } from "../GenerateImageTool"
 import { ToolUse } from "../../../shared/tools"
 import { Task } from "../../task/Task"
 import * as fs from "fs/promises"
@@ -21,7 +21,6 @@ describe("generateImageTool", () => {
 	let mockAskApproval: any
 	let mockHandleError: any
 	let mockPushToolResult: any
-	let mockRemoveClosingTag: any
 
 	beforeEach(() => {
 		vi.clearAllMocks()
@@ -47,7 +46,7 @@ describe("generateImageTool", () => {
 							[EXPERIMENT_IDS.IMAGE_GENERATION]: true,
 						},
 						openRouterImageApiKey: "test-api-key",
-						openRouterImageGenerationSelectedModel: "google/gemini-2.5-flash-image-preview",
+						openRouterImageGenerationSelectedModel: "google/gemini-2.5-flash-image",
 					}),
 				}),
 			},
@@ -60,7 +59,6 @@ describe("generateImageTool", () => {
 		mockAskApproval = vi.fn().mockResolvedValue(true)
 		mockHandleError = vi.fn()
 		mockPushToolResult = vi.fn()
-		mockRemoveClosingTag = vi.fn((tag, content) => content || "")
 
 		// Mock file system operations
 		vi.mocked(fileUtils.fileExistsAtPath).mockResolvedValue(true)
@@ -79,17 +77,18 @@ describe("generateImageTool", () => {
 					prompt: "Generate a test image",
 					path: "test-image.png",
 				},
+				nativeArgs: {
+					prompt: "Generate a test image",
+					path: "test-image.png",
+				},
 				partial: true,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				partialBlock,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, partialBlock as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			// Should not process anything when partial
 			expect(mockAskApproval).not.toHaveBeenCalled()
@@ -106,17 +105,19 @@ describe("generateImageTool", () => {
 					path: "upscaled-image.png",
 					image: "source-image.png",
 				},
+				nativeArgs: {
+					prompt: "Upscale this image",
+					path: "upscaled-image.png",
+					image: "source-image.png",
+				},
 				partial: true,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				partialBlock,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, partialBlock as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			// Should not process anything when partial
 			expect(mockAskApproval).not.toHaveBeenCalled()
@@ -130,6 +131,10 @@ describe("generateImageTool", () => {
 				type: "tool_use",
 				name: "generate_image",
 				params: {
+					prompt: "Generate a test image",
+					path: "test-image.png",
+				},
+				nativeArgs: {
 					prompt: "Generate a test image",
 					path: "test-image.png",
 				},
@@ -149,14 +154,11 @@ describe("generateImageTool", () => {
 					}) as any,
 			)
 
-			await generateImageTool(
-				mockCline as Task,
-				completeBlock,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, completeBlock as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			// Should process the complete block
 			expect(mockAskApproval).toHaveBeenCalled()
@@ -169,6 +171,10 @@ describe("generateImageTool", () => {
 				type: "tool_use",
 				name: "generate_image",
 				params: {
+					prompt: "Generate a test image",
+					path: "test-image.png",
+				},
+				nativeArgs: {
 					prompt: "Generate a test image",
 					path: "test-image.png",
 				},
@@ -192,14 +198,11 @@ describe("generateImageTool", () => {
 					}) as any,
 			)
 
-			await generateImageTool(
-				mockCline as Task,
-				completeBlock,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, completeBlock as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			// Check that cline.say was called with image data containing cache-busting parameter
 			expect(mockCline.say).toHaveBeenCalledWith("image", expect.stringMatching(/"imageUri":"[^"]+\?t=\d+"/))
@@ -227,17 +230,17 @@ describe("generateImageTool", () => {
 				params: {
 					path: "test-image.png",
 				},
+				nativeArgs: {
+					path: "test-image.png",
+				} as any,
 				partial: false,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, block as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			expect(mockCline.consecutiveMistakeCount).toBe(1)
 			expect(mockCline.recordToolError).toHaveBeenCalledWith("generate_image")
@@ -252,17 +255,17 @@ describe("generateImageTool", () => {
 				params: {
 					prompt: "Generate a test image",
 				},
+				nativeArgs: {
+					prompt: "Generate a test image",
+				} as any,
 				partial: false,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, block as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			expect(mockCline.consecutiveMistakeCount).toBe(1)
 			expect(mockCline.recordToolError).toHaveBeenCalledWith("generate_image")
@@ -287,17 +290,18 @@ describe("generateImageTool", () => {
 					prompt: "Generate a test image",
 					path: "test-image.png",
 				},
+				nativeArgs: {
+					prompt: "Generate a test image",
+					path: "test-image.png",
+				},
 				partial: false,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, block as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			expect(mockPushToolResult).toHaveBeenCalledWith(
 				formatResponse.toolError(
@@ -319,17 +323,19 @@ describe("generateImageTool", () => {
 					path: "upscaled.png",
 					image: "non-existent.png",
 				},
+				nativeArgs: {
+					prompt: "Upscale this image",
+					path: "upscaled.png",
+					image: "non-existent.png",
+				},
 				partial: false,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, block as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			expect(mockCline.say).toHaveBeenCalledWith("error", expect.stringContaining("Input image not found"))
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Input image not found"))
@@ -344,17 +350,19 @@ describe("generateImageTool", () => {
 					path: "upscaled.png",
 					image: "test.bmp", // Unsupported format
 				},
+				nativeArgs: {
+					prompt: "Upscale this image",
+					path: "upscaled.png",
+					image: "test.bmp",
+				},
 				partial: false,
 			}
 
-			await generateImageTool(
-				mockCline as Task,
-				block,
-				mockAskApproval,
-				mockHandleError,
-				mockPushToolResult,
-				mockRemoveClosingTag,
-			)
+			await generateImageTool.handle(mockCline as Task, block as ToolUse<"generate_image">, {
+				askApproval: mockAskApproval,
+				handleError: mockHandleError,
+				pushToolResult: mockPushToolResult,
+			})
 
 			expect(mockCline.say).toHaveBeenCalledWith("error", expect.stringContaining("Unsupported image format"))
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Unsupported image format"))

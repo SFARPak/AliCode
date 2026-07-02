@@ -1,3 +1,4 @@
+import stringify from "safe-stable-stringify"
 import { ToolUse } from "../../shared/tools"
 import { t } from "../../i18n"
 
@@ -32,13 +33,6 @@ export class ToolRepetitionDetector {
 			messageDetail: string
 		}
 	} {
-		// Browser scroll actions should not be subject to repetition detection
-		// as they are frequently needed for navigating through web pages
-		if (this.isBrowserScrollAction(currentToolCallBlock)) {
-			// Allow browser scroll actions without counting them as repetitions
-			return { allowExecution: true }
-		}
-
 		// Serialize the block to a canonical JSON string for comparison
 		const currentToolCallJson = this.serializeToolUse(currentToolCallBlock)
 
@@ -74,47 +68,22 @@ export class ToolRepetitionDetector {
 	}
 
 	/**
-	 * Checks if a tool use is a browser scroll action
-	 *
-	 * @param toolUse The ToolUse object to check
-	 * @returns true if the tool is a browser_action with scroll_down or scroll_up action
-	 */
-	private isBrowserScrollAction(toolUse: ToolUse): boolean {
-		if (toolUse.name !== "browser_action") {
-			return false
-		}
-
-		const action = toolUse.params.action as string
-		return action === "scroll_down" || action === "scroll_up"
-	}
-
-	/**
 	 * Serializes a ToolUse object into a canonical JSON string for comparison
 	 *
 	 * @param toolUse The ToolUse object to serialize
 	 * @returns JSON string representation of the tool use with sorted parameter keys
 	 */
 	private serializeToolUse(toolUse: ToolUse): string {
-		// Create a new parameters object with alphabetically sorted keys
-		const sortedParams: Record<string, unknown> = {}
-
-		// Get parameter keys and sort them alphabetically
-		const sortedKeys = Object.keys(toolUse.params).sort()
-
-		// Populate the sorted parameters object in a type-safe way
-		for (const key of sortedKeys) {
-			if (Object.prototype.hasOwnProperty.call(toolUse.params, key)) {
-				sortedParams[key] = toolUse.params[key as keyof typeof toolUse.params]
-			}
-		}
-
-		// Create the object with the tool name and sorted parameters
-		const toolObject = {
+		const toolObject: Record<string, any> = {
 			name: toolUse.name,
-			parameters: sortedParams,
+			params: toolUse.params,
 		}
 
-		// Convert to a canonical JSON string
-		return JSON.stringify(toolObject)
+		// Only include nativeArgs if it has content
+		if (toolUse.nativeArgs && Object.keys(toolUse.nativeArgs).length > 0) {
+			toolObject.nativeArgs = toolUse.nativeArgs
+		}
+
+		return stringify(toolObject)
 	}
 }

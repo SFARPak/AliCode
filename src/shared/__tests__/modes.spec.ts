@@ -9,7 +9,8 @@ vi.mock("../../core/prompts/sections/custom-instructions", () => ({
 	addCustomInstructions: vi.fn().mockResolvedValue("Combined instructions"),
 }))
 
-import { isToolAllowedForMode, FileRestrictionError, getFullModeDetails, modes, getModeSelection } from "../modes"
+import { FileRestrictionError, getFullModeDetails, modes, getModeSelection } from "../modes"
+import { isToolAllowedForMode } from "../../core/tools/validateToolUse"
 import { addCustomInstructions } from "../../core/prompts/sections/custom-instructions"
 
 describe("isToolAllowedForMode", () => {
@@ -18,19 +19,19 @@ describe("isToolAllowedForMode", () => {
 			slug: "markdown-editor",
 			name: "Markdown Editor",
 			roleDefinition: "You are a markdown editor",
-			groups: ["read", ["edit", { fileRegex: "\\.md$" }], "browser"],
+			groups: ["read", ["edit", { fileRegex: "\\.md$" }]],
 		},
 		{
 			slug: "css-editor",
 			name: "CSS Editor",
 			roleDefinition: "You are a CSS editor",
-			groups: ["read", ["edit", { fileRegex: "\\.css$" }], "browser"],
+			groups: ["read", ["edit", { fileRegex: "\\.css$" }]],
 		},
 		{
 			slug: "test-exp-mode",
 			name: "Test Exp Mode",
 			roleDefinition: "You are an experimental tester",
-			groups: ["read", "edit", "browser"],
+			groups: ["read", "edit"],
 		},
 	]
 
@@ -41,7 +42,6 @@ describe("isToolAllowedForMode", () => {
 
 	it("allows unrestricted tools", () => {
 		expect(isToolAllowedForMode("read_file", "markdown-editor", customModes)).toBe(true)
-		expect(isToolAllowedForMode("browser_action", "markdown-editor", customModes)).toBe(true)
 	})
 
 	describe("file restrictions", () => {
@@ -150,11 +150,7 @@ describe("isToolAllowedForMode", () => {
 					slug: "docs-editor",
 					name: "Documentation Editor",
 					roleDefinition: "You are a documentation editor",
-					groups: [
-						"read",
-						["edit", { fileRegex: "\\.(md|txt)$", description: "Documentation files only" }],
-						"browser",
-					],
+					groups: ["read", ["edit", { fileRegex: "\\.(md|txt)$", description: "Documentation files only" }]],
 				},
 			]
 
@@ -242,114 +238,276 @@ describe("isToolAllowedForMode", () => {
 
 			// Should maintain read capabilities
 			expect(isToolAllowedForMode("read_file", "architect", [])).toBe(true)
-			expect(isToolAllowedForMode("browser_action", "architect", [])).toBe(true)
 			expect(isToolAllowedForMode("use_mcp_tool", "architect", [])).toBe(true)
 		})
 
-		it("applies restrictions to all edit tools including search_and_replace and insert_content", () => {
-			// Test search_and_replace with matching file
-			expect(
-				isToolAllowedForMode("search_and_replace", "architect", [], undefined, {
-					path: "test.md",
-					search: "old text",
-					replace: "new text",
-				}),
-			).toBe(true)
-
-			// Test insert_content with matching file
-			expect(
-				isToolAllowedForMode("insert_content", "architect", [], undefined, {
-					path: "test.md",
-					line: "1",
-					content: "# New content",
-				}),
-			).toBe(true)
-
-			// Test search_and_replace with non-matching file - should throw error
-			expect(() =>
-				isToolAllowedForMode("search_and_replace", "architect", [], undefined, {
-					path: "test.py",
-					search: "old text",
-					replace: "new text",
-				}),
-			).toThrow(FileRestrictionError)
-			expect(() =>
-				isToolAllowedForMode("search_and_replace", "architect", [], undefined, {
-					path: "test.py",
-					search: "old text",
-					replace: "new text",
-				}),
-			).toThrow(/Markdown files only/)
-
-			// Test insert_content with non-matching file - should throw error
-			expect(() =>
-				isToolAllowedForMode("insert_content", "architect", [], undefined, {
-					path: "test.py",
-					line: "1",
-					content: "print('hello')",
-				}),
-			).toThrow(FileRestrictionError)
-			expect(() =>
-				isToolAllowedForMode("insert_content", "architect", [], undefined, {
-					path: "test.py",
-					line: "1",
-					content: "print('hello')",
-				}),
-			).toThrow(/Markdown files only/)
-		})
-
-		it("applies restrictions to apply_diff with concurrent file edits (MULTI_FILE_APPLY_DIFF experiment)", () => {
-			// Test apply_diff with args parameter (used when MULTI_FILE_APPLY_DIFF experiment is enabled)
-			// This simulates concurrent/batch file editing
-			const xmlArgs =
-				"<args><file><path>test.md</path><diff><content>- old content\\n+ new content</content></diff></file></args>"
+		it("applies restrictions to apply_diff", () => {
+			// Native-only: file restrictions for apply_diff are enforced against the top-level `path`.
 
 			// Should allow markdown files in architect mode
 			expect(
 				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgs,
+					path: "test.md",
+					diff: "- old content\n+ new content",
 				}),
 			).toBe(true)
 
-			// Test with non-markdown file - should throw error
-			const xmlArgsNonMd =
-				"<args><file><path>test.py</path><diff><content>- old content\\n+ new content</content></diff></file></args>"
-
+			// Non-markdown file should throw
 			expect(() =>
 				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgsNonMd,
+					path: "test.py",
+					diff: "- old content\n+ new content",
 				}),
 			).toThrow(FileRestrictionError)
 			expect(() =>
 				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgsNonMd,
+					path: "test.py",
+					diff: "- old content\n+ new content",
 				}),
 			).toThrow(/Markdown files only/)
+		})
 
-			// Test with multiple files - should allow only markdown files
-			const xmlArgsMultiple =
-				"<args><file><path>readme.md</path><diff><content>- old content\\n+ new content</content></diff></file><file><path>docs.md</path><diff><content>- old content\\n+ new content</content></diff></file></args>"
+		it("applies restrictions to apply_patch (custom tool)", () => {
+			// Test that apply_patch respects file restrictions when included
+			// Note: apply_patch only accepts { patch: string } - file paths are embedded in patch content
+			const patchResult = isToolAllowedForMode(
+				"apply_patch",
+				"markdown-editor",
+				customModes,
+				undefined,
+				{
+					patch: "*** Begin Patch\n*** Update File: test.md\n@@ \n-old\n+new\n*** End Patch",
+				},
+				undefined,
+				["apply_patch"], // Include custom tool
+			)
+			expect(patchResult).toBe(true)
 
+			// Test apply_patch with non-matching file (file path embedded in patch content)
+			expect(() =>
+				isToolAllowedForMode(
+					"apply_patch",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						patch: "*** Begin Patch\n*** Update File: test.js\n@@ \n-old\n+new\n*** End Patch",
+					},
+					undefined,
+					["apply_patch"], // Include custom tool
+				),
+			).toThrow(FileRestrictionError)
+			expect(() =>
+				isToolAllowedForMode(
+					"apply_patch",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						patch: "*** Begin Patch\n*** Update File: test.js\n@@ \n-old\n+new\n*** End Patch",
+					},
+					undefined,
+					["apply_patch"], // Include custom tool
+				),
+			).toThrow(/\\.md\$/)
+		})
+
+		it("applies restrictions to search_replace (custom tool)", () => {
+			// Test that search_replace respects file restrictions when included
+			const searchReplaceResult = isToolAllowedForMode(
+				"search_replace",
+				"markdown-editor",
+				customModes,
+				undefined,
+				{
+					file_path: "test.md",
+					old_string: "old text",
+					new_string: "new text",
+				},
+				undefined,
+				["search_replace"], // Include custom tool
+			)
+			expect(searchReplaceResult).toBe(true)
+
+			// Test search_replace with non-matching file
+			expect(() =>
+				isToolAllowedForMode(
+					"search_replace",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["search_replace"], // Include custom tool
+				),
+			).toThrow(FileRestrictionError)
+			expect(() =>
+				isToolAllowedForMode(
+					"search_replace",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["search_replace"], // Include custom tool
+				),
+			).toThrow(/\\.md\$/)
+		})
+
+		it("applies restrictions to edit_file (custom tool)", () => {
+			// Test that edit_file respects file restrictions when included
+			const editFileResult = isToolAllowedForMode(
+				"edit_file",
+				"markdown-editor",
+				customModes,
+				undefined,
+				{
+					file_path: "test.md",
+					old_string: "old text",
+					new_string: "new text",
+				},
+				undefined,
+				["edit_file"], // Include custom tool
+			)
+			expect(editFileResult).toBe(true)
+
+			// Test edit_file with non-matching file
+			expect(() =>
+				isToolAllowedForMode(
+					"edit_file",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["edit_file"], // Include custom tool
+				),
+			).toThrow(FileRestrictionError)
+			expect(() =>
+				isToolAllowedForMode(
+					"edit_file",
+					"markdown-editor",
+					customModes,
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["edit_file"], // Include custom tool
+				),
+			).toThrow(/\\.md\$/)
+		})
+
+		it("applies restrictions to all editing tools in architect mode (custom tools)", () => {
+			// Test apply_patch in architect mode
+			// Note: apply_patch only accepts { patch: string } - file paths are embedded in patch content
 			expect(
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgsMultiple,
-				}),
+				isToolAllowedForMode(
+					"apply_patch",
+					"architect",
+					[],
+					undefined,
+					{
+						patch: "*** Begin Patch\n*** Update File: test.md\n@@ \n-old\n+new\n*** End Patch",
+					},
+					undefined,
+					["apply_patch"], // Include custom tool
+				),
 			).toBe(true)
 
-			// Test with mixed file types - should throw error for non-markdown
-			const xmlArgsMixed =
-				"<args><file><path>readme.md</path><diff><content>- old content\\n+ new content</content></diff></file><file><path>script.py</path><diff><content>- old content\\n+ new content</content></diff></file></args>"
+			expect(() =>
+				isToolAllowedForMode(
+					"apply_patch",
+					"architect",
+					[],
+					undefined,
+					{
+						patch: "*** Begin Patch\n*** Update File: test.js\n@@ \n-old\n+new\n*** End Patch",
+					},
+					undefined,
+					["apply_patch"], // Include custom tool
+				),
+			).toThrow(FileRestrictionError)
+
+			// Test search_replace in architect mode
+			expect(
+				isToolAllowedForMode(
+					"search_replace",
+					"architect",
+					[],
+					undefined,
+					{
+						file_path: "test.md",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["search_replace"], // Include custom tool
+				),
+			).toBe(true)
 
 			expect(() =>
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgsMixed,
-				}),
+				isToolAllowedForMode(
+					"search_replace",
+					"architect",
+					[],
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["search_replace"], // Include custom tool
+				),
 			).toThrow(FileRestrictionError)
+
+			// Test edit_file in architect mode
+			expect(
+				isToolAllowedForMode(
+					"edit_file",
+					"architect",
+					[],
+					undefined,
+					{
+						file_path: "test.md",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["edit_file"], // Include custom tool
+				),
+			).toBe(true)
+
 			expect(() =>
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
-					args: xmlArgsMixed,
-				}),
-			).toThrow(/Markdown files only/)
+				isToolAllowedForMode(
+					"edit_file",
+					"architect",
+					[],
+					undefined,
+					{
+						file_path: "test.js",
+						old_string: "old text",
+						new_string: "new text",
+					},
+					undefined,
+					["edit_file"], // Include custom tool
+				),
+			).toThrow(FileRestrictionError)
 		})
 	})
 
@@ -363,6 +521,69 @@ describe("isToolAllowedForMode", () => {
 		}
 
 		expect(isToolAllowedForMode("write_to_file", "markdown-editor", customModes, toolRequirements)).toBe(false)
+	})
+
+	describe("customTools (opt-in tools)", () => {
+		const customModesWithEditGroup: ModeConfig[] = [
+			{
+				slug: "test-custom-tools",
+				name: "Test Custom Tools Mode",
+				roleDefinition: "You are a test mode",
+				groups: ["read", "edit"],
+			},
+		]
+
+		it("disallows customTools by default (not in includedTools)", () => {
+			// search_and_replace is a customTool in the edit group, should be disallowed by default
+			expect(isToolAllowedForMode("search_and_replace", "test-custom-tools", customModesWithEditGroup)).toBe(
+				false,
+			)
+		})
+
+		it("allows customTools when included in includedTools", () => {
+			// search_and_replace should be allowed when explicitly included
+			expect(
+				isToolAllowedForMode(
+					"search_and_replace",
+					"test-custom-tools",
+					customModesWithEditGroup,
+					undefined,
+					undefined,
+					undefined,
+					["search_and_replace"],
+				),
+			).toBe(true)
+		})
+
+		it("disallows customTools even in includedTools if mode doesn't have the group", () => {
+			const customModesWithoutEdit: ModeConfig[] = [
+				{
+					slug: "no-edit-mode",
+					name: "No Edit Mode",
+					roleDefinition: "You have no edit powers",
+					groups: ["read"], // No edit group
+				},
+			]
+
+			// Even if included, should be disallowed because the mode doesn't have edit group
+			expect(
+				isToolAllowedForMode(
+					"search_and_replace",
+					"no-edit-mode",
+					customModesWithoutEdit,
+					undefined,
+					undefined,
+					undefined,
+					["search_and_replace"],
+				),
+			).toBe(false)
+		})
+
+		it("allows regular tools in the same group as customTools", () => {
+			// apply_diff (regular tool) should be allowed even without includedTools
+			expect(isToolAllowedForMode("apply_diff", "test-custom-tools", customModesWithEditGroup)).toBe(true)
+			expect(isToolAllowedForMode("write_to_file", "test-custom-tools", customModesWithEditGroup)).toBe(true)
+		})
 	})
 })
 
@@ -392,7 +613,7 @@ describe("FileRestrictionError", () => {
 				name: "🪲 Debug",
 				roleDefinition:
 					"You are Roo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
-				groups: ["read", "edit", "browser", "command", "mcp"],
+				groups: ["read", "edit", "command", "mcp"],
 			})
 			expect(debugMode?.customInstructions).toContain(
 				"Reflect on 5-7 different possible sources of the problem, distill those down to 1-2 most likely sources, and then add logs to validate your assumptions. Explicitly ask the user to confirm the diagnosis before fixing the problem.",

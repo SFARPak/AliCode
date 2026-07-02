@@ -2,6 +2,7 @@
 
 import { NativeOllamaHandler } from "../native-ollama"
 import { ApiHandlerOptions } from "../../../shared/api"
+import { getOllamaModels } from "../fetchers/ollama"
 
 // Mock the ollama package
 const mockChat = vitest.fn()
@@ -16,21 +17,26 @@ vitest.mock("ollama", () => {
 
 // Mock the getOllamaModels function
 vitest.mock("../fetchers/ollama", () => ({
-	getOllamaModels: vitest.fn().mockResolvedValue({
-		llama2: {
-			contextWindow: 4096,
-			maxTokens: 4096,
-			supportsImages: false,
-			supportsPromptCache: false,
-		},
-	}),
+	getOllamaModels: vitest.fn(),
 }))
+
+const mockGetOllamaModels = vitest.mocked(getOllamaModels)
 
 describe("NativeOllamaHandler", () => {
 	let handler: NativeOllamaHandler
 
 	beforeEach(() => {
 		vitest.clearAllMocks()
+
+		// Default mock for getOllamaModels
+		mockGetOllamaModels.mockResolvedValue({
+			llama2: {
+				contextWindow: 4096,
+				maxTokens: 4096,
+				supportsImages: false,
+				supportsPromptCache: false,
+			},
+		})
 
 		const options: ApiHandlerOptions = {
 			apiModelId: "llama2",
@@ -71,6 +77,61 @@ describe("NativeOllamaHandler", () => {
 			expect(results[0]).toEqual({ type: "text", text: "Hello" })
 			expect(results[1]).toEqual({ type: "text", text: " world" })
 			expect(results[2]).toEqual({ type: "usage", inputTokens: 10, outputTokens: 2 })
+		})
+
+		it("should not include num_ctx by default", async () => {
+			// Mock the chat response
+			mockChat.mockImplementation(async function* () {
+				yield { message: { content: "Response" } }
+			})
+
+			const stream = handler.createMessage("System", [{ role: "user" as const, content: "Test" }])
+
+			// Consume the stream
+			for await (const _ of stream) {
+				// consume stream
+			}
+
+			// Verify that num_ctx was NOT included in the options
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					options: expect.not.objectContaining({
+						num_ctx: expect.anything(),
+					}),
+				}),
+			)
+		})
+
+		it("should include num_ctx when explicitly set via ollamaNumCtx", async () => {
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama2",
+				ollamaModelId: "llama2",
+				ollamaBaseUrl: "http://localhost:11434",
+				ollamaNumCtx: 8192, // Explicitly set num_ctx
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			// Mock the chat response
+			mockChat.mockImplementation(async function* () {
+				yield { message: { content: "Response" } }
+			})
+
+			const stream = handler.createMessage("System", [{ role: "user" as const, content: "Test" }])
+
+			// Consume the stream
+			for await (const _ of stream) {
+				// consume stream
+			}
+
+			// Verify that num_ctx was included with the specified value
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					options: expect.objectContaining({
+						num_ctx: 8192,
+					}),
+				}),
+			)
 		})
 
 		it("should handle DeepSeek R1 models with reasoning detection", async () => {
@@ -120,6 +181,49 @@ describe("NativeOllamaHandler", () => {
 			})
 			expect(result).toBe("This is the response")
 		})
+
+		it("should not include num_ctx in completePrompt by default", async () => {
+			mockChat.mockResolvedValue({
+				message: { content: "Response" },
+			})
+
+			await handler.completePrompt("Test prompt")
+
+			// Verify that num_ctx was NOT included in the options
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					options: expect.not.objectContaining({
+						num_ctx: expect.anything(),
+					}),
+				}),
+			)
+		})
+
+		it("should include num_ctx in completePrompt when explicitly set", async () => {
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama2",
+				ollamaModelId: "llama2",
+				ollamaBaseUrl: "http://localhost:11434",
+				ollamaNumCtx: 4096, // Explicitly set num_ctx
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			mockChat.mockResolvedValue({
+				message: { content: "Response" },
+			})
+
+			await handler.completePrompt("Test prompt")
+
+			// Verify that num_ctx was included with the specified value
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					options: expect.objectContaining({
+						num_ctx: 4096,
+					}),
+				}),
+			)
+		})
 	})
 
 	describe("error handling", () => {
@@ -157,6 +261,348 @@ describe("NativeOllamaHandler", () => {
 			const model = handler.getModel()
 			expect(model.id).toBe("llama2")
 			expect(model.info).toBeDefined()
+		})
+	})
+
+	describe("tool calling", () => {
+		it("should include tools when tools are provided", async () => {
+			// Model metadata should not gate tool inclusion; metadata.tools controls it.
+			mockGetOllamaModels.mockResolvedValue({
+				"llama3.2": {
+					contextWindow: 128000,
+					maxTokens: 4096,
+					supportsImages: true,
+					supportsPromptCache: false,
+				},
+			})
+
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama3.2",
+				ollamaModelId: "llama3.2",
+				ollamaBaseUrl: "http://localhost:11434",
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			// Mock the chat response
+			mockChat.mockImplementation(async function* () {
+				yield { message: { content: "I will use the tool" } }
+			})
+
+			const tools = [
+				{
+					type: "function" as const,
+					function: {
+						name: "get_weather",
+						description: "Get the weather for a location",
+						parameters: {
+							type: "object",
+							properties: {
+								location: { type: "string", description: "The city name" },
+							},
+							required: ["location"],
+						},
+					},
+				},
+			]
+
+			const stream = handler.createMessage(
+				"System",
+				[{ role: "user" as const, content: "What's the weather?" }],
+				{ taskId: "test", tools },
+			)
+
+			// Consume the stream
+			for await (const _ of stream) {
+				// consume stream
+			}
+
+			// Verify tools were passed to the API
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					tools: [
+						{
+							type: "function",
+							function: {
+								name: "get_weather",
+								description: "Get the weather for a location",
+								parameters: {
+									type: "object",
+									properties: {
+										location: { type: "string", description: "The city name" },
+									},
+									required: ["location"],
+								},
+							},
+						},
+					],
+				}),
+			)
+		})
+
+		it("should include tools even when model metadata doesn't advertise tool support", async () => {
+			// Model metadata should not gate tool inclusion; metadata.tools controls it.
+			mockGetOllamaModels.mockResolvedValue({
+				llama2: {
+					contextWindow: 4096,
+					maxTokens: 4096,
+					supportsImages: false,
+					supportsPromptCache: false,
+				},
+			})
+
+			// Mock the chat response
+			mockChat.mockImplementation(async function* () {
+				yield { message: { content: "Response without tools" } }
+			})
+
+			const tools = [
+				{
+					type: "function" as const,
+					function: {
+						name: "get_weather",
+						description: "Get the weather",
+						parameters: { type: "object", properties: {} },
+					},
+				},
+			]
+
+			const stream = handler.createMessage("System", [{ role: "user" as const, content: "Test" }], {
+				taskId: "test",
+				tools,
+			})
+
+			// Consume the stream
+			for await (const _ of stream) {
+				// consume stream
+			}
+
+			// Verify tools were passed
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.objectContaining({
+					tools: expect.any(Array),
+				}),
+			)
+		})
+
+		it("should not include tools when no tools are provided", async () => {
+			// Model metadata should not gate tool inclusion; metadata.tools controls it.
+			mockGetOllamaModels.mockResolvedValue({
+				"llama3.2": {
+					contextWindow: 128000,
+					maxTokens: 4096,
+					supportsImages: true,
+					supportsPromptCache: false,
+				},
+			})
+
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama3.2",
+				ollamaModelId: "llama3.2",
+				ollamaBaseUrl: "http://localhost:11434",
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			// Mock the chat response
+			mockChat.mockImplementation(async function* () {
+				yield { message: { content: "Response" } }
+			})
+
+			const stream = handler.createMessage("System", [{ role: "user" as const, content: "Test" }], {
+				taskId: "test",
+			})
+
+			// Consume the stream
+			for await (const _ of stream) {
+				// consume stream
+			}
+
+			// Verify tools were NOT passed
+			expect(mockChat).toHaveBeenCalledWith(
+				expect.not.objectContaining({
+					tools: expect.anything(),
+				}),
+			)
+		})
+
+		it("should yield tool_call_partial when model returns tool calls", async () => {
+			// Model metadata should not gate tool inclusion; metadata.tools controls it.
+			mockGetOllamaModels.mockResolvedValue({
+				"llama3.2": {
+					contextWindow: 128000,
+					maxTokens: 4096,
+					supportsImages: true,
+					supportsPromptCache: false,
+				},
+			})
+
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama3.2",
+				ollamaModelId: "llama3.2",
+				ollamaBaseUrl: "http://localhost:11434",
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			// Mock the chat response with tool calls
+			mockChat.mockImplementation(async function* () {
+				yield {
+					message: {
+						content: "",
+						tool_calls: [
+							{
+								function: {
+									name: "get_weather",
+									arguments: { location: "San Francisco" },
+								},
+							},
+						],
+					},
+				}
+			})
+
+			const tools = [
+				{
+					type: "function" as const,
+					function: {
+						name: "get_weather",
+						description: "Get the weather for a location",
+						parameters: {
+							type: "object",
+							properties: {
+								location: { type: "string" },
+							},
+							required: ["location"],
+						},
+					},
+				},
+			]
+
+			const stream = handler.createMessage(
+				"System",
+				[{ role: "user" as const, content: "What's the weather in SF?" }],
+				{ taskId: "test", tools },
+			)
+
+			const results = []
+			for await (const chunk of stream) {
+				results.push(chunk)
+			}
+
+			// Should yield a tool_call_partial chunk
+			const toolCallChunk = results.find((r) => r.type === "tool_call_partial")
+			expect(toolCallChunk).toBeDefined()
+			expect(toolCallChunk).toEqual({
+				type: "tool_call_partial",
+				index: 0,
+				id: "ollama-tool-0",
+				name: "get_weather",
+				arguments: JSON.stringify({ location: "San Francisco" }),
+			})
+		})
+
+		it("should yield tool_call_end events after tool_call_partial chunks", async () => {
+			// Model metadata should not gate tool inclusion; metadata.tools controls it.
+			mockGetOllamaModels.mockResolvedValue({
+				"llama3.2": {
+					contextWindow: 128000,
+					maxTokens: 4096,
+					supportsImages: true,
+					supportsPromptCache: false,
+				},
+			})
+
+			const options: ApiHandlerOptions = {
+				apiModelId: "llama3.2",
+				ollamaModelId: "llama3.2",
+				ollamaBaseUrl: "http://localhost:11434",
+			}
+
+			handler = new NativeOllamaHandler(options)
+
+			// Mock the chat response with multiple tool calls
+			mockChat.mockImplementation(async function* () {
+				yield {
+					message: {
+						content: "",
+						tool_calls: [
+							{
+								function: {
+									name: "get_weather",
+									arguments: { location: "San Francisco" },
+								},
+							},
+							{
+								function: {
+									name: "get_time",
+									arguments: { timezone: "PST" },
+								},
+							},
+						],
+					},
+				}
+			})
+
+			const tools = [
+				{
+					type: "function" as const,
+					function: {
+						name: "get_weather",
+						description: "Get the weather for a location",
+						parameters: {
+							type: "object",
+							properties: { location: { type: "string" } },
+							required: ["location"],
+						},
+					},
+				},
+				{
+					type: "function" as const,
+					function: {
+						name: "get_time",
+						description: "Get the current time in a timezone",
+						parameters: {
+							type: "object",
+							properties: { timezone: { type: "string" } },
+							required: ["timezone"],
+						},
+					},
+				},
+			]
+
+			const stream = handler.createMessage(
+				"System",
+				[{ role: "user" as const, content: "What's the weather and time in SF?" }],
+				{ taskId: "test", tools },
+			)
+
+			const results = []
+			for await (const chunk of stream) {
+				results.push(chunk)
+			}
+
+			// Should yield tool_call_partial chunks
+			const toolCallPartials = results.filter((r) => r.type === "tool_call_partial")
+			expect(toolCallPartials).toHaveLength(2)
+
+			// Should yield tool_call_end events for each tool call
+			const toolCallEnds = results.filter((r) => r.type === "tool_call_end")
+			expect(toolCallEnds).toHaveLength(2)
+			expect(toolCallEnds[0]).toEqual({ type: "tool_call_end", id: "ollama-tool-0" })
+			expect(toolCallEnds[1]).toEqual({ type: "tool_call_end", id: "ollama-tool-1" })
+
+			// tool_call_end should come after tool_call_partial
+			// Find the last tool_call_partial index
+			let lastPartialIndex = -1
+			for (let i = results.length - 1; i >= 0; i--) {
+				if (results[i].type === "tool_call_partial") {
+					lastPartialIndex = i
+					break
+				}
+			}
+			const firstEndIndex = results.findIndex((r) => r.type === "tool_call_end")
+			expect(firstEndIndex).toBeGreaterThan(lastPartialIndex)
 		})
 	})
 })

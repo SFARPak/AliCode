@@ -5,8 +5,11 @@ import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import {
 	type ProviderSettings,
 	type ModelInfo,
+	type BedrockServiceTier,
 	BEDROCK_REGIONS,
-	BEDROCK_CLAUDE_SONNET_4_MODEL_ID,
+	BEDROCK_1M_CONTEXT_MODEL_IDS,
+	BEDROCK_GLOBAL_INFERENCE_MODEL_IDS,
+	BEDROCK_SERVICE_TIER_MODEL_IDS,
 } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
@@ -18,14 +21,25 @@ type BedrockProps = {
 	apiConfiguration: ProviderSettings
 	setApiConfigurationField: (field: keyof ProviderSettings, value: ProviderSettings[keyof ProviderSettings]) => void
 	selectedModelInfo?: ModelInfo
+	simplifySettings?: boolean
 }
 
 export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedModelInfo }: BedrockProps) => {
 	const { t } = useAppTranslation()
 	const [awsEndpointSelected, setAwsEndpointSelected] = useState(!!apiConfiguration?.awsBedrockEndpointEnabled)
 
-	// Check if the selected model supports 1M context (Claude Sonnet 4)
-	const supports1MContextBeta = apiConfiguration?.apiModelId === BEDROCK_CLAUDE_SONNET_4_MODEL_ID
+	// Check if the selected model supports 1M context (supported Claude 4 models)
+	const supports1MContextBeta =
+		!!apiConfiguration?.apiModelId && BEDROCK_1M_CONTEXT_MODEL_IDS.includes(apiConfiguration.apiModelId as any)
+
+	// Check if the selected model supports Global Inference profile routing
+	const supportsGlobalInference =
+		!!apiConfiguration?.apiModelId &&
+		BEDROCK_GLOBAL_INFERENCE_MODEL_IDS.includes(apiConfiguration.apiModelId as any)
+
+	// Check if the selected model supports service tiers
+	const supportsServiceTiers =
+		!!apiConfiguration?.apiModelId && BEDROCK_SERVICE_TIER_MODEL_IDS.includes(apiConfiguration.apiModelId as any)
 
 	// Update the endpoint enabled state when the configuration changes
 	useEffect(() => {
@@ -142,15 +156,49 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedMo
 					</SelectContent>
 				</Select>
 			</div>
+			{supportsServiceTiers && (
+				<div>
+					<label className="block font-medium mb-1">{t("settings:providers.awsServiceTier")}</label>
+					<Select
+						value={apiConfiguration?.awsBedrockServiceTier || "STANDARD"}
+						onValueChange={(value) =>
+							setApiConfigurationField("awsBedrockServiceTier", value as BedrockServiceTier)
+						}>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder={t("settings:common.select")} />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="STANDARD">{t("settings:providers.awsServiceTierStandard")}</SelectItem>
+							<SelectItem value="FLEX">{t("settings:providers.awsServiceTierFlex")}</SelectItem>
+							<SelectItem value="PRIORITY">{t("settings:providers.awsServiceTierPriority")}</SelectItem>
+						</SelectContent>
+					</Select>
+					<div className="text-sm text-vscode-descriptionForeground mt-1">
+						{t("settings:providers.awsServiceTierNote")}
+					</div>
+				</div>
+			)}
+			{supportsGlobalInference && (
+				<Checkbox
+					checked={apiConfiguration?.awsUseGlobalInference || false}
+					onChange={(checked: boolean) => {
+						// Global Inference takes priority over cross-region when both are enabled
+						setApiConfigurationField("awsUseGlobalInference", checked)
+					}}>
+					{t("settings:providers.awsGlobalInference")}
+				</Checkbox>
+			)}
 			<Checkbox
 				checked={apiConfiguration?.awsUseCrossRegionInference || false}
-				onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
+				onChange={(checked: boolean) => {
+					setApiConfigurationField("awsUseCrossRegionInference", checked)
+				}}>
 				{t("settings:providers.awsCrossRegion")}
 			</Checkbox>
 			{selectedModelInfo?.supportsPromptCache && (
 				<>
 					<Checkbox
-						checked={apiConfiguration?.awsUsePromptCache || false}
+						checked={apiConfiguration?.awsUsePromptCache ?? true}
 						onChange={handleInputChange("awsUsePromptCache", noTransform)}>
 						<div className="flex items-center gap-1">
 							<span>{t("settings:providers.enablePromptCaching")}</span>

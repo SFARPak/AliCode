@@ -6,6 +6,12 @@
 	"failedMaxAttempts": "嘗試 {{attempts}} 次後建立內嵌失敗",
 	"textExceedsTokenLimit": "索引 {{index}} 處的文字超過最大權杖限制 ({{itemTokens}} > {{maxTokens}})。正在略過。",
 	"rateLimitRetry": "已達到速率限制，將在 {{delayMs}} 毫秒後重試（嘗試次數 {{attempt}}/{{maxRetries}}）",
+	"bedrock": {
+		"invalidResponseFormat": "Amazon Bedrock 傳回無效的回應格式",
+		"invalidCredentials": "AWS 認證無效。請檢查您的 AWS 設定。",
+		"accessDenied": "存取 Amazon Bedrock 服務遭拒。請檢查您的 IAM 權限。",
+		"modelNotFound": "在 Amazon Bedrock 中找不到模型 {{model}}"
+	},
 	"ollama": {
 		"couldNotReadErrorBody": "無法讀取錯誤內容",
 		"requestFailed": "Ollama API 請求失敗，狀態碼 {{status}} {{statusText}}：{{errorBody}}",
@@ -47,7 +53,9 @@
 		"openAiCompatibleConfigMissing": "建立嵌入器缺少 OpenAI 相容設定",
 		"geminiConfigMissing": "建立嵌入器缺少 Gemini 設定",
 		"mistralConfigMissing": "建立嵌入器時缺少 Mistral 設定",
+		"openRouterConfigMissing": "建立嵌入器時缺少 OpenRouter 設定",
 		"vercelAiGatewayConfigMissing": "建立嵌入器時缺少 Vercel AI Gateway 設定",
+		"bedrockConfigMissing": "建立嵌入器時缺少 Amazon Bedrock 設定",
 		"invalidEmbedderType": "設定的嵌入器類型無效：{{embedderProvider}}",
 		"vectorDimensionNotDeterminedOpenAiCompatible": "無法確定提供商 '{{provider}}' 的模型 '{{modelId}}' 的向量維度。請確保在 OpenAI 相容提供商設定中正確設定了「嵌入維度」。",
 		"vectorDimensionNotDetermined": "無法確定提供商 '{{provider}}' 的模型 '{{modelId}}' 的向量維度。請檢查模型設定檔或設定。",
@@ -61,6 +69,8 @@
 		"fileWatcherStopped": "檔案監控已停止。",
 		"failedDuringInitialScan": "初始掃描失敗：{{errorMessage}}",
 		"unknownError": "未知錯誤",
-		"indexingRequiresWorkspace": "索引需要開啟的工作區資料夾"
+		"indexingRequiresWorkspace": "索引需要開啟的工作區資料夾",
+		"indexingStopped": "使用者已停止索引。",
+		"indexingStoppedPartial": "索引已停止。部分索引資料已保留。"
 	}
 }

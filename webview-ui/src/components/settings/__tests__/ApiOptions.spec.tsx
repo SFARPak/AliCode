@@ -4,8 +4,10 @@ import { render, screen, fireEvent } from "@/utils/test-utils"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import { type ModelInfo, type ProviderSettings, openAiModelInfoSaneDefaults } from "@roo-code/types"
+import { openAiCodexDefaultModelId } from "@roo-code/types"
 
-import { ExtensionStateContextProvider } from "@src/context/ExtensionStateContext"
+import * as ExtensionStateContext from "@src/context/ExtensionStateContext"
+const { ExtensionStateContextProvider } = ExtensionStateContext
 
 import ApiOptions, { ApiOptionsProps } from "../ApiOptions"
 
@@ -156,33 +158,6 @@ vi.mock("../RateLimitSecondsControl", () => ({
 	),
 }))
 
-// Mock DiffSettingsControl for tests
-vi.mock("../DiffSettingsControl", () => ({
-	DiffSettingsControl: ({ diffEnabled, fuzzyMatchThreshold, onChange }: any) => (
-		<div data-testid="diff-settings-control">
-			<label>
-				Enable editing through diffs
-				<input
-					type="checkbox"
-					checked={diffEnabled}
-					onChange={(e) => onChange("diffEnabled", e.target.checked)}
-				/>
-			</label>
-			<div>
-				Fuzzy match threshold
-				<input
-					type="range"
-					value={fuzzyMatchThreshold || 1.0}
-					onChange={(e) => onChange("fuzzyMatchThreshold", parseFloat(e.target.value))}
-					min={0.8}
-					max={1}
-					step={0.005}
-				/>
-			</div>
-		</div>
-	),
-}))
-
 // Mock TodoListSettingsControl for tests
 vi.mock("../TodoListSettingsControl", () => ({
 	TodoListSettingsControl: ({ todoListEnabled, onChange }: any) => (
@@ -238,6 +213,18 @@ vi.mock("../providers/LiteLLM", () => ({
 	),
 }))
 
+// Mock Roo provider for tests
+vi.mock("../providers/Roo", () => ({
+	Roo: ({ cloudIsAuthenticated }: any) => (
+		<div data-testid="roo-provider">{cloudIsAuthenticated ? "Authenticated" : "Not Authenticated"}</div>
+	),
+}))
+
+// Mock RooBalanceDisplay for tests
+vi.mock("../providers/RooBalanceDisplay", () => ({
+	RooBalanceDisplay: () => <div data-testid="roo-balance-display">Balance: $10.00</div>,
+}))
+
 vi.mock("@src/components/ui/hooks/useSelectedModel", () => ({
 	useSelectedModel: vi.fn((apiConfiguration: ProviderSettings) => {
 		if (apiConfiguration.apiModelId?.includes("thinking")) {
@@ -284,23 +271,41 @@ const renderApiOptions = (props: Partial<ApiOptionsProps> = {}) => {
 }
 
 describe("ApiOptions", () => {
-	it("shows diff settings, temperature and rate limit controls by default", () => {
+	it("resets model to provider default when switching to openai-codex with an invalid prior apiModelId", () => {
+		const mockSetApiConfigurationField = vi.fn()
+
 		renderApiOptions({
 			apiConfiguration: {
-				diffEnabled: true,
-				fuzzyMatchThreshold: 0.95,
+				apiProvider: "anthropic",
+				// Simulate a previously-selected model ID from another provider.
+				// When switching to OpenAI - ChatGPT Plus/Pro, this is invalid and should be reset.
+				apiModelId: "claude-3-5-sonnet-20241022",
 			},
+			setApiConfigurationField: mockSetApiConfigurationField,
 		})
-		// Check for DiffSettingsControl by looking for text content
-		expect(screen.getByText(/enable editing through diffs/i)).toBeInTheDocument()
+
+		const providerSelectContainer = screen.getByTestId("provider-select")
+		const providerSelect = providerSelectContainer.querySelector("select") as HTMLSelectElement
+		expect(providerSelect).toBeInTheDocument()
+
+		fireEvent.change(providerSelect, { target: { value: "openai-codex" } })
+
+		// Provider is updated
+		expect(mockSetApiConfigurationField).toHaveBeenCalledWith("apiProvider", "openai-codex")
+		// Model is reset to the provider default since the previous value is invalid for this provider
+		expect(mockSetApiConfigurationField).toHaveBeenCalledWith("apiModelId", openAiCodexDefaultModelId, false)
+	})
+
+	it("shows temperature and rate limit controls by default", () => {
+		renderApiOptions({
+			apiConfiguration: {},
+		})
 		expect(screen.getByTestId("temperature-control")).toBeInTheDocument()
 		expect(screen.getByTestId("rate-limit-seconds-control")).toBeInTheDocument()
 	})
 
 	it("hides all controls when fromWelcomeView is true", () => {
 		renderApiOptions({ fromWelcomeView: true })
-		// Check for absence of DiffSettingsControl text
-		expect(screen.queryByText(/enable editing through diffs/i)).not.toBeInTheDocument()
 		expect(screen.queryByTestId("temperature-control")).not.toBeInTheDocument()
 		expect(screen.queryByTestId("rate-limit-seconds-control")).not.toBeInTheDocument()
 	})
@@ -562,5 +567,44 @@ describe("ApiOptions", () => {
 
 			expect(screen.queryByTestId("litellm-provider")).not.toBeInTheDocument()
 		})
+	})
+
+	it("renders retired provider message and hides provider-specific forms", () => {
+		renderApiOptions({
+			apiConfiguration: {
+				apiProvider: "groq",
+			},
+		})
+
+		expect(screen.getByTestId("retired-provider-message")).toHaveTextContent(
+			"settings:providers.retiredProviderMessage",
+		)
+		expect(screen.queryByTestId("litellm-provider")).not.toBeInTheDocument()
+	})
+
+	it("renders Roo-specific retired provider message for Roo Code Router", () => {
+		renderApiOptions({
+			apiConfiguration: {
+				apiProvider: "roo" as any,
+			},
+		})
+
+		expect(screen.getByTestId("retired-provider-message")).toHaveTextContent(
+			"settings:providers.retiredRooProviderMessage",
+		)
+	})
+
+	it("does not reintroduce retired providers into active provider options", () => {
+		renderApiOptions({
+			apiConfiguration: {
+				apiProvider: "groq",
+			},
+		})
+
+		const providerSelectContainer = screen.getByTestId("provider-select")
+		const providerSelect = providerSelectContainer.querySelector("select") as HTMLSelectElement
+		const providerOptions = Array.from(providerSelect.querySelectorAll("option")).map((option) => option.value)
+
+		expect(providerOptions).not.toContain("groq")
 	})
 })

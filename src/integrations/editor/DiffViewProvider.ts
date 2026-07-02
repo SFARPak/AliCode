@@ -3,16 +3,15 @@ import * as path from "path"
 import * as fs from "fs/promises"
 import * as diff from "diff"
 import stripBom from "strip-bom"
-import { XMLBuilder } from "fast-xml-parser"
 import delay from "delay"
+
+import { type ClineSayTool, DEFAULT_WRITE_DELAY_MS } from "@roo-code/types"
 
 import { createDirectoriesForFile } from "../../utils/fs"
 import { arePathsEqual, getReadablePath } from "../../utils/path"
 import { formatResponse } from "../../core/prompts/responses"
 import { diagnosticsToProblemsString, getNewDiagnostics } from "../diagnostics"
-import { ClineSayTool } from "../../shared/ExtensionMessage"
 import { Task } from "../../core/task/Task"
-import { DEFAULT_WRITE_DELAY_MS } from "@roo-code/types"
 
 import { DecorationController } from "./DecorationController"
 
@@ -54,8 +53,8 @@ export class DiffViewProvider {
 		// If the file is already open, ensure it's not dirty before getting its
 		// contents.
 		if (fileExists) {
-			const existingDocument = vscode.workspace.textDocuments.find((doc) =>
-				arePathsEqual(doc.uri.fsPath, absolutePath),
+			const existingDocument = vscode.workspace.textDocuments.find(
+				(doc) => doc.uri.scheme === "file" && arePathsEqual(doc.uri.fsPath, absolutePath),
 			)
 
 			if (existingDocument && existingDocument.isDirty) {
@@ -91,12 +90,19 @@ export class DiffViewProvider {
 			.map((tg) => tg.tabs)
 			.flat()
 			.filter(
-				(tab) => tab.input instanceof vscode.TabInputText && arePathsEqual(tab.input.uri.fsPath, absolutePath),
+				(tab) =>
+					tab.input instanceof vscode.TabInputText &&
+					tab.input.uri.scheme === "file" &&
+					arePathsEqual(tab.input.uri.fsPath, absolutePath),
 			)
 
 		for (const tab of tabs) {
 			if (!tab.isDirty) {
-				await vscode.window.tabGroups.close(tab)
+				try {
+					await vscode.window.tabGroups.close(tab)
+				} catch (err) {
+					console.error(`Failed to close tab ${tab.label}`, err)
+				}
 			}
 			this.documentWasOpen = true
 		}
@@ -297,11 +303,12 @@ export class DiffViewProvider {
 	}
 
 	/**
-	 * Formats a standardized XML response for file write operations
+	 * Formats a standardized response for file write operations
 	 *
+	 * @param task Task instance to get protocol info
 	 * @param cwd Current working directory for path resolution
 	 * @param isNewFile Whether this is a new file or an existing file being modified
-	 * @returns Formatted message and say object for UI feedback
+	 * @returns Formatted message (JSON)
 	 */
 	async pushToolWriteResult(task: Task, cwd: string, isNewFile: boolean): Promise<string> {
 		if (!this.relPath) {
@@ -321,49 +328,38 @@ export class DiffViewProvider {
 			await task.say("user_feedback_diff", JSON.stringify(say))
 		}
 
-		// Build XML response
-		const xmlObj = {
-			file_write_result: {
-				path: this.relPath,
-				operation: isNewFile ? "created" : "modified",
-				user_edits: this.userEdits ? this.userEdits : undefined,
-				problems: this.newProblemsMessage || undefined,
-				notice: {
-					i: [
-						"You do not need to re-read the file, as you have seen all changes",
-						"Proceed with the task using these changes as the new baseline.",
-						...(this.userEdits
-							? [
-									"If the user's edits have addressed part of the task or changed the requirements, adjust your approach accordingly.",
-								]
-							: []),
-					],
-				},
-			},
+		// Build notices array
+		const notices = [
+			"You do not need to re-read the file, as you have seen all changes",
+			"Proceed with the task using these changes as the new baseline.",
+			...(this.userEdits
+				? [
+						"If the user's edits have addressed part of the task or changed the requirements, adjust your approach accordingly.",
+					]
+				: []),
+		]
+
+		const result: {
+			path: string
+			operation: "created" | "modified"
+			notice: string
+			user_edits?: string
+			problems?: string
+		} = {
+			path: this.relPath,
+			operation: isNewFile ? "created" : "modified",
+			notice: notices.join(" "),
 		}
 
-		const builder = new XMLBuilder({
-			format: true,
-			indentBy: "",
-			suppressEmptyNode: true,
-			processEntities: false,
-			tagValueProcessor: (name, value) => {
-				if (typeof value === "string") {
-					// Only escape <, >, and & characters
-					return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-				}
-				return value
-			},
-			attributeValueProcessor: (name, value) => {
-				if (typeof value === "string") {
-					// Only escape <, >, and & characters
-					return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-				}
-				return value
-			},
-		})
+		if (this.userEdits) {
+			result.user_edits = this.userEdits
+		}
 
-		return builder.build(xmlObj)
+		if (this.newProblemsMessage) {
+			result.problems = this.newProblemsMessage
+		}
+
+		return JSON.stringify(result)
 	}
 
 	async revertChanges(): Promise<void> {
@@ -398,7 +394,7 @@ export class DiffViewProvider {
 
 			edit.replace(updatedDocument.uri, fullRange, this.stripAllBOMs(this.originalContent ?? ""))
 
-			// Apply the edit and save, since contents shouldnt have changed
+			// Apply the edit and save, since contents shouldn't have changed
 			// this won't show in local history unless of course the user made
 			// changes and saved during the edit.
 			await vscode.workspace.applyEdit(edit)
@@ -509,13 +505,14 @@ export class DiffViewProvider {
 			// Listen for document open events - more efficient than scanning all tabs
 			disposables.push(
 				vscode.workspace.onDidOpenTextDocument(async (document) => {
-					if (arePathsEqual(document.uri.fsPath, uri.fsPath)) {
+					// Only match file:// scheme documents to avoid git diffs
+					if (document.uri.scheme === "file" && arePathsEqual(document.uri.fsPath, uri.fsPath)) {
 						// Wait a tick for the editor to be available
 						await new Promise((r) => setTimeout(r, 0))
 
 						// Find the editor for this document
-						const editor = vscode.window.visibleTextEditors.find((e) =>
-							arePathsEqual(e.document.uri.fsPath, uri.fsPath),
+						const editor = vscode.window.visibleTextEditors.find(
+							(e) => e.document.uri.scheme === "file" && arePathsEqual(e.document.uri.fsPath, uri.fsPath),
 						)
 
 						if (editor) {
@@ -529,7 +526,11 @@ export class DiffViewProvider {
 			// Also listen for visible editor changes as a fallback
 			disposables.push(
 				vscode.window.onDidChangeVisibleTextEditors((editors) => {
-					const editor = editors.find((e) => arePathsEqual(e.document.uri.fsPath, uri.fsPath))
+					const editor = editors.find((e) => {
+						const isFileScheme = e.document.uri.scheme === "file"
+						const pathMatches = arePathsEqual(e.document.uri.fsPath, uri.fsPath)
+						return isFileScheme && pathMatches
+					})
 					if (editor) {
 						cleanup()
 						resolve(editor)

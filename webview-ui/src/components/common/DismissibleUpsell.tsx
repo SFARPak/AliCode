@@ -76,7 +76,7 @@ const DismissibleUpsell = memo(
 			}
 		}, [upsellId])
 
-		const handleDismiss = async () => {
+		const handleDismiss = () => {
 			// First notify the extension to persist the dismissal
 			// This ensures the message is sent even if the component unmounts quickly
 			vscode.postMessage({

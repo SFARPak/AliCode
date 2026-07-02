@@ -26,8 +26,6 @@ import {
 	MAX_PENDING_BATCHES,
 } from "../constants"
 import { isPathInIgnoredDirectory } from "../../glob/ignore-utils"
-import { TelemetryService } from "@roo-code/telemetry"
-import { TelemetryEventName } from "@roo-code/types"
 import { sanitizeErrorMessage } from "../shared/validation-helpers"
 import { Package } from "../../../shared/package"
 
@@ -71,6 +69,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 		onError?: (error: Error) => void,
 		onBlocksIndexed?: (indexedCount: number) => void,
 		onFileParsed?: (fileBlockCount: number) => void,
+		signal?: AbortSignal,
 	): Promise<{ stats: { processed: number; skipped: number }; totalBlockCount: number }> {
 		const directoryPath = directory
 		// Capture workspace context at scan start
@@ -96,7 +95,8 @@ export class DirectoryScanner implements IDirectoryScanner {
 			const relativeFilePath = generateRelativeFilePath(filePath, scanWorkspace)
 
 			// Check if file is in an ignored directory using the shared helper
-			if (isPathInIgnoredDirectory(filePath)) {
+			// Use relative path to avoid matching parent directories outside the workspace
+			if (isPathInIgnoredDirectory(relativeFilePath)) {
 				return false
 			}
 
@@ -126,6 +126,9 @@ export class DirectoryScanner implements IDirectoryScanner {
 		// Process all files in parallel with concurrency control
 		const parsePromises = supportedPaths.map((filePath) =>
 			parseLimiter(async () => {
+				// Check abort signal before processing each file
+				if (signal?.aborted) return
+
 				try {
 					// Check file size
 					const stats = await stat(filePath)
@@ -172,10 +175,17 @@ export class DirectoryScanner implements IDirectoryScanner {
 									addedBlocksFromFile = true
 
 									// Check if batch threshold is met
+									// Check abort signal before dispatching batch
+									if (signal?.aborted) {
+										throw new DOMException("Indexing aborted", "AbortError")
+									}
+
 									if (currentBatchBlocks.length >= this.batchSegmentThreshold) {
 										// Wait if we've reached the maximum pending batches
 										while (pendingBatchCount >= MAX_PENDING_BATCHES) {
-											// Wait for at least one batch to complete
+											if (signal?.aborted) {
+												throw new DOMException("Indexing aborted", "AbortError")
+											}
 											await Promise.race(activeBatchPromises)
 										}
 
@@ -234,12 +244,11 @@ export class DirectoryScanner implements IDirectoryScanner {
 						await this.cacheManager.updateHash(filePath, currentFileHash)
 					}
 				} catch (error) {
+					// Re-throw AbortError — it's not a file processing error, just a user-initiated stop
+					if (error instanceof DOMException && error.name === "AbortError") {
+						throw error
+					}
 					console.error(`Error processing file ${filePath} in workspace ${scanWorkspace}:`, error)
-					TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
-						error: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)),
-						stack: error instanceof Error ? sanitizeErrorMessage(error.stack || "") : undefined,
-						location: "scanDirectory:processFile",
-					})
 					if (onError) {
 						onError(
 							error instanceof Error
@@ -256,6 +265,17 @@ export class DirectoryScanner implements IDirectoryScanner {
 
 		// Wait for all parsing to complete
 		await Promise.all(parsePromises)
+
+		// Check abort signal before processing remaining batch
+		if (signal?.aborted) {
+			return {
+				stats: {
+					processed: processedCount,
+					skipped: skippedCount,
+				},
+				totalBlockCount,
+			}
+		}
 
 		// Process any remaining items in batch
 		if (currentBatchBlocks.length > 0) {
@@ -291,6 +311,17 @@ export class DirectoryScanner implements IDirectoryScanner {
 		// Wait for all batch processing to complete
 		await Promise.all(activeBatchPromises)
 
+		// Check abort signal before handling deleted files
+		if (signal?.aborted) {
+			return {
+				stats: {
+					processed: processedCount,
+					skipped: skippedCount,
+				},
+				totalBlockCount,
+			}
+		}
+
 		// Handle deleted files
 		const oldHashes = this.cacheManager.getAllHashes()
 		for (const cachedFilePath of Object.keys(oldHashes)) {
@@ -301,7 +332,6 @@ export class DirectoryScanner implements IDirectoryScanner {
 						await this.qdrantClient.deletePointsByFilePath(cachedFilePath)
 						await this.cacheManager.deleteHash(cachedFilePath)
 					} catch (error: any) {
-						const errorStatus = error?.status || error?.response?.status || error?.statusCode
 						const errorMessage = error instanceof Error ? error.message : String(error)
 
 						console.error(
@@ -309,15 +339,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 							error,
 						)
 
-						TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
-							error: sanitizeErrorMessage(errorMessage),
-							stack: error instanceof Error ? sanitizeErrorMessage(error.stack || "") : undefined,
-							location: "scanDirectory:deleteRemovedFiles",
-							errorStatus: errorStatus,
-						})
-
 						if (onError) {
-							// Report error to error handler
 							onError(
 								error instanceof Error
 									? new Error(
@@ -331,7 +353,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 							)
 						}
 						// Log error and continue processing instead of re-throwing
-						console.error(`Failed to delete points for removed file: ${cachedFilePath}`, error)
+						console.error(`Failed to delete points for removed file: ${cachedFilePath}`, errorMessage)
 					}
 				}
 			}
@@ -375,25 +397,12 @@ export class DirectoryScanner implements IDirectoryScanner {
 					try {
 						await this.qdrantClient.deletePointsByMultipleFilePaths(uniqueFilePaths)
 					} catch (deleteError: any) {
-						const errorStatus =
-							deleteError?.status || deleteError?.response?.status || deleteError?.statusCode
 						const errorMessage = deleteError instanceof Error ? deleteError.message : String(deleteError)
 
 						console.error(
 							`[DirectoryScanner] Failed to delete points for ${uniqueFilePaths.length} files before upsert in workspace ${scanWorkspace}:`,
 							deleteError,
 						)
-
-						TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
-							error: sanitizeErrorMessage(errorMessage),
-							stack:
-								deleteError instanceof Error
-									? sanitizeErrorMessage(deleteError.stack || "")
-									: undefined,
-							location: "processBatch:deletePointsByMultipleFilePaths",
-							fileCount: uniqueFilePaths.length,
-							errorStatus: errorStatus,
-						})
 
 						// Re-throw with workspace context
 						throw new Error(
@@ -442,13 +451,6 @@ export class DirectoryScanner implements IDirectoryScanner {
 					`[DirectoryScanner] Error processing batch (attempt ${attempts}) in workspace ${scanWorkspace}:`,
 					error,
 				)
-				TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
-					error: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)),
-					stack: error instanceof Error ? sanitizeErrorMessage(error.stack || "") : undefined,
-					location: "processBatch:retry",
-					attemptNumber: attempts,
-					batchSize: batchBlocks.length,
-				})
 
 				if (attempts < MAX_BATCH_RETRIES) {
 					const delay = INITIAL_RETRY_DELAY_MS * Math.pow(2, attempts - 1)

@@ -5,82 +5,96 @@ import { RooIgnoreController, LOCK_TEXT_SYMBOL } from "../ignore/RooIgnoreContro
 import { RooProtectedController } from "../protect/RooProtectedController"
 
 export const formatResponse = {
-	toolDenied: () => `The user denied this operation.`,
+	toolDenied: () =>
+		JSON.stringify({
+			status: "denied",
+			message: "The user denied this operation.",
+		}),
 
 	toolDeniedWithFeedback: (feedback?: string) =>
-		`The user denied this operation and provided the following feedback:\n<feedback>\n${feedback}\n</feedback>`,
+		JSON.stringify({
+			status: "denied",
+			feedback,
+		}),
 
 	toolApprovedWithFeedback: (feedback?: string) =>
-		`The user approved this operation and provided the following context:\n<feedback>\n${feedback}\n</feedback>`,
+		JSON.stringify({
+			status: "approved",
+			feedback,
+		}),
 
-	toolError: (error?: string) => `The tool execution failed with the following error:\n<error>\n${error}\n</error>`,
+	toolError: (error?: string) =>
+		JSON.stringify({
+			status: "error",
+			message: "The tool execution failed",
+			error,
+		}),
 
 	rooIgnoreError: (path: string) =>
-		`Access to ${path} is blocked by the .rooignore file settings. You must try to continue in the task without using this file, or ask the user to update the .rooignore file.`,
+		JSON.stringify({
+			status: "error",
+			type: "access_denied",
+			message: "Access blocked by .rooignore",
+			path,
+			suggestion: "Try to continue without this file, or ask the user to update the .rooignore file",
+		}),
 
-	noToolsUsed: () =>
-		`[ERROR] You did not use a tool in your previous response! Please retry with a tool use.
+	noToolsUsed: () => {
+		const instructions = getToolInstructionsReminder()
 
-${toolUseInstructionsReminder}
+		return `[ERROR] You did not use a tool in your previous response! Please retry with a tool use.
+
+${instructions}
 
 # Next Steps
 
-If you have completed the user's task, use the attempt_completion tool. 
-If you require additional information from the user, use the ask_followup_question tool. 
-Otherwise, if you have not completed the task and do not need additional information, then proceed with the next step of the task. 
-(This is an automated message, so do not respond to it conversationally.)`,
+If you have completed the user's task, use the attempt_completion tool.
+If you require additional information from the user, use the ask_followup_question tool.
+Otherwise, if you have not completed the task and do not need additional information, then proceed with the next step of the task.
+(This is an automated message, so do not respond to it conversationally.)`
+	},
 
 	tooManyMistakes: (feedback?: string) =>
-		`You seem to be having trouble proceeding. The user has provided the following feedback to help guide you:\n<feedback>\n${feedback}\n</feedback>`,
+		JSON.stringify({
+			status: "guidance",
+			feedback,
+		}),
 
-	missingToolParameterError: (paramName: string) =>
-		`Missing value for required parameter '${paramName}'. Please retry with complete response.\n\n${toolUseInstructionsReminder}`,
+	missingToolParameterError: (paramName: string) => {
+		const instructions = getToolInstructionsReminder()
 
-	lineCountTruncationError: (actualLineCount: number, isNewFile: boolean, diffStrategyEnabled: boolean = false) => {
-		const truncationMessage = `Note: Your response may have been truncated because it exceeded your output limit. You wrote ${actualLineCount} lines of content, but the line_count parameter was either missing or not included in your response.`
-
-		const newFileGuidance =
-			`This appears to be a new file.\n` +
-			`${truncationMessage}\n\n` +
-			`RECOMMENDED APPROACH:\n` +
-			`1. Try again with the line_count parameter in your response if you forgot to include it\n` +
-			`2. Or break your content into smaller chunks - first use write_to_file with the initial chunk\n` +
-			`3. Then use insert_content to append additional chunks\n`
-
-		let existingFileApproaches = [
-			`1. Try again with the line_count parameter in your response if you forgot to include it`,
-		]
-
-		if (diffStrategyEnabled) {
-			existingFileApproaches.push(`2. Or try using apply_diff instead of write_to_file for targeted changes`)
-		}
-
-		existingFileApproaches.push(
-			`${diffStrategyEnabled ? "3" : "2"}. Or use search_and_replace for specific text replacements`,
-			`${diffStrategyEnabled ? "4" : "3"}. Or use insert_content to add specific content at particular lines`,
-		)
-
-		const existingFileGuidance =
-			`This appears to be content for an existing file.\n` +
-			`${truncationMessage}\n\n` +
-			`RECOMMENDED APPROACH:\n` +
-			`${existingFileApproaches.join("\n")}\n`
-
-		return `${isNewFile ? newFileGuidance : existingFileGuidance}\n${toolUseInstructionsReminder}`
+		return `Missing value for required parameter '${paramName}'. Please retry with complete response.\n\n${instructions}`
 	},
 
 	invalidMcpToolArgumentError: (serverName: string, toolName: string) =>
-		`Invalid JSON argument used with ${serverName} for ${toolName}. Please retry with a properly formatted JSON argument.`,
+		JSON.stringify({
+			status: "error",
+			type: "invalid_argument",
+			message: "Invalid JSON argument",
+			server: serverName,
+			tool: toolName,
+			suggestion: "Please retry with a properly formatted JSON argument",
+		}),
 
-	unknownMcpToolError: (serverName: string, toolName: string, availableTools: string[]) => {
-		const toolsList = availableTools.length > 0 ? availableTools.join(", ") : "No tools available"
-		return `Tool '${toolName}' does not exist on server '${serverName}'.\n\nAvailable tools on this server: ${toolsList}\n\nPlease use one of the available tools or check if the server is properly configured.`
-	},
+	unknownMcpToolError: (serverName: string, toolName: string, availableTools: string[]) =>
+		JSON.stringify({
+			status: "error",
+			type: "unknown_tool",
+			message: "Tool does not exist on server",
+			server: serverName,
+			tool: toolName,
+			available_tools: availableTools.length > 0 ? availableTools : [],
+			suggestion: "Please use one of the available tools or check if the server is properly configured",
+		}),
 
-	unknownMcpServerError: (serverName: string, availableServers: string[]) => {
-		const serversList = availableServers.length > 0 ? availableServers.join(", ") : "No servers available"
-		return `Server '${serverName}' is not configured. Available servers: ${serversList}`
-	},
+	unknownMcpServerError: (serverName: string, availableServers: string[]) =>
+		JSON.stringify({
+			status: "error",
+			type: "unknown_server",
+			message: "Server is not configured",
+			server: serverName,
+			available_servers: availableServers.length > 0 ? availableServers : [],
+		}),
 
 	toolResult: (
 		text: string,
@@ -178,7 +192,9 @@ Otherwise, if you have not completed the task and do not need additional informa
 
 	createPrettyPatch: (filename = "file", oldStr?: string, newStr?: string) => {
 		// strings cannot be undefined or diff throws exception
-		const patch = diff.createPatch(filename.toPosix(), oldStr || "", newStr || "")
+		const patch = diff.createPatch(filename.toPosix(), oldStr || "", newStr || "", undefined, undefined, {
+			context: 3,
+		})
 		const lines = patch.split("\n")
 		const prettyPatchLines = lines.slice(4)
 		return prettyPatchLines.join("\n")
@@ -200,22 +216,15 @@ const formatImagesIntoBlocks = (images?: string[]): Anthropic.ImageBlockParam[] 
 		: []
 }
 
-const toolUseInstructionsReminder = `# Reminder: Instructions for Tool Use
+const toolUseInstructionsReminderNative = `# Reminder: Instructions for Tool Use
 
-Tool uses are formatted using XML-style tags. The tool name itself becomes the XML tag name. Each parameter is enclosed within its own set of tags. Here's the structure:
+Tools are invoked using the platform's native tool calling mechanism. Each tool requires specific parameters as defined in the tool descriptions. Refer to the tool definitions provided in your system instructions for the correct parameter structure and usage examples.
 
-<actual_tool_name>
-<parameter1_name>value1</parameter1_name>
-<parameter2_name>value2</parameter2_name>
-...
-</actual_tool_name>
+Always ensure you provide all required parameters for the tool you wish to use.`
 
-For example, to use the attempt_completion tool:
-
-<attempt_completion>
-<result>
-I have completed the task...
-</result>
-</attempt_completion>
-
-Always use the actual tool name as the XML tag name for proper parsing and execution.`
+/**
+ * Gets the tool use instructions reminder.
+ */
+function getToolInstructionsReminder(): string {
+	return toolUseInstructionsReminderNative
+}

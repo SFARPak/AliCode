@@ -16,24 +16,23 @@
 		"delete": "कार्य हटाएं (पुष्टि को छोड़ने के लिए Shift + क्लिक)",
 		"condenseContext": "संदर्भ को बुद्धिमानी से संघनित करें",
 		"share": "कार्य साझा करें",
-		"shareWithOrganization": "संगठन के साथ साझा करें",
-		"shareWithOrganizationDescription": "केवल आपके संगठन के सदस्य पहुंच सकते हैं",
-		"sharePublicly": "सार्वजनिक रूप से साझा करें",
-		"sharePubliclyDescription": "लिंक वाला कोई भी व्यक्ति पहुंच सकता है",
-		"connectToCloud": "Cloud से कनेक्ट करें",
-		"connectToCloudDescription": "कार्य साझा करने के लिए Roo Code Cloud में साइन इन करें",
-		"sharingDisabledByOrganization": "संगठन द्वारा साझाकरण अक्षम किया गया",
-		"shareSuccessOrganization": "संगठन लिंक क्लिपबोर्ड में कॉपी किया गया",
 		"shareSuccessPublic": "सार्वजनिक लिंक क्लिपबोर्ड में कॉपी किया गया",
-		"openInCloud": "Roo Code Cloud में कार्य खोलें",
-		"openInCloudIntro": "कहीं से भी Roo की निगरानी या इंटरैक्ट करना जारी रखें। खोलने के लिए स्कैन करें, क्लिक करें या कॉपी करें।"
+		"openApiHistory": "API इतिहास खोलें",
+		"openUiHistory": "UI इतिहास खोलें",
+		"backToParentTask": "मूल कार्य"
 	},
 	"unpin": "पिन करें",
 	"pin": "अवपिन करें",
+	"fileChangesInConversation": {
+		"header": "इस वार्तालाप में {{count}} फ़ाइल(ें) बदली गईं"
+	},
 	"tokenProgress": {
 		"availableSpace": "उपलब्ध स्थान: {{amount}} tokens",
 		"tokensUsed": "प्रयुक्त tokens: {{used}} / {{total}}",
-		"reservedForResponse": "मॉडल प्रतिक्रिया के लिए आरक्षित: {{amount}} tokens"
+		"reservedForResponse": "मॉडल प्रतिक्रिया के लिए आरक्षित: {{amount}} tokens",
+		"tokensUsedLabel": "प्रयुक्त tokens",
+		"reservedForResponseLabel": "प्रतिक्रिया के लिए आरक्षित",
+		"availableSpaceLabel": "उपलब्ध स्थान"
 	},
 	"retry": {
 		"title": "पुनः प्रयास करें",
@@ -61,7 +60,7 @@
 		"tooltip": "इस क्रिया को स्वीकृत करें"
 	},
 	"runCommand": {
-		"title": "कमांड चलाएँ",
+		"title": "कमांड",
 		"tooltip": "इस कमांड को निष्पादित करें"
 	},
 	"proceedWhileRunning": {
@@ -80,36 +79,38 @@
 		"title": "समाप्त करें",
 		"tooltip": "वर्तमान कार्य समाप्त करें"
 	},
+	"stop": {
+		"title": "रोकें",
+		"tooltip": "वर्तमान कार्य रोकें"
+	},
 	"cancel": {
 		"title": "रद्द करें",
 		"tooltip": "वर्तमान ऑपरेशन रद्द करें"
 	},
+	"enqueueMessage": "संदेश को कतार में जोड़ें (वर्तमान कार्य पूरा होने के बाद भेजा जाएगा)",
 	"scrollToBottom": "चैट के निचले हिस्से तक स्क्रॉल करें",
-	"about": "एआई सहायता से कोड जेनरेट करें, रिफैक्टर करें और डिबग करें। अधिक जानने के लिए हमारे <DocsLink>दस्तावेज़</DocsLink> देखें।",
-	"onboarding": "एजेंटिक कोडिंग क्षमताओं में नवीनतम प्रगति के कारण, मैं जटिल सॉफ्टवेयर विकास कार्यों को चरण-दर-चरण संभाल सकता हूं। ऐसे उपकरणों के साथ जो मुझे फ़ाइलें बनाने और संपादित करने, जटिल प्रोजेक्ट का अन्वेषण करने, ब्राउज़र का उपयोग करने और टर्मिनल कमांड (आपकी अनुमति के बाद) निष्पादित करने की अनुमति देते हैं, मैं आपकी मदद कोड पूर्णता या तकनीकी समर्थन से परे तरीकों से कर सकता हूं। मैं अपनी क्षमताओं का विस्तार करने और नए उपकरण बनाने के लिए MCP का भी उपयोग कर सकता हूं।",
+	"scrollToLatestCheckpoint": "पिछले चेकपॉइंट तक स्क्रॉल करें",
+	"about": "Roo Code आपके संपादक में एक पूरी AI देव टीम है।",
+	"docs": "और जानने के लिए हमारे <DocsLink>दस्तावेज़</DocsLink> देखें।",
+	"onboarding": "इस कार्यक्षेत्र में आपकी कार्य सूची खाली है।",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "कार्य संयोजन",
-			"description": "कार्यों को छोटे, प्रबंधनीय भागों में विभाजित करें।"
-		},
-		"stickyModels": {
-			"title": "स्टिकी मोड",
-			"description": "प्रत्येक मोड आपके अंतिम उपयोग किए गए मॉडल को याद रखता है"
-		},
-		"tools": {
-			"title": "उपकरण",
-			"description": "एआई को वेब ब्राउज़ करके, कमांड चलाकर और अधिक समस्याओं को हल करने की अनुमति दें।"
-		},
 		"customizableModes": {
 			"title": "अनुकूलन योग्य मोड",
-			"description": "विशिष्ट प्रोफाइल अपने व्यवहार और निर्धारित मॉडल के साथ"
+			"description": "विशेष व्यक्ति जो कार्य पर बने रहते हैं और वितरित करते हैं।"
+		},
+		"modelAgnostic": {
+			"title": "अपना खुद का मॉडल लाओ",
+			"description": "अपने स्वयं के प्रदाता कुंजी का उपयोग करें या यहां तक   कि स्थानीय अनुमान चलाएं - कोई मार्कअप, लॉक-इन, कोई प्रतिबंध नहीं"
 		}
 	},
 	"selectMode": "इंटरैक्शन मोड चुनें",
 	"selectApiConfig": "एपीआई कॉन्फ़िगरेशन का चयन करें",
+	"lockApiConfigAcrossModes": "इस कार्यक्षेत्र में सभी मोड के लिए API कॉन्फ़िगरेशन लॉक करें",
+	"unlockApiConfigAcrossModes": "इस कार्यक्षेत्र में सभी मोड के लिए API कॉन्फ़िगरेशन लॉक है (अनलॉक करने के लिए क्लिक करें)",
 	"enhancePrompt": "अतिरिक्त संदर्भ के साथ प्रॉम्प्ट बढ़ाएँ",
 	"addImages": "संदेश में चित्र जोड़ें",
 	"sendMessage": "संदेश भेजें",
+	"pressToSend": "भेजने के लिए {{keyCombination}} दबाएं",
 	"stopTts": "टेक्स्ट-टू-स्पीच बंद करें",
 	"typeMessage": "एक संदेश लिखें...",
 	"typeTask": "अपना कार्य यहां लिखें...",
@@ -119,13 +120,12 @@
 	"enhancePromptDescription": "'प्रॉम्प्ट बढ़ाएँ' बटन अतिरिक्त संदर्भ, स्पष्टीकरण या पुनर्विचार प्रदान करके आपके अनुरोध को बेहतर बनाने में मदद करता है। यहां अनुरोध लिखकर देखें और यह कैसे काम करता है यह देखने के लिए बटन पर फिर से क्लिक करें।",
 	"modeSelector": {
 		"title": "मोड्स",
-		"marketplace": "मोड मार्केटप्लेस",
 		"settings": "मोड सेटिंग्स",
 		"description": "विशेष व्यक्तित्व जो Roo के व्यवहार को अनुकूलित करते हैं।",
 		"searchPlaceholder": "मोड खोजें...",
 		"noResults": "कोई परिणाम नहीं मिला"
 	},
-	"errorReadingFile": "फ़ाइल पढ़ने में त्रुटि:",
+	"errorReadingFile": "फ़ाइल पढ़ने में त्रुटि",
 	"noValidImages": "कोई मान्य चित्र प्रोसेस नहीं किया गया",
 	"separator": "विभाजक",
 	"edit": "संपादित करें...",
@@ -141,13 +141,31 @@
 		"failed": "API अनुरोध विफल हुआ",
 		"streaming": "API अनुरोध...",
 		"cancelled": "API अनुरोध रद्द किया गया",
-		"streamingFailed": "API स्ट्रीमिंग विफल हुई"
+		"streamingFailed": "API स्ट्रीमिंग विफल हुई",
+		"rateLimitWait": "दर सीमा",
+		"errorTitle": "प्रदाता त्रुटि {{code}}",
+		"errorMessage": {
+			"400": "प्रदाता अनुरोध को जैसे बनाया गया था उसे प्रोसेस नहीं कर सका। कार्य को रोकें और एक अलग तरीका आजमाएं।",
+			"401": "प्रदाता के साथ प्रमाणित नहीं किए जा सके। अपने API कुंजी कॉन्फ़िगरेशन की जाँच करें।",
+			"402": "ऐसा लगता है कि आपके खाते में फंड/क्रेडिट समाप्त हो गए हैं। अपने प्रदाता के पास जाएं और जारी रखने के लिए और अधिक जोड़ें।",
+			"403": "अनुमति नहीं। आपकी API कुंजी वैध है, लेकिन प्रदाता ने इस अनुरोध को पूरा करने से इनकार कर दिया।",
+			"429": "बहुत सारे अनुरोध। आप प्रदाता द्वारा दर-सीमित हो रहे हैं। कृपया अपनी अगली API कॉल से पहले थोड़ी देर प्रतीक्षा करें।",
+			"500": "प्रदाता सर्वर त्रुटि। प्रदाता की ओर से कुछ गलत है, आपके अनुरोध में कुछ गलत नहीं है।",
+			"docs": "डॉक्स",
+			"goToSettings": "सेटिंग्स",
+			"unknown": "Unknown API error. Please report this on GitHub.",
+			"connection": "कनेक्शन त्रुटि। सुनिश्चित करें कि आपके पास कार्यशील इंटरनेट कनेक्शन है।",
+			"claudeCodeNotAuthenticated": "Claude Code का उपयोग करने के लिए आपको साइन इन करना होगा। सेटिंग्स में जाएं और प्रमाणित करने के लिए \"Claude Code में साइन इन करें\" पर क्लिक करें।"
+		}
 	},
 	"checkpoint": {
 		"regular": "चेकपॉइंट",
 		"initializingWarning": "चेकपॉइंट अभी भी आरंभ हो रहा है... अगर यह बहुत समय ले रहा है, तो आप <settingsLink>सेटिंग्स</settingsLink> में चेकपॉइंट को अक्षम कर सकते हैं और अपने कार्य को पुनः आरंभ कर सकते हैं।",
 		"menu": {
 			"viewDiff": "अंतर देखें",
+			"more": "अधिक विकल्प",
+			"viewDiffFromInit": "सभी परिवर्तन देखें",
+			"viewDiffWithCurrent": "इस चेकपॉइंट के बाद से परिवर्तन देखें",
 			"restore": "चेकपॉइंट पुनर्स्थापित करें",
 			"restoreFiles": "फ़ाइलें पुनर्स्थापित करें",
 			"restoreFilesDescription": "आपके प्रोजेक्ट की फ़ाइलों को इस बिंदु पर लिए गए स्नैपशॉट पर पुनर्स्थापित करता है।",
@@ -163,55 +181,52 @@
 		"wantsToFetch": "Roo को वर्तमान कार्य में सहायता के लिए विस्तृत निर्देश प्राप्त करना है"
 	},
 	"fileOperations": {
-		"wantsToRead": "Roo इस फ़ाइल को पढ़ना चाहता है:",
-		"wantsToReadOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर इस फ़ाइल को पढ़ना चाहता है:",
-		"didRead": "Roo ने इस फ़ाइल को पढ़ा:",
-		"wantsToEdit": "Roo इस फ़ाइल को संपादित करना चाहता है:",
-		"wantsToEditOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर इस फ़ाइल को संपादित करना चाहता है:",
-		"wantsToEditProtected": "Roo एक सुरक्षित कॉन्फ़िगरेशन फ़ाइल को संपादित करना चाहता है:",
-		"wantsToCreate": "Roo एक नई फ़ाइल बनाना चाहता है:",
-		"wantsToSearchReplace": "Roo इस फ़ाइल में खोज और प्रतिस्थापन करना चाहता है:",
-		"didSearchReplace": "Roo ने इस फ़ाइल में खोज और प्रतिस्थापन किया:",
-		"wantsToInsert": "Roo इस फ़ाइल में सामग्री डालना चाहता है:",
-		"wantsToInsertWithLineNumber": "Roo इस फ़ाइल की {{lineNumber}} लाइन पर सामग्री डालना चाहता है:",
-		"wantsToInsertAtEnd": "Roo इस फ़ाइल के अंत में सामग्री जोड़ना चाहता है:",
-		"wantsToReadAndXMore": "रू इस फ़ाइल को और {{count}} अन्य को पढ़ना चाहता है:",
-		"wantsToReadMultiple": "Roo कई फ़ाइलें पढ़ना चाहता है:",
-		"wantsToApplyBatchChanges": "Roo कई फ़ाइलों में परिवर्तन लागू करना चाहता है:",
-		"wantsToGenerateImage": "Roo एक छवि बनाना चाहता है:",
-		"wantsToGenerateImageOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर एक छवि बनाना चाहता है:",
-		"wantsToGenerateImageProtected": "Roo एक संरक्षित स्थान पर छवि बनाना चाहता है:",
-		"didGenerateImage": "Roo ने एक छवि बनाई:"
+		"wantsToRead": "Roo इस फ़ाइल को पढ़ना चाहता है",
+		"wantsToReadOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर इस फ़ाइल को पढ़ना चाहता है",
+		"didRead": "Roo ने इस फ़ाइल को पढ़ा",
+		"wantsToEdit": "Roo इस फ़ाइल को संपादित करना चाहता है",
+		"wantsToEditOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर इस फ़ाइल को संपादित करना चाहता है",
+		"wantsToEditProtected": "Roo एक सुरक्षित कॉन्फ़िगरेशन फ़ाइल को संपादित करना चाहता है",
+		"wantsToCreate": "Roo एक नई फ़ाइल बनाना चाहता है",
+		"wantsToSearchReplace": "Roo इस फ़ाइल में खोज और प्रतिस्थापन करना चाहता है",
+		"didSearchReplace": "Roo ने इस फ़ाइल में खोज और प्रतिस्थापन किया",
+		"wantsToInsert": "Roo इस फ़ाइल में सामग्री डालना चाहता है",
+		"wantsToInsertWithLineNumber": "Roo इस फ़ाइल की {{lineNumber}} लाइन पर सामग्री डालना चाहता है",
+		"wantsToInsertAtEnd": "Roo इस फ़ाइल के अंत में सामग्री जोड़ना चाहता है",
+		"wantsToReadAndXMore": "रू इस फ़ाइल को और {{count}} अन्य को पढ़ना चाहता है",
+		"wantsToReadMultiple": "Roo कई फ़ाइलें पढ़ना चाहता है",
+		"wantsToApplyBatchChanges": "Roo कई फ़ाइलों में परिवर्तन लागू करना चाहता है",
+		"wantsToGenerateImage": "Roo एक छवि बनाना चाहता है",
+		"wantsToGenerateImageOutsideWorkspace": "Roo कार्यक्षेत्र के बाहर एक छवि बनाना चाहता है",
+		"wantsToGenerateImageProtected": "Roo एक संरक्षित स्थान पर छवि बनाना चाहता है",
+		"didGenerateImage": "Roo ने एक छवि बनाई"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Roo इस निर्देशिका में शीर्ष स्तर की फ़ाइलें देखना चाहता है:",
-		"didViewTopLevel": "Roo ने इस निर्देशिका में शीर्ष स्तर की फ़ाइलें देखीं:",
-		"wantsToViewRecursive": "Roo इस निर्देशिका में सभी फ़ाइलों को पुनरावर्ती रूप से देखना चाहता है:",
-		"didViewRecursive": "Roo ने इस निर्देशिका में सभी फ़ाइलों को पुनरावर्ती रूप से देखा:",
-		"wantsToViewDefinitions": "Roo इस निर्देशिका में उपयोग किए गए सोर्स कोड परिभाषा नामों को देखना चाहता है:",
-		"didViewDefinitions": "Roo ने इस निर्देशिका में उपयोग किए गए सोर्स कोड परिभाषा नामों को देखा:",
-		"wantsToSearch": "Roo इस निर्देशिका में <code>{{regex}}</code> के लिए खोज करना चाहता है:",
-		"didSearch": "Roo ने इस निर्देशिका में <code>{{regex}}</code> के लिए खोज की:",
-		"wantsToSearchOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में <code>{{regex}}</code> के लिए खोज करना चाहता है:",
-		"didSearchOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में <code>{{regex}}</code> के लिए खोज की:",
-		"wantsToViewTopLevelOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में शीर्ष स्तर की फ़ाइलें देखना चाहता है:",
-		"didViewTopLevelOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में शीर्ष स्तर की फ़ाइलें देखीं:",
-		"wantsToViewRecursiveOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में सभी फ़ाइलों को पुनरावर्ती रूप से देखना चाहता है:",
-		"didViewRecursiveOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में सभी फ़ाइलों को पुनरावर्ती रूप से देखा:",
-		"wantsToViewDefinitionsOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में उपयोग किए गए सोर्स कोड परिभाषा नामों को देखना चाहता है:",
-		"didViewDefinitionsOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में उपयोग किए गए सोर्स कोड परिभाषा नामों को देखा:"
+		"wantsToViewTopLevel": "Roo इस निर्देशिका में शीर्ष स्तर की फ़ाइलें देखना चाहता है",
+		"didViewTopLevel": "Roo ने इस निर्देशिका में शीर्ष स्तर की फ़ाइलें देखीं",
+		"wantsToViewRecursive": "Roo इस निर्देशिका में सभी फ़ाइलों को पुनरावर्ती रूप से देखना चाहता है",
+		"didViewRecursive": "Roo ने इस निर्देशिका में सभी फ़ाइलों को पुनरावर्ती रूप से देखा",
+		"wantsToSearch": "Roo इस निर्देशिका में <code>{{regex}}</code> के लिए खोज करना चाहता है",
+		"didSearch": "Roo ने इस निर्देशिका में <code>{{regex}}</code> के लिए खोज की",
+		"wantsToSearchOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में <code>{{regex}}</code> के लिए खोज करना चाहता है",
+		"didSearchOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में <code>{{regex}}</code> के लिए खोज की",
+		"wantsToViewTopLevelOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में शीर्ष स्तर की फ़ाइलें देखना चाहता है",
+		"didViewTopLevelOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में शीर्ष स्तर की फ़ाइलें देखीं",
+		"wantsToViewRecursiveOutsideWorkspace": "Roo इस निर्देशिका (कार्यक्षेत्र के बाहर) में सभी फ़ाइलों को पुनरावर्ती रूप से देखना चाहता है",
+		"didViewRecursiveOutsideWorkspace": "Roo ने इस निर्देशिका (कार्यक्षेत्र के बाहर) में सभी फ़ाइलों को पुनरावर्ती रूप से देखा",
+		"wantsToViewMultipleDirectories": "Roo कई डायरेक्ट्रीज़ देखना चाहता है"
 	},
 	"commandOutput": "कमांड आउटपुट",
 	"commandExecution": {
-		"running": "चलाया जा रहा है",
+		"abort": "रद्द करें",
+		"running": "चल रहा है",
 		"pid": "पीआईडी: {{pid}}",
-		"exited": "बाहर निकल गया ({{exitCode}})",
-		"manageCommands": "कमांड अनुमतियाँ प्रबंधित करें",
-		"commandManagementDescription": "कमांड अनुमतियों का प्रबंधन करें: स्वतः-निष्पादन की अनुमति देने के लिए ✓ पर क्लिक करें, निष्पादन से इनकार करने के लिए ✗ पर क्लिक करें। पैटर्न को चालू/बंद किया जा सकता है या सूचियों से हटाया जा सकता है। <settingsLink>सभी सेटिंग्स देखें</settingsLink>",
+		"exitStatus": "{{exitCode}} स्थिति के साथ बाहर निकल गया",
+		"manageCommands": "स्वतः-अनुमोदित कमांड",
 		"addToAllowed": "अनुमत सूची में जोड़ें",
-		"removeFromAllowed": "अनुमत सूची से हटाएं",
+		"removeFromAllowed": "अनुमत सूची से हटाएँ",
 		"addToDenied": "अस्वीकृत सूची में जोड़ें",
-		"removeFromDenied": "अस्वीकृत सूची से हटाएं",
+		"removeFromDenied": "अस्वीकृत सूची से हटाएँ",
 		"abortCommand": "कमांड निष्पादन रद्द करें",
 		"expandOutput": "आउटपुट का विस्तार करें",
 		"collapseOutput": "आउटपुट संक्षिप्त करें",
@@ -220,9 +235,15 @@
 	},
 	"response": "प्रतिक्रिया",
 	"arguments": "आर्ग्युमेंट्स",
+	"text": {
+		"rooSaid": "रू ने कहा"
+	},
+	"feedback": {
+		"youSaid": "आपने कहा"
+	},
 	"mcp": {
-		"wantsToUseTool": "Roo {{serverName}} MCP सर्वर पर एक टूल का उपयोग करना चाहता है:",
-		"wantsToAccessResource": "Roo {{serverName}} MCP सर्वर पर एक संसाधन का उपयोग करना चाहता है:"
+		"wantsToUseTool": "Roo {{serverName}} MCP सर्वर पर एक टूल का उपयोग करना चाहता है",
+		"wantsToAccessResource": "Roo {{serverName}} MCP सर्वर पर एक संसाधन का उपयोग करना चाहता है"
 	},
 	"modes": {
 		"wantsToSwitch": "Roo <code>{{mode}}</code> मोड में स्विच करना चाहता है",
@@ -231,18 +252,34 @@
 		"didSwitchWithReason": "Roo <code>{{mode}}</code> मोड में स्विच कर गया क्योंकि: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Roo <code>{{mode}}</code> मोड में एक नया उपकार्य बनाना चाहता है:",
+		"wantsToCreate": "Roo <code>{{mode}}</code> मोड में एक नया उपकार्य बनाना चाहता है",
 		"wantsToFinish": "Roo इस उपकार्य को समाप्त करना चाहता है",
 		"newTaskContent": "उपकार्य निर्देश",
 		"completionContent": "उपकार्य पूर्ण",
 		"resultContent": "उपकार्य परिणाम",
 		"defaultResult": "कृपया अगले कार्य पर जारी रखें।",
-		"completionInstructions": "उपकार्य पूर्ण! आप परिणामों की समीक्षा कर सकते हैं और सुधार या अगले चरण सुझा सकते हैं। यदि सब कुछ ठीक लगता है, तो मुख्य कार्य को परिणाम वापस करने के लिए पुष्टि करें।"
+		"completionInstructions": "उपकार्य पूर्ण! आप परिणामों की समीक्षा कर सकते हैं और सुधार या अगले चरण सुझा सकते हैं। यदि सब कुछ ठीक लगता है, तो मुख्य कार्य को परिणाम वापस करने के लिए पुष्टि करें।",
+		"goToSubtask": "कार्य देखें"
 	},
 	"questions": {
-		"hasQuestion": "Roo का एक प्रश्न है:"
+		"hasQuestion": "Roo का एक प्रश्न है"
 	},
 	"taskCompleted": "कार्य पूरा हुआ",
+	"modelResponseIncomplete": "मॉडल प्रतिक्रिया अपूर्ण",
+	"modelResponseErrors": {
+		"noToolsUsed": "मॉडल ने अपनी प्रतिक्रिया में कोई टूल का उपयोग नहीं किया। यह आमतौर पर तब होता है जब मॉडल केवल टेक्स्ट/तर्क प्रदान करता है बिना कार्य पूरा करने के लिए आवश्यक टूल को कॉल किए।",
+		"noToolsUsedDetails": "मॉडल ने टेक्स्ट/तर्क प्रदान किया लेकिन किसी भी आवश्यक टूल को कॉल नहीं किया। यह आमतौर पर संकेत देता है कि मॉडल ने कार्य को गलत समझा या किस टूल का उपयोग करना है यह निर्धारित करने में कठिनाई हो रही है। मॉडल को स्वचालित रूप से उचित टूल उपयोग के साथ पुनः प्रयास करने के लिए कहा गया है।",
+		"noAssistantMessages": "मॉडल ने कोई प्रतिक्रिया सामग्री प्रदान नहीं की। यह API या मॉडल के आउटपुट में समस्या का संकेत दे सकता है।",
+		"noAssistantMessagesDetails": "भाषा मॉडल ने बिना किसी टेक्स्ट या टूल कॉल के खाली प्रतिक्रिया लौटाई। यह API समस्याओं, दर सीमित करने, या मॉडल-विशिष्ट समस्याओं के कारण हो सकता है। मॉडल को स्वचालित रूप से पुनः प्रयास करने के लिए कहा गया है।"
+	},
+	"errorDetails": {
+		"link": "विवरण",
+		"title": "त्रुटि विवरण",
+		"copyToClipboard": "क्लिपबोर्ड पर कॉपी करें",
+		"copied": "कॉपी किया गया!",
+		"diagnostics": "विस्तृत त्रुटि जानकारी प्राप्त करें",
+		"proxyProvider": "ऐसा लगता है कि आप एक प्रॉक्सी-आधारित प्रदाता का उपयोग कर रहे हैं। इसके लॉग की जांच करना सुनिश्चित करें और सुनिश्चित करें कि यह Roo के अनुरोधों को नहीं फिर से लिख रहा है।"
+	},
 	"powershell": {
 		"issues": "ऐसा लगता है कि आपको Windows PowerShell के साथ समस्याएँ हो रही हैं, कृपया इसे देखें"
 	},
@@ -250,6 +287,7 @@
 		"tooltipManage": "स्वतः-अनुमोदन सेटिंग्स प्रबंधित करें",
 		"tooltipStatus": "स्वतः-अनुमोदन इनके लिए सक्षम है: {{toggles}}",
 		"title": "स्वतः-अनुमोदन",
+		"toggle": "स्वतः-अनुमोदन टॉगल करें",
 		"all": "सभी",
 		"none": "कोई नहीं",
 		"description": "अनुमति मांगे बिना इन क्रियाओं को चलाएं। इसे केवल उन क्रियाओं के लिए सक्षम करें जिन पर आपको पूरा भरोसा है।",
@@ -257,67 +295,74 @@
 		"toggleAriaLabel": "स्वतः-अनुमोदन टॉगल करें",
 		"disabledAriaLabel": "स्वतः-अनुमोदन अक्षम है - पहले विकल्प चुनें",
 		"triggerLabelOff": "स्वतः-अनुमोदन बंद",
+		"triggerLabelOffShort": "बंद",
 		"triggerLabel_zero": "0 स्वतः-अनुमोदन",
 		"triggerLabel_one": "1 स्वतः-अनुमोदित",
 		"triggerLabel_other": "{{count}} स्वतः-अनुमोदित",
-		"triggerLabelAll": "YOLO"
+		"triggerLabelAll": "BRRR"
 	},
 	"reasoning": {
 		"thinking": "विचार कर रहा है",
 		"seconds": "{{count}} सेकंड"
 	},
-	"contextCondense": {
-		"title": "संदर्भ संक्षिप्त किया गया",
-		"condensing": "संदर्भ संघनित कर रहा है...",
-		"errorHeader": "संदर्भ संघनित करने में विफल",
-		"tokens": "टोकन"
+	"contextManagement": {
+		"tokens": "टोकन",
+		"condensation": {
+			"title": "संदर्भ संक्षिप्त किया गया",
+			"inProgress": "संदर्भ संघनित कर रहा है...",
+			"errorHeader": "संदर्भ संघनित करने में विफल"
+		},
+		"truncation": {
+			"title": "संदर्भ छोटा किया गया",
+			"inProgress": "संदर्भ छोटा कर रहा है...",
+			"messagesRemoved": "{{count}} संदेश हटाया गया",
+			"messagesRemoved_other": "{{count}} संदेश हटाए गए",
+			"description": "संदर्भ विंडो सीमा के भीतर रहने के लिए बातचीत से पुराने संदेश हटा दिए गए। संघनन की तुलना में यह एक तेज़ लेकिन कम संदर्भ-संरक्षित दृष्टिकोण है।"
+		}
+	},
+	"skill": {
+		"wantsToLoad": "Roo एक कौशल लोड करना चाहता है",
+		"didLoad": "Roo ने एक कौशल लोड किया"
 	},
 	"followUpSuggest": {
 		"copyToInput": "इनपुट में कॉपी करें (या Shift + क्लिक)",
-		"autoSelectCountdown": "{{count}}s में स्वचालित रूप से चयन हो रहा है",
-		"countdownDisplay": "{{count}}सेकंड"
+		"timerPrefix": "ऑटो-अनुमोदन सक्षम है। {{seconds}}s में चयन किया जा रहा है…"
 	},
 	"announcement": {
-		"title": "🎉 Roo Code {{version}} रिलीज़ हुआ",
-		"description": "<bold>Roo Code Cloud</bold> का परिचय: Roo की शक्ति को IDE से आगे ले जाना",
-		"feature1": "<bold>कहीं से भी कार्य प्रगति ट्रैक करें (निःशुल्क):</bold> लंबे समय तक चलने वाले कार्यों के लिए रीयल-टाइम अपडेट प्राप्त करें बिना अपने IDE में फंसे",
-		"feature2": "<bold>Roo एक्सटेंशन को दूर से नियंत्रित करें (Pro):</bold> चैट-आधारित ब्राउज़र इंटरफ़ेस से कार्य शुरू करें, रोकें और बातचीत करें।",
-		"learnMore": "नियंत्रण लेने के लिए तैयार हैं? <learnMoreLink>यहां</learnMoreLink> और जानें।",
-		"visitCloudButton": "Roo Code Cloud पर जाएं",
-		"socialLinks": "<xLink>X</xLink>, <discordLink>Discord</discordLink>, या <redditLink>r/RooCode</redditLink> पर हमसे जुड़ें"
-	},
-	"browser": {
-		"rooWantsToUse": "Roo ब्राउज़र का उपयोग करना चाहता है:",
-		"consoleLogs": "कंसोल लॉग",
-		"noNewLogs": "(कोई नया लॉग नहीं)",
-		"screenshot": "ब्राउज़र स्क्रीनशॉट",
-		"cursor": "कर्सर",
-		"navigation": {
-			"step": "चरण {{current}} / {{total}}",
-			"previous": "पिछला",
-			"next": "अगला"
+		"title": "Roo Code {{version}} रिलीज़ हुआ",
+		"support": "कृपया <githubLink>GitHub</githubLink> पर हमें स्टार देकर Roo Code का समर्थन करें।",
+		"finalRelease": {
+			"title": "Roo Code की आखिरी रिलीज़",
+			"intro": "यह Roo Code की आखिरी रिलीज़ है। <announcementLink>जैसा कि हमने कुछ हफ्ते पहले घोषणा की थी</announcementLink>, हमने अपना ध्यान <roomoteLink>Roomote</roomoteLink> पर केंद्रित करने का निर्णय लिया है, जो हमारा क्लाउड एजेंट प्लेटफ़ॉर्म है और जिसे हम सॉफ़्टवेयर डेवलपमेंट का भविष्य मानते हैं। पिछले लगभग एक साल में आपके समर्थन के लिए बहुत धन्यवाद।",
+			"continuity": "यह एक्सटेंशन अनिश्चित समय तक काम करता रहना चाहिए, लेकिन इसे बग फ़िक्स, नई सुविधाएँ या मॉडल अपडेट नहीं मिलेंगे।",
+			"alternatives": "यदि आप कोई एक्सटेंशन उपयोग करना चाहते हैं, तो हम <zooCodeLink>ZooCode</zooCodeLink> (समुदाय द्वारा बनाया गया Roo Code fork) और <clineLink>Cline</clineLink> (जहाँ से Roo Code मूल रूप से शुरू हुआ था) देखने की सलाह देते हैं।",
+			"signoff": "हैप्पी कोडिंग!"
 		},
-		"sessionStarted": "ब्राउज़र सत्र शुरू हुआ",
-		"actions": {
-			"title": "ब्राउज़र क्रिया: ",
-			"launch": "{{url}} पर ब्राउज़र लॉन्च करें",
-			"click": "क्लिक करें ({{coordinate}})",
-			"type": "टाइप करें \"{{text}}\"",
-			"scrollDown": "नीचे स्क्रॉल करें",
-			"scrollUp": "ऊपर स्क्रॉल करें",
-			"close": "ब्राउज़र बंद करें"
+		"release": {
+			"heading": "नया क्या है:",
+			"gpt55": "OpenAI Codex के माध्यम से GPT-5.5: OpenAI Codex provider में GPT-5.5 सपोर्ट जोड़ा गया, ताकि आप नवीनतम मॉडल का उपयोग सीधे Roo Code से कर सकें।",
+			"claudeOpus47": "Vertex AI पर Claude Opus 4.7: Anthropic के नवीनतम flagship reasoning मॉडल के लिए Vertex AI provider में Claude Opus 4.7 जोड़ा गया।",
+			"checkpointNav": "पिछले Checkpoint की Navigation: चैट में controls जोड़े गए ताकि आप पिछले checkpoints पर वापस जा सकें, पूर्ण i18n सपोर्ट के साथ।"
+		},
+		"cloudAgents": {
+			"heading": "क्लाउड में नया:",
+			"specialized": "<bold>Explainer</bold>, <bold>Planner</bold>, और <bold>Coder</bold> की शुरुआत - तीन विशेष क्लाउड एजेंट आपके वर्कफ़्लो को बेहतर बनाने के लिए।",
+			"description": "एजेंट क्लाउड में एक साथ काम करते हैं और web या Slack के माध्यम से ट्रिगर किए जा सकते हैं।",
+			"tryButton": "क्लाउड एजेंट आज़माएं"
 		}
+	},
+	"costs": {
+		"totalWithSubtasks": "कुल लागत (उप-कार्यों सहित): ${{cost}}",
+		"total": "कुल लागत: ${{cost}}",
+		"includesSubtasks": "उप-कार्यों की लागत शामिल है"
 	},
 	"codeblock": {
 		"tooltips": {
 			"expand": "कोड ब्लॉक का विस्तार करें",
 			"collapse": "कोड ब्लॉक को संकुचित करें",
-			"enable_wrap": "वर्ड रैप सक्षम करें",
-			"disable_wrap": "वर्ड रैप अक्षम करें",
 			"copy_code": "कोड कॉपी करें"
 		}
 	},
-	"systemPromptWarning": "चेतावनी: कस्टम सिस्टम प्रॉम्प्ट ओवरराइड सक्रिय है। यह कार्यक्षमता को गंभीर रूप से बाधित कर सकता है और अनियमित व्यवहार का कारण बन सकता है.",
 	"profileViolationWarning": "वर्तमान प्रोफ़ाइल आपके संगठन की सेटिंग्स के साथ संगत नहीं है",
 	"shellIntegration": {
 		"title": "कमांड निष्पादन चेतावनी",
@@ -337,8 +382,8 @@
 		}
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Roo कोडबेस में <code>{{query}}</code> खोजना चाहता है:",
-		"wantsToSearchWithPath": "Roo <code>{{path}}</code> में कोडबेस में <code>{{query}}</code> खोजना चाहता है:",
+		"wantsToSearch": "Roo कोडबेस में <code>{{query}}</code> खोजना चाहता है",
+		"wantsToSearchWithPath": "Roo <code>{{path}}</code> में कोडबेस में <code>{{query}}</code> खोजना चाहता है",
 		"didSearch_one": "1 परिणाम मिला",
 		"didSearch_other": "{{count}} परिणाम मिले",
 		"resultTooltip": "समानता स्कोर: {{score}} (फ़ाइल खोलने के लिए क्लिक करें)"
@@ -351,20 +396,32 @@
 			"title": "सभी अस्वीकार करें"
 		}
 	},
+	"list-batch": {
+		"approve": {
+			"title": "सभी स्वीकृत करें"
+		},
+		"deny": {
+			"title": "सभी अस्वीकार करें"
+		}
+	},
+	"edit-batch": {
+		"approve": {
+			"title": "सभी सहेजें"
+		},
+		"deny": {
+			"title": "सभी अस्वीकार करें"
+		}
+	},
 	"indexingStatus": {
 		"ready": "इंडेक्स तैयार",
 		"indexing": "इंडेक्सिंग {{percentage}}%",
 		"indexed": "इंडेक्स किया गया",
 		"error": "इंडेक्स त्रुटि",
-		"status": "इंडेक्स स्थिति"
+		"status": "इंडेक्स स्थिति",
+		"stopping": "इंडेक्सिंग रोक रहा है..."
 	},
 	"versionIndicator": {
 		"ariaLabel": "संस्करण {{version}} - रिलीज़ नोट्स देखने के लिए क्लिक करें"
-	},
-	"rooCloudCTA": {
-		"title": "Roo Code Cloud विकसित हो रहा है!",
-		"description": "क्लाउड में रिमोट एजेंट चलाएं, कहीं से भी अपने कार्यों तक पहुंचें, दूसरों के साथ सहयोग करें, और बहुत कुछ।",
-		"joinWaitlist": "नवीनतम अपडेट प्राप्त करने के लिए साइन अप करें।"
 	},
 	"editMessage": {
 		"placeholder": "अपना संदेश संपादित करें..."
@@ -399,23 +456,36 @@
 		"url": "सामग्री लाने के लिए URL पेस्ट करें"
 	},
 	"queuedMessages": {
-		"title": "कतार में संदेश:",
+		"title": "कतार में संदेश",
 		"clickToEdit": "संदेश संपादित करने के लिए क्लिक करें"
 	},
 	"slashCommand": {
-		"wantsToRun": "Roo एक स्लैश कमांड चलाना चाहता है:",
-		"didRun": "Roo ने एक स्लैश कमांड चलाया:"
+		"wantsToRun": "Roo एक स्लैश कमांड चलाना चाहता है",
+		"didRun": "Roo ने एक स्लैश कमांड चलाया"
 	},
-	"ask": {
-		"autoApprovedRequestLimitReached": {
-			"title": "स्वतः-अनुमोदित अनुरोध सीमा तक पहुंच गया",
-			"description": "रू ने {{count}} एपीआई अनुरोध (नों) की स्वतः-अनुमोदित सीमा तक पहुंच गया है। क्या आप गिनती रीसेट करना और कार्य के साथ आगे बढ़ना चाहेंगे?",
-			"button": "रीसेट करें और जारी रखें"
-		},
-		"autoApprovedCostLimitReached": {
-			"title": "स्वतः-स्वीकृत लागत सीमा तक पहुंच गया",
-			"description": "रू ने ${{count}} की स्वतः-अनुमोदित लागत सीमा तक पहुंच गया है। क्या आप लागत को रीसेट करना और कार्य के साथ आगे बढ़ना चाहेंगे?",
-			"button": "रीसेट करें और जारी रखें"
-		}
+	"todo": {
+		"partial": "{{total}} में से {{completed}} टू-डू हो गए",
+		"complete": "{{total}} टू-डू हो गए",
+		"updated": "टू-डू सूची अपडेट की गई",
+		"completed": "पूरा हुआ",
+		"started": "शुरू हुआ"
+	},
+	"tooManyTools": {
+		"title": "बहुत सारे उपकरण सक्षम हैं",
+		"toolsPart_one": "{{count}} उपकरण",
+		"toolsPart_other": "{{count}} उपकरण",
+		"serversPart_one": "{{count}} MCP सर्वर",
+		"serversPart_other": "{{count}} MCP सर्वर",
+		"messageTemplate": "आपके पास {{servers}} के माध्यम से {{tools}} सक्षम हैं। इतनी अधिक संख्या मॉडल को भ्रमित कर सकती है और त्रुटियों का कारण बन सकती है। इसे {{threshold}} से नीचे रखने का प्रयास करें।",
+		"openMcpSettings": "MCP सेटिंग्स खोलें"
+	},
+	"readCommandOutput": {
+		"title": "Roo read command output"
+	},
+	"retiredProvider": {
+		"title": "प्रदाता अब समर्थित नहीं है",
+		"message": "This provider is no longer supported. Please select a different provider in your API profile settings.",
+		"openSettings": "सेटिंग्स खोलें",
+		"rooMessage": "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
 	}
 }

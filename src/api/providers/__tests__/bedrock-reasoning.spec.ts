@@ -182,7 +182,7 @@ describe("AwsBedrockHandler - Extended Thinking", () => {
 			)
 		})
 
-		it("should include topP when thinking is disabled", async () => {
+		it("should not include topP when thinking is disabled (global removal)", async () => {
 			handler = new AwsBedrockHandler({
 				apiProvider: "bedrock",
 				apiModelId: "anthropic.claude-3-7-sonnet-20250219-v1:0",
@@ -216,13 +216,16 @@ describe("AwsBedrockHandler - Extended Thinking", () => {
 				chunks.push(chunk)
 			}
 
-			// Verify that topP IS present when thinking is disabled
+			// Verify that topP is NOT present for any model (removed globally)
 			expect(mockSend).toHaveBeenCalledTimes(1)
 			expect(capturedPayload).toBeDefined()
-			expect(capturedPayload.inferenceConfig).toHaveProperty("topP", 0.1)
+			expect(capturedPayload.inferenceConfig).not.toHaveProperty("topP")
 
-			// Verify that additionalModelRequestFields is not present or empty
-			expect(capturedPayload.additionalModelRequestFields).toBeUndefined()
+			// Verify that additionalModelRequestFields contains fine-grained-tool-streaming for Claude models
+			expect(capturedPayload.additionalModelRequestFields).toBeDefined()
+			expect(capturedPayload.additionalModelRequestFields.anthropic_beta).toContain(
+				"fine-grained-tool-streaming-2025-05-14",
+			)
 		})
 
 		it("should enable reasoning when enableReasoningEffort is true in settings", async () => {

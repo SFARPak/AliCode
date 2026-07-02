@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "체크포인트 복원을 시도하는 중 시간 초과되었습니다.",
 		"checkpoint_failed": "체크포인트 복원에 실패했습니다.",
 		"git_not_installed": "체크포인트 기능을 사용하려면 Git이 필요합니다. 체크포인트를 활성화하려면 Git을 설치하세요.",
+		"checkpoint_no_first": "비교할 첫 번째 체크포인트가 없습니다.",
+		"checkpoint_no_previous": "비교할 이전 체크포인트가 없습니다.",
+		"checkpoint_no_changes": "변경된 내용이 없습니다.",
+		"checkpoint_diff_with_next": "다음 체크포인트와 비교한 변경 사항",
+		"checkpoint_diff_since_first": "첫 번째 체크포인트 이후의 변경 사항",
+		"checkpoint_diff_to_current": "현재 작업 공간으로의 변경 사항",
 		"nested_git_repos_warning": "{{path}}에서 중첩된 git 저장소가 감지되어 체크포인트가 비활성화되었습니다. 체크포인트를 사용하려면 이 중첩된 git 저장소를 제거하거나 이동해주세요.",
 		"no_workspace": "먼저 프로젝트 폴더를 열어주세요",
 		"update_support_prompt": "지원 프롬프트 업데이트에 실패했습니다",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "컨텍스트를 압축할 메시지가 충분하지 않습니다",
 		"condensed_recently": "컨텍스트가 최근 압축되었습니다; 이 시도를 건너뜁니다",
 		"condense_handler_invalid": "컨텍스트 압축을 위한 API 핸들러가 유효하지 않습니다",
-		"condense_context_grew": "압축 중 컨텍스트 크기가 증가했습니다; 이 시도를 건너뜁니다",
+		"condense_api_failed": "압축 API 호출 실패: {{message}}",
 		"url_timeout": "웹사이트 로딩이 너무 오래 걸렸습니다(타임아웃). 느린 연결, 무거운 웹사이트 또는 일시적으로 사용할 수 없는 상태일 수 있습니다. 나중에 다시 시도하거나 URL이 올바른지 확인해 주세요.",
 		"url_not_found": "웹사이트 주소를 찾을 수 없습니다. URL이 올바른지 확인하고 다시 시도해 주세요.",
 		"no_internet": "인터넷 연결이 없습니다. 네트워크 연결을 확인하고 다시 시도해 주세요.",
@@ -85,8 +91,7 @@
 			"errorOutput": "오류 출력: {{output}}",
 			"processExitedWithError": "Claude Code 프로세스가 코드 {{exitCode}}로 종료되었습니다. 오류 출력: {{output}}",
 			"stoppedWithReason": "Claude Code가 다음 이유로 중지되었습니다: {{reason}}",
-			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan.",
-			"notFound": "Claude Code executable '{{claudePath}}' not found.\n\nPlease install Claude Code CLI:\n1. Visit {{installationUrl}} to download Claude Code\n2. Follow the installation instructions for your operating system\n3. Ensure the 'claude' command is available in your PATH\n4. Alternatively, configure a custom path in Roo settings under 'Claude Code Path'\n\nOriginal error: {{originalError}}"
+			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "메시지를 삭제할 활성 작업이 없습니다",
@@ -100,28 +105,39 @@
 		"gemini": {
 			"generate_stream": "Gemini 생성 컨텍스트 스트림 오류: {{error}}",
 			"generate_complete_prompt": "Gemini 완료 오류: {{error}}",
-			"sources": "출처:"
-		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API 인증에 실패했습니다. API 키가 유효하고 만료되지 않았는지 확인하세요.",
-			"accessForbidden": "Cerebras API 액세스가 금지되었습니다. API 키가 요청된 모델이나 기능에 액세스할 수 없을 수 있습니다.",
-			"rateLimitExceeded": "Cerebras API 속도 제한을 초과했습니다. 다른 요청을 하기 전에 기다리세요.",
-			"serverError": "Cerebras API 서버 오류 ({{status}}). 나중에 다시 시도하세요.",
-			"genericError": "Cerebras API 오류 ({{status}}): {{message}}",
-			"noResponseBody": "Cerebras API 오류: 응답 본문 없음",
-			"completionError": "Cerebras 완료 오류: {{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Roo 제공업체는 클라우드 인증이 필요합니다. Roo Code Cloud에 로그인하세요."
+			"sources": "출처:",
+			"thinking_complete_no_output": "(생각 완료, 출력 없음)",
+			"thinking_complete_truncated": "(생각 완료, 토큰 제한으로 출력 잘림)",
+			"thinking_complete_safety": "(생각 완료, 안전 설정으로 출력 차단됨)",
+			"thinking_complete_recitation": "(생각 완료, 암송 확인으로 출력 차단됨)"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "API 키에 유효하지 않은 문자가 포함되어 있습니다."
+			"invalidKeyInvalidChars": "API 키에 유효하지 않은 문자가 포함되어 있습니다.",
+			"apiRequestFailed": "API 요청 실패 ({{status}})"
 		},
 		"manual_url_empty": "유효한 콜백 URL을 입력하세요",
 		"manual_url_no_query": "유효하지 않은 콜백 URL: 쿼리 매개변수 누락",
 		"manual_url_missing_params": "유효하지 않은 콜백 URL: 필요한 매개변수 누락 (code와 state)",
 		"manual_url_auth_failed": "수동 URL 인증 실패",
-		"manual_url_auth_error": "인증 실패"
+		"manual_url_auth_error": "인증 실패",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "선택된 터미널 내용이 없습니다",
@@ -161,6 +177,11 @@
 		"incomplete": "작업 #{{taskNumber}} (미완료)",
 		"no_messages": "작업 #{{taskNumber}} (메시지 없음)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "사용자에 의해 응답이 중단됨",
+		"responseInterruptedByApiError": "API 오류로 인해 응답이 중단됨",
+		"streamTerminatedByProvider": "제공자가 요청을 종료함"
+	},
 	"storage": {
 		"prompt_custom_path": "대화 내역을 위한 사용자 지정 저장 경로를 입력하세요. 기본 위치를 사용하려면 비워두세요",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -172,15 +193,7 @@
 		"task_placeholder": "여기에 작업을 입력하세요"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Groq API 키",
-			"getGroqApiKey": "Groq API 키 받기",
-			"claudeCode": {
-				"pathLabel": "Claude Code 경로",
-				"description": "Claude Code CLI의 선택적 경로입니다. 설정되지 않은 경우 기본값은 'claude'입니다.",
-				"placeholder": "기본값: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -199,26 +212,6 @@
 			"global": "글로벌"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "모드가 성공적으로 제거되었지만 {{rulesFolderPath}}의 규칙 폴더를 삭제하지 못했습니다. 수동으로 삭제해야 할 수도 있습니다."
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "조직에서 Roo Code Cloud 인증이 필요합니다. 계속하려면 로그인하세요.",
-			"organization_mismatch": "조직의 Roo Code Cloud 계정으로 인증해야 합니다.",
-			"manual_url_empty": "유효한 콜백 URL을 입력하세요",
-			"manual_url_no_query": "유효하지 않은 콜백 URL: 쿼리 매개변수 누락",
-			"manual_url_missing_params": "유효하지 않은 콜백 URL: 필요한 매개변수 누락 (code와 state)",
-			"manual_url_auth_failed": "수동 URL 인증 실패",
-			"manual_url_auth_error": "인증 실패",
-			"verification_failed": "조직 인증을 확인할 수 없습니다."
-		},
-		"info": {
-			"organization_requires_auth": "조직에서 인증이 필요합니다."
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "사용자 정의 모드 삭제",
@@ -234,6 +227,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

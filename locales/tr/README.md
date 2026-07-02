@@ -1,14 +1,7 @@
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/visual-studio-marketplace/v/RooVeterinaryInc.roo-cline.svg?label=VS%20Code&color=%23007ACC&style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code"></a>
-  <a href="https://x.com/roo_code"><img src="https://img.shields.io/badge/roo_code-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
-  <a href="https://youtube.com/@roocodeyt?feature=shared"><img src="https://img.shields.io/badge/YouTube-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube"></a>
-  <a href="https://discord.gg/roocode"><img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Join Discord"></a>
-  <a href="https://www.reddit.com/r/RooCode/"><img src="https://img.shields.io/badge/Join%20r%2FRooCode-FF4500?style=flat&logo=reddit&logoColor=white" alt="Join r/RooCode"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
 </p>
-<p align="center">
-  <em>Hızlı yardım alın → <a href="https://discord.gg/roocode">Discord'a Katılın</a> • Asenkron mu tercih edersiniz? → <a href="https://www.reddit.com/r/RooCode/">r/RooCode'a Katılın</a></em>
-</p>
-
 # Roo Code
 
 > AI destekli dev ekibin, doğrudan editörünün içinde
@@ -58,100 +51,13 @@ Roo Code, sizin çalışma şeklinize uyum sağlar, tam tersi değil:
 - Sor Modu: hızlı cevaplar, açıklamalar ve belgeler
 - Hata Ayıklama Modu: sorunları izleyin, günlükler ekleyin, kök nedenleri izole edin
 - Özel Modlar: ekibiniz veya iş akışınız için özel modlar oluşturun
-- Roomote Control: Roomote Control, yerel VS Code örneğinde çalışan işleri uzaktan kontrol etmeni sağlar.
 
-Daha fazla: [Modları kullanma](https://docs.roocode.com/basic-usage/using-modes) • [Özel modlar](https://docs.roocode.com/advanced-usage/custom-modes) • [Roomote Control](https://docs.roocode.com/roo-code-cloud/roomote-control)
-
-## Eğitim ve Özellik Videoları
-
-<div align="center">
-
-|                                                                                                                                                                         |                                                                                                                                                                               |                                                                                                                                                                              |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <a href="https://www.youtube.com/watch?v=Mcq3r1EPZ-4"><img src="https://img.youtube.com/vi/Mcq3r1EPZ-4/maxresdefault.jpg" width="100%"></a><br><b>Roo Code Kurulumu</b> | <a href="https://www.youtube.com/watch?v=eEJErgZBqLE"><img src="https://img.youtube.com/vi/eEJErgZBqLE/maxresdefault.jpg" width="100%"></a><br><b>Profilleri Yapılandırma</b> | <a href="https://www.youtube.com/watch?v=r1bpod1VWhg"><img src="https://img.youtube.com/vi/r1bpod1VWhg/maxresdefault.jpg" width="100%"></a><br><b>Kod Tabanı İndeksleme</b>  |
-|    <a href="https://www.youtube.com/watch?v=qgqceCuhlRA"><img src="https://img.youtube.com/vi/qgqceCuhlRA/maxresdefault.jpg" width="100%"></a><br><b>Özel Modlar</b>    |    <a href="https://www.youtube.com/watch?v=Ho30nyY332E"><img src="https://img.youtube.com/vi/Ho30nyY332E/maxresdefault.jpg" width="100%"></a><br><b>Kontrol Noktaları</b>    | <a href="https://www.youtube.com/watch?v=6h5vB9PpoPk"><img src="https://img.youtube.com/vi/6h5vB9PpoPk/maxresdefault.jpg" width="100%"></a><br><b>Yapılacaklar Listeleri</b> |
-
-</div>
-<p align="center">
-<a href="https://docs.roocode.com/tutorial-videos">Daha fazla hızlı eğitim ve özellik videosu...</a>
-</p>
+Daha fazla: [Modları kullanma](https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes) • [Özel modlar](https://roocodeinc.github.io/Roo-Code/advanced-usage/custom-modes)
 
 ## Kaynaklar
 
-- **[Dokümantasyon](https://docs.roocode.com):** Roo Code'u yükleme, yapılandırma ve ustalaşma konusundaki resmi kılavuz.
-- **[YouTube Kanalı](https://youtube.com/@roocodeyt?feature=shared):** Eğitimleri izleyin ve özellikleri çalışırken görün.
-- **[Discord Sunucusu](https://discord.gg/roocode):** Gerçek zamanlı yardım ve tartışma için topluluğa katılın.
-- **[Reddit Topluluğu](https://www.reddit.com/r/RooCode):** Deneyimlerinizi paylaşın ve başkalarının ne inşa ettiğini görün.
+- **[Dokümantasyon](https://roocodeinc.github.io/Roo-Code/):** Roo Code'u yükleme, yapılandırma ve ustalaşma konusundaki resmi kılavuz.
 - **[GitHub Sorunları](https://github.com/RooCodeInc/Roo-Code/issues):** Hataları bildirin ve gelişimi takip edin.
-- **[Özellik İstekleri](https://github.com/RooCodeInc/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop):** Bir fikriniz mi var? Geliştiricilerle paylaşın.
-
----
-
-## Yerel Kurulum ve Geliştirme
-
-1. **Depoyu klonlayın**:
-
-```sh
-git clone https://github.com/RooCodeInc/Roo-Code.git
-```
-
-2. **Bağımlılıkları yükleyin**:
-
-```sh
-pnpm install
-```
-
-3. **Uzantıyı çalıştırın**:
-
-Roo Code uzantısını çalıştırmanın birkaç yolu vardır:
-
-### Geliştirme Modu (F5)
-
-Aktif geliştirme için VSCode'un yerleşik hata ayıklama özelliğini kullanın:
-
-VSCode'da `F5` tuşuna basın (veya **Çalıştır** → **Hata Ayıklamayı Başlat**'a gidin). Bu, Roo Code uzantısının çalıştığı yeni bir VSCode penceresi açacaktır.
-
-- Web görünümündeki değişiklikler anında görünecektir.
-- Çekirdek uzantıdaki değişiklikler de otomatik olarak sıcak yeniden yüklenecektir.
-
-### Otomatik VSIX Kurulumu
-
-Uzantıyı bir VSIX paketi olarak derlemek ve doğrudan VSCode'a yüklemek için:
-
-```sh
-pnpm install:vsix [-y] [--editor=<command>]
-```
-
-Bu komut şunları yapacaktır:
-
-- Hangi düzenleyici komutunun kullanılacağını sorar (code/cursor/code-insiders) - varsayılan 'code'
-- Uzantının mevcut herhangi bir sürümünü kaldırır.
-- En son VSIX paketini oluşturur.
-- Yeni oluşturulan VSIX'i yükler.
-- Değişikliklerin etkili olması için VS Code'u yeniden başlatmanızı ister.
-
-Seçenekler:
-
-- `-y`: Tüm onay istemlerini atlayın ve varsayılanları kullanın
-- `--editor=<command>`: Düzenleyici komutunu belirtin (ör. `--editor=cursor` veya `--editor=code-insiders`)
-
-### Manuel VSIX Kurulumu
-
-VSIX paketini manuel olarak yüklemeyi tercih ederseniz:
-
-1.  İlk olarak, VSIX paketini oluşturun:
-    ```sh
-    pnpm vsix
-    ```
-2.  `bin/` dizininde bir `.vsix` dosyası oluşturulur (ör. `bin/roo-cline-<version>.vsix`).
-3.  VSCode CLI kullanarak manuel olarak yükleyin:
-    ```sh
-    code --install-extension bin/roo-cline-<version>.vsix
-    ```
-
----
-
-Sürüm oluşturma ve yayınlama için [changesets](https://github.com/changesets/changesets) kullanıyoruz. Sürüm notları için `CHANGELOG.md` dosyamıza göz atın.
 
 ---
 
@@ -161,26 +67,6 @@ Sürüm oluşturma ve yayınlama için [changesets](https://github.com/changeset
 
 ---
 
-## Katkıda Bulunma
-
-Topluluk katkılarını çok seviyoruz! [CONTRIBUTING.md](CONTRIBUTING.md) dosyamızı okuyarak başlayın.
-
----
-
-## Katkıda Bulunanlar
-
-Roo Code'u daha iyi hale getirmemize yardımcı olan tüm katkıda bulunanlarımıza teşekkür ederiz!
-
-<!-- START CONTRIBUTORS SECTION - AUTO-GENERATED, DO NOT EDIT MANUALLY -->
-
-[![Contributors](https://contrib.rocks/image?repo=RooCodeInc/roo-code&max=120&columns=12&cacheBust=0000000000)](https://github.com/RooCodeInc/roo-code/graphs/contributors)
-
-<!-- END CONTRIBUTORS SECTION -->
-
 ## Lisans
 
 [Apache 2.0 © 2025 Roo Code, Inc.](../../LICENSE)
-
----
-
-**Roo Code'un keyfini çıkar!** Onu kısa tasmalı tut ya da otonom dolaşsın; ne inşa edeceğini görmek için sabırsızlanıyoruz. Soruların veya özellik fikirlerin varsa [Reddit topluluğumuza](https://www.reddit.com/r/RooCode/) ya da [Discord](https://discord.gg/roocode)'a uğra. İyi kodlamalar!

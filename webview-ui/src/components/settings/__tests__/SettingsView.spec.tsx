@@ -1,4 +1,6 @@
-import { render, screen, fireEvent } from "@/utils/test-utils"
+// pnpm --filter @roo-code/vscode-webview test src/components/settings/__tests__/SettingsView.spec.tsx
+
+import { render, screen, fireEvent, within } from "@/utils/test-utils"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import { vscode } from "@/utils/vscode"
@@ -74,7 +76,9 @@ vi.mock("../../../components/common/Tab", () => ({
 	...vi.importActual("../../../components/common/Tab"),
 	Tab: ({ children }: any) => <div data-testid="tab-container">{children}</div>,
 	TabHeader: ({ children }: any) => <div data-testid="tab-header">{children}</div>,
-	TabContent: ({ children }: any) => <div data-testid="tab-content">{children}</div>,
+	TabContent: ({ children, "data-testid": dataTestId }: any) => (
+		<div data-testid={dataTestId || "tab-content"}>{children}</div>
+	),
 	TabList: ({ children, value, onValueChange, "data-testid": dataTestId }: any) => {
 		// Store onValueChange in a global variable so TabTrigger can access it
 		;(window as any).__onValueChange = onValueChange
@@ -112,6 +116,31 @@ vi.mock("../../../components/common/Tab", () => ({
 
 vi.mock("@/components/ui", () => ({
 	...vi.importActual("@/components/ui"),
+	ToggleSwitch: ({ checked, onChange, "aria-label": ariaLabel, "data-testid": dataTestId }: any) => (
+		<button role="switch" aria-checked={checked} aria-label={ariaLabel} data-testid={dataTestId} onClick={onChange}>
+			Toggle
+		</button>
+	),
+	Checkbox: ({ checked, onCheckedChange, id, className, ...props }: any) => (
+		<input
+			type="checkbox"
+			checked={checked}
+			onChange={(e) => onCheckedChange?.(e.target.checked)}
+			id={id}
+			className={className}
+			{...props}
+		/>
+	),
+	Textarea: ({ value, onChange, placeholder, id, className, ...props }: any) => (
+		<textarea
+			value={value}
+			onChange={onChange}
+			placeholder={placeholder}
+			id={id}
+			className={className}
+			{...props}
+		/>
+	),
 	Popover: ({ children }: any) => <div data-testid="popover">{children}</div>,
 	PopoverTrigger: ({ children }: any) => <div data-testid="popover-trigger">{children}</div>,
 	PopoverContent: ({ children }: any) => <div data-testid="popover-content">{children}</div>,
@@ -130,8 +159,8 @@ vi.mock("@/components/ui", () => ({
 	Slider: ({ value, onValueChange, "data-testid": dataTestId }: any) => (
 		<input
 			type="range"
-			value={value[0]}
-			onChange={(e) => onValueChange([parseFloat(e.target.value)])}
+			value={value?.[0] ?? 0}
+			onChange={(e) => onValueChange?.([parseFloat(e.target.value)])}
 			data-testid={dataTestId}
 		/>
 	),
@@ -203,6 +232,36 @@ vi.mock("@/components/ui", () => ({
 	CollapsibleContent: ({ children, className }: any) => (
 		<div className={`collapsible-content-mock ${className || ""}`}>{children}</div>
 	),
+	Dialog: ({ children, ...props }: any) => (
+		<div data-testid="dialog" {...props}>
+			{children}
+		</div>
+	),
+	DialogContent: ({ children, ...props }: any) => (
+		<div data-testid="dialog-content" {...props}>
+			{children}
+		</div>
+	),
+	DialogHeader: ({ children, ...props }: any) => (
+		<div data-testid="dialog-header" {...props}>
+			{children}
+		</div>
+	),
+	DialogTitle: ({ children, ...props }: any) => (
+		<div data-testid="dialog-title" {...props}>
+			{children}
+		</div>
+	),
+	DialogDescription: ({ children, ...props }: any) => (
+		<div data-testid="dialog-description" {...props}>
+			{children}
+		</div>
+	),
+	DialogFooter: ({ children, ...props }: any) => (
+		<div data-testid="dialog-footer" {...props}>
+			{children}
+		</div>
+	),
 }))
 
 // Mock window.postMessage to trigger state hydration
@@ -256,7 +315,10 @@ const renderSettingsView = () => {
 		)
 	}
 
-	return { onDone, activateTab }
+	// Helper to get elements within the settings content (not the indexing container)
+	const getSettingsContent = () => screen.getByTestId("settings-content")
+
+	return { onDone, activateTab, getSettingsContent }
 }
 
 describe("SettingsView - Sound Settings", () => {
@@ -266,40 +328,43 @@ describe("SettingsView - Sound Settings", () => {
 
 	it("initializes with tts disabled by default", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
-		const ttsCheckbox = screen.getByTestId("tts-enabled-checkbox")
+		const content = getSettingsContent()
+		const ttsCheckbox = within(content).getByTestId("tts-enabled-checkbox")
 		expect(ttsCheckbox).not.toBeChecked()
 
 		// Speed slider should not be visible when tts is disabled
-		expect(screen.queryByTestId("tts-speed-slider")).not.toBeInTheDocument()
+		expect(within(content).queryByTestId("tts-speed-slider")).not.toBeInTheDocument()
 	})
 
 	it("initializes with sound disabled by default", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
-		const soundCheckbox = screen.getByTestId("sound-enabled-checkbox")
+		const content = getSettingsContent()
+		const soundCheckbox = within(content).getByTestId("sound-enabled-checkbox")
 		expect(soundCheckbox).not.toBeChecked()
 
 		// Volume slider should not be visible when sound is disabled
-		expect(screen.queryByTestId("sound-volume-slider")).not.toBeInTheDocument()
+		expect(within(content).queryByTestId("sound-volume-slider")).not.toBeInTheDocument()
 	})
 
 	it("toggles tts setting and sends message to VSCode", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
-		const ttsCheckbox = screen.getByTestId("tts-enabled-checkbox")
+		const content = getSettingsContent()
+		const ttsCheckbox = within(content).getByTestId("tts-enabled-checkbox")
 
 		// Enable tts
 		fireEvent.click(ttsCheckbox)
@@ -311,20 +376,23 @@ describe("SettingsView - Sound Settings", () => {
 
 		expect(vscode.postMessage).toHaveBeenCalledWith(
 			expect.objectContaining({
-				type: "ttsEnabled",
-				bool: true,
+				type: "updateSettings",
+				updatedSettings: expect.objectContaining({
+					ttsEnabled: true,
+				}),
 			}),
 		)
 	})
 
 	it("toggles sound setting and sends message to VSCode", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
-		const soundCheckbox = screen.getByTestId("sound-enabled-checkbox")
+		const content = getSettingsContent()
+		const soundCheckbox = within(content).getByTestId("sound-enabled-checkbox")
 
 		// Enable sound
 		fireEvent.click(soundCheckbox)
@@ -336,59 +404,64 @@ describe("SettingsView - Sound Settings", () => {
 
 		expect(vscode.postMessage).toHaveBeenCalledWith(
 			expect.objectContaining({
-				type: "soundEnabled",
-				bool: true,
+				type: "updateSettings",
+				updatedSettings: expect.objectContaining({
+					soundEnabled: true,
+				}),
 			}),
 		)
 	})
 
 	it("shows tts slider when sound is enabled", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
+		const content = getSettingsContent()
 		// Enable tts
-		const ttsCheckbox = screen.getByTestId("tts-enabled-checkbox")
+		const ttsCheckbox = within(content).getByTestId("tts-enabled-checkbox")
 		fireEvent.click(ttsCheckbox)
 
 		// Speed slider should be visible
-		const speedSlider = screen.getByTestId("tts-speed-slider")
+		const speedSlider = within(content).getByTestId("tts-speed-slider")
 		expect(speedSlider).toBeInTheDocument()
 		expect(speedSlider).toHaveValue("1")
 	})
 
 	it("shows volume slider when sound is enabled", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
+		const content = getSettingsContent()
 		// Enable sound
-		const soundCheckbox = screen.getByTestId("sound-enabled-checkbox")
+		const soundCheckbox = within(content).getByTestId("sound-enabled-checkbox")
 		fireEvent.click(soundCheckbox)
 
 		// Volume slider should be visible
-		const volumeSlider = screen.getByTestId("sound-volume-slider")
+		const volumeSlider = within(content).getByTestId("sound-volume-slider")
 		expect(volumeSlider).toBeInTheDocument()
 		expect(volumeSlider).toHaveValue("0.5")
 	})
 
 	it("updates speed and sends message to VSCode when slider changes", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
+		const content = getSettingsContent()
 		// Enable tts
-		const ttsCheckbox = screen.getByTestId("tts-enabled-checkbox")
+		const ttsCheckbox = within(content).getByTestId("tts-enabled-checkbox")
 		fireEvent.click(ttsCheckbox)
 
 		// Change speed
-		const speedSlider = screen.getByTestId("tts-speed-slider")
+		const speedSlider = within(content).getByTestId("tts-speed-slider")
 		fireEvent.change(speedSlider, { target: { value: "0.75" } })
 
 		// Click Save to save settings
@@ -396,36 +469,45 @@ describe("SettingsView - Sound Settings", () => {
 		fireEvent.click(saveButton)
 
 		// Verify message sent to VSCode
-		expect(vscode.postMessage).toHaveBeenCalledWith({
-			type: "ttsSpeed",
-			value: 0.75,
-		})
+		expect(vscode.postMessage).toHaveBeenCalledWith(
+			expect.objectContaining({
+				type: "updateSettings",
+				updatedSettings: expect.objectContaining({
+					ttsSpeed: 0.75,
+				}),
+			}),
+		)
 	})
 
 	it("updates volume and sends message to VSCode when slider changes", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the notifications tab
 		activateTab("notifications")
 
+		const content = getSettingsContent()
 		// Enable sound
-		const soundCheckbox = screen.getByTestId("sound-enabled-checkbox")
+		const soundCheckbox = within(content).getByTestId("sound-enabled-checkbox")
 		fireEvent.click(soundCheckbox)
 
 		// Change volume
-		const volumeSlider = screen.getByTestId("sound-volume-slider")
+		const volumeSlider = within(content).getByTestId("sound-volume-slider")
 		fireEvent.change(volumeSlider, { target: { value: "0.75" } })
 
-		// Click Save to save settings - use getAllByTestId to handle multiple elements
-		const saveButtons = screen.getAllByTestId("save-button")
-		fireEvent.click(saveButtons[0])
+		// Click Save to save settings
+		const saveButton = screen.getByTestId("save-button")
+		fireEvent.click(saveButton)
 
 		// Verify message sent to VSCode
-		expect(vscode.postMessage).toHaveBeenCalledWith({
-			type: "soundVolume",
-			value: 0.75,
-		})
+		expect(vscode.postMessage).toHaveBeenCalledWith(
+			expect.objectContaining({
+				type: "updateSettings",
+				updatedSettings: expect.objectContaining({
+					soundVolume: 0.75,
+				}),
+			}),
+		)
 	})
 })
 
@@ -448,75 +530,82 @@ describe("SettingsView - Allowed Commands", () => {
 
 	it("shows allowed commands section when alwaysAllowExecute is enabled", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the autoApprove tab
 		activateTab("autoApprove")
 
+		const content = getSettingsContent()
 		// Enable always allow execute
-		const executeCheckbox = screen.getByTestId("always-allow-execute-toggle")
+		const executeCheckbox = within(content).getByTestId("always-allow-execute-toggle")
 		fireEvent.click(executeCheckbox)
 		// Verify allowed commands section appears
-		expect(screen.getByTestId("allowed-commands-heading")).toBeInTheDocument()
-		expect(screen.getByTestId("command-input")).toBeInTheDocument()
+		expect(within(content).getByTestId("allowed-commands-heading")).toBeInTheDocument()
+		expect(within(content).getByTestId("command-input")).toBeInTheDocument()
 	})
 
 	it("adds new command to the list", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the autoApprove tab
 		activateTab("autoApprove")
 
+		const content = getSettingsContent()
 		// Enable always allow execute
-		const executeCheckbox = screen.getByTestId("always-allow-execute-toggle")
+		const executeCheckbox = within(content).getByTestId("always-allow-execute-toggle")
 		fireEvent.click(executeCheckbox)
 
 		// Add a new command
-		const input = screen.getByTestId("command-input")
+		const input = within(content).getByTestId("command-input")
 		fireEvent.change(input, { target: { value: "npm test" } })
 
-		const addButton = screen.getByTestId("add-command-button")
+		const addButton = within(content).getByTestId("add-command-button")
 		fireEvent.click(addButton)
 
 		// Verify command was added
-		expect(screen.getByText("npm test")).toBeInTheDocument()
+		expect(within(content).getByText("npm test")).toBeInTheDocument()
 
 		// Verify VSCode message was sent
 		expect(vscode.postMessage).toHaveBeenCalledWith({
-			type: "allowedCommands",
-			commands: ["npm test"],
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: ["npm test"],
+			},
 		})
 	})
 
 	it("removes command from the list", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the autoApprove tab
 		activateTab("autoApprove")
 
+		const content = getSettingsContent()
 		// Enable always allow execute
-		const executeCheckbox = screen.getByTestId("always-allow-execute-toggle")
+		const executeCheckbox = within(content).getByTestId("always-allow-execute-toggle")
 		fireEvent.click(executeCheckbox)
 
 		// Add a command
-		const input = screen.getByTestId("command-input")
+		const input = within(content).getByTestId("command-input")
 		fireEvent.change(input, { target: { value: "npm test" } })
-		const addButton = screen.getByTestId("add-command-button")
+		const addButton = within(content).getByTestId("add-command-button")
 		fireEvent.click(addButton)
 
 		// Remove the command
-		const removeButton = screen.getByTestId("remove-command-0")
+		const removeButton = within(content).getByTestId("remove-command-0")
 		fireEvent.click(removeButton)
 
 		// Verify command was removed
-		expect(screen.queryByText("npm test")).not.toBeInTheDocument()
+		expect(within(content).queryByText("npm test")).not.toBeInTheDocument()
 
 		// Verify VSCode message was sent
 		expect(vscode.postMessage).toHaveBeenLastCalledWith({
-			type: "allowedCommands",
-			commands: [],
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: [],
+			},
 		})
 	})
 
@@ -538,13 +627,14 @@ describe("SettingsView - Allowed Commands", () => {
 
 		it("shows unsaved changes dialog when clicking Done with unsaved changes", () => {
 			// Render once and get the activateTab helper
-			const { activateTab } = renderSettingsView()
+			const { activateTab, getSettingsContent } = renderSettingsView()
 
 			// Activate the notifications tab
 			activateTab("notifications")
 
+			const content = getSettingsContent()
 			// Make a change to create unsaved changes
-			const soundCheckbox = screen.getByTestId("sound-enabled-checkbox")
+			const soundCheckbox = within(content).getByTestId("sound-enabled-checkbox")
 			fireEvent.click(soundCheckbox)
 
 			// Click the Done button
@@ -553,23 +643,6 @@ describe("SettingsView - Allowed Commands", () => {
 
 			// Check that unsaved changes dialog is shown
 			expect(screen.getByText("settings:unsavedChangesDialog.title")).toBeInTheDocument()
-		})
-
-		it("renders with targetSection prop", () => {
-			// Render with a specific target section
-			render(
-				<ExtensionStateContextProvider>
-					<QueryClientProvider client={new QueryClient()}>
-						<SettingsView onDone={vi.fn()} targetSection="browser" />
-					</QueryClientProvider>
-				</ExtensionStateContextProvider>,
-			)
-
-			// Hydrate initial state
-			mockPostMessage({})
-
-			// Verify browser-related content is visible and API config is not
-			expect(screen.queryByTestId("api-config-management")).not.toBeInTheDocument()
 		})
 	})
 })
@@ -581,18 +654,19 @@ describe("SettingsView - Duplicate Commands", () => {
 
 	it("prevents duplicate commands", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the autoApprove tab
 		activateTab("autoApprove")
 
+		const content = getSettingsContent()
 		// Enable always allow execute
-		const executeCheckbox = screen.getByTestId("always-allow-execute-toggle")
+		const executeCheckbox = within(content).getByTestId("always-allow-execute-toggle")
 		fireEvent.click(executeCheckbox)
 
 		// Add a command twice
-		const input = screen.getByTestId("command-input")
-		const addButton = screen.getByTestId("add-command-button")
+		const input = within(content).getByTestId("command-input")
+		const addButton = within(content).getByTestId("add-command-button")
 
 		// First addition
 		fireEvent.change(input, { target: { value: "npm test" } })
@@ -602,37 +676,40 @@ describe("SettingsView - Duplicate Commands", () => {
 		fireEvent.change(input, { target: { value: "npm test" } })
 		fireEvent.click(addButton)
 
-		// Verify command appears only once
-		const commands = screen.getAllByText("npm test")
+		// Verify command appears only once in active tab
+		const commands = within(content).getAllByText("npm test")
 		expect(commands).toHaveLength(1)
 	})
 
 	it("saves allowed commands when clicking Save", () => {
 		// Render once and get the activateTab helper
-		const { activateTab } = renderSettingsView()
+		const { activateTab, getSettingsContent } = renderSettingsView()
 
 		// Activate the autoApprove tab
 		activateTab("autoApprove")
 
+		const content = getSettingsContent()
 		// Enable always allow execute
-		const executeCheckbox = screen.getByTestId("always-allow-execute-toggle")
+		const executeCheckbox = within(content).getByTestId("always-allow-execute-toggle")
 		fireEvent.click(executeCheckbox)
 
 		// Add a command
-		const input = screen.getByTestId("command-input")
+		const input = within(content).getByTestId("command-input")
 		fireEvent.change(input, { target: { value: "npm test" } })
-		const addButton = screen.getByTestId("add-command-button")
+		const addButton = within(content).getByTestId("add-command-button")
 		fireEvent.click(addButton)
 
-		// Click Save - use getAllByTestId to handle multiple elements
-		const saveButtons = screen.getAllByTestId("save-button")
-		fireEvent.click(saveButtons[0])
+		// Click Save
+		const saveButton = screen.getByTestId("save-button")
+		fireEvent.click(saveButton)
 
 		// Verify VSCode messages were sent
 		expect(vscode.postMessage).toHaveBeenCalledWith(
 			expect.objectContaining({
-				type: "allowedCommands",
-				commands: ["npm test"],
+				type: "updateSettings",
+				updatedSettings: expect.objectContaining({
+					allowedCommands: ["npm test"],
+				}),
 			}),
 		)
 	})

@@ -60,6 +60,10 @@ export class VercelAiGatewayHandler extends RouterProvider implements SingleComp
 				: undefined,
 			max_completion_tokens: info.maxTokens,
 			stream: true,
+			stream_options: { include_usage: true },
+			tools: this.convertToolsForOpenAI(metadata?.tools),
+			tool_choice: metadata?.tool_choice,
+			parallel_tool_calls: metadata?.parallelToolCalls ?? true,
 		}
 
 		const completion = await this.client.chat.completions.create(body)
@@ -70,6 +74,19 @@ export class VercelAiGatewayHandler extends RouterProvider implements SingleComp
 				yield {
 					type: "text",
 					text: delta.content,
+				}
+			}
+
+			// Emit raw tool call chunks - NativeToolCallParser handles state management
+			if (delta?.tool_calls) {
+				for (const toolCall of delta.tool_calls) {
+					yield {
+						type: "tool_call_partial",
+						index: toolCall.index,
+						id: toolCall.id,
+						name: toolCall.function?.name,
+						arguments: toolCall.function?.arguments,
+					}
 				}
 			}
 

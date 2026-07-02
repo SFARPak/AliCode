@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "Kontrol noktasını geri yüklemeye çalışırken zaman aşımına uğradı.",
 		"checkpoint_failed": "Kontrol noktası geri yüklenemedi.",
 		"git_not_installed": "Kontrol noktaları özelliği için Git gereklidir. Kontrol noktalarını etkinleştirmek için lütfen Git'i yükleyin.",
+		"checkpoint_no_first": "Karşılaştırılacak ilk kontrol noktası yok.",
+		"checkpoint_no_previous": "Karşılaştırılacak önceki kontrol noktası yok.",
+		"checkpoint_no_changes": "Değişiklik bulunamadı.",
+		"checkpoint_diff_with_next": "Sonraki kontrol noktasıyla karşılaştırılan değişiklikler",
+		"checkpoint_diff_since_first": "İlk kontrol noktasından bu yana yapılan değişiklikler",
+		"checkpoint_diff_to_current": "Mevcut çalışma alanındaki değişiklikler",
 		"nested_git_repos_warning": "{{path}} konumunda iç içe git deposu tespit edildiği için kontrol noktaları devre dışı bırakıldı. Kontrol noktalarını kullanmak için lütfen bu iç içe git deposunu kaldırın veya taşıyın.",
 		"no_workspace": "Lütfen önce bir proje klasörü açın",
 		"update_support_prompt": "Destek istemi güncellenemedi",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "Bağlamı sıkıştırmak için yeterli mesaj yok",
 		"condensed_recently": "Bağlam yakın zamanda sıkıştırıldı; bu deneme atlanıyor",
 		"condense_handler_invalid": "Bağlamı sıkıştırmak için API işleyicisi geçersiz",
-		"condense_context_grew": "Sıkıştırma sırasında bağlam boyutu arttı; bu deneme atlanıyor",
+		"condense_api_failed": "Sıkıştırma API çağrısı başarısız oldu: {{message}}",
 		"url_timeout": "Web sitesi yüklenmesi çok uzun sürdü (zaman aşımı). Bu yavaş bağlantı, ağır web sitesi veya geçici olarak kullanılamama nedeniyle olabilir. Daha sonra tekrar deneyebilir veya URL'nin doğru olup olmadığını kontrol edebilirsin.",
 		"url_not_found": "Web sitesi adresi bulunamadı. URL'nin doğru olup olmadığını kontrol et ve tekrar dene.",
 		"no_internet": "İnternet bağlantısı yok. Ağ bağlantını kontrol et ve tekrar dene.",
@@ -85,8 +91,7 @@
 			"errorOutput": "Hata çıktısı: {{output}}",
 			"processExitedWithError": "Claude Code işlemi {{exitCode}} koduyla çıktı. Hata çıktısı: {{output}}",
 			"stoppedWithReason": "Claude Code şu nedenle durdu: {{reason}}",
-			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan.",
-			"notFound": "Claude Code executable '{{claudePath}}' not found.\n\nPlease install Claude Code CLI:\n1. Visit {{installationUrl}} to download Claude Code\n2. Follow the installation instructions for your operating system\n3. Ensure the 'claude' command is available in your PATH\n4. Alternatively, configure a custom path in Roo settings under 'Claude Code Path'\n\nOriginal error: {{originalError}}"
+			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "Mesaj silinecek aktif görev yok",
@@ -100,28 +105,39 @@
 		"gemini": {
 			"generate_stream": "Gemini oluşturma bağlam akışı hatası: {{error}}",
 			"generate_complete_prompt": "Gemini tamamlama hatası: {{error}}",
-			"sources": "Kaynaklar:"
-		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API kimlik doğrulama başarısız oldu. API anahtarınızın geçerli olduğunu ve süresi dolmadığını kontrol edin.",
-			"accessForbidden": "Cerebras API erişimi yasak. API anahtarınız istenen modele veya özelliğe erişimi olmayabilir.",
-			"rateLimitExceeded": "Cerebras API hız sınırı aşıldı. Başka bir istek yapmadan önce bekleyin.",
-			"serverError": "Cerebras API sunucu hatası ({{status}}). Lütfen daha sonra tekrar deneyin.",
-			"genericError": "Cerebras API Hatası ({{status}}): {{message}}",
-			"noResponseBody": "Cerebras API Hatası: Yanıt gövdesi yok",
-			"completionError": "Cerebras tamamlama hatası: {{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Roo sağlayıcısı bulut kimlik doğrulaması gerektirir. Lütfen Roo Code Cloud'a giriş yapın."
+			"sources": "Kaynaklar:",
+			"thinking_complete_no_output": "(Düşünme tamamlandı, ancak çıktı oluşturulmadı.)",
+			"thinking_complete_truncated": "(Düşünme tamamlandı, ancak çıktı jeton sınırı nedeniyle kesildi.)",
+			"thinking_complete_safety": "(Düşünme tamamlandı, ancak çıktı güvenlik ayarları nedeniyle engellendi.)",
+			"thinking_complete_recitation": "(Düşünme tamamlandı, ancak çıktı okuma kontrolü nedeniyle engellendi.)"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "API anahtarı geçersiz karakterler içeriyor."
+			"invalidKeyInvalidChars": "API anahtarı geçersiz karakterler içeriyor.",
+			"apiRequestFailed": "API isteği başarısız oldu ({{status}})"
 		},
 		"manual_url_empty": "Lütfen geçerli bir callback URL'si girin",
 		"manual_url_no_query": "Geçersiz callback URL'si: sorgu parametreleri eksik",
 		"manual_url_missing_params": "Geçersiz callback URL'si: gerekli parametreler eksik (code ve state)",
 		"manual_url_auth_failed": "Manuel URL kimlik doğrulama başarısız",
-		"manual_url_auth_error": "Kimlik doğrulama başarısız"
+		"manual_url_auth_error": "Kimlik doğrulama başarısız",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "Seçili terminal içeriği yok",
@@ -161,6 +177,11 @@
 		"incomplete": "Görev #{{taskNumber}} (Tamamlanmamış)",
 		"no_messages": "Görev #{{taskNumber}} (Mesaj yok)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "Yanıt kullanıcı tarafından kesildi",
+		"responseInterruptedByApiError": "Yanıt API hatası nedeniyle kesildi",
+		"streamTerminatedByProvider": "Sağlayıcı isteği sonlandırdı"
+	},
 	"storage": {
 		"prompt_custom_path": "Konuşma geçmişi için özel depolama yolunu girin, varsayılan konumu kullanmak için boş bırakın",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -172,15 +193,7 @@
 		"task_placeholder": "Görevini buraya yaz"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Groq API Anahtarı",
-			"getGroqApiKey": "Groq API Anahtarı Al",
-			"claudeCode": {
-				"pathLabel": "Claude Code Yolu",
-				"description": "Claude Code CLI'nizin isteğe bağlı yolu. Ayarlanmazsa varsayılan olarak 'claude' olur.",
-				"placeholder": "Varsayılan: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -199,26 +212,6 @@
 			"global": "küresel"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "Mod başarıyla kaldırıldı, ancak {{rulesFolderPath}} konumundaki kurallar klasörü silinemedi. Manuel olarak silmeniz gerekebilir."
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "Kuruluşunuz Roo Code Cloud kimlik doğrulaması gerektiriyor. Devam etmek için giriş yapın.",
-			"organization_mismatch": "Kuruluşunuzun Roo Code Cloud hesabıyla kimlik doğrulaması yapmalısınız.",
-			"manual_url_empty": "Lütfen geçerli bir callback URL'si girin",
-			"manual_url_no_query": "Geçersiz callback URL'si: sorgu parametreleri eksik",
-			"manual_url_missing_params": "Geçersiz callback URL'si: gerekli parametreler eksik (code ve state)",
-			"manual_url_auth_failed": "Manuel URL kimlik doğrulama başarısız",
-			"manual_url_auth_error": "Kimlik doğrulama başarısız",
-			"verification_failed": "Kuruluş kimlik doğrulaması doğrulanamıyor."
-		},
-		"info": {
-			"organization_requires_auth": "Kuruluşunuz kimlik doğrulaması gerektiriyor."
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "Özel Modu Sil",
@@ -234,6 +227,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

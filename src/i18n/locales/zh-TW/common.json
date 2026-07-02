@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "嘗試恢復檢查點時超時。",
 		"checkpoint_failed": "恢復檢查點失敗。",
 		"git_not_installed": "存檔點功能需要 Git。請安裝 Git 以啟用存檔點。",
+		"checkpoint_no_first": "沒有第一個存檔點可供比較。",
+		"checkpoint_no_previous": "沒有上一個存檔點可供比較。",
+		"checkpoint_no_changes": "未發現任何變更。",
+		"checkpoint_diff_with_next": "與下一個存檔點比較的變更",
+		"checkpoint_diff_since_first": "自第一個存檔點以來的變更",
+		"checkpoint_diff_to_current": "對目前工作區的變更",
 		"nested_git_repos_warning": "存檔點已停用，因為在 {{path}} 偵測到巢狀的 git 儲存庫。要使用存檔點，請移除或重新配置此巢狀的 git 儲存庫。",
 		"no_workspace": "請先開啟專案資料夾",
 		"update_support_prompt": "更新支援訊息失敗",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "沒有足夠的訊息來壓縮上下文",
 		"condensed_recently": "上下文最近已壓縮；跳過此次嘗試",
 		"condense_handler_invalid": "壓縮上下文的 API 處理程式無效",
-		"condense_context_grew": "壓縮過程中上下文大小增加；跳過此次嘗試",
+		"condense_api_failed": "壓縮 API 呼叫失敗：{{message}}",
 		"url_timeout": "網站載入超時。這可能是由於網路連線緩慢、網站負載過重或暫時無法使用。你可以稍後重試或檢查 URL 是否正確。",
 		"url_not_found": "找不到網站位址。請檢查 URL 是否正確並重試。",
 		"no_internet": "無網路連線。請檢查網路連線並重試。",
@@ -84,8 +90,7 @@
 			"errorOutput": "錯誤輸出：{{output}}",
 			"processExitedWithError": "Claude Code 程序退出，退出碼：{{exitCode}}。錯誤輸出：{{output}}",
 			"stoppedWithReason": "Claude Code 停止，原因：{{reason}}",
-			"apiKeyModelPlanMismatch": "API 金鑰和訂閱方案允許不同的模型。請確保所選模型包含在您的方案中。",
-			"notFound": "找不到 Claude Code 可執行檔案 '{{claudePath}}'。\n\n請安裝 Claude Code CLI：\n1. 造訪 {{installationUrl}} 下載 Claude Code\n2. 依照作業系統的安裝說明進行操作\n3. 確保 'claude' 指令在 PATH 中可用\n4. 或者在 Roo 設定中的 'Claude Code 路徑' 下設定自訂路徑\n\n原始錯誤：{{originalError}}"
+			"apiKeyModelPlanMismatch": "API 金鑰和訂閱方案允許不同的模型。請確保所選模型包含在您的方案中。"
 		},
 		"message": {
 			"no_active_task_to_delete": "沒有可刪除訊息的活躍工作",
@@ -99,29 +104,40 @@
 		"gemini": {
 			"generate_stream": "Gemini 產生內容串流錯誤：{{error}}",
 			"generate_complete_prompt": "Gemini 完成錯誤：{{error}}",
-			"sources": "來源："
-		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API 驗證失敗。請檢查您的 API 金鑰是否有效且未過期。",
-			"accessForbidden": "Cerebras API 存取被拒絕。您的 API 金鑰可能無法存取所請求的模型或功能。",
-			"rateLimitExceeded": "Cerebras API 速率限制已超出。請稍候再發出另一個請求。",
-			"serverError": "Cerebras API 伺服器錯誤 ({{status}})。請稍後重試。",
-			"genericError": "Cerebras API 錯誤 ({{status}})：{{message}}",
-			"noResponseBody": "Cerebras API 錯誤：無回應主體",
-			"completionError": "Cerebras 完成錯誤：{{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Roo 提供者需要雲端認證。請登入 Roo Code Cloud。"
+			"sources": "來源：",
+			"thinking_complete_no_output": "（思考完成，但未產生輸出。）",
+			"thinking_complete_truncated": "（思考完成，但由於 Token 限制輸出被截斷。）",
+			"thinking_complete_safety": "（思考完成，但由於安全設定輸出被阻止。）",
+			"thinking_complete_recitation": "（思考完成，但由於引用檢查輸出被阻止。）"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "API 金鑰包含無效字元。"
+			"invalidKeyInvalidChars": "API 金鑰包含無效字元。",
+			"apiRequestFailed": "API 請求失敗 ({{status}})"
 		},
 		"manual_url_empty": "請輸入有效的回呼 URL",
 		"manual_url_no_query": "無效的回呼 URL：缺少查詢參數",
 		"manual_url_missing_params": "無效的回呼 URL：缺少必要參數（code 和 state）",
 		"manual_url_auth_failed": "手動 URL 身份驗證失敗",
 		"manual_url_auth_error": "身份驗證失敗",
-		"mode_import_failed": "匯入模式失敗：{{error}}"
+		"mode_import_failed": "匯入模式失敗：{{error}}",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "沒有選擇終端機內容",
@@ -161,6 +177,11 @@
 		"incomplete": "工作 #{{taskNumber}} (未完成)",
 		"no_messages": "工作 #{{taskNumber}} (無訊息)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "回應被使用者中斷",
+		"responseInterruptedByApiError": "回應被 API 錯誤中斷",
+		"streamTerminatedByProvider": "提供方終止了請求"
+	},
 	"storage": {
 		"prompt_custom_path": "輸入自訂會話歷史儲存路徑，留空以使用預設位置",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -172,15 +193,7 @@
 		"task_placeholder": "在這裡輸入工作"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Groq API 金鑰",
-			"getGroqApiKey": "取得 Groq API 金鑰",
-			"claudeCode": {
-				"pathLabel": "Claude Code 路徑",
-				"description": "Claude Code CLI 的選用路徑。如果未設定，預設為 'claude'。",
-				"placeholder": "預設: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -199,26 +212,6 @@
 			"global": "全域"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "模式已成功移除，但無法刪除位於 {{rulesFolderPath}} 的規則資料夾。您可能需要手動刪除。"
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "您的組織需要 Roo Code Cloud 身份驗證。請登入以繼續。",
-			"organization_mismatch": "您必須使用組織的 Roo Code Cloud 帳戶進行身份驗證。",
-			"manual_url_empty": "請輸入有效的回呼 URL",
-			"manual_url_no_query": "無效的回呼 URL：缺少查詢參數",
-			"manual_url_missing_params": "無效的回呼 URL：缺少必要參數（code 和 state）",
-			"manual_url_auth_failed": "手動 URL 身份驗證失敗",
-			"manual_url_auth_error": "身份驗證失敗",
-			"verification_failed": "無法驗證組織身份驗證。"
-		},
-		"info": {
-			"organization_requires_auth": "您的組織需要身份驗證。"
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "刪除自訂模式",
@@ -234,6 +227,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

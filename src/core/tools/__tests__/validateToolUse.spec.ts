@@ -2,10 +2,10 @@
 
 import type { ModeConfig } from "@roo-code/types"
 
-import { isToolAllowedForMode, modes } from "../../../shared/modes"
+import { modes } from "../../../shared/modes"
 import { TOOL_GROUPS } from "../../../shared/tools"
 
-import { validateToolUse } from "../validateToolUse"
+import { validateToolUse, isToolAllowedForMode } from "../validateToolUse"
 
 const codeMode = modes.find((m) => m.slug === "code")?.slug || "code"
 const architectMode = modes.find((m) => m.slug === "architect")?.slug || "architect"
@@ -30,12 +30,8 @@ describe("mode-validator", () => {
 
 		describe("architect mode", () => {
 			it("allows configured tools", () => {
-				// Architect mode has read, browser, and mcp groups
-				const architectTools = [
-					...TOOL_GROUPS.read.tools,
-					...TOOL_GROUPS.browser.tools,
-					...TOOL_GROUPS.mcp.tools,
-				]
+				// Architect mode has read and mcp groups
+				const architectTools = [...TOOL_GROUPS.read.tools, ...TOOL_GROUPS.mcp.tools]
 				architectTools.forEach((tool) => {
 					expect(isToolAllowedForMode(tool, architectMode, [])).toBe(true)
 				})
@@ -44,8 +40,8 @@ describe("mode-validator", () => {
 
 		describe("ask mode", () => {
 			it("allows configured tools", () => {
-				// Ask mode has read, browser, and mcp groups
-				const askTools = [...TOOL_GROUPS.read.tools, ...TOOL_GROUPS.browser.tools, ...TOOL_GROUPS.mcp.tools]
+				// Ask mode has read and mcp groups
+				const askTools = [...TOOL_GROUPS.read.tools, ...TOOL_GROUPS.mcp.tools]
 				askTools.forEach((tool) => {
 					expect(isToolAllowedForMode(tool, askMode, [])).toBe(true)
 				})
@@ -103,6 +99,42 @@ describe("mode-validator", () => {
 			})
 		})
 
+		describe("dynamic MCP tools", () => {
+			it("allows dynamic MCP tools when mcp group is in mode groups", () => {
+				// Code mode has mcp group, so dynamic MCP tools should be allowed
+				expect(isToolAllowedForMode("mcp_context7_resolve-library-id", codeMode, [])).toBe(true)
+				expect(isToolAllowedForMode("mcp_serverName_toolName", codeMode, [])).toBe(true)
+			})
+
+			it("disallows dynamic MCP tools when mcp group is not in mode groups", () => {
+				const customModes: ModeConfig[] = [
+					{
+						slug: "no-mcp-mode",
+						name: "No MCP Mode",
+						roleDefinition: "Custom role",
+						groups: ["read", "edit"] as const,
+					},
+				]
+				// Custom mode without mcp group should not allow dynamic MCP tools
+				expect(isToolAllowedForMode("mcp_context7_resolve-library-id", "no-mcp-mode", customModes)).toBe(false)
+				expect(isToolAllowedForMode("mcp_serverName_toolName", "no-mcp-mode", customModes)).toBe(false)
+			})
+
+			it("allows dynamic MCP tools in custom mode with mcp group", () => {
+				const customModes: ModeConfig[] = [
+					{
+						slug: "custom-mcp-mode",
+						name: "Custom MCP Mode",
+						roleDefinition: "Custom role",
+						groups: ["read", "mcp"] as const,
+					},
+				]
+				expect(isToolAllowedForMode("mcp_context7_resolve-library-id", "custom-mcp-mode", customModes)).toBe(
+					true,
+				)
+			})
+		})
+
 		describe("tool requirements", () => {
 			it("respects tool requirements when provided", () => {
 				const requirements = { apply_diff: false }
@@ -127,13 +159,30 @@ describe("mode-validator", () => {
 				// Even in code mode which allows all tools, disabled requirement should take precedence
 				expect(isToolAllowedForMode("apply_diff", codeMode, [], requirements)).toBe(false)
 			})
+
+			it("prioritizes requirements over ALWAYS_AVAILABLE_TOOLS", () => {
+				// Tools in ALWAYS_AVAILABLE_TOOLS (switch_mode, new_task, etc.) should still
+				// be blockable via toolRequirements / disabledTools
+				const requirements = { switch_mode: false, new_task: false, attempt_completion: false }
+				expect(isToolAllowedForMode("switch_mode", codeMode, [], requirements)).toBe(false)
+				expect(isToolAllowedForMode("new_task", codeMode, [], requirements)).toBe(false)
+				expect(isToolAllowedForMode("attempt_completion", codeMode, [], requirements)).toBe(false)
+			})
 		})
 	})
 
 	describe("validateToolUse", () => {
-		it("throws error for disallowed tools in architect mode", () => {
+		it("throws error for unknown/invalid tools", () => {
+			// Unknown tools should throw with a specific "Unknown tool" error
 			expect(() => validateToolUse("unknown_tool" as any, "architect", [])).toThrow(
-				'Tool "unknown_tool" is not allowed in architect mode.',
+				'Unknown tool "unknown_tool". This tool does not exist.',
+			)
+		})
+
+		it("throws error for disallowed tools in architect mode", () => {
+			// execute_command is a valid tool but not allowed in architect mode
+			expect(() => validateToolUse("execute_command", "architect", [])).toThrow(
+				'Tool "execute_command" is not allowed in architect mode.',
 			)
 		})
 
@@ -155,6 +204,51 @@ describe("mode-validator", () => {
 
 		it("handles undefined requirements gracefully", () => {
 			expect(() => validateToolUse("apply_diff", codeMode, [], undefined)).not.toThrow()
+		})
+
+		it("blocks tool when disabledTools is converted to toolRequirements", () => {
+			const disabledTools = ["execute_command", "search_files"]
+			const toolRequirements = disabledTools.reduce(
+				(acc: Record<string, boolean>, tool: string) => {
+					acc[tool] = false
+					return acc
+				},
+				{} as Record<string, boolean>,
+			)
+
+			expect(() => validateToolUse("execute_command", codeMode, [], toolRequirements)).toThrow(
+				'Tool "execute_command" is not allowed in code mode.',
+			)
+			expect(() => validateToolUse("search_files", codeMode, [], toolRequirements)).toThrow(
+				'Tool "search_files" is not allowed in code mode.',
+			)
+		})
+
+		it("allows non-disabled tools when disabledTools is converted to toolRequirements", () => {
+			const disabledTools = ["execute_command"]
+			const toolRequirements = disabledTools.reduce(
+				(acc: Record<string, boolean>, tool: string) => {
+					acc[tool] = false
+					return acc
+				},
+				{} as Record<string, boolean>,
+			)
+
+			expect(() => validateToolUse("read_file", codeMode, [], toolRequirements)).not.toThrow()
+			expect(() => validateToolUse("write_to_file", codeMode, [], toolRequirements)).not.toThrow()
+		})
+
+		it("handles empty disabledTools array converted to toolRequirements", () => {
+			const disabledTools: string[] = []
+			const toolRequirements = disabledTools.reduce(
+				(acc: Record<string, boolean>, tool: string) => {
+					acc[tool] = false
+					return acc
+				},
+				{} as Record<string, boolean>,
+			)
+
+			expect(() => validateToolUse("execute_command", codeMode, [], toolRequirements)).not.toThrow()
 		})
 	})
 })

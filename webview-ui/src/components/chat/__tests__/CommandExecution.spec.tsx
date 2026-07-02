@@ -1,3 +1,5 @@
+// pnpm --filter @roo-code/vscode-webview test src/components/chat/__tests__/CommandExecution.spec.tsx
+
 import React from "react"
 import { render, screen, fireEvent } from "@testing-library/react"
 
@@ -19,6 +21,11 @@ vi.mock("../../../utils/vscode", () => ({
 
 vi.mock("../../common/CodeBlock", () => ({
 	default: ({ source }: { source: string }) => <div data-testid="code-block">{source}</div>,
+}))
+
+// Mock TerminalOutput
+vi.mock("../TerminalOutput", () => ({
+	TerminalOutput: ({ content }: { content: string }) => <div data-testid="terminal-output">{content}</div>,
 }))
 
 vi.mock("../CommandPatternSelector", () => ({
@@ -70,6 +77,9 @@ describe("CommandExecution", () => {
 
 		const codeBlocks = screen.getAllByTestId("code-block")
 		expect(codeBlocks[0]).toHaveTextContent("npm install")
+
+		const terminalOutput = screen.getByTestId("terminal-output")
+		expect(terminalOutput).toHaveTextContent("Installing packages...")
 	})
 
 	it("should render with custom icon and title", () => {
@@ -111,8 +121,13 @@ describe("CommandExecution", () => {
 
 		expect(mockExtensionState.setAllowedCommands).toHaveBeenCalledWith(["npm", "git push"])
 		expect(mockExtensionState.setDeniedCommands).toHaveBeenCalledWith(["rm"])
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "allowedCommands", commands: ["npm", "git push"] })
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "deniedCommands", commands: ["rm"] })
+		expect(vscode.postMessage).toHaveBeenCalledWith({
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: ["npm", "git push"],
+				deniedCommands: ["rm"],
+			},
+		})
 	})
 
 	it("should handle deny command change", () => {
@@ -127,8 +142,13 @@ describe("CommandExecution", () => {
 
 		expect(mockExtensionState.setAllowedCommands).toHaveBeenCalledWith(["npm"])
 		expect(mockExtensionState.setDeniedCommands).toHaveBeenCalledWith(["rm", "docker run"])
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "allowedCommands", commands: ["npm"] })
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "deniedCommands", commands: ["rm", "docker run"] })
+		expect(vscode.postMessage).toHaveBeenCalledWith({
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: ["npm"],
+				deniedCommands: ["rm", "docker run"],
+			},
+		})
 	})
 
 	it("should toggle allowed command", () => {
@@ -151,8 +171,13 @@ describe("CommandExecution", () => {
 		// "npm test" is already in allowedCommands, so it should be removed
 		expect(stateWithNpmTest.setAllowedCommands).toHaveBeenCalledWith([])
 		expect(stateWithNpmTest.setDeniedCommands).toHaveBeenCalledWith(["rm"])
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "allowedCommands", commands: [] })
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "deniedCommands", commands: ["rm"] })
+		expect(vscode.postMessage).toHaveBeenCalledWith({
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: [],
+				deniedCommands: ["rm"],
+			},
+		})
 	})
 
 	it("should toggle denied command", () => {
@@ -175,8 +200,13 @@ describe("CommandExecution", () => {
 		// "rm -rf" is already in deniedCommands, so it should be removed
 		expect(stateWithRmRf.setAllowedCommands).toHaveBeenCalledWith(["npm"])
 		expect(stateWithRmRf.setDeniedCommands).toHaveBeenCalledWith([])
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "allowedCommands", commands: ["npm"] })
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "deniedCommands", commands: [] })
+		expect(vscode.postMessage).toHaveBeenCalledWith({
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: ["npm"],
+				deniedCommands: [],
+			},
+		})
 	})
 
 	it("should parse command with Output: separator", () => {
@@ -208,7 +238,9 @@ Suggested patterns: npm, npm install, npm run`
 		// First check that the command was parsed correctly
 		const codeBlocks = screen.getAllByTestId("code-block")
 		expect(codeBlocks[0]).toHaveTextContent("npm install")
-		expect(codeBlocks[1]).toHaveTextContent("Suggested patterns: npm, npm install, npm run")
+
+		const terminalOutput = screen.getByTestId("terminal-output")
+		expect(terminalOutput).toHaveTextContent("Suggested patterns: npm, npm install, npm run")
 
 		const selector = screen.getByTestId("command-pattern-selector")
 		expect(selector).toBeInTheDocument()
@@ -270,8 +302,10 @@ Output here`
 
 		// Output should be visible when shell integration is disabled
 		const codeBlocks = screen.getAllByTestId("code-block")
-		expect(codeBlocks).toHaveLength(2) // Command and output blocks
-		expect(codeBlocks[1]).toHaveTextContent("Output here")
+		expect(codeBlocks).toHaveLength(1) // Only command block
+
+		const terminalOutput = screen.getByTestId("terminal-output")
+		expect(terminalOutput).toHaveTextContent("Output here")
 	})
 
 	it("should handle undefined allowedCommands and deniedCommands", () => {
@@ -311,8 +345,13 @@ Output here`
 		// "rm file.txt" should be removed from denied and added to allowed
 		expect(stateWithRmInDenied.setAllowedCommands).toHaveBeenCalledWith(["npm", "rm file.txt"])
 		expect(stateWithRmInDenied.setDeniedCommands).toHaveBeenCalledWith([])
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "allowedCommands", commands: ["npm", "rm file.txt"] })
-		expect(vscode.postMessage).toHaveBeenCalledWith({ type: "deniedCommands", commands: [] })
+		expect(vscode.postMessage).toHaveBeenCalledWith({
+			type: "updateSettings",
+			updatedSettings: {
+				allowedCommands: ["npm", "rm file.txt"],
+				deniedCommands: [],
+			},
+		})
 	})
 
 	describe("integration with CommandPatternSelector", () => {
@@ -536,9 +575,10 @@ Output:
 			// Should show a command pattern
 			expect(selector.textContent).toMatch(/wc/)
 
-			// The output should still be displayed in the code block
-			expect(codeBlocks.length).toBeGreaterThan(1)
-			expect(codeBlocks[1].textContent).toContain("45 total")
+			// The output should still be displayed
+			const terminalOutput = screen.getByTestId("terminal-output")
+			expect(terminalOutput).toBeInTheDocument()
+			expect(terminalOutput.textContent).toContain("45 total")
 		})
 
 		it("should handle commands with zero output", () => {
@@ -559,10 +599,10 @@ Output:
 			// Should show a command pattern
 			expect(selector.textContent).toMatch(/wc/)
 
-			// The output should still be displayed in the code block
-			const codeBlocks = screen.getAllByTestId("code-block")
-			expect(codeBlocks.length).toBeGreaterThan(1)
-			expect(codeBlocks[1]).toHaveTextContent("0 total")
+			// The output should still be displayed
+			const terminalOutput = screen.getByTestId("terminal-output")
+			expect(terminalOutput).toBeInTheDocument()
+			expect(terminalOutput).toHaveTextContent("0 total")
 		})
 	})
 })

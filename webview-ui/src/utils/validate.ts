@@ -4,14 +4,14 @@ import {
 	type ProviderSettings,
 	type OrganizationAllowList,
 	type ProviderName,
+	type RouterModels,
 	modelIdKeysByProvider,
 	isProviderName,
+	isRetiredProvider,
 	isDynamicProvider,
 	isFauxProvider,
 	isCustomProvider,
 } from "@roo-code/types"
-
-import type { RouterModels } from "@roo/api"
 
 export function validateApiConfiguration(
 	apiConfiguration: ProviderSettings,
@@ -43,23 +43,13 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
-		case "glama":
-			if (!apiConfiguration.glamaApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			break
-		case "unbound":
-			if (!apiConfiguration.unboundApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			break
 		case "requesty":
 			if (!apiConfiguration.requestyApiKey) {
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
-		case "deepinfra":
-			if (!apiConfiguration.deepInfraApiKey) {
+		case "unbound":
+			if (!apiConfiguration.unboundApiKey) {
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
@@ -118,31 +108,8 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 				return i18next.t("settings:validation.modelSelector")
 			}
 			break
-		case "huggingface":
-			if (!apiConfiguration.huggingFaceApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			if (!apiConfiguration.huggingFaceModelId) {
-				return i18next.t("settings:validation.modelId")
-			}
-			break
-		case "cerebras":
-			if (!apiConfiguration.cerebrasApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			break
 		case "fireworks":
 			if (!apiConfiguration.fireworksApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			break
-		case "io-intelligence":
-			if (!apiConfiguration.ioIntelligenceApiKey) {
-				return i18next.t("settings:validation.apiKey")
-			}
-			break
-		case "featherless":
-			if (!apiConfiguration.featherlessApiKey) {
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
@@ -153,6 +120,11 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 			break
 		case "vercel-ai-gateway":
 			if (!apiConfiguration.vercelAiGatewayApiKey) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			break
+		case "baseten":
+			if (!apiConfiguration.basetenApiKey) {
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
@@ -187,7 +159,8 @@ function validateProviderAgainstOrganizationSettings(
 		}
 
 		if (!providerConfig.allowAll) {
-			const modelId = getModelIdForProvider(apiConfiguration, provider)
+			const activeProvider = isRetiredProvider(provider) ? undefined : provider
+			const modelId = activeProvider ? getModelIdForProvider(apiConfiguration, activeProvider) : undefined
 			const allowedModels = providerConfig.models || []
 
 			if (modelId && !allowedModels.includes(modelId)) {
@@ -216,31 +189,26 @@ function getModelIdForProvider(apiConfiguration: ProviderSettings, provider: Pro
 }
 
 /**
- * Validates an Amazon Bedrock ARN format and optionally checks if the region in
+ * Validates an Amazon Bedrock ARN and optionally checks if the region in
  * the ARN matches the provided region.
+ *
+ * Note: This function does not perform strict format validation on the ARN.
+ * Users entering custom ARNs are advanced users who should be trusted to
+ * provide valid ARNs without restriction. See issue #10108.
  *
  * @param arn The ARN string to validate
  * @param region Optional region to check against the ARN's region
  * @returns An object with validation results: { isValid, arnRegion, errorMessage }
  */
 export function validateBedrockArn(arn: string, region?: string) {
-	// Validate ARN format.
-	const arnRegex = /^arn:aws:(?:bedrock|sagemaker):([^:]+):([^:]*):(?:([^/]+)\/([\w.\-:]+)|([^/]+))$/
-	const match = arn.match(arnRegex)
-
-	if (!match) {
-		return {
-			isValid: false,
-			arnRegion: undefined,
-			errorMessage: i18next.t("settings:validation.arn.invalidFormat"),
-		}
-	}
-
-	// Extract region from ARN.
-	const arnRegion = match[1]
+	// Try to extract region from ARN for region mismatch warning.
+	// This is a permissive regex that attempts to find the region component
+	// without enforcing strict ARN format validation.
+	const regionMatch = arn.match(/^arn:[^:]+:[^:]+:([^:]+):/)
+	const arnRegion = regionMatch?.[1]
 
 	// Check if region in ARN matches provided region (if specified).
-	if (region && arnRegion !== region) {
+	if (region && arnRegion && arnRegion !== region) {
 		return {
 			isValid: true,
 			arnRegion,
@@ -248,7 +216,7 @@ export function validateBedrockArn(arn: string, region?: string) {
 		}
 	}
 
-	// ARN is valid and region matches (or no region was provided to check against).
+	// ARN is always considered valid - trust the user to enter valid ARNs.
 	return { isValid: true, arnRegion, errorMessage: undefined }
 }
 
@@ -326,7 +294,7 @@ export function validateApiConfigurationExcludingModelErrors(
 		organizationAllowList,
 	)
 
-	// Inly return organization errors if they're not model-specific.
+	// Only return organization errors if they're not model-specific.
 	if (organizationAllowListError && organizationAllowListError.code === "PROVIDER_NOT_ALLOWED") {
 		return organizationAllowListError.message
 	}

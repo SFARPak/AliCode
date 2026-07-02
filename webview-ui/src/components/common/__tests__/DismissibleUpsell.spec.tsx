@@ -503,6 +503,40 @@ describe("DismissibleUpsell", () => {
 		})
 	})
 
+	it("dismisses on container click when dismissOnClick is true and no onClick is provided", async () => {
+		const onDismiss = vi.fn()
+		const { container } = render(
+			<DismissibleUpsell upsellId="test-upsell" onDismiss={onDismiss} dismissOnClick={true}>
+				<div>Test content</div>
+			</DismissibleUpsell>,
+		)
+
+		// Make component visible
+		makeUpsellVisible()
+
+		// Wait for component to be visible
+		await waitFor(() => {
+			expect(screen.getByText("Test content")).toBeInTheDocument()
+		})
+
+		// Click on the container (not the dismiss button)
+		const containerDiv = screen.getByText("Test content").parentElement as HTMLElement
+		fireEvent.click(containerDiv)
+
+		// onDismiss should be called
+		expect(onDismiss).toHaveBeenCalledTimes(1)
+
+		// Dismiss message should be sent
+		expect(mockPostMessage).toHaveBeenCalledWith({
+			type: "dismissUpsell",
+			upsellId: "test-upsell",
+		})
+
+		// Component should be hidden
+		await waitFor(() => {
+			expect(container.firstChild).toBeNull()
+		})
+	})
 	it("does not dismiss when clicked if dismissOnClick is false", async () => {
 		const onClick = vi.fn()
 		const onDismiss = vi.fn()

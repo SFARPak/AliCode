@@ -1,4 +1,5 @@
 {
+	"back": "Torna a la vista de tasques",
 	"common": {
 		"save": "Desar",
 		"done": "Fet",
@@ -7,6 +8,10 @@
 		"select": "Seleccionar",
 		"add": "Afegir capçalera",
 		"remove": "Eliminar"
+	},
+	"search": {
+		"placeholder": "Cercar configuració...",
+		"noResults": "No s'ha trobat cap configuració"
 	},
 	"header": {
 		"title": "Configuració",
@@ -22,20 +27,72 @@
 	},
 	"sections": {
 		"providers": "Proveïdors",
+		"modes": "Modes",
+		"mcp": "Servidors MCP",
+		"worktrees": "Worktrees",
 		"autoApprove": "Auto-aprovació",
-		"browser": "Accés a l'ordinador",
 		"checkpoints": "Punts de control",
 		"notifications": "Notificacions",
 		"contextManagement": "Context",
 		"terminal": "Terminal",
 		"slashCommands": "Comandes de barra",
 		"prompts": "Indicacions",
+		"ui": "UI",
 		"experimental": "Experimental",
 		"language": "Idioma",
-		"about": "Sobre Roo Code"
+		"about": "Sobre Roo Code",
+		"skills": "Skills"
+	},
+	"about": {
+		"bugReport": {
+			"label": "Has trobat un error?",
+			"link": "Informa'n a GitHub"
+		},
+		"securityIssue": {
+			"label": "Has descobert una vulnerabilitat?",
+			"link": "Segueix el nostre procés de divulgació"
+		},
+		"contact": "GitHub",
+		"manageSettings": "Gestionar Configuració",
+		"debugMode": {
+			"label": "Activa el mode de depuració",
+			"description": "Activa el mode de depuració per mostrar botons addicionals a la capçalera de la tasca que permetin veure l'historial de conversa de l'API i els missatges de la UI com a JSON formatejat en fitxers temporals."
+		}
 	},
 	"slashCommands": {
-		"description": "Gestiona les teves comandes de barra per executar ràpidament fluxos de treball i accions personalitzades. <DocsLink>Aprèn-ne més</DocsLink>"
+		"description": "Gestiona les teves comandes de barra per executar ràpidament fluxos de treball i accions personalitzades. <DocsLink>Aprèn-ne més</DocsLink>",
+		"workspaceCommands": "Comandes de l'espai de treball",
+		"globalCommands": "Comandes globals",
+		"noWorkspaceCommands": "Sense comandes en aquest projecte encara.",
+		"noGlobalCommands": "Sense comandes globals encara.",
+		"addCommand": "Afegir comanda de barra",
+		"editCommand": "Editar comanda",
+		"deleteCommand": "Suprimir comanda",
+		"deleteDialog": {
+			"title": "Suprimir comanda",
+			"description": "Estàs segur que vols suprimir la comanda \"{{name}}\"? Aquesta acció no es pot desfer.",
+			"confirm": "Suprimir",
+			"cancel": "Cancel·lar"
+		},
+		"createDialog": {
+			"title": "Crear una nova comanda de barra",
+			"nameLabel": "Nom",
+			"namePlaceholder": "my-command-name",
+			"nameHint": "Només lletres minúscules, números, guions i subratllats",
+			"sourceLabel": "Ubicació",
+			"create": "Crear",
+			"cancel": "Cancel·lar"
+		},
+		"source": {
+			"global": "Global (disponible en tots els espais de treball)",
+			"project": "Espai de treball"
+		},
+		"validation": {
+			"nameRequired": "El nom és obligatori",
+			"nameTooLong": "El nom ha de tenir 64 caràcters o menys",
+			"nameInvalid": "El nom ha de contenir només lletres, números, guions i subratllats"
+		},
+		"footer": "Utilitza comandes de barra per accedir ràpidament a indicacions i fluxos de treball utilitzats freqüentment."
 	},
 	"prompts": {
 		"description": "Configura les indicacions de suport utilitzades per a accions ràpides com millorar indicacions, explicar codi i solucionar problemes. Aquestes indicacions ajuden Roo a proporcionar millor assistència per a tasques comunes de desenvolupament."
@@ -57,6 +114,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "Clau API",
 		"vercelAiGatewayApiKeyPlaceholder": "Introduïu la vostra clau API de Vercel AI Gateway",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "Regió d'AWS",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "Perfil d'AWS",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "Nom del perfil d'AWS de ~/.aws/credentials (obligatori).",
+		"openRouterProvider": "OpenRouter",
+		"openRouterApiKeyLabel": "Clau de l'API d'OpenRouter",
+		"openRouterApiKeyPlaceholder": "Introduïu la vostra clau de l'API d'OpenRouter",
+		"openRouterProviderRoutingLabel": "Encaminament de proveïdors d'OpenRouter",
+		"openRouterProviderRoutingDescription": "OpenRouter dirigeix les sol·licituds als millors proveïdors disponibles per al vostre model d'embedding. Per defecte, les sol·licituds s'equilibren entre els principals proveïdors per maximitzar el temps de funcionament. No obstant això, podeu triar un proveïdor específic per utilitzar amb aquest model.",
 		"openaiCompatibleProvider": "Compatible amb OpenAI",
 		"openAiKeyLabel": "Clau API OpenAI",
 		"openAiKeyPlaceholder": "Introduïu la vostra clau API OpenAI",
@@ -121,19 +189,29 @@
 			"geminiApiKeyRequired": "Cal una clau d'API de Gemini",
 			"mistralApiKeyRequired": "La clau de l'API de Mistral és requerida",
 			"vercelAiGatewayApiKeyRequired": "Es requereix la clau API de Vercel AI Gateway",
+			"bedrockRegionRequired": "Es requereix la regió d'AWS",
+			"bedrockProfileRequired": "Es requereix el perfil d'AWS",
 			"ollamaBaseUrlRequired": "Cal una URL base d'Ollama",
 			"baseUrlRequired": "Cal una URL base",
-			"modelDimensionMinValue": "La dimensió del model ha de ser superior a 0"
+			"modelDimensionMinValue": "La dimensió del model ha de ser superior a 0",
+			"openRouterApiKeyRequired": "Clau API d'OpenRouter és requerida"
 		},
+		"optional": "opcional",
 		"advancedConfigLabel": "Configuració avançada",
 		"searchMinScoreLabel": "Llindar de puntuació de cerca",
 		"searchMinScoreDescription": "Puntuació mínima de similitud (0.0-1.0) requerida per als resultats de la cerca. Valors més baixos retornen més resultats però poden ser menys rellevants. Valors més alts retornen menys resultats però més rellevants.",
 		"searchMinScoreResetTooltip": "Restablir al valor per defecte (0.4)",
 		"searchMaxResultsLabel": "Màxim de resultats de cerca",
 		"searchMaxResultsDescription": "Nombre màxim de resultats de cerca a retornar quan es consulta l'índex de la base de codi. Els valors més alts proporcionen més context però poden incloure resultats menys rellevants.",
-		"resetToDefault": "Restablir al valor per defecte"
+		"resetToDefault": "Restablir al valor per defecte",
+		"stopIndexingButton": "Aturar indexació",
+		"stoppingButton": "Aturant...",
+		"workspaceToggleLabel": "Activar la indexació per a aquest espai de treball",
+		"workspaceDisabledMessage": "La indexació està configurada però no habilitada per a aquest espai de treball.",
+		"autoEnableDefaultLabel": "Habilitar automàticament la indexació per a nous espais de treball"
 	},
 	"autoApprove": {
+		"toggleShortcut": "Pots configurar una drecera global per a aquesta configuració <SettingsLink>a les preferències del teu IDE</SettingsLink>.",
 		"description": "Permet que Roo realitzi operacions automàticament sense requerir aprovació. Activeu aquesta configuració només si confieu plenament en la IA i enteneu els riscos de seguretat associats.",
 		"enabled": "Auto-aprovació activada",
 		"toggleAriaLabel": "Commuta l'aprovació automàtica",
@@ -158,15 +236,6 @@
 				"label": "Incloure fitxers protegits",
 				"description": "Permetre a Roo crear i editar fitxers protegits (com .rooignore i fitxers de configuració .roo/) sense requerir aprovació."
 			}
-		},
-		"browser": {
-			"label": "Navegador",
-			"description": "Realitzar accions del navegador automàticament sense requerir aprovació. Nota: Només s'aplica quan el model admet l'ús de l'ordinador"
-		},
-		"retry": {
-			"label": "Reintentar",
-			"description": "Tornar a intentar sol·licituds d'API fallides automàticament quan el servidor retorna una resposta d'error",
-			"delayLabel": "Retard abans de tornar a intentar la sol·licitud"
 		},
 		"mcp": {
 			"label": "MCP",
@@ -197,13 +266,8 @@
 			"addButton": "Afegir",
 			"autoDenied": "Les comandes amb el prefix `{{prefix}}` han estat prohibides per l'usuari. No eludeixis aquesta restricció executant una altra comanda."
 		},
-		"updateTodoList": {
-			"label": "Todo",
-			"description": "La llista de tasques es actualitza automàticament sense aprovació"
-		},
 		"apiRequestLimit": {
 			"title": "Màximes Sol·licituds",
-			"description": "Fes aquesta quantitat de sol·licituds API automàticament abans de demanar aprovació per continuar amb la tasca.",
 			"unlimited": "Il·limitat"
 		},
 		"selectOptionsFirst": "Seleccioneu almenys una opció a continuació per activar l'aprovació automàtica",
@@ -220,6 +284,7 @@
 		"configProfile": "Perfil de configuració",
 		"description": "Deseu diferents configuracions d'API per canviar ràpidament entre proveïdors i configuracions.",
 		"apiProvider": "Proveïdor d'API",
+		"apiProviderDocs": "Documentació del proveïdor",
 		"model": "Model",
 		"nameEmpty": "El nom no pot estar buit",
 		"nameExists": "Ja existeix un perfil amb aquest nom",
@@ -236,6 +301,7 @@
 		"searchProviderPlaceholder": "Cerca proveïdors",
 		"noProviderMatchFound": "No s'han trobat proveïdors",
 		"noMatchFound": "No s'han trobat perfils coincidents",
+		"retiredProviderMessage": "This provider is no longer supported. Please select a different provider in your API profile settings.",
 		"vscodeLmDescription": "L'API del model de llenguatge de VS Code us permet executar models proporcionats per altres extensions de VS Code (incloent-hi, però no limitat a, GitHub Copilot). La manera més senzilla de començar és instal·lar les extensions Copilot i Copilot Chat des del VS Code Marketplace.",
 		"awsCustomArnUse": "Introduïu un ARN vàlid d'Amazon Bedrock per al model que voleu utilitzar. Exemples de format:",
 		"awsCustomArnDesc": "Assegureu-vos que la regió a l'ARN coincideix amb la regió d'AWS seleccionada anteriorment.",
@@ -244,16 +310,46 @@
 		"vercelAiGatewayApiKey": "Clau API de Vercel AI Gateway",
 		"getVercelAiGatewayApiKey": "Obtenir clau API de Vercel AI Gateway",
 		"apiKeyStorageNotice": "Les claus API s'emmagatzemen de forma segura a l'Emmagatzematge Secret de VSCode",
-		"glamaApiKey": "Clau API de Glama",
-		"getGlamaApiKey": "Obtenir clau API de Glama",
+		"openAiCodexRateLimits": {
+			"title": "Usage Limits for Codex{{planLabel}}",
+			"loading": "Loading usage limits...",
+			"loadError": "Failed to load usage limits",
+			"retry": "Retry",
+			"usedPercent": "{{percent}}% used",
+			"resetsIn": "Resets in {{time}}",
+			"plan": {
+				"default": "",
+				"withType": " ({{planType}})"
+			},
+			"time": {
+				"now": "Now",
+				"notAvailable": "N/A"
+			},
+			"duration": {
+				"daysHours": "{{days}}d {{hours}}h",
+				"hoursMinutes": "{{hours}}h {{minutes}}m",
+				"minutes": "{{minutes}}m"
+			},
+			"window": {
+				"usage": "Usage",
+				"fiveHour": "5h limit",
+				"oneHour": "1h limit",
+				"daily": "Daily limit",
+				"weekly": "Weekly limit",
+				"days": "{{days}}d limit",
+				"hours": "{{hours}}h limit",
+				"minutes": "{{minutes}}m limit"
+			}
+		},
 		"useCustomBaseUrl": "Utilitzar URL base personalitzada",
 		"useReasoning": "Activar raonament",
 		"useHostHeader": "Utilitzar capçalera Host personalitzada",
-		"useLegacyFormat": "Utilitzar el format d'API OpenAI antic",
 		"customHeaders": "Capçaleres personalitzades",
 		"headerName": "Nom de la capçalera",
 		"headerValue": "Valor de la capçalera",
 		"noCustomHeaders": "No hi ha capçaleres personalitzades definides. Feu clic al botó + per afegir-ne una.",
+		"unboundApiKey": "Clau API de Unbound",
+		"getUnboundApiKey": "Obtenir clau API de Unbound",
 		"requestyApiKey": "Clau API de Requesty",
 		"refreshModels": {
 			"label": "Actualitzar models",
@@ -265,29 +361,24 @@
 		"getRequestyApiKey": "Obtenir clau API de Requesty",
 		"getRequestyBaseUrl": "URL base",
 		"requestyUseCustomBaseUrl": "Utilitza l'URL base personalitzada",
-		"openRouterTransformsText": "Comprimir prompts i cadenes de missatges a la mida del context (<a>Transformacions d'OpenRouter</a>)",
 		"anthropicApiKey": "Clau API d'Anthropic",
 		"getAnthropicApiKey": "Obtenir clau API d'Anthropic",
 		"anthropicUseAuthToken": "Passar la clau API d'Anthropic com a capçalera d'autorització en lloc de X-Api-Key",
 		"anthropic1MContextBetaLabel": "Activa la finestra de context d'1M (Beta)",
-		"anthropic1MContextBetaDescription": "Amplia la finestra de context a 1 milió de tokens per a Claude Sonnet 4",
+		"anthropic1MContextBetaDescription": "Amplia la finestra de context a 1 milió de tokens per a Claude Sonnet 4.x / Claude Opus 4.6",
 		"awsBedrock1MContextBetaLabel": "Activa la finestra de context d'1M (Beta)",
-		"awsBedrock1MContextBetaDescription": "Amplia la finestra de context a 1 milió de tokens per a Claude Sonnet 4",
-		"cerebrasApiKey": "Clau API de Cerebras",
-		"getCerebrasApiKey": "Obtenir clau API de Cerebras",
-		"chutesApiKey": "Clau API de Chutes",
-		"getChutesApiKey": "Obtenir clau API de Chutes",
+		"awsBedrock1MContextBetaDescription": "Amplia la finestra de context a 1 milió de tokens per a Claude Sonnet 4.x / Claude Opus 4.6",
+		"vertex1MContextBetaLabel": "Activa la finestra de context d'1M (Beta)",
+		"vertex1MContextBetaDescription": "Amplia la finestra de context a 1 milió de tokens per a Claude Sonnet 4.x / Claude Opus 4.6",
+		"basetenApiKey": "Clau API de Baseten",
+		"getBasetenApiKey": "Obtenir clau API de Baseten",
+		"poeApiKey": "Clau API de Poe",
+		"getPoeApiKey": "Obtenir clau API de Poe",
+		"poeBaseUrl": "URL base de Poe",
 		"fireworksApiKey": "Clau API de Fireworks",
 		"getFireworksApiKey": "Obtenir clau API de Fireworks",
-		"featherlessApiKey": "Clau API de Featherless",
-		"getFeatherlessApiKey": "Obtenir clau API de Featherless",
-		"ioIntelligenceApiKey": "Clau API d'IO Intelligence",
-		"ioIntelligenceApiKeyPlaceholder": "Introdueix la teva clau d'API de IO Intelligence",
-		"getIoIntelligenceApiKey": "Obtenir clau API d'IO Intelligence",
 		"deepSeekApiKey": "Clau API de DeepSeek",
 		"getDeepSeekApiKey": "Obtenir clau API de DeepSeek",
-		"doubaoApiKey": "Clau API de Doubao",
-		"getDoubaoApiKey": "Obtenir clau API de Doubao",
 		"moonshotApiKey": "Clau API de Moonshot",
 		"getMoonshotApiKey": "Obtenir clau API de Moonshot",
 		"moonshotBaseUrl": "Punt d'entrada de Moonshot",
@@ -295,24 +386,12 @@
 		"getZaiApiKey": "Obtenir clau API de Z AI",
 		"zaiEntrypoint": "Punt d'entrada de Z AI",
 		"zaiEntrypointDescription": "Si us plau, seleccioneu el punt d'entrada de l'API apropiat segons la vostra ubicació. Si sou a la Xina, trieu open.bigmodel.cn. Altrament, trieu api.z.ai.",
+		"minimaxApiKey": "Clau API de MiniMax",
+		"getMiniMaxApiKey": "Obtenir clau API de MiniMax",
+		"minimaxBaseUrl": "Punt d'entrada de MiniMax",
 		"geminiApiKey": "Clau API de Gemini",
-		"getGroqApiKey": "Obtenir clau API de Groq",
-		"groqApiKey": "Clau API de Groq",
 		"getSambaNovaApiKey": "Obtenir clau API de SambaNova",
 		"sambaNovaApiKey": "Clau API de SambaNova",
-		"getHuggingFaceApiKey": "Obtenir clau API de Hugging Face",
-		"huggingFaceApiKey": "Clau API de Hugging Face",
-		"huggingFaceModelId": "ID del model",
-		"huggingFaceLoading": "Carregant...",
-		"huggingFaceModelsCount": "({{count}} models)",
-		"huggingFaceSelectModel": "Selecciona un model...",
-		"huggingFaceSearchModels": "Cerca models...",
-		"huggingFaceNoModelsFound": "No s'han trobat models",
-		"huggingFaceProvider": "Proveïdor",
-		"huggingFaceProviderAuto": "Automàtic",
-		"huggingFaceSelectProvider": "Selecciona un proveïdor...",
-		"huggingFaceSearchProviders": "Cerca proveïdors...",
-		"huggingFaceNoProvidersFound": "No s'han trobat proveïdors",
 		"getGeminiApiKey": "Obtenir clau API de Gemini",
 		"openAiApiKey": "Clau API d'OpenAI",
 		"apiKey": "Clau API",
@@ -335,6 +414,15 @@
 		"awsSessionToken": "Token de sessió d'AWS",
 		"awsRegion": "Regió d'AWS",
 		"awsCrossRegion": "Utilitzar inferència entre regions",
+		"awsGlobalInference": "Utilitzar la inferència global (selecció automàtica de la regió òptima d'AWS)",
+		"awsServiceTier": "Nivell de servei",
+		"awsServiceTierStandard": "Standard",
+		"awsServiceTierStandardDesc": "Rendiment i cost equilibrats",
+		"awsServiceTierFlex": "Flex (50% de descompte)",
+		"awsServiceTierFlexDesc": "Cost menor, latència més alta per a tasques no crítiques",
+		"awsServiceTierPriority": "Priority (75% de sobrecost)",
+		"awsServiceTierPriorityDesc": "Rendiment més ràpid per a aplicacions crítiques",
+		"awsServiceTierNote": "Els nivells de servei afecten als preus i al rendiment. Flex ofereix un 50% de descompte amb latència més alta, Priority ofereix un 25% de millor rendiment amb un 75% de sobrecost.",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Utilitzar punt final VPC personalitzat",
 			"vpcEndpointUrlPlaceholder": "Introduïu l'URL del punt final VPC (opcional)",
@@ -344,17 +432,7 @@
 		"enablePromptCachingTitle": "Habilitar l'emmagatzematge en caché de prompts per millorar el rendiment i reduir els costos per als models compatibles.",
 		"cacheUsageNote": "Nota: Si no veieu l'ús de la caché, proveu de seleccionar un model diferent i després tornar a seleccionar el model desitjat.",
 		"vscodeLmModel": "Model de llenguatge",
-		"vscodeLmWarning": "Nota: Aquesta és una integració molt experimental i el suport del proveïdor variarà. Si rebeu un error sobre un model no compatible, és un problema del proveïdor.",
-		"geminiParameters": {
-			"urlContext": {
-				"title": "Activa el context d'URL",
-				"description": "Permet a Gemini llegir pàgines enllaçades per extreure, comparar i sintetitzar el seu contingut en respostes informades."
-			},
-			"groundingSearch": {
-				"title": "Activa la Fonamentació amb la Cerca de Google",
-				"description": "Connecta Gemini a dades web en temps real per a respostes precises i actualitzades amb citacions verificables."
-			}
-		},
+		"vscodeLmWarning": "Nota: Els models accessibles a través de l’API VS Code Language Model poden estar encapsulats o ajustats pel proveïdor; per tant, el comportament pot diferir de l’ús directe del mateix model des d’un proveïdor o enrutador típic. Per utilitzar un model del desplegable «Language Model», primer canvia a aquest model i després fes clic a «Acceptar» a l’avís de Copilot Chat; en cas contrari pots veure un error com 400 «The requested model is not supported».",
 		"googleCloudSetup": {
 			"title": "Per utilitzar Google Cloud Vertex AI, necessiteu:",
 			"step1": "1. Crear un compte de Google Cloud, habilitar l'API de Vertex AI i habilitar els models Claude necessaris.",
@@ -380,20 +458,10 @@
 			"modelId": "ID del model",
 			"apiKey": "Clau API d'Ollama",
 			"apiKeyHelp": "Clau API opcional per a instàncies d'Ollama autenticades o serveis al núvol. Deixa-ho buit per a instal·lacions locals.",
+			"numCtx": "Mida de la finestra de context (num_ctx)",
+			"numCtxHelp": "Sobreescriu la mida de la finestra de context per defecte del model. Deixeu-ho en blanc per utilitzar la configuració del Modelfile del model. El valor mínim és 128.",
 			"description": "Ollama permet executar models localment al vostre ordinador. Per a instruccions sobre com començar, consulteu la Guia d'inici ràpid.",
 			"warning": "Nota: Roo Code utilitza prompts complexos i funciona millor amb models Claude. Els models menys capaços poden no funcionar com s'espera."
-		},
-		"unboundApiKey": "Clau API d'Unbound",
-		"getUnboundApiKey": "Obtenir clau API d'Unbound",
-		"unboundRefreshModelsSuccess": "Llista de models actualitzada! Ara podeu seleccionar entre els últims models.",
-		"unboundInvalidApiKey": "Clau API no vàlida. Si us plau, comproveu la vostra clau API i torneu-ho a provar.",
-		"humanRelay": {
-			"description": "No es requereix clau API, però l'usuari necessita ajuda per copiar i enganxar informació al xat d'IA web.",
-			"instructions": "Durant l'ús, apareixerà un diàleg i el missatge actual es copiarà automàticament al porta-retalls. Necessiteu enganxar-lo a les versions web d'IA (com ChatGPT o Claude), després copiar la resposta de l'IA de nou al diàleg i fer clic al botó de confirmació."
-		},
-		"roo": {
-			"authenticatedMessage": "Autenticat de forma segura a través del teu compte de Roo Code Cloud.",
-			"connectButton": "Connecta amb Roo Code Cloud"
 		},
 		"openRouter": {
 			"providerRouting": {
@@ -418,7 +486,7 @@
 			},
 			"computerUse": {
 				"label": "Ús de l'ordinador",
-				"description": "Aquest model és capaç d'interactuar amb un navegador? (com Claude 3.7 Sonnet)"
+				"description": "Aquest model és capaç d'interactuar amb un navegador?"
 			},
 			"promptCache": {
 				"label": "Emmagatzematge en caché de prompts",
@@ -450,14 +518,16 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "Límit d'errors i repeticions",
-			"description": "Nombre d'errors consecutius o accions repetides abans de mostrar el diàleg 'En Roo està tenint problemes'",
+			"description": "Nombre d'errors consecutius o accions repetides abans de mostrar el diàleg 'En Roo està tenint problemes'. Estableix a 0 per desactivar aquest mecanisme de seguretat (no s'activarà mai).",
 			"unlimitedDescription": "Reintents il·limitats habilitats (procediment automàtic). El diàleg no apareixerà mai.",
 			"warning": "⚠️ Establir a 0 permet reintents il·limitats que poden consumir un ús significatiu de l'API"
 		},
 		"reasoningEffort": {
 			"label": "Esforç de raonament del model",
+			"none": "Cap",
 			"minimal": "Mínim (el més ràpid)",
 			"high": "Alt",
+			"xhigh": "Molt alt",
 			"medium": "Mitjà",
 			"low": "Baix"
 		},
@@ -475,37 +545,14 @@
 			"placeholder": "Per defecte: claude",
 			"maxTokensLabel": "Tokens màxims de sortida",
 			"maxTokensDescription": "Nombre màxim de tokens de sortida per a les respostes de Claude Code. El valor per defecte és 8000."
-		}
-	},
-	"browser": {
-		"enable": {
-			"label": "Habilitar eina de navegador",
-			"description": "Quan està habilitat, Roo pot utilitzar un navegador per interactuar amb llocs web quan s'utilitzen models que admeten l'ús de l'ordinador. <0>Més informació</0>"
 		},
-		"viewport": {
-			"label": "Mida del viewport",
-			"description": "Seleccioneu la mida del viewport per a interaccions del navegador. Això afecta com es mostren i interactuen els llocs web.",
-			"options": {
-				"largeDesktop": "Escriptori gran (1280x800)",
-				"smallDesktop": "Escriptori petit (900x600)",
-				"tablet": "Tauleta (768x1024)",
-				"mobile": "Mòbil (360x640)"
-			}
-		},
-		"screenshotQuality": {
-			"label": "Qualitat de captures de pantalla",
-			"description": "Ajusteu la qualitat WebP de les captures de pantalla del navegador. Valors més alts proporcionen captures més clares però augmenten l'ús de token."
-		},
-		"remote": {
-			"label": "Utilitzar connexió remota del navegador",
-			"description": "Connectar a un navegador Chrome que s'executa amb depuració remota habilitada (--remote-debugging-port=9222).",
-			"urlPlaceholder": "URL personalitzada (ex. http://localhost:9222)",
-			"testButton": "Provar connexió",
-			"testingButton": "Provant...",
-			"instructions": "Introduïu l'adreça d'amfitrió del protocol DevTools o deixeu-la buida per descobrir automàticament instàncies locals de Chrome. El botó Provar Connexió provarà la URL personalitzada si es proporciona, o descobrirà automàticament si el camp està buit."
-		}
+		"retiredRooProviderMessage": "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
 	},
 	"checkpoints": {
+		"timeout": {
+			"label": "Temps d'espera per inicialitzar el punt de control (segons)",
+			"description": "Temps màxim d'espera per inicialitzar el servei de punts de control. El valor per defecte és 15 segons. Rang: 10-60 segons."
+		},
 		"enable": {
 			"label": "Habilitar punts de control automàtics",
 			"description": "Quan està habilitat, Roo crearà automàticament punts de control durant l'execució de tasques, facilitant la revisió de canvis o la reversió a estats anteriors. <0>Més informació</0>"
@@ -601,6 +648,22 @@
 			"label": "Mida total màxima d'imatges",
 			"mb": "MB",
 			"description": "Límit de mida acumulativa màxima (en MB) per a totes les imatges processades en una sola operació read_file. Quan es llegeixen múltiples imatges, la mida de cada imatge s'afegeix al total. Si incloure una altra imatge excediria aquest límit, serà omesa."
+		},
+		"includeCurrentTime": {
+			"label": "Inclou l'hora actual en el context",
+			"description": "Quan està activat, l'hora actual i la informació del fus horari s'inclouran a la indicació del sistema. Desactiveu-ho si els models deixen de funcionar per problemes amb l'hora."
+		},
+		"includeCurrentCost": {
+			"label": "Inclou el cost actual en el context",
+			"description": "Quan està activat, el cost d'ús actual de l'API s'inclourà a la indicació del sistema. Desactiveu-ho si els models deixen de funcionar per problemes amb el cost."
+		},
+		"maxGitStatusFiles": {
+			"label": "Git status màx. fitxers",
+			"description": "Nombre màxim d'entrades de fitxers a incloure en el context d'estat de git. Establiu a 0 per desactivar. La informació de la branca i els commits sempre es mostren quan és > 0."
+		},
+		"enableSubfolderRules": {
+			"label": "Activa les regles dels subdirectoris",
+			"description": "Descobreix i carrega recursivament fitxers .roo/rules i AGENTS.md des de subdirectoris. Útil per a monorepos amb regles per paquet."
 		}
 	},
 	"terminal": {
@@ -609,56 +672,61 @@
 			"description": "Configuració bàsica del terminal"
 		},
 		"advanced": {
-			"label": "Configuració del terminal: Avançada",
-			"description": "Les següents opcions poden requerir reiniciar el terminal per aplicar la configuració."
+			"label": "Configuració del terminal: Avançat",
+			"description": "Aquests paràmetres només s'apliquen quan 'Utilitza terminal en línia' està desactivat. Només afecten el terminal de VS Code i poden requerir reiniciar l'IDE."
 		},
 		"outputLineLimit": {
-			"label": "Límit de sortida de terminal",
-			"description": "Nombre màxim de línies a incloure a la sortida del terminal en executar comandes. Quan s'excedeix, s'eliminaran línies del mig, estalviant token. <0>Més informació</0>"
+			"label": "Límit de sortida del terminal",
+			"description": "Conserva les primeres i últimes línies i descarta les del mig per mantenir-se sota el límit. Redueix per estalviar tokens; augmenta per donar a Roo més detalls del mig. Roo veu un marcador on s'ha omès el contingut.<0>Aprèn-ne més</0>"
 		},
 		"outputCharacterLimit": {
 			"label": "Límit de caràcters del terminal",
-			"description": "Nombre màxim de caràcters a incloure en la sortida del terminal en executar ordres. Aquest límit té precedència sobre el límit de línies per evitar problemes de memòria amb línies extremadament llargues. Quan se superi, la sortida es truncarà. <0>Més informació</0>"
+			"description": "Anul·la el límit de línies per evitar problemes de memòria imposant un límit dur a la mida de sortida. Si se supera, manté l'inici i el final i mostra un marcador a Roo on s'ha omès el contingut. <0>Aprèn-ne més</0>"
+		},
+		"outputPreviewSize": {
+			"label": "Mida de la previsualització de la sortida d'ordres",
+			"description": "Controla quanta sortida d'ordres veu Roo directament. La sortida completa sempre es desa i és accessible quan calgui.",
+			"options": {
+				"small": "Petita (5KB)",
+				"medium": "Mitjana (10KB)",
+				"large": "Gran (20KB)"
+			}
 		},
 		"shellIntegrationTimeout": {
-			"label": "Temps d'espera d'integració de shell del terminal",
-			"description": "Temps màxim d'espera per a la inicialització de la integració de shell abans d'executar comandes. Per a usuaris amb temps d'inici de shell llargs, aquest valor pot necessitar ser augmentat si veieu errors \"Shell Integration Unavailable\" al terminal. <0>Més informació</0>"
+			"label": "Temps d'espera d'integració del shell del terminal",
+			"description": "Quant de temps esperar la integració del shell de VS Code abans d'executar comandes. Augmenta si el teu shell s'inicia lentament o veus errors 'Integració del Shell No Disponible'. <0>Aprèn-ne més</0>"
 		},
 		"shellIntegrationDisabled": {
-			"label": "Desactiva la integració de l'intèrpret d'ordres del terminal",
-			"description": "Activa això si les ordres del terminal no funcionen correctament o si veus errors de 'Shell Integration Unavailable'. Això utilitza un mètode més senzill per executar ordres, evitant algunes funcions avançades del terminal. <0>Més informació</0>"
+			"label": "Utilitza terminal en línia (recomanat)",
+			"description": "Executa comandes al terminal en línia (xat) per evitar perfils/integració del shell per a execucions més ràpides i fiables. Quan està desactivat, Roo usa el terminal de VS Code amb el teu perfil de shell, prompts i connectors. <0>Aprèn-ne més</0>"
 		},
 		"commandDelay": {
 			"label": "Retard de comanda del terminal",
-			"description": "Retard en mil·lisegons a afegir després de l'execució de la comanda. La configuració predeterminada de 0 desactiva completament el retard. Això pot ajudar a assegurar que la sortida de la comanda es capturi completament en terminals amb problemes de temporització. En la majoria de terminals s'implementa establint `PROMPT_COMMAND='sleep N'` i Powershell afegeix `start-sleep` al final de cada comanda. Originalment era una solució per al error VSCode#237208 i pot no ser necessari. <0>Més informació</0>"
-		},
-		"compressProgressBar": {
-			"label": "Comprimir sortida de barra de progrés",
-			"description": "Quan està habilitat, processa la sortida del terminal amb retorns de carro (\\r) per simular com un terminal real mostraria el contingut. Això elimina els estats intermedis de les barres de progrés, mantenint només l'estat final, la qual cosa conserva espai de context per a informació més rellevant. <0>Més informació</0>"
+			"description": "Afegeix una pausa breu després de cada comanda perquè el terminal de VS Code pugui buidar tota la sortida (bash/zsh: PROMPT_COMMAND sleep; PowerShell: start-sleep). Usa només si veus que falta sortida final; altrament deixa a 0. <0>Aprèn-ne més</0>"
 		},
 		"powershellCounter": {
-			"label": "Habilita la solució temporal del comptador PowerShell",
-			"description": "Quan està habilitat, afegeix un comptador a les comandes PowerShell per assegurar l'execució correcta de les comandes. Això ajuda amb els terminals PowerShell que poden tenir problemes amb la captura de sortida. <0>Més informació</0>"
+			"label": "Activa solució de comptador de PowerShell",
+			"description": "Activa quan falta o es duplica la sortida de PowerShell; afegeix un petit comptador a cada comanda per estabilitzar la sortida. Mantén desactivat si la sortida ja es veu correcta. <0>Aprèn-ne més</0>"
 		},
 		"zshClearEolMark": {
-			"label": "Neteja la marca EOL de ZSH",
-			"description": "Quan està habilitat, neteja la marca de final de línia de ZSH establint PROMPT_EOL_MARK=''. Això evita problemes amb la interpretació de la sortida de comandes quan acaba amb caràcters especials com '%'. <0>Més informació</0>"
+			"label": "Neteja marca EOL de ZSH",
+			"description": "Activa quan vegis % extraviats al final de línies o l'anàlisi sembli incorrecta; omet la marca de final de línia (%) de Zsh. <0>Aprèn-ne més</0>"
 		},
 		"zshOhMy": {
-			"label": "Habilita la integració Oh My Zsh",
-			"description": "Quan està habilitat, estableix ITERM_SHELL_INTEGRATION_INSTALLED=Yes per habilitar les característiques d'integració del shell Oh My Zsh. Aplicar aquesta configuració pot requerir reiniciar l'IDE. <0>Més informació</0>"
+			"label": "Activa integració amb Oh My Zsh",
+			"description": "Activa quan el teu tema/connectors d'Oh My Zsh esperin integració del shell; estableix ITERM_SHELL_INTEGRATION_INSTALLED=Yes. Desactiva per evitar establir aquesta variable. <0>Aprèn-ne més</0>"
 		},
 		"zshP10k": {
-			"label": "Habilita la integració Powerlevel10k",
-			"description": "Quan està habilitat, estableix POWERLEVEL9K_TERM_SHELL_INTEGRATION=true per habilitar les característiques d'integració del shell Powerlevel10k. <0>Més informació</0>"
+			"label": "Activa integració amb Powerlevel10k",
+			"description": "Activa quan usis integració del shell de Powerlevel10k. <0>Aprèn-ne més</0>"
 		},
 		"zdotdir": {
-			"label": "Habilitar gestió de ZDOTDIR",
-			"description": "Quan està habilitat, crea un directori temporal per a ZDOTDIR per gestionar correctament la integració del shell zsh. Això assegura que la integració del shell de VSCode funcioni correctament amb zsh mentre es preserva la teva configuració de zsh. <0>Més informació</0>"
+			"label": "Activa gestió de ZDOTDIR",
+			"description": "Activa quan la integració del shell de zsh falli o entri en conflicte amb els teus dotfiles. <0>Aprèn-ne més</0>"
 		},
 		"inheritEnv": {
 			"label": "Hereta variables d'entorn",
-			"description": "Quan està habilitat, el terminal hereta les variables d'entorn del procés pare de VSCode, com ara la configuració d'integració del shell definida al perfil d'usuari. Això commuta directament la configuració global de VSCode `terminal.integrated.inheritEnv`. <0>Més informació</0>"
+			"description": "Activa per heretar variables d'entorn del procés pare de VS Code. <0>Aprèn-ne més</0>"
 		}
 	},
 	"advancedSettings": {
@@ -667,7 +735,7 @@
 	"advanced": {
 		"diff": {
 			"label": "Habilitar edició mitjançant diffs",
-			"description": "Quan està habilitat, Roo podrà editar fitxers més ràpidament i rebutjarà automàticament escriptures completes de fitxers truncats. Funciona millor amb l'últim model Claude 3.7 Sonnet.",
+			"description": "Quan està habilitat, Roo podrà editar fitxers més ràpidament i rebutjarà automàticament escriptures completes de fitxers truncats",
 			"strategy": {
 				"label": "Estratègia de diff",
 				"options": {
@@ -680,10 +748,6 @@
 					"unified": "L'estratègia de diff unificat pren múltiples enfocaments per aplicar diffs i tria el millor enfocament.",
 					"multiBlock": "L'estratègia de diff multi-bloc permet actualitzar múltiples blocs de codi en un fitxer en una sola sol·licitud."
 				}
-			},
-			"matchPrecision": {
-				"label": "Precisió de coincidència",
-				"description": "Aquest control lliscant controla amb quina precisió han de coincidir les seccions de codi en aplicar diffs. Valors més baixos permeten coincidències més flexibles però augmenten el risc de reemplaçaments incorrectes. Utilitzeu valors per sota del 100% amb extrema precaució."
 			}
 		},
 		"todoList": {
@@ -696,17 +760,9 @@
 			"name": "Utilitzar estratègia diff unificada experimental",
 			"description": "Activar l'estratègia diff unificada experimental. Aquesta estratègia podria reduir el nombre de reintents causats per errors del model, però pot causar comportaments inesperats o edicions incorrectes. Activeu-la només si enteneu els riscos i esteu disposats a revisar acuradament tots els canvis."
 		},
-		"SEARCH_AND_REPLACE": {
-			"name": "Utilitzar eina de cerca i reemplaçament experimental",
-			"description": "Activar l'eina de cerca i reemplaçament experimental, permetent a Roo reemplaçar múltiples instàncies d'un terme de cerca en una sola petició."
-		},
 		"INSERT_BLOCK": {
 			"name": "Utilitzar eina d'inserció de contingut experimental",
 			"description": "Activar l'eina d'inserció de contingut experimental, permetent a Roo inserir contingut a números de línia específics sense necessitat de crear un diff."
-		},
-		"POWER_STEERING": {
-			"name": "Utilitzar mode \"direcció assistida\" experimental",
-			"description": "Quan està activat, Roo recordarà al model els detalls de la seva definició de mode actual amb més freqüència. Això portarà a una adherència més forta a les definicions de rol i instruccions personalitzades, però utilitzarà més tokens per missatge."
 		},
 		"MULTI_SEARCH_AND_REPLACE": {
 			"name": "Utilitzar eina diff de blocs múltiples experimental",
@@ -715,14 +771,6 @@
 		"CONCURRENT_FILE_READS": {
 			"name": "Habilitar lectura concurrent de fitxers",
 			"description": "Quan està habilitat, Roo pot llegir múltiples fitxers en una sola sol·licitud. Quan està deshabilitat, Roo ha de llegir fitxers un per un. Deshabilitar-ho pot ajudar quan es treballa amb models menys capaços o quan voleu més control sobre l'accés als fitxers."
-		},
-		"MARKETPLACE": {
-			"name": "Habilitar Marketplace",
-			"description": "Quan està habilitat, pots instal·lar MCP i modes personalitzats del Marketplace."
-		},
-		"MULTI_FILE_APPLY_DIFF": {
-			"name": "Habilita edicions de fitxers concurrents",
-			"description": "Quan està activat, Roo pot editar múltiples fitxers en una sola petició. Quan està desactivat, Roo ha d'editar fitxers d'un en un. Desactivar això pot ajudar quan es treballa amb models menys capaços o quan vols més control sobre les modificacions de fitxers."
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Edició en segon pla",
@@ -738,6 +786,8 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Habilitar generació d'imatges amb IA",
+			"providerLabel": "Proveïdor",
+			"providerDescription": "Selecciona el proveïdor per a la generació d'imatges.",
 			"description": "Quan estigui habilitat, Roo pot generar imatges a partir de prompts de text utilitzant els models de generació d'imatges d'OpenRouter. Requereix que es configuri una clau d'API d'OpenRouter.",
 			"openRouterApiKeyLabel": "Clau API d'OpenRouter",
 			"openRouterApiKeyPlaceholder": "Introdueix la teva clau API d'OpenRouter",
@@ -750,6 +800,17 @@
 		"RUN_SLASH_COMMAND": {
 			"name": "Habilitar comandes de barra diagonal iniciades pel model",
 			"description": "Quan està habilitat, Roo pot executar les vostres comandes de barra diagonal per executar fluxos de treball."
+		},
+		"CUSTOM_TOOLS": {
+			"name": "Habilitar eines personalitzades",
+			"description": "Quan està habilitat, Roo pot carregar i utilitzar eines TypeScript/JavaScript personalitzades des del directori .roo/tools del vostre projecte o ~/.roo/tools per a eines globals. Nota: aquestes eines s'aprovaran automàticament.",
+			"toolsHeader": "Eines personalitzades disponibles",
+			"noTools": "No s'han carregat eines personalitzades. Afegiu fitxers .ts o .js al directori .roo/tools del vostre projecte o ~/.roo/tools per a eines globals.",
+			"refreshButton": "Actualitzar",
+			"refreshing": "Actualitzant...",
+			"refreshSuccess": "Eines actualitzades correctament",
+			"refreshError": "Error en actualitzar les eines",
+			"toolParameters": "Paràmetres"
 		}
 	},
 	"promptCaching": {
@@ -764,8 +825,6 @@
 	"modelInfo": {
 		"supportsImages": "Suporta imatges",
 		"noImages": "No suporta imatges",
-		"supportsComputerUse": "Suporta ús de l'ordinador",
-		"noComputerUse": "No suporta ús de l'ordinador",
 		"supportsPromptCache": "Suporta emmagatzematge en caché de prompts",
 		"noPromptCache": "No suporta emmagatzematge en caché de prompts",
 		"contextWindow": "Finestra de context:",
@@ -790,14 +849,10 @@
 		"label": "Model",
 		"searchPlaceholder": "Cerca",
 		"noMatchFound": "No s'ha trobat cap coincidència",
-		"useCustomModel": "Utilitzar personalitzat: {{modelId}}"
+		"useCustomModel": "Utilitzar personalitzat: {{modelId}}",
+		"simplifiedExplanation": "Pots ajustar la configuració detallada del model més tard."
 	},
 	"footer": {
-		"feedback": "Si teniu qualsevol pregunta o comentari, no dubteu a obrir un issue a <githubLink>github.com/RooCodeInc/Roo-Code</githubLink> o unir-vos a <redditLink>reddit.com/r/RooCode</redditLink> o <discordLink>discord.gg/roocode</discordLink>",
-		"telemetry": {
-			"label": "Permetre informes anònims d'errors i ús",
-			"description": "Ajuda a millorar Roo Code enviant dades d'ús anònimes i informes d'error. Aquesta telemetria no recull codi, prompts o informació personal. Consulta la nostra <privacyLink>política de privacitat</privacyLink> per a més detalls. Pots desactivar-ho en qualsevol moment."
-		},
 		"settings": {
 			"import": "Importar",
 			"export": "Exportar",
@@ -820,6 +875,7 @@
 			"regionMismatch": "Avís: La regió del vostre ARN ({{arnRegion}}) no coincideix amb la regió seleccionada ({{region}}). Això pot causar problemes d'accés. El proveïdor utilitzarà la regió de l'ARN."
 		},
 		"modelAvailability": "L'ID de model ({{modelId}}) que heu proporcionat no està disponible. Si us plau, trieu un altre model.",
+		"modelDeprecated": "Aquest model ja no està disponible. Si us plau, seleccioneu un model diferent.",
 		"providerNotAllowed": "El proveïdor '{{provider}}' no està permès per la vostra organització",
 		"modelNotAllowed": "El model '{{model}}' no està permès per al proveïdor '{{provider}}' per la vostra organització",
 		"profileInvalid": "Aquest perfil conté un proveïdor o model que no està permès per la vostra organització",
@@ -875,6 +931,68 @@
 			"input": "Entrada",
 			"output": "Sortida",
 			"cacheReads": "Lectures de memòria cau"
+		}
+	},
+	"ui": {
+		"collapseThinking": {
+			"label": "Replega els missatges de pensament per defecte",
+			"description": "Quan estigui activat, els blocs de pensament es replegaran per defecte fins que interactuïs amb ells"
+		},
+		"requireCtrlEnterToSend": {
+			"label": "Requereix {{primaryMod}}+Intro per enviar missatges",
+			"description": "Quan estigui activat, has de prémer {{primaryMod}}+Intro per enviar missatges en lloc de només Intro"
+		}
+	},
+	"skills": {
+		"description": "Gestiona les skills que proporcionen instruccions contextuals a l'agent. Les skills s'apliquen automàticament quan són rellevants per a les teves tasques. <DocsLink>Més informació</DocsLink>",
+		"workspaceSkills": "Skills de l'espai de treball",
+		"globalSkills": "Skills globals",
+		"noWorkspaceSkills": "Sense skills en aquest projecte encara.",
+		"noGlobalSkills": "Sense skills globals encara.",
+		"addSkill": "Afegir Skill",
+		"editSkill": "Editar skill",
+		"deleteSkill": "Eliminar skill",
+		"configureModes": "Disponibilitat del mode",
+		"modeAny": "Qualsevol mode",
+		"modeCount": "{{count}} modes",
+		"deleteDialog": {
+			"title": "Eliminar Skill",
+			"description": "Estàs segur que vols eliminar la skill \"{{name}}\"? Aquesta acció no es pot desfer.",
+			"confirm": "Eliminar",
+			"cancel": "Cancel·lar"
+		},
+		"modeDialog": {
+			"title": "Configurar els modes de Skill",
+			"description": "Tria quins modes poden usar aquesta skill",
+			"intro": "Per mantenir el teu context lleuger, et recomanem que només facis disponibles skills per als modes que les necessiten.",
+			"anyMode": "Qualsevol mode (disponible a tot arreu)",
+			"save": "Desar",
+			"cancel": "Cancel·lar"
+		},
+		"createDialog": {
+			"title": "Crear Nova Skill",
+			"nameLabel": "Nom",
+			"namePlaceholder": "el-meu-nom-de-skill",
+			"descriptionLabel": "Descripció",
+			"descriptionPlaceholder": "Descriu quan s'hauria d'utilitzar aquesta skill...",
+			"sourceLabel": "Ubicació",
+			"modeLabel": "Mode (opcional)",
+			"modePlaceholder": "Qualsevol mode",
+			"modeHint": "Restringeix aquesta skill a un mode específic",
+			"modeAny": "Qualsevol mode",
+			"create": "Crear",
+			"cancel": "Cancel·lar"
+		},
+		"source": {
+			"global": "Global (disponible en tots els projectes)",
+			"project": "Projecte (només aquest espai de treball)"
+		},
+		"validation": {
+			"nameRequired": "El nom és obligatori",
+			"nameTooLong": "El nom ha de tenir com a màxim 64 caràcters",
+			"nameInvalid": "El nom ha de tenir entre 1 i 64 caràcters, només lletres minúscules, números o guions",
+			"descriptionRequired": "La descripció és obligatòria",
+			"descriptionTooLong": "La descripció ha de tenir com a màxim 1024 caràcters"
 		}
 	}
 }

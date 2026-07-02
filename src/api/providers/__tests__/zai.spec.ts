@@ -1,8 +1,5 @@
 // npx vitest run src/api/providers/__tests__/zai.spec.ts
 
-// Mock vscode first to avoid import errors
-vitest.mock("vscode", () => ({}))
-
 import OpenAI from "openai"
 import { Anthropic } from "@anthropic-ai/sdk"
 
@@ -36,21 +33,21 @@ describe("ZAiHandler", () => {
 
 	describe("International Z AI", () => {
 		beforeEach(() => {
-			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international" })
+			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international_coding" })
 		})
 
 		it("should use the correct international Z AI base URL", () => {
-			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international" })
+			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international_coding" })
 			expect(OpenAI).toHaveBeenCalledWith(
 				expect.objectContaining({
-					baseURL: "https://api.z.ai/api/paas/v4",
+					baseURL: "https://api.z.ai/api/coding/paas/v4",
 				}),
 			)
 		})
 
 		it("should use the provided API key for international", () => {
 			const zaiApiKey = "test-zai-api-key"
-			new ZAiHandler({ zaiApiKey, zaiApiLine: "international" })
+			new ZAiHandler({ zaiApiKey, zaiApiLine: "international_coding" })
 			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: zaiApiKey }))
 		})
 
@@ -65,29 +62,73 @@ describe("ZAiHandler", () => {
 			const handlerWithModel = new ZAiHandler({
 				apiModelId: testModelId,
 				zaiApiKey: "test-zai-api-key",
-				zaiApiLine: "international",
+				zaiApiLine: "international_coding",
 			})
 			const model = handlerWithModel.getModel()
 			expect(model.id).toBe(testModelId)
 			expect(model.info).toEqual(internationalZAiModels[testModelId])
 		})
+
+		it("should return GLM-4.6 international model with correct configuration", () => {
+			const testModelId: InternationalZAiModelId = "glm-4.6"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(internationalZAiModels[testModelId])
+			expect(model.info.contextWindow).toBe(200_000)
+		})
+
+		it("should return GLM-4.7 international model with thinking support", () => {
+			const testModelId: InternationalZAiModelId = "glm-4.7"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(internationalZAiModels[testModelId])
+			expect(model.info.contextWindow).toBe(200_000)
+			expect(model.info.supportsReasoningEffort).toEqual(["disable", "medium"])
+			expect(model.info.reasoningEffort).toBe("medium")
+			expect(model.info.preserveReasoning).toBe(true)
+		})
+
+		it("should return GLM-4.5v international model with vision support", () => {
+			const testModelId: InternationalZAiModelId = "glm-4.5v"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(internationalZAiModels[testModelId])
+			expect(model.info.supportsImages).toBe(true)
+			expect(model.info.maxTokens).toBe(16_384)
+			expect(model.info.contextWindow).toBe(131_072)
+		})
 	})
 
 	describe("China Z AI", () => {
 		beforeEach(() => {
-			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china" })
+			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china_coding" })
 		})
 
 		it("should use the correct China Z AI base URL", () => {
-			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china" })
+			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china_coding" })
 			expect(OpenAI).toHaveBeenCalledWith(
-				expect.objectContaining({ baseURL: "https://open.bigmodel.cn/api/paas/v4" }),
+				expect.objectContaining({ baseURL: "https://open.bigmodel.cn/api/coding/paas/v4" }),
 			)
 		})
 
 		it("should use the provided API key for China", () => {
 			const zaiApiKey = "test-zai-api-key"
-			new ZAiHandler({ zaiApiKey, zaiApiLine: "china" })
+			new ZAiHandler({ zaiApiKey, zaiApiLine: "china_coding" })
 			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: zaiApiKey }))
 		})
 
@@ -102,7 +143,129 @@ describe("ZAiHandler", () => {
 			const handlerWithModel = new ZAiHandler({
 				apiModelId: testModelId,
 				zaiApiKey: "test-zai-api-key",
-				zaiApiLine: "china",
+				zaiApiLine: "china_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(mainlandZAiModels[testModelId])
+		})
+
+		it("should return GLM-4.6 China model with correct configuration", () => {
+			const testModelId: MainlandZAiModelId = "glm-4.6"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "china_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(mainlandZAiModels[testModelId])
+			expect(model.info.contextWindow).toBe(204_800)
+		})
+
+		it("should return GLM-4.5v China model with vision support", () => {
+			const testModelId: MainlandZAiModelId = "glm-4.5v"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "china_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(mainlandZAiModels[testModelId])
+			expect(model.info.supportsImages).toBe(true)
+			expect(model.info.maxTokens).toBe(16_384)
+			expect(model.info.contextWindow).toBe(131_072)
+		})
+
+		it("should return GLM-4.7 China model with thinking support", () => {
+			const testModelId: MainlandZAiModelId = "glm-4.7"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "china_coding",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(mainlandZAiModels[testModelId])
+			expect(model.info.contextWindow).toBe(204_800)
+			expect(model.info.supportsReasoningEffort).toEqual(["disable", "medium"])
+			expect(model.info.reasoningEffort).toBe("medium")
+			expect(model.info.preserveReasoning).toBe(true)
+		})
+	})
+
+	describe("International API", () => {
+		beforeEach(() => {
+			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international_api" })
+		})
+
+		it("should use the correct international API base URL", () => {
+			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international_api" })
+			expect(OpenAI).toHaveBeenCalledWith(
+				expect.objectContaining({
+					baseURL: "https://api.z.ai/api/paas/v4",
+				}),
+			)
+		})
+
+		it("should use the provided API key for international API", () => {
+			const zaiApiKey = "test-zai-api-key"
+			new ZAiHandler({ zaiApiKey, zaiApiLine: "international_api" })
+			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: zaiApiKey }))
+		})
+
+		it("should return international default model when no model is specified", () => {
+			const model = handler.getModel()
+			expect(model.id).toBe(internationalZAiDefaultModelId)
+			expect(model.info).toEqual(internationalZAiModels[internationalZAiDefaultModelId])
+		})
+
+		it("should return specified international model when valid model is provided", () => {
+			const testModelId: InternationalZAiModelId = "glm-4.5-air"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_api",
+			})
+			const model = handlerWithModel.getModel()
+			expect(model.id).toBe(testModelId)
+			expect(model.info).toEqual(internationalZAiModels[testModelId])
+		})
+	})
+
+	describe("China API", () => {
+		beforeEach(() => {
+			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china_api" })
+		})
+
+		it("should use the correct China API base URL", () => {
+			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "china_api" })
+			expect(OpenAI).toHaveBeenCalledWith(
+				expect.objectContaining({
+					baseURL: "https://open.bigmodel.cn/api/paas/v4",
+				}),
+			)
+		})
+
+		it("should use the provided API key for China API", () => {
+			const zaiApiKey = "test-zai-api-key"
+			new ZAiHandler({ zaiApiKey, zaiApiLine: "china_api" })
+			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: zaiApiKey }))
+		})
+
+		it("should return China default model when no model is specified", () => {
+			const model = handler.getModel()
+			expect(model.id).toBe(mainlandZAiDefaultModelId)
+			expect(model.info).toEqual(mainlandZAiModels[mainlandZAiDefaultModelId])
+		})
+
+		it("should return specified China model when valid model is provided", () => {
+			const testModelId: MainlandZAiModelId = "glm-4.5-air"
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: testModelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "china_api",
 			})
 			const model = handlerWithModel.getModel()
 			expect(model.id).toBe(testModelId)
@@ -125,14 +288,14 @@ describe("ZAiHandler", () => {
 		})
 
 		it("should use 'not-provided' as default API key when none is specified", () => {
-			new ZAiHandler({ zaiApiLine: "international" })
+			new ZAiHandler({ zaiApiLine: "international_coding" })
 			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: "not-provided" }))
 		})
 	})
 
 	describe("API Methods", () => {
 		beforeEach(() => {
-			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international" })
+			handler = new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international_coding" })
 		})
 
 		it("completePrompt method should return text from Z AI API", async () => {
@@ -146,7 +309,7 @@ describe("ZAiHandler", () => {
 			const errorMessage = "Z AI API error"
 			mockCreate.mockRejectedValueOnce(new Error(errorMessage))
 			await expect(handler.completePrompt("test prompt")).rejects.toThrow(
-				`Z AI completion error: ${errorMessage}`,
+				`Z.ai completion error: ${errorMessage}`,
 			)
 		})
 
@@ -196,7 +359,7 @@ describe("ZAiHandler", () => {
 			const firstChunk = await stream.next()
 
 			expect(firstChunk.done).toBe(false)
-			expect(firstChunk.value).toEqual({ type: "usage", inputTokens: 10, outputTokens: 20 })
+			expect(firstChunk.value).toMatchObject({ type: "usage", inputTokens: 10, outputTokens: 20 })
 		})
 
 		it("createMessage should pass correct parameters to Z AI client", async () => {
@@ -205,7 +368,7 @@ describe("ZAiHandler", () => {
 			const handlerWithModel = new ZAiHandler({
 				apiModelId: modelId,
 				zaiApiKey: "test-zai-api-key",
-				zaiApiLine: "international",
+				zaiApiLine: "international_coding",
 			})
 
 			mockCreate.mockImplementationOnce(() => {
@@ -224,10 +387,13 @@ describe("ZAiHandler", () => {
 			const messageGenerator = handlerWithModel.createMessage(systemPrompt, messages)
 			await messageGenerator.next()
 
+			// Centralized 20% cap should apply to OpenAI-compatible providers like Z AI
+			const expectedMaxTokens = Math.min(modelInfo.maxTokens, Math.ceil(modelInfo.contextWindow * 0.2))
+
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
 					model: modelId,
-					max_tokens: modelInfo.maxTokens,
+					max_tokens: expectedMaxTokens,
 					temperature: ZAI_DEFAULT_TEMPERATURE,
 					messages: expect.arrayContaining([{ role: "system", content: systemPrompt }]),
 					stream: true,
@@ -235,6 +401,125 @@ describe("ZAiHandler", () => {
 				}),
 				undefined,
 			)
+		})
+	})
+
+	describe("GLM-4.7 Thinking Mode", () => {
+		it("should enable thinking by default for GLM-4.7 (default reasoningEffort is medium)", async () => {
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: "glm-4.7",
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+				// No reasoningEffort setting - should use model default (medium)
+			})
+
+			mockCreate.mockImplementationOnce(() => {
+				return {
+					[Symbol.asyncIterator]: () => ({
+						async next() {
+							return { done: true }
+						},
+					}),
+				}
+			})
+
+			const messageGenerator = handlerWithModel.createMessage("system prompt", [])
+			await messageGenerator.next()
+
+			// For GLM-4.7 with default reasoning (medium), thinking should be enabled
+			expect(mockCreate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					model: "glm-4.7",
+					thinking: { type: "enabled" },
+				}),
+			)
+		})
+
+		it("should disable thinking for GLM-4.7 when reasoningEffort is set to disable", async () => {
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: "glm-4.7",
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+				enableReasoningEffort: true,
+				reasoningEffort: "disable",
+			})
+
+			mockCreate.mockImplementationOnce(() => {
+				return {
+					[Symbol.asyncIterator]: () => ({
+						async next() {
+							return { done: true }
+						},
+					}),
+				}
+			})
+
+			const messageGenerator = handlerWithModel.createMessage("system prompt", [])
+			await messageGenerator.next()
+
+			// For GLM-4.7 with reasoning disabled, thinking should be disabled
+			expect(mockCreate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					model: "glm-4.7",
+					thinking: { type: "disabled" },
+				}),
+			)
+		})
+
+		it("should enable thinking for GLM-4.7 when reasoningEffort is set to medium", async () => {
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: "glm-4.7",
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+				enableReasoningEffort: true,
+				reasoningEffort: "medium",
+			})
+
+			mockCreate.mockImplementationOnce(() => {
+				return {
+					[Symbol.asyncIterator]: () => ({
+						async next() {
+							return { done: true }
+						},
+					}),
+				}
+			})
+
+			const messageGenerator = handlerWithModel.createMessage("system prompt", [])
+			await messageGenerator.next()
+
+			// For GLM-4.7 with reasoning set to medium, thinking should be enabled
+			expect(mockCreate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					model: "glm-4.7",
+					thinking: { type: "enabled" },
+				}),
+			)
+		})
+
+		it("should NOT add thinking parameter for non-thinking models like GLM-4.6", async () => {
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: "glm-4.6",
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international_coding",
+			})
+
+			mockCreate.mockImplementationOnce(() => {
+				return {
+					[Symbol.asyncIterator]: () => ({
+						async next() {
+							return { done: true }
+						},
+					}),
+				}
+			})
+
+			const messageGenerator = handlerWithModel.createMessage("system prompt", [])
+			await messageGenerator.next()
+
+			// For GLM-4.6 (no thinking support), thinking parameter should not be present
+			const callArgs = mockCreate.mock.calls[0][0]
+			expect(callArgs.thinking).toBeUndefined()
 		})
 	})
 })

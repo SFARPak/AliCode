@@ -1,7 +1,7 @@
 import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
 
-import { TelemetryService } from "@roo-code/telemetry"
+import type { ClineApiReqInfo } from "@roo-code/types"
 
 import { Task } from "../task/Task"
 
@@ -9,17 +9,22 @@ import { getWorkspacePath } from "../../utils/path"
 import { checkGitInstalled } from "../../utils/git"
 import { t } from "../../i18n"
 
-import { ClineApiReqInfo } from "../../shared/ExtensionMessage"
 import { getApiMetrics } from "../../shared/getApiMetrics"
 
 import { DIFF_VIEW_URI_SCHEME } from "../../integrations/editor/DiffViewProvider"
 
 import { CheckpointServiceOptions, RepoPerTaskCheckpointService } from "../../services/checkpoints"
 
-export async function getCheckpointService(
-	task: Task,
-	{ interval = 250, timeout = 15_000 }: { interval?: number; timeout?: number } = {},
-) {
+const WARNING_THRESHOLD_MS = 5000
+
+function sendCheckpointInitWarn(task: Task, type?: "WAIT_TIMEOUT" | "INIT_TIMEOUT", timeout?: number) {
+	task.providerRef.deref()?.postMessageToWebview({
+		type: "checkpointInitWarning",
+		checkpointWarning: type && timeout ? { type, timeout } : undefined,
+	})
+}
+
+export async function getCheckpointService(task: Task, { interval = 250 }: { interval?: number } = {}) {
 	if (!task.enableCheckpoints) {
 		return undefined
 	}
@@ -29,6 +34,9 @@ export async function getCheckpointService(
 	}
 
 	const provider = task.providerRef.deref()
+
+	// Get checkpoint timeout from task settings (converted to milliseconds)
+	const checkpointTimeoutMs = task.checkpointTimeout * 1000
 
 	const log = (message: string) => {
 		console.log(message)
@@ -67,16 +75,32 @@ export async function getCheckpointService(
 		}
 
 		if (task.checkpointServiceInitializing) {
+			const checkpointInitStartTime = Date.now()
+			let warningShown = false
+
 			await pWaitFor(
 				() => {
-					console.log("[Task#getCheckpointService] waiting for service to initialize")
+					const elapsed = Date.now() - checkpointInitStartTime
+
+					// Show warning if we're past the threshold and haven't shown it yet
+					if (!warningShown && elapsed >= WARNING_THRESHOLD_MS) {
+						warningShown = true
+						sendCheckpointInitWarn(task, "WAIT_TIMEOUT", WARNING_THRESHOLD_MS / 1000)
+					}
+
+					console.log(
+						`[Task#getCheckpointService] waiting for service to initialize (${Math.round(elapsed / 1000)}s)`,
+					)
 					return !!task.checkpointService && !!task?.checkpointService?.isInitialized
 				},
-				{ interval, timeout },
+				{ interval, timeout: checkpointTimeoutMs },
 			)
 			if (!task?.checkpointService) {
+				sendCheckpointInitWarn(task, "INIT_TIMEOUT", task.checkpointTimeout)
 				task.enableCheckpoints = false
 				return undefined
+			} else {
+				sendCheckpointInitWarn(task)
 			}
 			return task.checkpointService
 		}
@@ -89,8 +113,14 @@ export async function getCheckpointService(
 		task.checkpointServiceInitializing = true
 		await checkGitInstallation(task, service, log, provider)
 		task.checkpointService = service
+		if (task.enableCheckpoints) {
+			sendCheckpointInitWarn(task)
+		}
 		return service
 	} catch (err) {
+		if (err.name === "TimeoutError" && task.enableCheckpoints) {
+			sendCheckpointInitWarn(task, "INIT_TIMEOUT", task.checkpointTimeout)
+		}
 		log(`[Task#getCheckpointService] ${err.message}`)
 		task.enableCheckpoints = false
 		task.checkpointServiceInitializing = false
@@ -133,6 +163,7 @@ async function checkGitInstallation(
 
 		service.on("checkpoint", ({ fromHash: from, toHash: to, suppressMessage }) => {
 			try {
+				sendCheckpointInitWarn(task)
 				// Always update the current checkpoint hash in the webview, including the suppress flag
 				provider?.postMessageToWebview({
 					type: "currentCheckpointUpdated",
@@ -184,8 +215,6 @@ export async function checkpointSave(task: Task, force = false, suppressMessage 
 		return
 	}
 
-	TelemetryService.instance.captureCheckpointCreated(task.taskId)
-
 	// Start the checkpoint process in the background.
 	return service
 		.saveCheckpoint(`Task: ${task.taskId}, Time: ${Date.now()}`, { allowEmpty: force, suppressMessage })
@@ -222,24 +251,23 @@ export async function checkpointRestore(
 
 	try {
 		await service.restoreCheckpoint(commitHash)
-		TelemetryService.instance.captureCheckpointRestored(task.taskId)
 		await provider?.postMessageToWebview({ type: "currentCheckpointUpdated", text: commitHash })
 
 		if (mode === "restore") {
-			await task.overwriteApiConversationHistory(task.apiConversationHistory.filter((m) => !m.ts || m.ts < ts))
-
+			// Calculate metrics from messages that will be deleted (must be done before rewind)
 			const deletedMessages = task.clineMessages.slice(index + 1)
 
 			const { totalTokensIn, totalTokensOut, totalCacheWrites, totalCacheReads, totalCost } = getApiMetrics(
 				task.combineMessages(deletedMessages),
 			)
 
-			// For delete operations, exclude the checkpoint message itself
-			// For edit operations, include the checkpoint message (to be edited)
-			const endIndex = operation === "edit" ? index + 1 : index
-			await task.overwriteClineMessages(task.clineMessages.slice(0, endIndex))
+			// Use MessageManager to properly handle context-management events
+			// This ensures orphaned Summary messages and truncation markers are cleaned up
+			await task.messageManager.rewindToTimestamp(ts, {
+				includeTargetMessage: operation === "edit",
+			})
 
-			// TODO: Verify that this is working as expected.
+			// Report the deleted API request metrics
 			await task.say(
 				"api_req_deleted",
 				JSON.stringify({
@@ -270,10 +298,16 @@ export async function checkpointRestore(
 }
 
 export type CheckpointDiffOptions = {
-	ts: number
+	ts?: number
 	previousCommitHash?: string
 	commitHash: string
-	mode: "full" | "checkpoint"
+	/**
+	 * from-init: Compare from the first checkpoint to the selected checkpoint.
+	 * checkpoint: Compare the selected checkpoint to the next checkpoint.
+	 * to-current: Compare the selected checkpoint to the current workspace.
+	 * full: Compare from the first checkpoint to the current workspace.
+	 */
+	mode: "from-init" | "checkpoint" | "to-current" | "full"
 }
 
 export async function checkpointDiff(task: Task, { ts, previousCommitHash, commitHash, mode }: CheckpointDiffOptions) {
@@ -283,32 +317,57 @@ export async function checkpointDiff(task: Task, { ts, previousCommitHash, commi
 		return
 	}
 
-	TelemetryService.instance.captureCheckpointDiffed(task.taskId)
+	let fromHash: string | undefined
+	let toHash: string | undefined
+	let title: string
 
-	let prevHash = commitHash
-	let nextHash: string | undefined = undefined
+	const checkpoints = task.clineMessages.filter(({ say }) => say === "checkpoint_saved").map(({ text }) => text!)
 
-	if (mode !== "full") {
-		const checkpoints = task.clineMessages.filter(({ say }) => say === "checkpoint_saved").map(({ text }) => text!)
-		const idx = checkpoints.indexOf(commitHash)
-		if (idx !== -1 && idx < checkpoints.length - 1) {
-			nextHash = checkpoints[idx + 1]
-		} else {
-			nextHash = undefined
-		}
+	if (["from-init", "full"].includes(mode) && checkpoints.length < 1) {
+		vscode.window.showInformationMessage(t("common:errors.checkpoint_no_first"))
+		return
+	}
+
+	const idx = checkpoints.indexOf(commitHash)
+	switch (mode) {
+		case "checkpoint":
+			fromHash = commitHash
+			toHash = idx !== -1 && idx < checkpoints.length - 1 ? checkpoints[idx + 1] : undefined
+			title = t("common:errors.checkpoint_diff_with_next")
+			break
+		case "from-init":
+			fromHash = checkpoints[0]
+			toHash = commitHash
+			title = t("common:errors.checkpoint_diff_since_first")
+			break
+		case "to-current":
+			fromHash = commitHash
+			toHash = undefined
+			title = t("common:errors.checkpoint_diff_to_current")
+			break
+		case "full":
+			fromHash = checkpoints[0]
+			toHash = undefined
+			title = t("common:errors.checkpoint_diff_since_first")
+			break
+	}
+
+	if (!fromHash) {
+		vscode.window.showInformationMessage(t("common:errors.checkpoint_no_previous"))
+		return
 	}
 
 	try {
-		const changes = await service.getDiff({ from: prevHash, to: nextHash })
+		const changes = await service.getDiff({ from: fromHash, to: toHash })
 
 		if (!changes?.length) {
-			vscode.window.showInformationMessage("No changes found.")
+			vscode.window.showInformationMessage(t("common:errors.checkpoint_no_changes"))
 			return
 		}
 
 		await vscode.commands.executeCommand(
 			"vscode.changes",
-			mode === "full" ? "Changes since task started" : "Changes compare with next checkpoint",
+			title,
 			changes.map((change) => [
 				vscode.Uri.file(change.paths.absolute),
 				vscode.Uri.parse(`${DIFF_VIEW_URI_SCHEME}:${change.paths.relative}`).with({

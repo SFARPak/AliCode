@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "Se agotó el tiempo al intentar restaurar el punto de control.",
 		"checkpoint_failed": "Error al restaurar el punto de control.",
 		"git_not_installed": "Git es necesario para la función de puntos de control. Por favor, instala Git para activar los puntos de control.",
+		"checkpoint_no_first": "No hay primer punto de control para comparar.",
+		"checkpoint_no_previous": "No hay punto de control anterior para comparar.",
+		"checkpoint_no_changes": "No se encontraron cambios.",
+		"checkpoint_diff_with_next": "Cambios comparados con el siguiente punto de control",
+		"checkpoint_diff_since_first": "Cambios desde el primer punto de control",
+		"checkpoint_diff_to_current": "Cambios en el espacio de trabajo actual",
 		"nested_git_repos_warning": "Los puntos de control están deshabilitados porque se detectó un repositorio git anidado en: {{path}}. Para usar puntos de control, por favor elimina o reubica este repositorio git anidado.",
 		"no_workspace": "Por favor, abre primero una carpeta de proyecto",
 		"update_support_prompt": "Error al actualizar el mensaje de soporte",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "No hay suficientes mensajes para condensar el contexto",
 		"condensed_recently": "El contexto se condensó recientemente; se omite este intento",
 		"condense_handler_invalid": "El manejador de API para condensar el contexto no es válido",
-		"condense_context_grew": "El tamaño del contexto aumentó durante la condensación; se omite este intento",
+		"condense_api_failed": "La llamada API de condensación falló: {{message}}",
 		"url_timeout": "El sitio web tardó demasiado en cargar (timeout). Esto podría deberse a una conexión lenta, un sitio web pesado o que esté temporalmente no disponible. Puedes intentarlo más tarde o verificar si la URL es correcta.",
 		"url_not_found": "No se pudo encontrar la dirección del sitio web. Por favor verifica si la URL es correcta e inténtalo de nuevo.",
 		"no_internet": "Sin conexión a internet. Por favor verifica tu conexión de red e inténtalo de nuevo.",
@@ -85,8 +91,7 @@
 			"errorOutput": "Salida de error: {{output}}",
 			"processExitedWithError": "El proceso de Claude Code terminó con código {{exitCode}}. Salida de error: {{output}}",
 			"stoppedWithReason": "Claude Code se detuvo por la razón: {{reason}}",
-			"apiKeyModelPlanMismatch": "Las claves API y los planes de suscripción permiten diferentes modelos. Asegúrate de que el modelo seleccionado esté incluido en tu plan.",
-			"notFound": "Ejecutable de Claude Code '{{claudePath}}' no encontrado.\n\nPor favor instala Claude Code CLI:\n1. Visita {{installationUrl}} para descargar Claude Code\n2. Sigue las instrucciones de instalación para tu sistema operativo\n3. Asegúrate de que el comando 'claude' esté disponible en tu PATH\n4. Alternativamente, configura una ruta personalizada en la configuración de Roo bajo 'Ruta de Claude Code'\n\nError original: {{originalError}}"
+			"apiKeyModelPlanMismatch": "Las claves API y los planes de suscripción permiten diferentes modelos. Asegúrate de que el modelo seleccionado esté incluido en tu plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "No hay tarea activa de la cual eliminar mensajes",
@@ -100,28 +105,39 @@
 		"gemini": {
 			"generate_stream": "Error del stream de contexto de generación de Gemini: {{error}}",
 			"generate_complete_prompt": "Error de finalización de Gemini: {{error}}",
-			"sources": "Fuentes:"
-		},
-		"cerebras": {
-			"authenticationFailed": "Falló la autenticación de la API de Cerebras. Verifica que tu clave de API sea válida y no haya expirado.",
-			"accessForbidden": "Acceso prohibido a la API de Cerebras. Tu clave de API puede no tener acceso al modelo o función solicitada.",
-			"rateLimitExceeded": "Se excedió el límite de velocidad de la API de Cerebras. Espera antes de hacer otra solicitud.",
-			"serverError": "Error del servidor de la API de Cerebras ({{status}}). Inténtalo de nuevo más tarde.",
-			"genericError": "Error de la API de Cerebras ({{status}}): {{message}}",
-			"noResponseBody": "Error de la API de Cerebras: Sin cuerpo de respuesta",
-			"completionError": "Error de finalización de Cerebras: {{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "El proveedor Roo requiere autenticación en la nube. Por favor, inicia sesión en Roo Code Cloud."
+			"sources": "Fuentes:",
+			"thinking_complete_no_output": "(Pensamiento completado, pero no se generó salida.)",
+			"thinking_complete_truncated": "(Pensamiento completado, pero la salida fue truncada debido al límite de tokens.)",
+			"thinking_complete_safety": "(Pensamiento completado, pero la salida fue bloqueada debido a la configuración de seguridad.)",
+			"thinking_complete_recitation": "(Pensamiento completado, pero la salida fue bloqueada debido a la comprobación de recitación.)"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "La clave API contiene caracteres inválidos."
+			"invalidKeyInvalidChars": "La clave API contiene caracteres inválidos.",
+			"apiRequestFailed": "La solicitud API falló ({{status}})"
 		},
 		"manual_url_empty": "Por favor, introduce una URL de callback válida",
 		"manual_url_no_query": "URL de callback inválida: faltan parámetros de consulta",
 		"manual_url_missing_params": "URL de callback inválida: faltan parámetros requeridos (code y state)",
 		"manual_url_auth_failed": "Autenticación manual por URL falló",
-		"manual_url_auth_error": "Error de autenticación"
+		"manual_url_auth_error": "Error de autenticación",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "No hay contenido de terminal seleccionado",
@@ -161,6 +177,11 @@
 		"incomplete": "Tarea #{{taskNumber}} (Incompleta)",
 		"no_messages": "Tarea #{{taskNumber}} (Sin mensajes)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "Respuesta interrumpida por el usuario",
+		"responseInterruptedByApiError": "Respuesta interrumpida por error de API",
+		"streamTerminatedByProvider": "El proveedor finalizó la solicitud"
+	},
 	"storage": {
 		"prompt_custom_path": "Ingresa la ruta de almacenamiento personalizada para el historial de conversaciones, déjala vacía para usar la ubicación predeterminada",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -172,15 +193,7 @@
 		"task_placeholder": "Escribe tu tarea aquí"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Clave API de Groq",
-			"getGroqApiKey": "Obtener clave API de Groq",
-			"claudeCode": {
-				"pathLabel": "Ruta de Claude Code",
-				"description": "Ruta opcional a tu CLI de Claude Code. Por defecto 'claude' si no se establece.",
-				"placeholder": "Por defecto: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -199,21 +212,6 @@
 			"global": "global"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "El modo se eliminó correctamente, pero no se pudo eliminar la carpeta de reglas en {{rulesFolderPath}}. Es posible que debas eliminarla manually."
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "Tu organización requiere autenticación de Roo Code Cloud. Por favor, inicia sesión para continuar.",
-			"organization_mismatch": "Debes estar autenticado con la cuenta de Roo Code Cloud de tu organización.",
-			"verification_failed": "No se pudo verificar la autenticación de la organización."
-		},
-		"info": {
-			"organization_requires_auth": "Tu organización requiere autenticación."
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "Eliminar modo personalizado",
@@ -229,6 +227,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

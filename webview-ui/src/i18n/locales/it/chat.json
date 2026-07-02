@@ -16,24 +16,23 @@
 		"delete": "Elimina attività (Shift + Clic per saltare la conferma)",
 		"condenseContext": "Condensa contesto in modo intelligente",
 		"share": "Condividi attività",
-		"shareWithOrganization": "Condividi con l'organizzazione",
-		"shareWithOrganizationDescription": "Solo i membri della tua organizzazione possono accedere",
-		"sharePublicly": "Condividi pubblicamente",
-		"sharePubliclyDescription": "Chiunque con il link può accedere",
-		"connectToCloud": "Connetti al Cloud",
-		"connectToCloudDescription": "Accedi a Roo Code Cloud per condividere attività",
-		"sharingDisabledByOrganization": "Condivisione disabilitata dall'organizzazione",
-		"shareSuccessOrganization": "Link organizzazione copiato negli appunti",
 		"shareSuccessPublic": "Link pubblico copiato negli appunti",
-		"openInCloud": "Apri attività in Roo Code Cloud",
-		"openInCloudIntro": "Continua a monitorare o interagire con Roo da qualsiasi luogo. Scansiona, clicca o copia per aprire."
+		"openApiHistory": "Apri cronologia API",
+		"openUiHistory": "Apri cronologia UI",
+		"backToParentTask": "Attività principale"
 	},
 	"unpin": "Rilascia",
 	"pin": "Fissa",
+	"fileChangesInConversation": {
+		"header": "{{count}} file modificati in questa conversazione"
+	},
 	"tokenProgress": {
 		"availableSpace": "Spazio disponibile: {{amount}} tokens",
 		"tokensUsed": "Tokens utilizzati: {{used}} di {{total}}",
-		"reservedForResponse": "Riservato per risposta del modello: {{amount}} tokens"
+		"reservedForResponse": "Riservato per risposta del modello: {{amount}} tokens",
+		"tokensUsedLabel": "Tokens utilizzati",
+		"reservedForResponseLabel": "Riservato per risposta",
+		"availableSpaceLabel": "Spazio disponibile"
 	},
 	"retry": {
 		"title": "Riprova",
@@ -61,7 +60,7 @@
 		"tooltip": "Approva questa azione"
 	},
 	"runCommand": {
-		"title": "Esegui comando",
+		"title": "Comando",
 		"tooltip": "Esegui questo comando"
 	},
 	"proceedWhileRunning": {
@@ -80,36 +79,38 @@
 		"title": "Termina",
 		"tooltip": "Termina l'attività corrente"
 	},
+	"stop": {
+		"title": "Ferma",
+		"tooltip": "Ferma l'attività corrente"
+	},
 	"cancel": {
 		"title": "Annulla",
 		"tooltip": "Annulla l'operazione corrente"
 	},
+	"enqueueMessage": "Aggiungi il messaggio alla coda (sarà inviato dopo che l'attività corrente sarà terminata)",
 	"scrollToBottom": "Scorri fino alla fine della chat",
-	"about": "Genera, refactor e debug del codice con l'assistenza dell'IA. Consulta la nostra <DocsLink>documentazione</DocsLink> per saperne di più.",
-	"onboarding": "Grazie alle più recenti innovazioni nelle capacità di codifica agentica, posso gestire complesse attività di sviluppo software passo dopo passo. Con strumenti che mi permettono di creare e modificare file, esplorare progetti complessi, utilizzare il browser ed eseguire comandi da terminale (dopo la tua autorizzazione), posso aiutarti in modi che vanno oltre il completamento del codice o il supporto tecnico. Posso persino usare MCP per creare nuovi strumenti ed estendere le mie capacità.",
+	"scrollToLatestCheckpoint": "Scorri al checkpoint precedente",
+	"about": "Roo Code è un intero team di sviluppo AI nel tuo editor.",
+	"docs": "Consulta la nostra <DocsLink>documentazione</DocsLink> per saperne di più.",
+	"onboarding": "La tua lista di attività in questo spazio di lavoro è vuota.",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Orchestrazione di Attività",
-			"description": "Dividi le attività in parti più piccole e gestibili."
-		},
-		"stickyModels": {
-			"title": "Modalità persistenti",
-			"description": "Ogni modalità ricorda il tuo ultimo modello utilizzato"
-		},
-		"tools": {
-			"title": "Strumenti",
-			"description": "Consenti all'IA di risolvere i problemi navigando sul Web, eseguendo comandi e altro ancora."
-		},
 		"customizableModes": {
 			"title": "Modalità personalizzabili",
-			"description": "Personalità specializzate con comportamenti propri e modelli assegnati"
+			"description": "Personaggi specializzati che rimangono in tema e portano a termine il compito."
+		},
+		"modelAgnostic": {
+			"title": "Porta il tuo modello",
+			"description": "Usa la tua chiave provider o esegui l'inferenza locale — nessun ricarico, nessun vincolo, nessuna restrizione"
 		}
 	},
 	"selectMode": "Seleziona modalità di interazione",
 	"selectApiConfig": "Seleziona la configurazione API",
+	"lockApiConfigAcrossModes": "Blocca la configurazione API per tutte le modalità in questo workspace",
+	"unlockApiConfigAcrossModes": "La configurazione API è bloccata per tutte le modalità in questo workspace (clicca per sbloccare)",
 	"enhancePrompt": "Migliora prompt con contesto aggiuntivo",
 	"addImages": "Aggiungi immagini al messaggio",
 	"sendMessage": "Invia messaggio",
+	"pressToSend": "Premi {{keyCombination}} per inviare",
 	"stopTts": "Interrompi sintesi vocale",
 	"typeMessage": "Scrivi un messaggio...",
 	"typeTask": "Scrivi la tua attività qui...",
@@ -119,13 +120,12 @@
 	"enhancePromptDescription": "Il pulsante 'Migliora prompt' aiuta a migliorare la tua richiesta fornendo contesto aggiuntivo, chiarimenti o riformulazioni. Prova a digitare una richiesta qui e fai di nuovo clic sul pulsante per vedere come funziona.",
 	"modeSelector": {
 		"title": "Modalità",
-		"marketplace": "Marketplace delle Modalità",
 		"settings": "Impostazioni Modalità",
 		"description": "Personalità specializzate che adattano il comportamento di Roo.",
 		"searchPlaceholder": "Cerca modalità...",
 		"noResults": "Nessun risultato trovato"
 	},
-	"errorReadingFile": "Errore nella lettura del file:",
+	"errorReadingFile": "Errore nella lettura del file",
 	"noValidImages": "Nessuna immagine valida è stata elaborata",
 	"separator": "Separatore",
 	"edit": "Modifica...",
@@ -144,13 +144,31 @@
 		"failed": "Richiesta API fallita",
 		"streaming": "Richiesta API...",
 		"cancelled": "Richiesta API annullata",
-		"streamingFailed": "Streaming API fallito"
+		"streamingFailed": "Streaming API fallito",
+		"rateLimitWait": "Limitazione della frequenza",
+		"errorTitle": "Errore del fornitore {{code}}",
+		"errorMessage": {
+			"400": "Il provider non ha potuto elaborare la richiesta come presentata. Interrompi l'attività e prova un approccio diverso.",
+			"401": "Impossibile autenticare con il provider. Verifica la configurazione della tua chiave API.",
+			"402": "Sembra che tu abbia esaurito i fondi/crediti nel tuo account. Vai al tuo provider e aggiungi altro per continuare.",
+			"403": "Non autorizzato. La tua chiave API è valida, ma il provider ha rifiutato di completare questa richiesta.",
+			"429": "Troppe richieste. Sei limitato dal provider. Attendi un po' prima della tua prossima chiamata API.",
+			"500": "Errore del server del provider. C'è qualcosa di sbagliato dal lato del provider, non c'è nulla di sbagliato nella tua richiesta.",
+			"docs": "Documentazione",
+			"goToSettings": "Impostazioni",
+			"unknown": "Unknown API error. Please report this on GitHub.",
+			"connection": "Errore di connessione. Assicurati di avere una connessione Internet funzionante.",
+			"claudeCodeNotAuthenticated": "Devi accedere per utilizzare Claude Code. Vai su Impostazioni e clicca su \"Accedi a Claude Code\" per autenticarti."
+		}
 	},
 	"checkpoint": {
 		"regular": "Checkpoint",
 		"initializingWarning": "Inizializzazione del checkpoint in corso... Se questa operazione richiede troppo tempo, puoi disattivare i checkpoint nelle <settingsLink>impostazioni</settingsLink> e riavviare l'attività.",
 		"menu": {
 			"viewDiff": "Visualizza differenze",
+			"more": "Altre opzioni",
+			"viewDiffFromInit": "Visualizza tutte le modifiche",
+			"viewDiffWithCurrent": "Visualizza le modifiche da questo checkpoint",
 			"restore": "Ripristina checkpoint",
 			"restoreFiles": "Ripristina file",
 			"restoreFilesDescription": "Ripristina i file del tuo progetto a uno snapshot catturato in questo punto.",
@@ -163,66 +181,69 @@
 		"current": "Corrente"
 	},
 	"fileOperations": {
-		"wantsToRead": "Roo vuole leggere questo file:",
-		"wantsToReadOutsideWorkspace": "Roo vuole leggere questo file al di fuori dell'area di lavoro:",
-		"didRead": "Roo ha letto questo file:",
-		"wantsToEdit": "Roo vuole modificare questo file:",
-		"wantsToEditOutsideWorkspace": "Roo vuole modificare questo file al di fuori dell'area di lavoro:",
-		"wantsToEditProtected": "Roo vuole modificare un file di configurazione protetto:",
-		"wantsToCreate": "Roo vuole creare un nuovo file:",
-		"wantsToSearchReplace": "Roo vuole eseguire ricerca e sostituzione in questo file:",
-		"didSearchReplace": "Roo ha eseguito ricerca e sostituzione in questo file:",
-		"wantsToInsert": "Roo vuole inserire contenuto in questo file:",
-		"wantsToInsertWithLineNumber": "Roo vuole inserire contenuto in questo file alla riga {{lineNumber}}:",
-		"wantsToInsertAtEnd": "Roo vuole aggiungere contenuto alla fine di questo file:",
-		"wantsToReadAndXMore": "Roo vuole leggere questo file e altri {{count}}:",
-		"wantsToReadMultiple": "Roo vuole leggere più file:",
-		"wantsToApplyBatchChanges": "Roo vuole applicare modifiche a più file:",
-		"wantsToGenerateImage": "Roo vuole generare un'immagine:",
-		"wantsToGenerateImageOutsideWorkspace": "Roo vuole generare un'immagine fuori dall'area di lavoro:",
-		"wantsToGenerateImageProtected": "Roo vuole generare un'immagine in una posizione protetta:",
-		"didGenerateImage": "Roo ha generato un'immagine:"
+		"wantsToRead": "Roo vuole leggere questo file",
+		"wantsToReadOutsideWorkspace": "Roo vuole leggere questo file al di fuori dell'area di lavoro",
+		"didRead": "Roo ha letto questo file",
+		"wantsToEdit": "Roo vuole modificare questo file",
+		"wantsToEditOutsideWorkspace": "Roo vuole modificare questo file al di fuori dell'area di lavoro",
+		"wantsToEditProtected": "Roo vuole modificare un file di configurazione protetto",
+		"wantsToCreate": "Roo vuole creare un nuovo file",
+		"wantsToSearchReplace": "Roo vuole eseguire ricerca e sostituzione in questo file",
+		"didSearchReplace": "Roo ha eseguito ricerca e sostituzione in questo file",
+		"wantsToInsert": "Roo vuole inserire contenuto in questo file",
+		"wantsToInsertWithLineNumber": "Roo vuole inserire contenuto in questo file alla riga {{lineNumber}}",
+		"wantsToInsertAtEnd": "Roo vuole aggiungere contenuto alla fine di questo file",
+		"wantsToReadAndXMore": "Roo vuole leggere questo file e altri {{count}}",
+		"wantsToReadMultiple": "Roo vuole leggere più file",
+		"wantsToApplyBatchChanges": "Roo vuole applicare modifiche a più file",
+		"wantsToGenerateImage": "Roo vuole generare un'immagine",
+		"wantsToGenerateImageOutsideWorkspace": "Roo vuole generare un'immagine fuori dall'area di lavoro",
+		"wantsToGenerateImageProtected": "Roo vuole generare un'immagine in una posizione protetta",
+		"didGenerateImage": "Roo ha generato un'immagine"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Roo vuole visualizzare i file di primo livello in questa directory:",
-		"didViewTopLevel": "Roo ha visualizzato i file di primo livello in questa directory:",
-		"wantsToViewRecursive": "Roo vuole visualizzare ricorsivamente tutti i file in questa directory:",
-		"didViewRecursive": "Roo ha visualizzato ricorsivamente tutti i file in questa directory:",
-		"wantsToViewDefinitions": "Roo vuole visualizzare i nomi delle definizioni di codice sorgente utilizzate in questa directory:",
-		"didViewDefinitions": "Roo ha visualizzato i nomi delle definizioni di codice sorgente utilizzate in questa directory:",
-		"wantsToSearch": "Roo vuole cercare in questa directory <code>{{regex}}</code>:",
-		"didSearch": "Roo ha cercato in questa directory <code>{{regex}}</code>:",
-		"wantsToSearchOutsideWorkspace": "Roo vuole cercare in questa directory (fuori dall'area di lavoro) <code>{{regex}}</code>:",
-		"didSearchOutsideWorkspace": "Roo ha cercato in questa directory (fuori dall'area di lavoro) <code>{{regex}}</code>:",
-		"wantsToViewTopLevelOutsideWorkspace": "Roo vuole visualizzare i file di primo livello in questa directory (fuori dall'area di lavoro):",
-		"didViewTopLevelOutsideWorkspace": "Roo ha visualizzato i file di primo livello in questa directory (fuori dall'area di lavoro):",
-		"wantsToViewRecursiveOutsideWorkspace": "Roo vuole visualizzare ricorsivamente tutti i file in questa directory (fuori dall'area di lavoro):",
-		"didViewRecursiveOutsideWorkspace": "Roo ha visualizzato ricorsivamente tutti i file in questa directory (fuori dall'area di lavoro):",
-		"wantsToViewDefinitionsOutsideWorkspace": "Roo vuole visualizzare i nomi delle definizioni di codice sorgente utilizzate in questa directory (fuori dall'area di lavoro):",
-		"didViewDefinitionsOutsideWorkspace": "Roo ha visualizzato i nomi delle definizioni di codice sorgente utilizzate in questa directory (fuori dall'area di lavoro):"
+		"wantsToViewTopLevel": "Roo vuole visualizzare i file di primo livello in questa directory",
+		"didViewTopLevel": "Roo ha visualizzato i file di primo livello in questa directory",
+		"wantsToViewRecursive": "Roo vuole visualizzare ricorsivamente tutti i file in questa directory",
+		"didViewRecursive": "Roo ha visualizzato ricorsivamente tutti i file in questa directory",
+		"wantsToSearch": "Roo vuole cercare in questa directory <code>{{regex}}</code>",
+		"didSearch": "Roo ha cercato in questa directory <code>{{regex}}</code>",
+		"wantsToSearchOutsideWorkspace": "Roo vuole cercare in questa directory (fuori dall'area di lavoro) <code>{{regex}}</code>",
+		"didSearchOutsideWorkspace": "Roo ha cercato in questa directory (fuori dall'area di lavoro) <code>{{regex}}</code>",
+		"wantsToViewTopLevelOutsideWorkspace": "Roo vuole visualizzare i file di primo livello in questa directory (fuori dall'area di lavoro)",
+		"didViewTopLevelOutsideWorkspace": "Roo ha visualizzato i file di primo livello in questa directory (fuori dall'area di lavoro)",
+		"wantsToViewRecursiveOutsideWorkspace": "Roo vuole visualizzare ricorsivamente tutti i file in questa directory (fuori dall'area di lavoro)",
+		"didViewRecursiveOutsideWorkspace": "Roo ha visualizzato ricorsivamente tutti i file in questa directory (fuori dall'area di lavoro)",
+		"wantsToViewMultipleDirectories": "Roo vuole visualizzare più directory"
 	},
-	"commandOutput": "Output del comando",
+	"commandOutput": "Output del Comando",
 	"commandExecution": {
+		"abort": "Interrompi",
 		"running": "In esecuzione",
 		"pid": "PID: {{pid}}",
-		"exited": "Terminato ({{exitCode}})",
-		"manageCommands": "Gestisci autorizzazioni comandi",
-		"commandManagementDescription": "Gestisci le autorizzazioni dei comandi: fai clic su ✓ per consentire l'esecuzione automatica, ✗ per negare l'esecuzione. I pattern possono essere attivati/disattivati o rimossi dagli elenchi. <settingsLink>Visualizza tutte le impostazioni</settingsLink>",
-		"addToAllowed": "Aggiungi all'elenco consentiti",
-		"removeFromAllowed": "Rimuovi dall'elenco consentiti",
-		"addToDenied": "Aggiungi all'elenco negati",
-		"removeFromDenied": "Rimuovi dall'elenco negati",
-		"abortCommand": "Interrompi esecuzione comando",
+		"exitStatus": "Uscito con stato {{exitCode}}",
+		"manageCommands": "Comandi approvati automaticamente",
+		"addToAllowed": "Aggiungi alla lista dei permessi",
+		"removeFromAllowed": "Rimuovi dalla lista dei permessi",
+		"addToDenied": "Aggiungi alla lista dei negati",
+		"removeFromDenied": "Rimuovi dalla lista dei negati",
+		"abortCommand": "Interrompi esecuzione del comando",
 		"expandOutput": "Espandi output",
 		"collapseOutput": "Comprimi output",
-		"expandManagement": "Espandi la sezione di gestione dei comandi",
-		"collapseManagement": "Comprimi la sezione di gestione dei comandi"
+		"expandManagement": "Espandi sezione gestione comandi",
+		"collapseManagement": "Comprimi sezione gestione comandi"
 	},
 	"response": "Risposta",
 	"arguments": "Argomenti",
+	"text": {
+		"rooSaid": "Roo ha detto"
+	},
+	"feedback": {
+		"youSaid": "Hai detto"
+	},
 	"mcp": {
-		"wantsToUseTool": "Roo vuole utilizzare uno strumento sul server MCP {{serverName}}:",
-		"wantsToAccessResource": "Roo vuole accedere a una risorsa sul server MCP {{serverName}}:"
+		"wantsToUseTool": "Roo vuole utilizzare uno strumento sul server MCP {{serverName}}",
+		"wantsToAccessResource": "Roo vuole accedere a una risorsa sul server MCP {{serverName}}"
 	},
 	"modes": {
 		"wantsToSwitch": "Roo vuole passare alla modalità <code>{{mode}}</code>",
@@ -231,18 +252,34 @@
 		"didSwitchWithReason": "Roo è passato alla modalità <code>{{mode}}</code> perché: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Roo vuole creare una nuova sottoattività in modalità <code>{{mode}}</code>:",
+		"wantsToCreate": "Roo vuole creare una nuova sottoattività in modalità <code>{{mode}}</code>",
 		"wantsToFinish": "Roo vuole completare questa sottoattività",
 		"newTaskContent": "Istruzioni sottoattività",
 		"completionContent": "Sottoattività completata",
 		"resultContent": "Risultati sottoattività",
 		"defaultResult": "Per favore continua con la prossima attività.",
-		"completionInstructions": "Sottoattività completata! Puoi rivedere i risultati e suggerire correzioni o prossimi passi. Se tutto sembra a posto, conferma per restituire il risultato all'attività principale."
+		"completionInstructions": "Sottoattività completata! Puoi rivedere i risultati e suggerire correzioni o prossimi passi. Se tutto sembra a posto, conferma per restituire il risultato all'attività principale.",
+		"goToSubtask": "Visualizza attività"
 	},
 	"questions": {
-		"hasQuestion": "Roo ha una domanda:"
+		"hasQuestion": "Roo ha una domanda"
 	},
 	"taskCompleted": "Attività completata",
+	"modelResponseIncomplete": "Risposta del modello incompleta",
+	"modelResponseErrors": {
+		"noToolsUsed": "Il modello non ha utilizzato alcuno strumento nella sua risposta. Questo accade tipicamente quando il modello fornisce solo testo/ragionamento senza chiamare gli strumenti necessari per completare l'attività.",
+		"noToolsUsedDetails": "Il modello ha fornito testo/ragionamento ma non ha chiamato nessuno degli strumenti richiesti. Questo di solito indica che il modello ha frainteso l'attività o ha difficoltà a determinare quale strumento utilizzare. Il modello è stato automaticamente sollecitato a riprovare con l'uso appropriato degli strumenti.",
+		"noAssistantMessages": "Il modello non ha fornito alcun contenuto di risposta. Questo potrebbe indicare un problema con l'API o l'output del modello.",
+		"noAssistantMessagesDetails": "Il modello linguistico ha restituito una risposta vuota senza testo o chiamate a strumenti. Questo può accadere a causa di problemi API, limitazione della velocità o problemi specifici del modello. Il modello è stato automaticamente sollecitato a riprovare."
+	},
+	"errorDetails": {
+		"link": "Dettagli",
+		"title": "Dettagli errore",
+		"copyToClipboard": "Copia negli appunti",
+		"copied": "Copiato!",
+		"diagnostics": "Ottieni informazioni errore dettagliate",
+		"proxyProvider": "Sembra che tu stia utilizzando un provider basato su proxy. Assicurati di controllarne i log e di verificare che non stia riscrivendo le richieste di Roo."
+	},
 	"powershell": {
 		"issues": "Sembra che tu stia avendo problemi con Windows PowerShell, consulta questa"
 	},
@@ -250,6 +287,7 @@
 		"tooltipManage": "Gestisci impostazioni di approvazione automatica",
 		"tooltipStatus": "Approvazione automatica abilitata per: {{toggles}}",
 		"title": "Approvazione Automatica",
+		"toggle": "Attiva/disattiva approvazione automatica",
 		"all": "Tutti",
 		"none": "Nessuno",
 		"description": "Esegui queste azioni senza chiedere il permesso. Abilita solo per azioni di cui ti fidi completamente.",
@@ -257,67 +295,74 @@
 		"toggleAriaLabel": "Attiva/disattiva approvazione automatica",
 		"disabledAriaLabel": "Approvazione automatica disabilitata - seleziona prima le opzioni",
 		"triggerLabelOff": "Approvazione automatica disattivata",
+		"triggerLabelOffShort": "Disattivata",
 		"triggerLabel_zero": "0 approvati automaticamente",
 		"triggerLabel_one": "1 approvato automaticamente",
 		"triggerLabel_other": "{{count}} approvati automaticamente",
-		"triggerLabelAll": "YOLO"
+		"triggerLabelAll": "BRRR"
 	},
 	"reasoning": {
 		"thinking": "Sto pensando",
 		"seconds": "{{count}}s"
 	},
-	"contextCondense": {
-		"title": "Contesto condensato",
-		"condensing": "Condensazione del contesto...",
-		"errorHeader": "Impossibile condensare il contesto",
-		"tokens": "token"
+	"contextManagement": {
+		"tokens": "token",
+		"condensation": {
+			"title": "Contesto condensato",
+			"inProgress": "Condensazione del contesto...",
+			"errorHeader": "Impossibile condensare il contesto"
+		},
+		"truncation": {
+			"title": "Contesto troncato",
+			"inProgress": "Troncamento del contesto...",
+			"messagesRemoved": "{{count}} messaggio rimosso",
+			"messagesRemoved_other": "{{count}} messaggi rimossi",
+			"description": "I messaggi più vecchi sono stati rimossi dalla conversazione per rimanere entro il limite della finestra di contesto. Questo è un approccio veloce ma meno conservativo del contesto rispetto alla condensazione."
+		}
+	},
+	"skill": {
+		"wantsToLoad": "Roo vuole caricare una competenza",
+		"didLoad": "Roo ha caricato una competenza"
 	},
 	"followUpSuggest": {
 		"copyToInput": "Copia nell'input (o Shift + clic)",
-		"autoSelectCountdown": "Selezione automatica in {{count}}s",
-		"countdownDisplay": "{{count}}s"
+		"timerPrefix": "Approvazione automatica abilitata. Selezione tra {{seconds}}s…"
 	},
 	"announcement": {
-		"title": "🎉 Rilasciato Roo Code {{version}}",
-		"description": "Presentazione di <bold>Roo Code Cloud:</bold> Portare la potenza di Roo oltre l'IDE",
-		"feature1": "<bold>Traccia il progresso delle attività ovunque (Gratuito):</bold> Ricevi aggiornamenti in tempo reale su attività di lunga durata senza rimanere bloccato nel tuo IDE",
-		"feature2": "<bold>Controlla l'estensione Roo da remoto (Pro):</bold> Avvia, ferma e interagisci con le attività da un'interfaccia browser basata su chat.",
-		"learnMore": "Pronto a prendere il controllo? Scopri di più <learnMoreLink>qui</learnMoreLink>.",
-		"visitCloudButton": "Visita Roo Code Cloud",
-		"socialLinks": "Unisciti a noi su <xLink>X</xLink>, <discordLink>Discord</discordLink>, o <redditLink>r/RooCode</redditLink>"
-	},
-	"browser": {
-		"rooWantsToUse": "Roo vuole utilizzare il browser:",
-		"consoleLogs": "Log della console",
-		"noNewLogs": "(Nessun nuovo log)",
-		"screenshot": "Screenshot del browser",
-		"cursor": "cursore",
-		"navigation": {
-			"step": "Passo {{current}} di {{total}}",
-			"previous": "Precedente",
-			"next": "Successivo"
+		"title": "Rilasciato Roo Code {{version}}",
+		"support": "Sostieni Roo Code lasciandoci una stella su <githubLink>GitHub</githubLink>.",
+		"finalRelease": {
+			"title": "L'ultima release di Roo Code",
+			"intro": "Questa è l'ultima release di Roo Code. <announcementLink>Come abbiamo annunciato qualche settimana fa</announcementLink>, abbiamo deciso di spostare il nostro focus su <roomoteLink>Roomote</roomoteLink>, la nostra piattaforma di agenti cloud, che riteniamo essere il futuro dello sviluppo software. Grazie di cuore per il tuo supporto durante questo ultimo anno circa.",
+			"continuity": "Questa estensione dovrebbe continuare a funzionare indefinitamente, ma non riceverà correzioni di bug, nuove funzionalità o aggiornamenti dei modelli.",
+			"alternatives": "Se vuoi usare un'estensione, ti consigliamo di dare un'occhiata a <zooCodeLink>ZooCode</zooCodeLink> (un fork di Roo Code creato dalla community) e a <clineLink>Cline</clineLink> (da cui Roo Code è nato originariamente).",
+			"signoff": "Buon coding!"
 		},
-		"sessionStarted": "Sessione browser avviata",
-		"actions": {
-			"title": "Azione browser: ",
-			"launch": "Avvia browser su {{url}}",
-			"click": "Clic ({{coordinate}})",
-			"type": "Digita \"{{text}}\"",
-			"scrollDown": "Scorri verso il basso",
-			"scrollUp": "Scorri verso l'alto",
-			"close": "Chiudi browser"
+		"release": {
+			"heading": "Novità:",
+			"gpt55": "GPT-5.5 via OpenAI Codex: Aggiunto il supporto a GPT-5.5 nel provider OpenAI Codex così puoi usare il modello più recente direttamente da Roo Code.",
+			"claudeOpus47": "Claude Opus 4.7 su Vertex AI: Aggiunto Claude Opus 4.7 al provider Vertex AI, il nuovo modello di ragionamento di punta di Anthropic.",
+			"checkpointNav": "Navigazione Checkpoint Precedenti: Aggiunti controlli nella chat per tornare indietro ai checkpoint precedenti, con pieno supporto i18n."
+		},
+		"cloudAgents": {
+			"heading": "Novità nel Cloud:",
+			"specialized": "Presentazione di <bold>Explainer</bold>, <bold>Planner</bold> e <bold>Coder</bold> - tre agenti cloud specializzati per migliorare i tuoi flussi di lavoro.",
+			"description": "Gli agenti lavorano insieme nel cloud e possono essere attivati dal web o tramite Slack.",
+			"tryButton": "Prova gli Agenti Cloud"
 		}
+	},
+	"costs": {
+		"totalWithSubtasks": "Costo totale (sottoattività incluse): ${{cost}}",
+		"total": "Costo totale: ${{cost}}",
+		"includesSubtasks": "Include i costi delle sottoattività"
 	},
 	"codeblock": {
 		"tooltips": {
 			"expand": "Espandi blocco di codice",
 			"collapse": "Comprimi blocco di codice",
-			"enable_wrap": "Attiva a capo automatico",
-			"disable_wrap": "Disattiva a capo automatico",
 			"copy_code": "Copia codice"
 		}
 	},
-	"systemPromptWarning": "ATTENZIONE: Sovrascrittura personalizzata delle istruzioni di sistema attiva. Questo può compromettere gravemente le funzionalità e causare comportamenti imprevedibili.",
 	"profileViolationWarning": "Il profilo corrente non è compatibile con le impostazioni della tua organizzazione",
 	"shellIntegration": {
 		"title": "Avviso di esecuzione comando",
@@ -337,8 +382,8 @@
 		}
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Roo vuole cercare nella base di codice <code>{{query}}</code>:",
-		"wantsToSearchWithPath": "Roo vuole cercare nella base di codice <code>{{query}}</code> in <code>{{path}}</code>:",
+		"wantsToSearch": "Roo vuole cercare nella base di codice <code>{{query}}</code>",
+		"wantsToSearchWithPath": "Roo vuole cercare nella base di codice <code>{{query}}</code> in <code>{{path}}</code>",
 		"didSearch_one": "Trovato 1 risultato",
 		"didSearch_other": "Trovati {{count}} risultati",
 		"resultTooltip": "Punteggio di somiglianza: {{score}} (clicca per aprire il file)"
@@ -351,20 +396,32 @@
 			"title": "Nega tutto"
 		}
 	},
+	"list-batch": {
+		"approve": {
+			"title": "Approva tutto"
+		},
+		"deny": {
+			"title": "Nega tutto"
+		}
+	},
+	"edit-batch": {
+		"approve": {
+			"title": "Salva tutto"
+		},
+		"deny": {
+			"title": "Nega tutto"
+		}
+	},
 	"indexingStatus": {
 		"ready": "Indice pronto",
 		"indexing": "Indicizzazione {{percentage}}%",
 		"indexed": "Indicizzato",
 		"error": "Errore indice",
-		"status": "Stato indice"
+		"status": "Stato indice",
+		"stopping": "Interruzione dell'indicizzazione..."
 	},
 	"versionIndicator": {
 		"ariaLabel": "Versione {{version}} - Clicca per visualizzare le note di rilascio"
-	},
-	"rooCloudCTA": {
-		"title": "Roo Code Cloud si sta evolvendo!",
-		"description": "Esegui agenti remoti nel cloud, accedi alle tue attività da qualsiasi luogo, collabora con altri e molto altro.",
-		"joinWaitlist": "Registrati per ricevere gli ultimi aggiornamenti."
 	},
 	"editMessage": {
 		"placeholder": "Modifica il tuo messaggio..."
@@ -399,23 +456,36 @@
 		"url": "Incolla l'URL per recuperare i contenuti"
 	},
 	"queuedMessages": {
-		"title": "Messaggi in coda:",
+		"title": "Messaggi in coda",
 		"clickToEdit": "Clicca per modificare il messaggio"
 	},
 	"slashCommand": {
-		"wantsToRun": "Roo vuole eseguire un comando slash:",
-		"didRun": "Roo ha eseguito un comando slash:"
+		"wantsToRun": "Roo vuole eseguire un comando slash",
+		"didRun": "Roo ha eseguito un comando slash"
 	},
-	"ask": {
-		"autoApprovedRequestLimitReached": {
-			"title": "Limite Richieste Approvate Automaticamente Raggiunto",
-			"description": "Roo ha raggiunto il limite di {{count}} richiesta/e API approvata/e automaticamente. Vuoi reimpostare il contatore e procedere con l'attività?",
-			"button": "Reimposta e Continua"
-		},
-		"autoApprovedCostLimitReached": {
-			"title": "Limite di Costo Approvato Automaticamente Raggiunto",
-			"description": "Roo ha raggiunto il limite di costo approvato automaticamente di ${{count}}. Vuoi reimpostare il costo e procedere con l'attività?",
-			"button": "Reimposta e Continua"
-		}
+	"todo": {
+		"partial": "{{completed}} di {{total}} cose da fare completate",
+		"complete": "{{total}} cose da fare completate",
+		"updated": "Aggiornata la lista delle cose da fare",
+		"completed": "Completato",
+		"started": "Iniziato"
+	},
+	"tooManyTools": {
+		"title": "Troppi strumenti abilitati",
+		"toolsPart_one": "{{count}} strumento",
+		"toolsPart_other": "{{count}} strumenti",
+		"serversPart_one": "{{count}} server MCP",
+		"serversPart_other": "{{count}} server MCP",
+		"messageTemplate": "Hai {{tools}} abilitate via {{servers}}. Un numero così alto può confondere il modello e portare a errori. Prova a mantenerlo sotto {{threshold}}.",
+		"openMcpSettings": "Apri impostazioni MCP"
+	},
+	"readCommandOutput": {
+		"title": "Roo read command output"
+	},
+	"retiredProvider": {
+		"title": "Provider non più supportato",
+		"message": "This provider is no longer supported. Please select a different provider in your API profile settings.",
+		"openSettings": "Apri impostazioni",
+		"rooMessage": "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
 	}
 }

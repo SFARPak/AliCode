@@ -1,7 +1,6 @@
 {
 	"title": "MCP-Server",
 	"done": "Fertig",
-	"marketplace": "MCP-Marktplatz",
 	"description": "Das <0>Model Context Protocol</0> ermöglicht die Kommunikation mit lokal laufenden MCP-Servern, die zusätzliche Tools und Ressourcen zur Erweiterung der Fähigkeiten von Roo bereitstellen. Du kannst <1>von der Community erstellte Server</1> verwenden oder Roo bitten, neue Tools speziell für deinen Workflow zu erstellen (z.B. \"ein Tool hinzufügen, das die neueste npm-Dokumentation abruft\").",
 	"instructions": "Anweisungen",
 	"enableToggle": {
@@ -25,12 +24,12 @@
 	"tabs": {
 		"tools": "Tools",
 		"resources": "Ressourcen",
-		"errors": "Fehler"
+		"logs": "Protokolle"
 	},
 	"emptyState": {
 		"noTools": "Keine Tools gefunden",
 		"noResources": "Keine Ressourcen gefunden",
-		"noErrors": "Keine Fehler gefunden"
+		"noLogs": "Noch keine Protokolle"
 	},
 	"networkTimeout": {
 		"label": "Netzwerk-Timeout",

@@ -17,16 +17,19 @@ describe("getModelParams", () => {
 	const anthropicParams = {
 		modelId: "test",
 		format: "anthropic" as const,
+		defaultTemperature: 0,
 	}
 
 	const openaiParams = {
 		modelId: "test",
 		format: "openai" as const,
+		defaultTemperature: 0,
 	}
 
 	const openrouterParams = {
 		modelId: "test",
 		format: "openrouter" as const,
+		defaultTemperature: 0,
 	}
 
 	describe("Basic functionality", () => {
@@ -48,11 +51,12 @@ describe("getModelParams", () => {
 			})
 		})
 
-		it("should use default temperature of 0 when no defaultTemperature is provided", () => {
+		it("should use the provided defaultTemperature when no user or model temperature is set", () => {
 			const result = getModelParams({
 				...anthropicParams,
 				settings: {},
 				model: baseModel,
+				defaultTemperature: 0,
 			})
 
 			expect(result.temperature).toBe(0)
@@ -85,6 +89,38 @@ describe("getModelParams", () => {
 			})
 
 			expect(result.temperature).toBe(0.5)
+		})
+
+		it("should use model defaultTemperature over provider defaultTemperature", () => {
+			const modelWithDefaultTemp: ModelInfo = {
+				...baseModel,
+				defaultTemperature: 0.8,
+			}
+
+			const result = getModelParams({
+				...anthropicParams,
+				settings: {},
+				model: modelWithDefaultTemp,
+				defaultTemperature: 0.5,
+			})
+
+			expect(result.temperature).toBe(0.8)
+		})
+
+		it("should prefer settings temperature over model defaultTemperature", () => {
+			const modelWithDefaultTemp: ModelInfo = {
+				...baseModel,
+				defaultTemperature: 0.8,
+			}
+
+			const result = getModelParams({
+				...anthropicParams,
+				settings: { modelTemperature: 0.3 },
+				model: modelWithDefaultTemp,
+				defaultTemperature: 0.5,
+			})
+
+			expect(result.temperature).toBe(0.3)
 		})
 
 		it("should use model maxTokens when available", () => {
@@ -161,6 +197,7 @@ describe("getModelParams", () => {
 				format: "openrouter" as const,
 				settings: {},
 				model: baseModel,
+				defaultTemperature: 0,
 			})
 
 			expect(result.maxTokens).toBe(ANTHROPIC_DEFAULT_MAX_TOKENS)
@@ -182,6 +219,7 @@ describe("getModelParams", () => {
 				format: "openrouter" as const,
 				settings: {},
 				model: baseModel,
+				defaultTemperature: 0,
 			})
 
 			expect(result.maxTokens).toBeUndefined()
@@ -243,7 +281,6 @@ describe("getModelParams", () => {
 
 			expect(result.reasoningBudget).toBeUndefined()
 			expect(result.temperature).toBe(0)
-			expect(result.reasoning).toBeUndefined()
 		})
 
 		it("should honor customMaxTokens for reasoning budget models", () => {
@@ -343,6 +380,7 @@ describe("getModelParams", () => {
 					format: "gemini" as const,
 					settings: { modelMaxTokens: 2000, modelMaxThinkingTokens: 50 },
 					model,
+					defaultTemperature: 0,
 				}),
 			).toEqual({
 				format: "gemini",
@@ -369,6 +407,7 @@ describe("getModelParams", () => {
 					format: "openrouter" as const,
 					settings: { modelMaxTokens: 4000 },
 					model,
+					defaultTemperature: 0,
 				}),
 			).toEqual({
 				format: "openrouter",
@@ -525,7 +564,6 @@ describe("getModelParams", () => {
 			})
 
 			expect(result.reasoningEffort).toBeUndefined()
-			expect(result.reasoning).toBeUndefined()
 		})
 
 		it("should handle reasoning effort for openrouter format", () => {
@@ -545,6 +583,78 @@ describe("getModelParams", () => {
 			expect(result.reasoning).toEqual({ effort: "medium" })
 		})
 
+		it("should include 'minimal' effort for openai format", () => {
+			const model: ModelInfo = {
+				...baseModel,
+				// Array capability explicitly includes minimal
+				supportsReasoningEffort: ["minimal", "low", "medium", "high"] as any,
+			}
+
+			const result = getModelParams({
+				...openaiParams,
+				settings: { reasoningEffort: "minimal" as any },
+				model,
+			})
+
+			expect(result.reasoningEffort).toBe("minimal")
+			expect(result.reasoning).toEqual({ reasoning_effort: "minimal" })
+		})
+
+		it("should include 'none' effort for openai format", () => {
+			const model: ModelInfo = {
+				...baseModel,
+				// Array capability explicitly includes none
+				supportsReasoningEffort: ["none", "low", "medium", "high"] as any,
+			}
+
+			const result = getModelParams({
+				...openaiParams,
+				settings: { reasoningEffort: "none" as any },
+				model,
+			})
+
+			expect(result.reasoningEffort).toBe("none")
+			expect(result.reasoning).toEqual({ reasoning_effort: "none" })
+		})
+
+		it("should omit reasoning for 'disable' selection", () => {
+			const model: ModelInfo = {
+				...baseModel,
+				supportsReasoningEffort: true,
+			}
+
+			const result = getModelParams({
+				...openaiParams,
+				settings: { reasoningEffort: "disable" as any },
+				model,
+			})
+
+			expect(result.reasoningEffort).toBeUndefined()
+		})
+
+		it("should include 'minimal' and 'none' for openrouter format", () => {
+			const model: ModelInfo = {
+				...baseModel,
+				// Array capability explicitly includes both
+				supportsReasoningEffort: ["none", "minimal", "low", "medium", "high"] as any,
+			}
+
+			const minimalRes = getModelParams({
+				...openrouterParams,
+				settings: { reasoningEffort: "minimal" as any },
+				model,
+			})
+			expect(minimalRes.reasoningEffort).toBe("minimal")
+			expect(minimalRes.reasoning).toEqual({ effort: "minimal" })
+
+			const noneRes = getModelParams({
+				...openrouterParams,
+				settings: { reasoningEffort: "none" as any },
+				model,
+			})
+			expect(noneRes.reasoningEffort).toBe("none")
+			expect(noneRes.reasoning).toEqual({ effort: "none" })
+		})
 		it("should not use reasoning effort for anthropic format", () => {
 			const model: ModelInfo = {
 				...baseModel,
@@ -565,7 +675,7 @@ describe("getModelParams", () => {
 		it("should use reasoningEffort if supportsReasoningEffort is false but reasoningEffort is set", () => {
 			const model: ModelInfo = {
 				...baseModel,
-				maxTokens: 3000, // Changed to 3000 (18.75% of 16000), which is within 20% threshold
+				maxTokens: 3000, // 3000 is 18.75% of 16000, within 20% threshold
 				supportsReasoningEffort: false,
 				reasoningEffort: "medium",
 			}
@@ -576,7 +686,8 @@ describe("getModelParams", () => {
 				model,
 			})
 
-			expect(result.maxTokens).toBe(3000) // Now uses model.maxTokens since it's within 20% threshold
+			expect(result.maxTokens).toBe(3000)
+			// Now uses model.maxTokens since it's within 20% threshold
 			expect(result.reasoningEffort).toBe("medium")
 		})
 	})
@@ -630,7 +741,7 @@ describe("getModelParams", () => {
 			})
 
 			expect(result.reasoningBudget).toBe(3200) // 80% of 4000
-			expect(result.reasoningEffort).toBeUndefined()
+			expect(result.reasoningEffort).toBeUndefined() // Budget takes precedence
 			expect(result.temperature).toBe(1.0)
 		})
 
@@ -784,8 +895,6 @@ describe("getModelParams", () => {
 				settings: {},
 				model,
 			})
-
-			expect(result.reasoning).toBeUndefined()
 		})
 	})
 

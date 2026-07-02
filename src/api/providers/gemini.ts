@@ -5,15 +5,16 @@ import {
 	type GenerateContentParameters,
 	type GenerateContentConfig,
 	type GroundingMetadata,
+	FunctionCallingConfigMode,
 } from "@google/genai"
 import type { JWTInput } from "google-auth-library"
 
 import { type ModelInfo, type GeminiModelId, geminiDefaultModelId, geminiModels } from "@roo-code/types"
+import { safeJsonParse } from "@roo-code/core"
 
 import type { ApiHandlerOptions } from "../../shared/api"
-import { safeJsonParse } from "../../shared/safeJsonParse"
 
-import { convertAnthropicContentToGemini, convertAnthropicMessageToGemini } from "../transform/gemini-format"
+import { convertAnthropicMessageToGemini } from "../transform/gemini-format"
 import { t } from "i18next"
 import type { ApiStream, GroundingSource } from "../transform/stream"
 import { getModelParams } from "../transform/model-params"
@@ -29,6 +30,9 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 	protected options: ApiHandlerOptions
 
 	private client: GoogleGenAI
+	private lastThoughtSignature?: string
+	private lastResponseId?: string
+	private readonly providerName = "Gemini"
 
 	constructor({ isVertex, ...options }: GeminiHandlerOptions) {
 		super()
@@ -66,25 +70,128 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		const { id: model, info, reasoning: thinkingConfig, maxTokens } = this.getModel()
+		// Reset per-request metadata that we persist into apiConversationHistory.
+		this.lastThoughtSignature = undefined
+		this.lastResponseId = undefined
 
-		const contents = messages.map(convertAnthropicMessageToGemini)
+		// For hybrid/budget reasoning models (e.g. Gemini 2.5 Pro), respect user-configured
+		// modelMaxTokens so the ThinkingBudget slider can control the cap. For effort-only or
+		// standard models (like gemini-3-pro-preview), ignore any stale modelMaxTokens and
+		// default to the model's computed maxTokens from getModelMaxOutputTokens.
+		const isHybridReasoningModel = info.supportsReasoningBudget || info.requiredReasoningBudget
+		const maxOutputTokens = isHybridReasoningModel
+			? (this.options.modelMaxTokens ?? maxTokens ?? undefined)
+			: (maxTokens ?? undefined)
 
-		const tools: GenerateContentConfig["tools"] = []
-		if (this.options.enableUrlContext) {
-			tools.push({ urlContext: {} })
+		// Gemini 3 validates thought signatures for tool/function calling steps.
+		// We must round-trip the signature when tools are in use, even if the user chose
+		// a minimal thinking level (or thinkingConfig is otherwise absent).
+		const includeThoughtSignatures = Boolean(thinkingConfig) || Boolean(metadata?.tools?.length)
+
+		// The message list can include provider-specific meta entries such as
+		// `{ type: "reasoning", ... }` that are intended only for providers like
+		// openai-native. Gemini should never see those; they are not valid
+		// Anthropic.MessageParam values and will cause failures (e.g. missing
+		// `content` for the converter). Filter them out here.
+		type ReasoningMetaLike = { type?: string }
+
+		const geminiMessages = messages.filter((message): message is Anthropic.Messages.MessageParam => {
+			const meta = message as ReasoningMetaLike
+			if (meta.type === "reasoning") {
+				return false
+			}
+			return true
+		})
+
+		// Build a map of tool IDs to names from previous messages
+		// This is needed because Anthropic's tool_result blocks only contain the ID,
+		// but Gemini requires the name in functionResponse
+		const toolIdToName = new Map<string, string>()
+		for (const message of messages) {
+			if (Array.isArray(message.content)) {
+				for (const block of message.content) {
+					if (block.type === "tool_use") {
+						toolIdToName.set(block.id, block.name)
+					}
+				}
+			}
 		}
 
-		if (this.options.enableGrounding) {
-			tools.push({ googleSearch: {} })
-		}
+		const contents = geminiMessages
+			.map((message) => convertAnthropicMessageToGemini(message, { includeThoughtSignatures, toolIdToName }))
+			.flat()
+
+		// Tools are always present (minimum ALWAYS_AVAILABLE_TOOLS).
+		// Google built-in tools (Grounding, URL Context) are mutually exclusive
+		// with function declarations in the Gemini API, so we always use
+		// function declarations when tools are provided.
+		const tools: GenerateContentConfig["tools"] = [
+			{
+				functionDeclarations: (metadata?.tools ?? []).map((tool) => ({
+					name: (tool as any).function.name,
+					description: (tool as any).function.description,
+					parametersJsonSchema: (tool as any).function.parameters,
+				})),
+			},
+		]
+
+		// Determine temperature respecting model capabilities and defaults:
+		// - If supportsTemperature is explicitly false, ignore user overrides
+		//   and pin to the model's defaultTemperature (or omit if undefined).
+		// - Otherwise, allow the user setting to override, falling back to model default,
+		//   then to 1 for Gemini provider default.
+		const supportsTemperature = info.supportsTemperature !== false
+		const temperatureConfig: number | undefined = supportsTemperature
+			? (this.options.modelTemperature ?? info.defaultTemperature ?? 1)
+			: info.defaultTemperature
 
 		const config: GenerateContentConfig = {
 			systemInstruction,
 			httpOptions: this.options.googleGeminiBaseUrl ? { baseUrl: this.options.googleGeminiBaseUrl } : undefined,
 			thinkingConfig,
-			maxOutputTokens: this.options.modelMaxTokens ?? maxTokens ?? undefined,
-			temperature: this.options.modelTemperature ?? 0,
+			maxOutputTokens,
+			temperature: temperatureConfig,
 			...(tools.length > 0 ? { tools } : {}),
+		}
+
+		// Handle allowedFunctionNames for mode-restricted tool access.
+		// When provided, all tool definitions are passed to the model (so it can reference
+		// historical tool calls in conversation), but only the specified tools can be invoked.
+		// This takes precedence over tool_choice to ensure mode restrictions are honored.
+		if (metadata?.allowedFunctionNames && metadata.allowedFunctionNames.length > 0) {
+			config.toolConfig = {
+				functionCallingConfig: {
+					// Use ANY mode to allow calling any of the allowed functions
+					mode: FunctionCallingConfigMode.ANY,
+					allowedFunctionNames: metadata.allowedFunctionNames,
+				},
+			}
+		} else if (metadata?.tool_choice) {
+			const choice = metadata.tool_choice
+			let mode: FunctionCallingConfigMode
+			let allowedFunctionNames: string[] | undefined
+
+			if (choice === "auto") {
+				mode = FunctionCallingConfigMode.AUTO
+			} else if (choice === "none") {
+				mode = FunctionCallingConfigMode.NONE
+			} else if (choice === "required") {
+				// "required" means the model must call at least one tool; Gemini uses ANY for this.
+				mode = FunctionCallingConfigMode.ANY
+			} else if (typeof choice === "object" && "function" in choice && choice.type === "function") {
+				mode = FunctionCallingConfigMode.ANY
+				allowedFunctionNames = [choice.function.name]
+			} else {
+				// Fall back to AUTO for unknown values to avoid unintentionally broadening tool access.
+				mode = FunctionCallingConfigMode.AUTO
+			}
+
+			config.toolConfig = {
+				functionCallingConfig: {
+					mode,
+					...(allowedFunctionNames ? { allowedFunctionNames } : {}),
+				},
+			}
 		}
 
 		const params: GenerateContentParameters = { model, contents, config }
@@ -94,8 +201,19 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 			let lastUsageMetadata: GenerateContentResponseUsageMetadata | undefined
 			let pendingGroundingMetadata: GroundingMetadata | undefined
+			let finalResponse: { responseId?: string } | undefined
+			let finishReason: string | undefined
+
+			let toolCallCounter = 0
+			let hasContent = false
+			let hasReasoning = false
 
 			for await (const chunk of result) {
+				// Track the final structured response (per SDK pattern: candidate.finishReason)
+				if (chunk.candidates && chunk.candidates[0]?.finishReason) {
+					finalResponse = chunk as { responseId?: string }
+					finishReason = chunk.candidates[0].finishReason
+				}
 				// Process candidates and their parts to separate thoughts from content
 				if (chunk.candidates && chunk.candidates.length > 0) {
 					const candidate = chunk.candidates[0]
@@ -105,15 +223,57 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 					}
 
 					if (candidate.content && candidate.content.parts) {
-						for (const part of candidate.content.parts) {
+						for (const part of candidate.content.parts as Array<{
+							thought?: boolean
+							text?: string
+							thoughtSignature?: string
+							functionCall?: { name: string; args: Record<string, unknown> }
+						}>) {
+							// Capture thought signatures so they can be persisted into API history.
+							const thoughtSignature = part.thoughtSignature
+							// Persist thought signatures so they can be round-tripped in the next step.
+							// Gemini 3 requires this during tool calling; other Gemini thinking models
+							// benefit from it for continuity.
+							if (includeThoughtSignatures && thoughtSignature) {
+								this.lastThoughtSignature = thoughtSignature
+							}
+
 							if (part.thought) {
 								// This is a thinking/reasoning part
 								if (part.text) {
+									hasReasoning = true
 									yield { type: "reasoning", text: part.text }
 								}
+							} else if (part.functionCall) {
+								hasContent = true
+								// Gemini sends complete function calls in a single chunk
+								// Emit as partial chunks for consistent handling with NativeToolCallParser
+								const callId = `${part.functionCall.name}-${toolCallCounter}`
+								const args = JSON.stringify(part.functionCall.args)
+
+								// Emit name first
+								yield {
+									type: "tool_call_partial",
+									index: toolCallCounter,
+									id: callId,
+									name: part.functionCall.name,
+									arguments: undefined,
+								}
+
+								// Then emit arguments
+								yield {
+									type: "tool_call_partial",
+									index: toolCallCounter,
+									id: callId,
+									name: undefined,
+									arguments: args,
+								}
+
+								toolCallCounter++
 							} else {
 								// This is regular content
 								if (part.text) {
+									hasContent = true
 									yield { type: "text", text: part.text }
 								}
 							}
@@ -123,12 +283,19 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 				// Fallback to the original text property if no candidates structure
 				else if (chunk.text) {
+					hasContent = true
 					yield { type: "text", text: chunk.text }
 				}
 
 				if (chunk.usageMetadata) {
 					lastUsageMetadata = chunk.usageMetadata
 				}
+			}
+
+			if (finalResponse?.responseId) {
+				// Capture responseId so Task.addToApiConversationHistory can store it
+				// alongside the assistant message in api_history.json.
+				this.lastResponseId = finalResponse.responseId
 			}
 
 			if (pendingGroundingMetadata) {
@@ -150,10 +317,18 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 					outputTokens,
 					cacheReadTokens,
 					reasoningTokens,
-					totalCost: this.calculateCost({ info, inputTokens, outputTokens, cacheReadTokens }),
+					totalCost: this.calculateCost({
+						info,
+						inputTokens,
+						outputTokens,
+						cacheReadTokens,
+						reasoningTokens,
+					}),
 				}
 			}
 		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error)
+
 			if (error instanceof Error) {
 				throw new Error(t("common:errors.gemini.generate_stream", { error: error.message }))
 			}
@@ -166,7 +341,21 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		const modelId = this.options.apiModelId
 		let id = modelId && modelId in geminiModels ? (modelId as GeminiModelId) : geminiDefaultModelId
 		let info: ModelInfo = geminiModels[id]
-		const params = getModelParams({ format: "gemini", modelId: id, model: info, settings: this.options })
+
+		const params = getModelParams({
+			format: "gemini",
+			modelId: id,
+			model: info,
+			settings: this.options,
+			defaultTemperature: info.defaultTemperature ?? 1,
+		})
+
+		// Gemini models perform better with the edit tool instead of apply_diff.
+		info = {
+			...info,
+			excludedTools: [...new Set([...(info.excludedTools || []), "apply_diff"])],
+			includedTools: [...new Set([...(info.includedTools || []), "edit"])],
+		}
 
 		// The `:thinking` suffix indicates that the model is a "Hybrid"
 		// reasoning model and that reasoning is required to be enabled.
@@ -210,29 +399,28 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
-		try {
-			const { id: model } = this.getModel()
+		const { id: model, info } = this.getModel()
 
-			const tools: GenerateContentConfig["tools"] = []
-			if (this.options.enableUrlContext) {
-				tools.push({ urlContext: {} })
-			}
-			if (this.options.enableGrounding) {
-				tools.push({ googleSearch: {} })
-			}
+		try {
+			const supportsTemperature = info.supportsTemperature !== false
+			const temperatureConfig: number | undefined = supportsTemperature
+				? (this.options.modelTemperature ?? info.defaultTemperature ?? 1)
+				: info.defaultTemperature
+
 			const promptConfig: GenerateContentConfig = {
 				httpOptions: this.options.googleGeminiBaseUrl
 					? { baseUrl: this.options.googleGeminiBaseUrl }
 					: undefined,
-				temperature: this.options.modelTemperature ?? 0,
-				...(tools.length > 0 ? { tools } : {}),
+				temperature: temperatureConfig,
 			}
 
-			const result = await this.client.models.generateContent({
+			const request = {
 				model,
 				contents: [{ role: "user", parts: [{ text: prompt }] }],
 				config: promptConfig,
-			})
+			}
+
+			const result = await this.client.models.generateContent(request)
 
 			let text = result.text ?? ""
 
@@ -246,6 +434,8 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 			return text
 		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error)
+
 			if (error instanceof Error) {
 				throw new Error(t("common:errors.gemini.generate_complete_prompt", { error: error.message }))
 			}
@@ -254,25 +444,12 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		}
 	}
 
-	override async countTokens(content: Array<Anthropic.Messages.ContentBlockParam>): Promise<number> {
-		try {
-			const { id: model } = this.getModel()
+	public getThoughtSignature(): string | undefined {
+		return this.lastThoughtSignature
+	}
 
-			const response = await this.client.models.countTokens({
-				model,
-				contents: convertAnthropicContentToGemini(content),
-			})
-
-			if (response.totalTokens === undefined) {
-				console.warn("Gemini token counting returned undefined, using fallback")
-				return super.countTokens(content)
-			}
-
-			return response.totalTokens
-		} catch (error) {
-			console.warn("Gemini token counting failed, using fallback", error)
-			return super.countTokens(content)
-		}
+	public getResponseId(): string | undefined {
+		return this.lastResponseId
 	}
 
 	public calculateCost({
@@ -280,16 +457,15 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		inputTokens,
 		outputTokens,
 		cacheReadTokens = 0,
+		reasoningTokens = 0,
 	}: {
 		info: ModelInfo
 		inputTokens: number
 		outputTokens: number
 		cacheReadTokens?: number
+		reasoningTokens?: number
 	}) {
-		if (!info.inputPrice || !info.outputPrice || !info.cacheReadsPrice) {
-			return undefined
-		}
-
+		// For models with tiered pricing, prices might only be defined in tiers
 		let inputPrice = info.inputPrice
 		let outputPrice = info.outputPrice
 		let cacheReadsPrice = info.cacheReadsPrice
@@ -306,25 +482,36 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 			}
 		}
 
+		// Check if we have the required prices after considering tiers
+		if (!inputPrice || !outputPrice) {
+			return undefined
+		}
+
+		// cacheReadsPrice is optional - if not defined, treat as 0
+		if (!cacheReadsPrice) {
+			cacheReadsPrice = 0
+		}
+
 		// Subtract the cached input tokens from the total input tokens.
 		const uncachedInputTokens = inputTokens - cacheReadTokens
+
+		// Bill both completion and reasoning ("thoughts") tokens as output.
+		const billedOutputTokens = outputTokens + reasoningTokens
 
 		let cacheReadCost = cacheReadTokens > 0 ? cacheReadsPrice * (cacheReadTokens / 1_000_000) : 0
 
 		const inputTokensCost = inputPrice * (uncachedInputTokens / 1_000_000)
-		const outputTokensCost = outputPrice * (outputTokens / 1_000_000)
+		const outputTokensCost = outputPrice * (billedOutputTokens / 1_000_000)
 		const totalCost = inputTokensCost + outputTokensCost + cacheReadCost
 
 		const trace: Record<string, { price: number; tokens: number; cost: number }> = {
 			input: { price: inputPrice, tokens: uncachedInputTokens, cost: inputTokensCost },
-			output: { price: outputPrice, tokens: outputTokens, cost: outputTokensCost },
+			output: { price: outputPrice, tokens: billedOutputTokens, cost: outputTokensCost },
 		}
 
 		if (cacheReadTokens > 0) {
 			trace.cacheRead = { price: cacheReadsPrice, tokens: cacheReadTokens, cost: cacheReadCost }
 		}
-
-		// console.log(`[GeminiHandler] calculateCost -> ${totalCost}`, trace)
 
 		return totalCost
 	}

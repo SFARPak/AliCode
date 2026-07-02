@@ -115,6 +115,51 @@ describe("FireworksHandler", () => {
 		)
 	})
 
+	it("should return Kimi K2 Thinking model with correct configuration", () => {
+		const testModelId: FireworksModelId = "accounts/fireworks/models/kimi-k2-thinking"
+		const handlerWithModel = new FireworksHandler({
+			apiModelId: testModelId,
+			fireworksApiKey: "test-fireworks-api-key",
+		})
+		const model = handlerWithModel.getModel()
+		expect(model.id).toBe(testModelId)
+		expect(model.info).toEqual(
+			expect.objectContaining({
+				maxTokens: 16000,
+				contextWindow: 256000,
+				supportsImages: false,
+				supportsPromptCache: true,
+				supportsTemperature: true,
+				preserveReasoning: true,
+				defaultTemperature: 1.0,
+				inputPrice: 0.6,
+				outputPrice: 2.5,
+				cacheReadsPrice: 0.15,
+			}),
+		)
+	})
+
+	it("should return MiniMax M2 model with correct configuration", () => {
+		const testModelId: FireworksModelId = "accounts/fireworks/models/minimax-m2"
+		const handlerWithModel = new FireworksHandler({
+			apiModelId: testModelId,
+			fireworksApiKey: "test-fireworks-api-key",
+		})
+		const model = handlerWithModel.getModel()
+		expect(model.id).toBe(testModelId)
+		expect(model.info).toEqual(
+			expect.objectContaining({
+				maxTokens: 4096,
+				contextWindow: 204800,
+				supportsImages: false,
+				supportsPromptCache: false,
+				inputPrice: 0.3,
+				outputPrice: 1.2,
+				description: expect.stringContaining("MiniMax M2 is a high-performance language model"),
+			}),
+		)
+	})
+
 	it("should return Qwen3 235B model with correct configuration", () => {
 		const testModelId: FireworksModelId = "accounts/fireworks/models/qwen3-235b-a22b-instruct-2507"
 		const handlerWithModel = new FireworksHandler({
@@ -242,6 +287,27 @@ describe("FireworksHandler", () => {
 		)
 	})
 
+	it("should return GLM-4.6 model with correct configuration", () => {
+		const testModelId: FireworksModelId = "accounts/fireworks/models/glm-4p6"
+		const handlerWithModel = new FireworksHandler({
+			apiModelId: testModelId,
+			fireworksApiKey: "test-fireworks-api-key",
+		})
+		const model = handlerWithModel.getModel()
+		expect(model.id).toBe(testModelId)
+		expect(model.info).toEqual(
+			expect.objectContaining({
+				maxTokens: 25344,
+				contextWindow: 198000,
+				supportsImages: false,
+				supportsPromptCache: false,
+				inputPrice: 0.55,
+				outputPrice: 2.19,
+				description: expect.stringContaining("Z.ai GLM-4.6 is an advanced coding model"),
+			}),
+		)
+	})
+
 	it("should return gpt-oss-20b model with correct configuration", () => {
 		const testModelId: FireworksModelId = "accounts/fireworks/models/gpt-oss-20b"
 		const handlerWithModel = new FireworksHandler({
@@ -342,7 +408,7 @@ describe("FireworksHandler", () => {
 		const firstChunk = await stream.next()
 
 		expect(firstChunk.done).toBe(false)
-		expect(firstChunk.value).toEqual({ type: "usage", inputTokens: 10, outputTokens: 20 })
+		expect(firstChunk.value).toMatchObject({ type: "usage", inputTokens: 10, outputTokens: 20 })
 	})
 
 	it("createMessage should pass correct parameters to Fireworks client", async () => {
@@ -382,16 +448,85 @@ describe("FireworksHandler", () => {
 		)
 	})
 
-	it("should use default temperature of 0.5", () => {
-		const testModelId: FireworksModelId = "accounts/fireworks/models/kimi-k2-instruct"
+	it("should use provider default temperature of 0.5 for models without defaultTemperature", async () => {
+		const modelId: FireworksModelId = "accounts/fireworks/models/kimi-k2-instruct"
 		const handlerWithModel = new FireworksHandler({
-			apiModelId: testModelId,
+			apiModelId: modelId,
 			fireworksApiKey: "test-fireworks-api-key",
 		})
-		const model = handlerWithModel.getModel()
-		// The temperature is set in the constructor as defaultTemperature: 0.5
-		// This test verifies the handler is configured with the correct default temperature
-		expect(handlerWithModel).toBeDefined()
+
+		mockCreate.mockImplementationOnce(() => ({
+			[Symbol.asyncIterator]: () => ({
+				async next() {
+					return { done: true }
+				},
+			}),
+		}))
+
+		const messageGenerator = handlerWithModel.createMessage("system", [])
+		await messageGenerator.next()
+
+		expect(mockCreate).toHaveBeenCalledWith(
+			expect.objectContaining({
+				temperature: 0.5,
+			}),
+			undefined,
+		)
+	})
+
+	it("should use model defaultTemperature (1.0) over provider default (0.5) for kimi-k2-thinking", async () => {
+		const modelId: FireworksModelId = "accounts/fireworks/models/kimi-k2-thinking"
+		const handlerWithModel = new FireworksHandler({
+			apiModelId: modelId,
+			fireworksApiKey: "test-fireworks-api-key",
+		})
+
+		mockCreate.mockImplementationOnce(() => ({
+			[Symbol.asyncIterator]: () => ({
+				async next() {
+					return { done: true }
+				},
+			}),
+		}))
+
+		const messageGenerator = handlerWithModel.createMessage("system", [])
+		await messageGenerator.next()
+
+		// Model's defaultTemperature (1.0) should take precedence over provider's default (0.5)
+		expect(mockCreate).toHaveBeenCalledWith(
+			expect.objectContaining({
+				temperature: 1.0,
+			}),
+			undefined,
+		)
+	})
+
+	it("should use user-specified temperature over model and provider defaults", async () => {
+		const modelId: FireworksModelId = "accounts/fireworks/models/kimi-k2-thinking"
+		const handlerWithModel = new FireworksHandler({
+			apiModelId: modelId,
+			fireworksApiKey: "test-fireworks-api-key",
+			modelTemperature: 0.7,
+		})
+
+		mockCreate.mockImplementationOnce(() => ({
+			[Symbol.asyncIterator]: () => ({
+				async next() {
+					return { done: true }
+				},
+			}),
+		}))
+
+		const messageGenerator = handlerWithModel.createMessage("system", [])
+		await messageGenerator.next()
+
+		// User-specified temperature should take precedence over everything
+		expect(mockCreate).toHaveBeenCalledWith(
+			expect.objectContaining({
+				temperature: 0.7,
+			}),
+			undefined,
+		)
 	})
 
 	it("should handle empty response in completePrompt", async () => {
@@ -452,10 +587,8 @@ describe("FireworksHandler", () => {
 			chunks.push(chunk)
 		}
 
-		expect(chunks).toEqual([
-			{ type: "text", text: "Hello" },
-			{ type: "text", text: " world" },
-			{ type: "usage", inputTokens: 5, outputTokens: 10 },
-		])
+		expect(chunks[0]).toEqual({ type: "text", text: "Hello" })
+		expect(chunks[1]).toEqual({ type: "text", text: " world" })
+		expect(chunks[2]).toMatchObject({ type: "usage", inputTokens: 5, outputTokens: 10 })
 	})
 })

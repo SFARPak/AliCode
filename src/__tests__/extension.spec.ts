@@ -1,7 +1,6 @@
 // npx vitest run __tests__/extension.spec.ts
 
 import type * as vscode from "vscode"
-import type { AuthState } from "@roo-code/types"
 
 vi.mock("vscode", () => ({
 	window: {
@@ -46,43 +45,9 @@ vi.mock("@dotenvx/dotenvx", () => ({
 	config: vi.fn(),
 }))
 
-const mockBridgeOrchestratorDisconnect = vi.fn().mockResolvedValue(undefined)
-
-vi.mock("@roo-code/cloud", () => ({
-	CloudService: {
-		createInstance: vi.fn(),
-		hasInstance: vi.fn().mockReturnValue(true),
-		get instance() {
-			return {
-				off: vi.fn(),
-				on: vi.fn(),
-				getUserInfo: vi.fn().mockReturnValue(null),
-				isTaskSyncEnabled: vi.fn().mockReturnValue(false),
-			}
-		},
-	},
-	BridgeOrchestrator: {
-		disconnect: mockBridgeOrchestratorDisconnect,
-	},
-	getRooCodeApiUrl: vi.fn().mockReturnValue("https://app.roocode.com"),
-}))
-
-vi.mock("@roo-code/telemetry", () => ({
-	TelemetryService: {
-		createInstance: vi.fn().mockReturnValue({
-			register: vi.fn(),
-			setProvider: vi.fn(),
-			shutdown: vi.fn(),
-		}),
-		get instance() {
-			return {
-				register: vi.fn(),
-				setProvider: vi.fn(),
-				shutdown: vi.fn(),
-			}
-		},
-	},
-	PostHogTelemetryClient: vi.fn(),
+// Mock fs so the extension module can safely check for optional .env.
+vi.mock("fs", () => ({
+	existsSync: vi.fn().mockReturnValue(false),
 }))
 
 vi.mock("../utils/outputChannelLogger", () => ({
@@ -138,12 +103,6 @@ vi.mock("../services/code-index/manager", () => ({
 	},
 }))
 
-vi.mock("../services/mdm/MdmService", () => ({
-	MdmService: {
-		createInstance: vi.fn().mockResolvedValue(null),
-	},
-}))
-
 vi.mock("../utils/migrateSettings", () => ({
 	migrateSettings: vi.fn().mockResolvedValue(undefined),
 }))
@@ -168,17 +127,46 @@ vi.mock("../activate", () => ({
 
 vi.mock("../i18n", () => ({
 	initializeI18n: vi.fn(),
+	t: vi.fn((key) => key),
+}))
+
+// Mock ClineProvider
+vi.mock("../core/webview/ClineProvider", async () => {
+	const mockInstance = {
+		resolveWebviewView: vi.fn(),
+		postMessageToWebview: vi.fn(),
+		postStateToWebview: vi.fn(),
+		postStateToWebviewWithoutClineMessages: vi.fn(),
+		getState: vi.fn().mockResolvedValue({}),
+		initializeCloudProfileSyncWhenReady: vi.fn().mockResolvedValue(undefined),
+		providerSettingsManager: {},
+		contextProxy: { getGlobalState: vi.fn() },
+		customModesManager: {},
+		upsertProviderProfile: vi.fn().mockResolvedValue(undefined),
+	}
+	return {
+		ClineProvider: Object.assign(
+			vi.fn().mockImplementation(() => mockInstance),
+			{
+				// Static method used by extension.ts
+				getVisibleInstance: vi.fn().mockReturnValue(mockInstance),
+				sideBarId: "roo-cline-sidebar",
+			},
+		),
+	}
+})
+
+// Mock modelCache to prevent network requests during module loading
+vi.mock("../api/providers/fetchers/modelCache", () => ({
+	getModels: vi.fn().mockResolvedValue([]),
+	initializeModelCacheRefresh: vi.fn(),
 }))
 
 describe("extension.ts", () => {
 	let mockContext: vscode.ExtensionContext
-	let authStateChangedHandler:
-		| ((data: { state: AuthState; previousState: AuthState }) => void | Promise<void>)
-		| undefined
 
 	beforeEach(() => {
 		vi.clearAllMocks()
-		mockBridgeOrchestratorDisconnect.mockClear()
 
 		mockContext = {
 			extensionPath: "/test/path",
@@ -188,70 +176,35 @@ describe("extension.ts", () => {
 			},
 			subscriptions: [],
 		} as unknown as vscode.ExtensionContext
-
-		authStateChangedHandler = undefined
 	})
 
-	test("authStateChangedHandler calls BridgeOrchestrator.disconnect when logged-out event fires", async () => {
-		const { CloudService, BridgeOrchestrator } = await import("@roo-code/cloud")
+	test("does not call dotenvx.config when optional .env does not exist", async () => {
+		vi.resetModules()
+		vi.clearAllMocks()
 
-		// Capture the auth state changed handler.
-		vi.mocked(CloudService.createInstance).mockImplementation(async (_context, _logger, handlers) => {
-			if (handlers?.["auth-state-changed"]) {
-				authStateChangedHandler = handlers["auth-state-changed"]
-			}
+		const fs = await import("fs")
+		vi.mocked(fs.existsSync).mockReturnValue(false)
 
-			return {
-				off: vi.fn(),
-				on: vi.fn(),
-				telemetryClient: null,
-			} as any
-		})
+		const dotenvx = await import("@dotenvx/dotenvx")
 
-		// Activate the extension.
 		const { activate } = await import("../extension")
 		await activate(mockContext)
 
-		// Verify handler was registered.
-		expect(authStateChangedHandler).toBeDefined()
-
-		// Trigger logout.
-		await authStateChangedHandler!({
-			state: "logged-out" as AuthState,
-			previousState: "logged-in" as AuthState,
-		})
-
-		// Verify BridgeOrchestrator.disconnect was called
-		expect(mockBridgeOrchestratorDisconnect).toHaveBeenCalled()
+		expect(dotenvx.config).not.toHaveBeenCalled()
 	})
 
-	test("authStateChangedHandler does not call BridgeOrchestrator.disconnect for other states", async () => {
-		const { CloudService } = await import("@roo-code/cloud")
+	test("calls dotenvx.config when optional .env exists", async () => {
+		vi.resetModules()
+		vi.clearAllMocks()
 
-		// Capture the auth state changed handler.
-		vi.mocked(CloudService.createInstance).mockImplementation(async (_context, _logger, handlers) => {
-			if (handlers?.["auth-state-changed"]) {
-				authStateChangedHandler = handlers["auth-state-changed"]
-			}
+		const fs = await import("fs")
+		vi.mocked(fs.existsSync).mockReturnValue(true)
 
-			return {
-				off: vi.fn(),
-				on: vi.fn(),
-				telemetryClient: null,
-			} as any
-		})
+		const dotenvx = await import("@dotenvx/dotenvx")
 
-		// Activate the extension.
 		const { activate } = await import("../extension")
 		await activate(mockContext)
 
-		// Trigger login.
-		await authStateChangedHandler!({
-			state: "logged-in" as AuthState,
-			previousState: "logged-out" as AuthState,
-		})
-
-		// Verify BridgeOrchestrator.disconnect was NOT called.
-		expect(mockBridgeOrchestratorDisconnect).not.toHaveBeenCalled()
+		expect(dotenvx.config).toHaveBeenCalledTimes(1)
 	})
 })

@@ -1,5 +1,7 @@
 import { HTMLAttributes, useState } from "react"
-import { X, CheckCheck } from "lucide-react"
+import { X } from "lucide-react"
+import { Trans } from "react-i18next"
+import { Package } from "@roo/package"
 
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
@@ -9,6 +11,7 @@ import { Button, Input, Slider } from "@/components/ui"
 import { SetCachedStateField } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
+import { SearchableSetting } from "./SearchableSetting"
 import { AutoApproveToggle } from "./AutoApproveToggle"
 import { MaxLimitInputs } from "./MaxLimitInputs"
 import { useExtensionState } from "@/context/ExtensionStateContext"
@@ -21,15 +24,11 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	alwaysAllowWrite?: boolean
 	alwaysAllowWriteOutsideWorkspace?: boolean
 	alwaysAllowWriteProtected?: boolean
-	alwaysAllowBrowser?: boolean
-	alwaysApproveResubmit?: boolean
-	requestDelaySeconds: number
 	alwaysAllowMcp?: boolean
 	alwaysAllowModeSwitch?: boolean
 	alwaysAllowSubtasks?: boolean
 	alwaysAllowExecute?: boolean
 	alwaysAllowFollowupQuestions?: boolean
-	alwaysAllowUpdateTodoList?: boolean
 	followupAutoApproveTimeoutMs?: number
 	allowedCommands?: string[]
 	allowedMaxRequests?: number | undefined
@@ -41,9 +40,6 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "alwaysAllowWrite"
 		| "alwaysAllowWriteOutsideWorkspace"
 		| "alwaysAllowWriteProtected"
-		| "alwaysAllowBrowser"
-		| "alwaysApproveResubmit"
-		| "requestDelaySeconds"
 		| "alwaysAllowMcp"
 		| "alwaysAllowModeSwitch"
 		| "alwaysAllowSubtasks"
@@ -54,7 +50,6 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "allowedMaxRequests"
 		| "allowedMaxCost"
 		| "deniedCommands"
-		| "alwaysAllowUpdateTodoList"
 	>
 }
 
@@ -64,16 +59,12 @@ export const AutoApproveSettings = ({
 	alwaysAllowWrite,
 	alwaysAllowWriteOutsideWorkspace,
 	alwaysAllowWriteProtected,
-	alwaysAllowBrowser,
-	alwaysApproveResubmit,
-	requestDelaySeconds,
 	alwaysAllowMcp,
 	alwaysAllowModeSwitch,
 	alwaysAllowSubtasks,
 	alwaysAllowExecute,
 	alwaysAllowFollowupQuestions,
 	followupAutoApproveTimeoutMs = 60000,
-	alwaysAllowUpdateTodoList,
 	allowedCommands,
 	allowedMaxRequests,
 	allowedMaxCost,
@@ -97,7 +88,7 @@ export const AutoApproveSettings = ({
 			const newCommands = [...currentCommands, commandInput]
 			setCachedStateField("allowedCommands", newCommands)
 			setCommandInput("")
-			vscode.postMessage({ type: "allowedCommands", commands: newCommands })
+			vscode.postMessage({ type: "updateSettings", updatedSettings: { allowedCommands: newCommands } })
 		}
 	}
 
@@ -108,22 +99,20 @@ export const AutoApproveSettings = ({
 			const newCommands = [...currentCommands, deniedCommandInput]
 			setCachedStateField("deniedCommands", newCommands)
 			setDeniedCommandInput("")
-			vscode.postMessage({ type: "deniedCommands", commands: newCommands })
+			vscode.postMessage({ type: "updateSettings", updatedSettings: { deniedCommands: newCommands } })
 		}
 	}
 
 	return (
 		<div {...props}>
-			<SectionHeader>
-				<div className="flex items-center gap-2">
-					<CheckCheck className="w-4 h-4" />
-					<div>{t("settings:sections.autoApprove")}</div>
-				</div>
-			</SectionHeader>
+			<SectionHeader>{t("settings:sections.autoApprove")}</SectionHeader>
 
 			<Section>
 				<div className="space-y-4">
-					<div>
+					<SearchableSetting
+						settingId="auto-approve-enabled"
+						section="autoApprove"
+						label={t("settings:autoApprove.enabled")}>
 						<VSCodeCheckbox
 							checked={effectiveAutoApprovalEnabled}
 							aria-label={t("settings:autoApprove.toggleAriaLabel")}
@@ -135,21 +124,39 @@ export const AutoApproveSettings = ({
 							<span className="font-medium">{t("settings:autoApprove.enabled")}</span>
 						</VSCodeCheckbox>
 						<div className="text-vscode-descriptionForeground text-sm mt-1">
-							{t("settings:autoApprove.description")}
+							<p>{t("settings:autoApprove.description")}</p>
+							<p>
+								<Trans
+									i18nKey="settings:autoApprove.toggleShortcut"
+									components={{
+										SettingsLink: (
+											<a
+												href="#"
+												className="text-vscode-textLink-foreground hover:underline cursor-pointer"
+												onClick={(e) => {
+													e.preventDefault()
+													// Send message to open keyboard shortcuts with search for toggle command
+													vscode.postMessage({
+														type: "openKeyboardShortcuts",
+														text: `${Package.name}.toggleAutoApprove`,
+													})
+												}}
+											/>
+										),
+									}}
+								/>
+							</p>
 						</div>
-					</div>
+					</SearchableSetting>
 
 					<AutoApproveToggle
 						alwaysAllowReadOnly={alwaysAllowReadOnly}
 						alwaysAllowWrite={alwaysAllowWrite}
-						alwaysAllowBrowser={alwaysAllowBrowser}
-						alwaysApproveResubmit={alwaysApproveResubmit}
 						alwaysAllowMcp={alwaysAllowMcp}
 						alwaysAllowModeSwitch={alwaysAllowModeSwitch}
 						alwaysAllowSubtasks={alwaysAllowSubtasks}
 						alwaysAllowExecute={alwaysAllowExecute}
 						alwaysAllowFollowupQuestions={alwaysAllowFollowupQuestions}
-						alwaysAllowUpdateTodoList={alwaysAllowUpdateTodoList}
 						onToggle={(key, value) => setCachedStateField(key, value)}
 					/>
 
@@ -169,7 +176,10 @@ export const AutoApproveSettings = ({
 							<span className="codicon codicon-eye" />
 							<div>{t("settings:autoApprove.readOnly.label")}</div>
 						</div>
-						<div>
+						<SearchableSetting
+							settingId="auto-approve-readonly-outside-workspace"
+							section="autoApprove"
+							label={t("settings:autoApprove.readOnly.outsideWorkspace.label")}>
 							<VSCodeCheckbox
 								checked={alwaysAllowReadOnlyOutsideWorkspace}
 								onChange={(e: any) =>
@@ -183,7 +193,7 @@ export const AutoApproveSettings = ({
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.readOnly.outsideWorkspace.description")}
 							</div>
-						</div>
+						</SearchableSetting>
 					</div>
 				)}
 
@@ -193,7 +203,10 @@ export const AutoApproveSettings = ({
 							<span className="codicon codicon-edit" />
 							<div>{t("settings:autoApprove.write.label")}</div>
 						</div>
-						<div>
+						<SearchableSetting
+							settingId="auto-approve-write-outside-workspace"
+							section="autoApprove"
+							label={t("settings:autoApprove.write.outsideWorkspace.label")}>
 							<VSCodeCheckbox
 								checked={alwaysAllowWriteOutsideWorkspace}
 								onChange={(e: any) =>
@@ -207,8 +220,11 @@ export const AutoApproveSettings = ({
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.write.outsideWorkspace.description")}
 							</div>
-						</div>
-						<div>
+						</SearchableSetting>
+						<SearchableSetting
+							settingId="auto-approve-write-protected"
+							section="autoApprove"
+							label={t("settings:autoApprove.write.protected.label")}>
 							<VSCodeCheckbox
 								checked={alwaysAllowWriteProtected}
 								onChange={(e: any) =>
@@ -220,32 +236,7 @@ export const AutoApproveSettings = ({
 							<div className="text-vscode-descriptionForeground text-sm mt-1 mb-3">
 								{t("settings:autoApprove.write.protected.description")}
 							</div>
-						</div>
-					</div>
-				)}
-
-				{alwaysApproveResubmit && (
-					<div className="flex flex-col gap-3 pl-3 border-l-2 border-vscode-button-background">
-						<div className="flex items-center gap-4 font-bold">
-							<span className="codicon codicon-refresh" />
-							<div>{t("settings:autoApprove.retry.label")}</div>
-						</div>
-						<div>
-							<div className="flex items-center gap-2">
-								<Slider
-									min={5}
-									max={100}
-									step={1}
-									value={[requestDelaySeconds]}
-									onValueChange={([value]) => setCachedStateField("requestDelaySeconds", value)}
-									data-testid="request-delay-slider"
-								/>
-								<span className="w-20">{requestDelaySeconds}s</span>
-							</div>
-							<div className="text-vscode-descriptionForeground text-sm mt-1">
-								{t("settings:autoApprove.retry.delayLabel")}
-							</div>
-						</div>
+						</SearchableSetting>
 					</div>
 				)}
 
@@ -255,7 +246,10 @@ export const AutoApproveSettings = ({
 							<span className="codicon codicon-question" />
 							<div>{t("settings:autoApprove.followupQuestions.label")}</div>
 						</div>
-						<div>
+						<SearchableSetting
+							settingId="auto-approve-followup-timeout"
+							section="autoApprove"
+							label={t("settings:autoApprove.followupQuestions.timeoutLabel")}>
 							<div className="flex items-center gap-2">
 								<Slider
 									min={1000}
@@ -272,7 +266,7 @@ export const AutoApproveSettings = ({
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.followupQuestions.timeoutLabel")}
 							</div>
-						</div>
+						</SearchableSetting>
 					</div>
 				)}
 
@@ -283,14 +277,17 @@ export const AutoApproveSettings = ({
 							<div>{t("settings:autoApprove.execute.label")}</div>
 						</div>
 
-						<div>
+						<SearchableSetting
+							settingId="auto-approve-allowed-commands"
+							section="autoApprove"
+							label={t("settings:autoApprove.execute.allowedCommands")}>
 							<label className="block font-medium mb-1" data-testid="allowed-commands-heading">
 								{t("settings:autoApprove.execute.allowedCommands")}
 							</label>
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.execute.allowedCommandsDescription")}
 							</div>
-						</div>
+						</SearchableSetting>
 
 						<div className="flex gap-2">
 							<Input
@@ -320,7 +317,11 @@ export const AutoApproveSettings = ({
 									onClick={() => {
 										const newCommands = (allowedCommands ?? []).filter((_, i) => i !== index)
 										setCachedStateField("allowedCommands", newCommands)
-										vscode.postMessage({ type: "allowedCommands", commands: newCommands })
+
+										vscode.postMessage({
+											type: "updateSettings",
+											updatedSettings: { allowedCommands: newCommands },
+										})
 									}}>
 									<div className="flex flex-row items-center gap-1">
 										<div>{cmd}</div>
@@ -331,14 +332,18 @@ export const AutoApproveSettings = ({
 						</div>
 
 						{/* Denied Commands Section */}
-						<div className="mt-6">
+						<SearchableSetting
+							settingId="auto-approve-denied-commands"
+							section="autoApprove"
+							label={t("settings:autoApprove.execute.deniedCommands")}
+							className="mt-6">
 							<label className="block font-medium mb-1" data-testid="denied-commands-heading">
 								{t("settings:autoApprove.execute.deniedCommands")}
 							</label>
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.execute.deniedCommandsDescription")}
 							</div>
-						</div>
+						</SearchableSetting>
 
 						<div className="flex gap-2">
 							<Input
@@ -371,7 +376,11 @@ export const AutoApproveSettings = ({
 									onClick={() => {
 										const newCommands = (deniedCommands ?? []).filter((_, i) => i !== index)
 										setCachedStateField("deniedCommands", newCommands)
-										vscode.postMessage({ type: "deniedCommands", commands: newCommands })
+
+										vscode.postMessage({
+											type: "updateSettings",
+											updatedSettings: { deniedCommands: newCommands },
+										})
 									}}>
 									<div className="flex flex-row items-center gap-1">
 										<div>{cmd}</div>

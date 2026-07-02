@@ -37,17 +37,22 @@ type OllamaModelsResponse = z.infer<typeof OllamaModelsResponseSchema>
 
 type OllamaModelInfoResponse = z.infer<typeof OllamaModelInfoResponseSchema>
 
-export const parseOllamaModel = (rawModel: OllamaModelInfoResponse): ModelInfo => {
+export const parseOllamaModel = (rawModel: OllamaModelInfoResponse): ModelInfo | null => {
 	const contextKey = Object.keys(rawModel.model_info).find((k) => k.includes("context_length"))
 	const contextWindow =
 		contextKey && typeof rawModel.model_info[contextKey] === "number" ? rawModel.model_info[contextKey] : undefined
+
+	// Filter out models that don't support tools. Models without tool capability won't work.
+	const supportsTools = rawModel.capabilities?.includes("tools") ?? false
+	if (!supportsTools) {
+		return null
+	}
 
 	const modelInfo: ModelInfo = Object.assign({}, ollamaDefaultModelInfo, {
 		description: `Family: ${rawModel.details.family}, Context: ${contextWindow}, Size: ${rawModel.details.parameter_size}`,
 		contextWindow: contextWindow || ollamaDefaultModelInfo.contextWindow,
 		supportsPromptCache: true,
 		supportsImages: rawModel.capabilities?.includes("vision"),
-		supportsComputerUse: false,
 		maxTokens: contextWindow || ollamaDefaultModelInfo.contextWindow,
 	})
 
@@ -90,7 +95,11 @@ export async function getOllamaModels(
 							{ headers },
 						)
 						.then((ollamaModelInfo) => {
-							models[ollamaModel.name] = parseOllamaModel(ollamaModelInfo.data)
+							const modelInfo = parseOllamaModel(ollamaModelInfo.data)
+							// Only include models that support native tools
+							if (modelInfo) {
+								models[ollamaModel.name] = modelInfo
+							}
 						}),
 				)
 			}

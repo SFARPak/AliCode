@@ -911,6 +911,146 @@ describe("McpHub", () => {
 			expect(writtenConfig.mcpServers["test-server"].alwaysAllow).toBeDefined()
 			expect(writtenConfig.mcpServers["test-server"].alwaysAllow).toContain("new-tool")
 		})
+
+		it("should mark all tools as always allowed when wildcard is present", async () => {
+			const mockConfig = {
+				mcpServers: {
+					"test-server": {
+						type: "stdio",
+						command: "node",
+						args: ["test.js"],
+						alwaysAllow: ["*"],
+					},
+				},
+			}
+
+			// Mock reading config - needs to return for every read
+			vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(mockConfig))
+
+			// Set up mock connection with tools
+			const mockConnection: ConnectedMcpConnection = {
+				type: "connected",
+				server: {
+					name: "test-server",
+					type: "stdio",
+					command: "node",
+					args: ["test.js"],
+					source: "global",
+				} as any,
+				client: {
+					request: vi.fn().mockResolvedValue({
+						tools: [
+							{ name: "tool1", description: "Tool 1" },
+							{ name: "tool2", description: "Tool 2" },
+							{ name: "tool3", description: "Tool 3" },
+						],
+					}),
+				} as any,
+				transport: {} as any,
+			}
+			mcpHub.connections = [mockConnection]
+
+			// Fetch tools list to test wildcard matching
+			const tools = await mcpHub["fetchToolsList"]("test-server", "global")
+
+			// All tools should be marked as always allowed
+			expect(tools.length).toBe(3)
+			expect(tools[0].alwaysAllow).toBe(true)
+			expect(tools[1].alwaysAllow).toBe(true)
+			expect(tools[2].alwaysAllow).toBe(true)
+		})
+
+		it("should support both wildcard and specific tool names in alwaysAllow", async () => {
+			const mockConfig = {
+				mcpServers: {
+					"test-server": {
+						type: "stdio",
+						command: "node",
+						args: ["test.js"],
+						alwaysAllow: ["*", "specific-tool"],
+					},
+				},
+			}
+
+			// Mock reading config - needs to return for every read
+			vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(mockConfig))
+
+			// Set up mock connection with tools
+			const mockConnection: ConnectedMcpConnection = {
+				type: "connected",
+				server: {
+					name: "test-server",
+					type: "stdio",
+					command: "node",
+					args: ["test.js"],
+					source: "global",
+				} as any,
+				client: {
+					request: vi.fn().mockResolvedValue({
+						tools: [
+							{ name: "tool1", description: "Tool 1" },
+							{ name: "specific-tool", description: "Specific Tool" },
+						],
+					}),
+				} as any,
+				transport: {} as any,
+			}
+			mcpHub.connections = [mockConnection]
+
+			// Fetch tools list
+			const tools = await mcpHub["fetchToolsList"]("test-server", "global")
+
+			// All tools should be marked as always allowed due to wildcard
+			expect(tools.length).toBe(2)
+			expect(tools[0].alwaysAllow).toBe(true)
+			expect(tools[1].alwaysAllow).toBe(true)
+		})
+
+		it("should only allow specific tools when no wildcard is present", async () => {
+			const mockConfig = {
+				mcpServers: {
+					"test-server": {
+						type: "stdio",
+						command: "node",
+						args: ["test.js"],
+						alwaysAllow: ["allowed-tool"],
+					},
+				},
+			}
+
+			// Mock reading config - needs to return for every read
+			vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(mockConfig))
+
+			// Set up mock connection with tools
+			const mockConnection: ConnectedMcpConnection = {
+				type: "connected",
+				server: {
+					name: "test-server",
+					type: "stdio",
+					command: "node",
+					args: ["test.js"],
+					source: "global",
+				} as any,
+				client: {
+					request: vi.fn().mockResolvedValue({
+						tools: [
+							{ name: "allowed-tool", description: "Allowed Tool" },
+							{ name: "not-allowed-tool", description: "Not Allowed Tool" },
+						],
+					}),
+				} as any,
+				transport: {} as any,
+			}
+			mcpHub.connections = [mockConnection]
+
+			// Fetch tools list
+			const tools = await mcpHub["fetchToolsList"]("test-server", "global")
+
+			// Only the specifically allowed tool should be marked as always allowed
+			expect(tools.length).toBe(2)
+			expect(tools[0].alwaysAllow).toBe(true) // allowed-tool
+			expect(tools[1].alwaysAllow).toBe(false) // not-allowed-tool
+		})
 	})
 
 	describe("toggleToolEnabledForPrompt", () => {
@@ -1134,6 +1274,87 @@ describe("McpHub", () => {
 
 			expect(servers.length).toBe(1)
 			expect(servers[0].name).toBe("enabled-server")
+		})
+
+		it("should deduplicate servers by name with project servers taking priority", () => {
+			const mockConnections: McpConnection[] = [
+				{
+					type: "connected",
+					server: {
+						name: "shared-server",
+						config: '{"source":"global"}',
+						status: "connected",
+						disabled: false,
+						source: "global",
+					},
+					client: {} as any,
+					transport: {} as any,
+				} as ConnectedMcpConnection,
+				{
+					type: "connected",
+					server: {
+						name: "shared-server",
+						config: '{"source":"project"}',
+						status: "connected",
+						disabled: false,
+						source: "project",
+					},
+					client: {} as any,
+					transport: {} as any,
+				} as ConnectedMcpConnection,
+				{
+					type: "connected",
+					server: {
+						name: "unique-global-server",
+						config: "{}",
+						status: "connected",
+						disabled: false,
+						source: "global",
+					},
+					client: {} as any,
+					transport: {} as any,
+				} as ConnectedMcpConnection,
+			]
+
+			mcpHub.connections = mockConnections
+			const servers = mcpHub.getServers()
+
+			// Should have 2 servers: deduplicated "shared-server" + "unique-global-server"
+			expect(servers.length).toBe(2)
+
+			// Find the shared-server - it should be the project version
+			const sharedServer = servers.find((s) => s.name === "shared-server")
+			expect(sharedServer).toBeDefined()
+			expect(sharedServer!.source).toBe("project")
+			expect(sharedServer!.config).toBe('{"source":"project"}')
+
+			// The unique global server should also be present
+			const uniqueServer = servers.find((s) => s.name === "unique-global-server")
+			expect(uniqueServer).toBeDefined()
+		})
+
+		it("should keep global server when no project server with same name exists", () => {
+			const mockConnections: McpConnection[] = [
+				{
+					type: "connected",
+					server: {
+						name: "global-only-server",
+						config: "{}",
+						status: "connected",
+						disabled: false,
+						source: "global",
+					},
+					client: {} as any,
+					transport: {} as any,
+				} as ConnectedMcpConnection,
+			]
+
+			mcpHub.connections = mockConnections
+			const servers = mcpHub.getServers()
+
+			expect(servers.length).toBe(1)
+			expect(servers[0].name).toBe("global-only-server")
+			expect(servers[0].source).toBe("global")
 		})
 
 		it("should prevent calling tools on disabled servers", async () => {

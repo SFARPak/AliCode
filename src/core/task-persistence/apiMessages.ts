@@ -9,7 +9,33 @@ import { fileExistsAtPath } from "../../utils/fs"
 import { GlobalFileNames } from "../../shared/globalFileNames"
 import { getTaskDirectoryPath } from "../../utils/storage"
 
-export type ApiMessage = Anthropic.MessageParam & { ts?: number; isSummary?: boolean }
+export type ApiMessage = Anthropic.MessageParam & {
+	ts?: number
+	isSummary?: boolean
+	id?: string
+	// For reasoning items stored in API history
+	type?: "reasoning"
+	summary?: any[]
+	encrypted_content?: string
+	text?: string
+	// For OpenRouter reasoning_details array format (used by Gemini 3, etc.)
+	reasoning_details?: any[]
+	// For DeepSeek/Z.ai interleaved thinking: reasoning_content that must be preserved during tool call sequences
+	// See: https://api-docs.deepseek.com/guides/thinking_mode#tool-calls
+	reasoning_content?: string
+	// For non-destructive condense: unique identifier for summary messages
+	condenseId?: string
+	// For non-destructive condense: points to the condenseId of the summary that replaces this message
+	// Messages with condenseParent are filtered out when sending to API if the summary exists
+	condenseParent?: string
+	// For non-destructive truncation: unique identifier for truncation marker messages
+	truncationId?: string
+	// For non-destructive truncation: points to the truncationId of the marker that hides this message
+	// Messages with truncationParent are filtered out when sending to API if the marker exists
+	truncationParent?: string
+	// Identifies a message as a truncation boundary marker
+	isTruncationMarker?: boolean
+}
 
 export async function readApiMessages({
 	taskId,
@@ -25,17 +51,23 @@ export async function readApiMessages({
 		const fileContent = await fs.readFile(filePath, "utf8")
 		try {
 			const parsedData = JSON.parse(fileContent)
-			if (Array.isArray(parsedData) && parsedData.length === 0) {
+			if (!Array.isArray(parsedData)) {
+				console.warn(
+					`[readApiMessages] Parsed data is not an array (got ${typeof parsedData}), returning empty. TaskId: ${taskId}, Path: ${filePath}`,
+				)
+				return []
+			}
+			if (parsedData.length === 0) {
 				console.error(
 					`[Roo-Debug] readApiMessages: Found API conversation history file, but it's empty (parsed as []). TaskId: ${taskId}, Path: ${filePath}`,
 				)
 			}
 			return parsedData
 		} catch (error) {
-			console.error(
-				`[Roo-Debug] readApiMessages: Error parsing API conversation history file. TaskId: ${taskId}, Path: ${filePath}, Error: ${error}`,
+			console.warn(
+				`[readApiMessages] Error parsing API conversation history file, returning empty. TaskId: ${taskId}, Path: ${filePath}, Error: ${error}`,
 			)
-			throw error
+			return []
 		}
 	} else {
 		const oldPath = path.join(taskDir, "claude_messages.json")
@@ -44,7 +76,13 @@ export async function readApiMessages({
 			const fileContent = await fs.readFile(oldPath, "utf8")
 			try {
 				const parsedData = JSON.parse(fileContent)
-				if (Array.isArray(parsedData) && parsedData.length === 0) {
+				if (!Array.isArray(parsedData)) {
+					console.warn(
+						`[readApiMessages] Parsed OLD data is not an array (got ${typeof parsedData}), returning empty. TaskId: ${taskId}, Path: ${oldPath}`,
+					)
+					return []
+				}
+				if (parsedData.length === 0) {
 					console.error(
 						`[Roo-Debug] readApiMessages: Found OLD API conversation history file (claude_messages.json), but it's empty (parsed as []). TaskId: ${taskId}, Path: ${oldPath}`,
 					)
@@ -52,11 +90,11 @@ export async function readApiMessages({
 				await fs.unlink(oldPath)
 				return parsedData
 			} catch (error) {
-				console.error(
-					`[Roo-Debug] readApiMessages: Error parsing OLD API conversation history file (claude_messages.json). TaskId: ${taskId}, Path: ${oldPath}, Error: ${error}`,
+				console.warn(
+					`[readApiMessages] Error parsing OLD API conversation history file (claude_messages.json), returning empty. TaskId: ${taskId}, Path: ${oldPath}, Error: ${error}`,
 				)
-				// DO NOT unlink oldPath if parsing failed, throw error instead.
-				throw error
+				// DO NOT unlink oldPath if parsing failed.
+				return []
 			}
 		}
 	}

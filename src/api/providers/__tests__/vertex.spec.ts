@@ -95,7 +95,7 @@ describe("VertexHandler", () => {
 					model: expect.any(String),
 					contents: [{ role: "user", parts: [{ text: "Test prompt" }] }],
 					config: expect.objectContaining({
-						temperature: 0,
+						temperature: 1,
 					}),
 				}),
 			)
@@ -136,6 +136,32 @@ describe("VertexHandler", () => {
 			expect(modelInfo.info).toBeDefined()
 			expect(modelInfo.info.maxTokens).toBe(8192)
 			expect(modelInfo.info.contextWindow).toBe(1048576)
+		})
+
+		it("should exclude apply_diff and include edit in tool preferences", () => {
+			const testHandler = new VertexHandler({
+				apiModelId: "gemini-2.0-flash-001",
+				vertexProjectId: "test-project",
+				vertexRegion: "us-central1",
+			})
+
+			const modelInfo = testHandler.getModel()
+			expect(modelInfo.info.excludedTools).toContain("apply_diff")
+			expect(modelInfo.info.includedTools).toContain("edit")
+		})
+
+		it("should not duplicate tool entries if already present", () => {
+			const testHandler = new VertexHandler({
+				apiModelId: "gemini-2.0-flash-001",
+				vertexProjectId: "test-project",
+				vertexRegion: "us-central1",
+			})
+
+			const modelInfo = testHandler.getModel()
+			const excludedCount = modelInfo.info.excludedTools!.filter((t: string) => t === "apply_diff").length
+			const includedCount = modelInfo.info.includedTools!.filter((t: string) => t === "edit").length
+			expect(excludedCount).toBe(1)
+			expect(includedCount).toBe(1)
 		})
 	})
 })

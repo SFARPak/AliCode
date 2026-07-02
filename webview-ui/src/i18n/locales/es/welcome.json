@@ -1,8 +1,4 @@
 {
-	"greeting": "¡Bienvenido a Roo Code!",
-	"introduction": "Con una variedad de Modos integrados y extensibles, Roo Code te permite planificar, arquitectar, codificar, depurar y aumentar tu productividad como nunca antes.",
-	"notice": "Para comenzar, esta extensión necesita un proveedor de API.",
-	"start": "¡Vamos!",
 	"routers": {
 		"requesty": {
 			"description": "Tu router LLM optimizado",
@@ -12,12 +8,22 @@
 			"description": "Una interfaz unificada para LLMs"
 		}
 	},
-	"chooseProvider": "Para hacer su magia, Roo necesita una clave API.",
+	"landing": {
+		"greeting": "¡Bienvenido a Roo Code!",
+		"introduction": "Con una variedad de Modos integrados y extensibles, Roo Code te permite planificar, arquitectar, codificar, depurar y aumentar tu productividad como nunca antes.",
+		"getStarted": "Get Started"
+	},
+	"providerSignup": {
+		"heading": "Elige tu proveedor",
+		"chooseProvider": "Roo necesita un proveedor de LLM para funcionar. Elige uno para comenzar, puedes añadir más después.",
+		"learnMore": "Más información",
+		"useAnotherProvider": "Proveedor de terceros",
+		"useAnotherProviderDescription": "Introduce una clave API y comienza.",
+		"noApiKeys": "¿No quieres lidiar con claves API y cuentas separadas?",
+		"goBack": "Atrás",
+		"finish": "Finalizar"
+	},
 	"startRouter": "Recomendamos usar un router LLM:",
 	"startCustom": "O puedes traer tu propia clave API:",
-	"telemetry": {
-		"helpImprove": "Ayuda a mejorar Roo Code",
-		"helpImproveMessage": "Roo Code recopila datos de errores y uso para ayudarnos a corregir errores y mejorar la extensión. Esta telemetría no recopila código, prompts o información personal. Puedes desactivar esto en la <settingsLink>configuración</settingsLink>."
-	},
 	"importSettings": "Importar configuración"
 }

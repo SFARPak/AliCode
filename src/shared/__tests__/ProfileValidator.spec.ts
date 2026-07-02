@@ -47,20 +47,6 @@ describe("ProfileValidator", () => {
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(false)
 		})
 
-		it("should allow human-relay provider regardless of model", () => {
-			const allowList: OrganizationAllowList = {
-				allowAll: false,
-				providers: {
-					"human-relay": { allowAll: false },
-				},
-			}
-			const profile: ProviderSettings = {
-				apiProvider: "human-relay",
-			}
-
-			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
-		})
-
 		it("should allow providers with allowAll=true regardless of model", () => {
 			const allowList: OrganizationAllowList = {
 				allowAll: false,
@@ -190,11 +176,8 @@ describe("ProfileValidator", () => {
 			"mistral",
 			"deepseek",
 			"xai",
-			"groq",
-			"chutes",
 			"sambanova",
 			"fireworks",
-			"featherless",
 		]
 
 		apiModelProviders.forEach((provider) => {
@@ -230,22 +213,6 @@ describe("ProfileValidator", () => {
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
 		})
 
-		// Test for io-intelligence provider which uses ioIntelligenceModelId
-		it(`should extract ioIntelligenceModelId for io-intelligence provider`, () => {
-			const allowList: OrganizationAllowList = {
-				allowAll: false,
-				providers: {
-					"io-intelligence": { allowAll: false, models: ["test-model"] },
-				},
-			}
-			const profile: ProviderSettings = {
-				apiProvider: "io-intelligence" as any,
-				ioIntelligenceModelId: "test-model",
-			}
-
-			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
-		})
-
 		it("should extract vsCodeLmModelSelector.id for vscode-lm provider", () => {
 			const allowList: OrganizationAllowList = {
 				allowAll: false,
@@ -256,21 +223,6 @@ describe("ProfileValidator", () => {
 			const profile: ProviderSettings = {
 				apiProvider: "vscode-lm",
 				vsCodeLmModelSelector: { id: "copilot-gpt-3.5" },
-			}
-
-			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
-		})
-
-		it("should extract unboundModelId for unbound provider", () => {
-			const allowList: OrganizationAllowList = {
-				allowAll: false,
-				providers: {
-					unbound: { allowAll: false, models: ["unbound-model"] },
-				},
-			}
-			const profile: ProviderSettings = {
-				apiProvider: "unbound",
-				unboundModelId: "unbound-model",
 			}
 
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
@@ -301,21 +253,6 @@ describe("ProfileValidator", () => {
 			const profile: ProviderSettings = {
 				apiProvider: "openrouter",
 				openRouterModelId: "openrouter-model",
-			}
-
-			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
-		})
-
-		it("should extract glamaModelId for glama provider", () => {
-			const allowList: OrganizationAllowList = {
-				allowAll: false,
-				providers: {
-					glama: { allowAll: false, models: ["glama-model"] },
-				},
-			}
-			const profile: ProviderSettings = {
-				apiProvider: "glama",
-				glamaModelId: "glama-model",
 			}
 
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)

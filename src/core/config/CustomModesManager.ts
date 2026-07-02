@@ -40,6 +40,7 @@ interface ExportResult {
 
 interface ImportResult {
 	success: boolean
+	slug?: string
 	error?: string
 }
 
@@ -411,7 +412,7 @@ export class CustomModesManager {
 				const errorMessage = `Invalid mode configuration: ${errorMessages}`
 				logger.error("Mode validation failed", { slug, errors: validationResult.error.errors })
 				vscode.window.showErrorMessage(t("common:customModes.errors.updateFailed", { error: errorMessage }))
-				return
+				throw new Error(errorMessage)
 			}
 
 			const isProjectMode = config.source === "project"
@@ -457,6 +458,7 @@ export class CustomModesManager {
 			const errorMessage = error instanceof Error ? error.message : String(error)
 			logger.error("Failed to update custom mode", { slug, error: errorMessage })
 			vscode.window.showErrorMessage(t("common:customModes.errors.updateFailed", { error: errorMessage }))
+			throw error
 		}
 	}
 
@@ -506,7 +508,7 @@ export class CustomModesManager {
 		await this.onUpdate()
 	}
 
-	public async deleteCustomMode(slug: string, fromMarketplace = false): Promise<void> {
+	public async deleteCustomMode(slug: string): Promise<void> {
 		try {
 			const settingsPath = await this.getCustomModesFilePath()
 			const roomodesPath = await this.getWorkspaceRoomodes()
@@ -538,7 +540,7 @@ export class CustomModesManager {
 
 				// Delete associated rules folder
 				if (modeToDelete) {
-					await this.deleteRulesFolder(slug, modeToDelete, fromMarketplace)
+					await this.deleteRulesFolder(slug, modeToDelete)
 				}
 
 				// Clear cache when modes are deleted
@@ -556,7 +558,7 @@ export class CustomModesManager {
 	 * @param slug - The mode slug
 	 * @param mode - The mode configuration to determine the scope
 	 */
-	private async deleteRulesFolder(slug: string, mode: ModeConfig, fromMarketplace = false): Promise<void> {
+	private async deleteRulesFolder(slug: string, mode: ModeConfig): Promise<void> {
 		try {
 			// Determine the scope based on source (project or global)
 			const scope = mode.source || "global"
@@ -585,10 +587,9 @@ export class CustomModesManager {
 				} catch (error) {
 					logger.error(`Failed to delete rules folder for mode ${slug}: ${error}`)
 					// Notify the user about the failure
-					const messageKey = fromMarketplace
-						? "common:marketplace.mode.rulesCleanupFailed"
-						: "common:customModes.errors.rulesCleanupFailed"
-					vscode.window.showWarningMessage(t(messageKey, { rulesFolderPath }))
+					vscode.window.showWarningMessage(
+						t("common:customModes.errors.rulesCleanupFailed", { rulesFolderPath }),
+					)
 					// Continue even if folder deletion fails
 				}
 			}
@@ -989,7 +990,8 @@ export class CustomModesManager {
 			// Refresh the modes after import
 			await this.refreshMergedState()
 
-			return { success: true }
+			// Return the imported mode's slug so the UI can activate it
+			return { success: true, slug: importData.customModes[0]?.slug }
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error)
 			logger.error("Failed to import mode with rules", { error: errorMessage })

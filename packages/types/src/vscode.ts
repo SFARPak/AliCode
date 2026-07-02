@@ -30,20 +30,11 @@ export const commandIds = [
 	"activationCompleted",
 
 	"plusButtonClicked",
-	"promptsButtonClicked",
-	"mcpButtonClicked",
 	"historyButtonClicked",
-	"marketplaceButtonClicked",
 	"popoutButtonClicked",
-	"cloudButtonClicked",
 	"settingsButtonClicked",
 
 	"openInNewTab",
-
-	"showHumanRelayDialog",
-	"registerHumanRelayCallback",
-	"unregisterHumanRelayCallback",
-	"handleHumanRelayResponse",
 
 	"newTask",
 
@@ -53,6 +44,7 @@ export const commandIds = [
 	"focusInput",
 	"acceptInput",
 	"focusPanel",
+	"toggleAutoApprove",
 ] as const
 
 export type CommandId = (typeof commandIds)[number]

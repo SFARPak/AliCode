@@ -3,6 +3,7 @@ import psTree from "ps-tree"
 import process from "process"
 
 import type { RooTerminal } from "./types"
+import { BaseTerminal } from "./BaseTerminal"
 import { BaseTerminalProcess } from "./BaseTerminalProcess"
 
 export class ExecaTerminalProcess extends BaseTerminalProcess {
@@ -39,9 +40,11 @@ export class ExecaTerminalProcess extends BaseTerminalProcess {
 			this.isHot = true
 
 			this.subprocess = execa({
-				shell: true,
+				shell: BaseTerminal.getExecaShellPath() || true,
 				cwd: this.terminal.getCurrentWorkingDirectory(),
 				all: true,
+				// Ignore stdin to ensure non-interactive mode and prevent hanging
+				stdin: "ignore",
 				env: {
 					...process.env,
 					// Ensure UTF-8 encoding for Ruby, CocoaPods, etc.
@@ -197,7 +200,6 @@ export class ExecaTerminalProcess extends BaseTerminalProcess {
 			psTree(this.pid, async (err, children) => {
 				if (!err) {
 					const pids = children.map((p) => parseInt(p.PID))
-					console.error(`[ExecaTerminalProcess#abort] SIGKILL children -> ${pids.join(", ")}`)
 
 					for (const pid of pids) {
 						try {

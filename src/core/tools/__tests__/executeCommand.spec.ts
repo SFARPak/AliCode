@@ -4,7 +4,7 @@
 import * as path from "path"
 import * as fs from "fs/promises"
 
-import { ExecuteCommandOptions } from "../executeCommandTool"
+import { ExecuteCommandOptions } from "../ExecuteCommandTool"
 import { TerminalRegistry } from "../../../integrations/terminal/TerminalRegistry"
 import { Terminal } from "../../../integrations/terminal/Terminal"
 import { ExecaTerminal } from "../../../integrations/terminal/ExecaTerminal"
@@ -21,7 +21,7 @@ vitest.mock("../../../integrations/terminal/Terminal")
 vitest.mock("../../../integrations/terminal/ExecaTerminal")
 
 // Import the actual executeCommand function (not mocked)
-import { executeCommand } from "../executeCommandTool"
+import { executeCommandInTerminal } from "../ExecuteCommandTool"
 
 // Tests for the executeCommand function
 describe("executeCommand", () => {
@@ -40,7 +40,6 @@ describe("executeCommand", () => {
 		mockProvider = {
 			postMessageToWebview: vitest.fn(),
 			getState: vitest.fn().mockResolvedValue({
-				terminalOutputLineLimit: 500,
 				terminalShellIntegrationDisabled: false,
 			}),
 		}
@@ -100,11 +99,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo test",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -141,11 +139,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo test",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -174,11 +171,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo test",
 				terminalShellIntegrationDisabled: true, // Forces ExecaTerminal
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -205,11 +201,10 @@ describe("executeCommand", () => {
 				command: "echo test",
 				customCwd,
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -235,11 +230,10 @@ describe("executeCommand", () => {
 				command: "echo test",
 				customCwd: relativeCwd,
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -258,11 +252,10 @@ describe("executeCommand", () => {
 				command: "echo test",
 				customCwd: nonExistentCwd,
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -285,11 +278,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo test",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			await executeCommand(mockTask, options)
+			await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(TerminalRegistry.getOrCreateTerminal).toHaveBeenCalledWith(mockTask.cwd, mockTask.taskId, "vscode")
@@ -308,11 +300,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo test",
 				terminalShellIntegrationDisabled: true,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			await executeCommand(mockTask, options)
+			await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(TerminalRegistry.getOrCreateTerminal).toHaveBeenCalledWith(mockTask.cwd, mockTask.taskId, "execa")
@@ -334,11 +325,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "echo success",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -360,11 +350,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "exit 1",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -394,11 +383,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "long-running-command",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify
 			expect(rejected).toBe(false)
@@ -436,11 +424,10 @@ describe("executeCommand", () => {
 				executionId: "test-123",
 				command: "cd src && pwd",
 				terminalShellIntegrationDisabled: false,
-				terminalOutputLineLimit: 500,
 			}
 
 			// Execute
-			const [rejected, result] = await executeCommand(mockTask, options)
+			const [rejected, result] = await executeCommandInTerminal(mockTask, options)
 
 			// Verify the result uses the updated working directory
 			expect(rejected).toBe(false)

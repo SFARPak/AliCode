@@ -14,6 +14,7 @@ type ModelInfoViewProps = {
 	modelInfo?: ModelInfo
 	isDescriptionExpanded: boolean
 	setIsDescriptionExpanded: (isExpanded: boolean) => void
+	hidePricing?: boolean
 }
 
 export const ModelInfoView = ({
@@ -22,6 +23,7 @@ export const ModelInfoView = ({
 	modelInfo,
 	isDescriptionExpanded,
 	setIsDescriptionExpanded,
+	hidePricing,
 }: ModelInfoViewProps) => {
 	const { t } = useAppTranslation()
 
@@ -50,11 +52,6 @@ export const ModelInfoView = ({
 			doesNotSupportLabel={t("settings:modelInfo.noImages")}
 		/>,
 		<ModelInfoSupportsItem
-			isSupported={modelInfo?.supportsComputerUse ?? false}
-			supportsLabel={t("settings:modelInfo.supportsComputerUse")}
-			doesNotSupportLabel={t("settings:modelInfo.noComputerUse")}
-		/>,
-		<ModelInfoSupportsItem
 			isSupported={modelInfo?.supportsPromptCache ?? false}
 			supportsLabel={t("settings:modelInfo.supportsPromptCache")}
 			doesNotSupportLabel={t("settings:modelInfo.noPromptCache")}
@@ -74,13 +71,13 @@ export const ModelInfoView = ({
 	].filter(Boolean)
 
 	const priceInfoItems = [
-		modelInfo?.inputPrice !== undefined && modelInfo.inputPrice > 0 && (
+		modelInfo?.inputPrice !== undefined && (
 			<>
 				<span className="font-medium">{t("settings:modelInfo.inputPrice")}:</span>{" "}
 				{formatPrice(modelInfo.inputPrice)} / 1M tokens
 			</>
 		),
-		modelInfo?.outputPrice !== undefined && modelInfo.outputPrice > 0 && (
+		modelInfo?.outputPrice !== undefined && (
 			<>
 				<span className="font-medium">{t("settings:modelInfo.outputPrice")}:</span>{" "}
 				{formatPrice(modelInfo.outputPrice)} / 1M tokens
@@ -100,7 +97,8 @@ export const ModelInfoView = ({
 		),
 	].filter(Boolean)
 
-	const infoItems = shouldShowTierPricingTable ? baseInfoItems : [...baseInfoItems, ...priceInfoItems]
+	// Show pricing info unless hidePricing is set or tier pricing table is shown
+	const infoItems = shouldShowTierPricingTable || hidePricing ? baseInfoItems : [...baseInfoItems, ...priceInfoItems]
 
 	return (
 		<>
@@ -118,7 +116,7 @@ export const ModelInfoView = ({
 				))}
 			</div>
 
-			{shouldShowTierPricingTable && (
+			{shouldShowTierPricingTable && !hidePricing && (
 				<div className="mt-2">
 					<div className="text-xs text-vscode-descriptionForeground mb-1">
 						{t("settings:serviceTier.pricingTableTitle")}

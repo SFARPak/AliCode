@@ -1,16 +1,11 @@
-import { useState, memo } from "react"
+import { memo, type ReactNode, useState } from "react"
 import { Trans } from "react-i18next"
 import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 
 import { Package } from "@roo/package"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
-import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { vscode } from "@src/utils/vscode"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@src/components/ui"
-import { Button } from "@src/components/ui"
-
-// Define the production URL constant locally to avoid importing from cloud package in webview
-const PRODUCTION_ROO_CODE_API_URL = "https://app.roocode.com"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@src/components/ui"
 
 interface AnnouncementProps {
 	hideAnnouncement: () => void
@@ -28,8 +23,6 @@ interface AnnouncementProps {
 const Announcement = ({ hideAnnouncement }: AnnouncementProps) => {
 	const { t } = useAppTranslation()
 	const [open, setOpen] = useState(true)
-	const { cloudApiUrl } = useExtensionState()
-	const cloudUrl = cloudApiUrl || PRODUCTION_ROO_CODE_API_URL
 
 	return (
 		<Dialog
@@ -41,128 +34,47 @@ const Announcement = ({ hideAnnouncement }: AnnouncementProps) => {
 					hideAnnouncement()
 				}
 			}}>
-			<DialogContent className="max-w-96">
+			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{t("chat:announcement.title", { version: Package.version })}</DialogTitle>
-					<DialogDescription>
-						<Trans
-							i18nKey="chat:announcement.description"
-							components={{
-								bold: <b />,
-							}}
-						/>
-					</DialogDescription>
+					<DialogTitle>{t("chat:announcement.finalRelease.title", { version: Package.version })}</DialogTitle>
 				</DialogHeader>
-				<div>
-					<ul className="space-y-2">
-						<li>
-							•{" "}
-							<Trans
-								i18nKey="chat:announcement.feature1"
-								components={{
-									bold: <b />,
-								}}
-							/>
-						</li>
-						<li>
-							•{" "}
-							<Trans
-								i18nKey="chat:announcement.feature2"
-								components={{
-									bold: <b />,
-								}}
-							/>
-						</li>
-					</ul>
-
-					<div className="mt-4">
+				<div className="text-sm leading-relaxed text-vscode-descriptionForeground">
+					<p className="mt-0">
 						<Trans
-							i18nKey="chat:announcement.learnMore"
+							i18nKey="chat:announcement.finalRelease.intro"
 							components={{
-								learnMoreLink: (
-									<VSCodeLink
-										href="https://docs.roocode.com/update-notes/v3.28.0#task-sync--roomote-control"
-										onClick={(e) => {
-											e.preventDefault()
-											window.postMessage(
-												{
-													type: "action",
-													action: "openExternal",
-													data: {
-														url: "https://docs.roocode.com/update-notes/v3.28.0#task-sync--roomote-control",
-													},
-												},
-												"*",
-											)
-										}}
-									/>
+								announcementLink: (
+									<ExternalLink href="https://x.com/mattrubens/status/2046636598859559114" />
 								),
+								roomoteLink: <ExternalLink href="https://roomote.dev/" />,
 							}}
 						/>
-					</div>
-
-					<div className="mt-4">
-						<Button
-							onClick={() => {
-								vscode.postMessage({ type: "openExternal", url: cloudUrl })
-							}}
-							className="w-full">
-							{t("chat:announcement.visitCloudButton")}
-						</Button>
-					</div>
-
-					<div className="mt-4 text-sm text-center">
+					</p>
+					<p>{t("chat:announcement.finalRelease.continuity")}</p>
+					<p>
 						<Trans
-							i18nKey="chat:announcement.socialLinks"
+							i18nKey="chat:announcement.finalRelease.alternatives"
 							components={{
-								xLink: <XLink />,
-								discordLink: <DiscordLink />,
-								redditLink: <RedditLink />,
+								zooCodeLink: <ExternalLink href="https://github.com/Zoo-Code-Org/Zoo-Code/" />,
+								clineLink: <ExternalLink href="https://cline.bot/" />,
 							}}
 						/>
-					</div>
+					</p>
+					<p className="mb-0">{t("chat:announcement.finalRelease.signoff")}</p>
 				</div>
 			</DialogContent>
 		</Dialog>
 	)
 }
 
-const XLink = () => (
+const ExternalLink = ({ children, href }: { children?: ReactNode; href: string }) => (
 	<VSCodeLink
-		href="https://x.com/roo_code"
+		href={href}
 		onClick={(e) => {
 			e.preventDefault()
-			window.postMessage({ type: "action", action: "openExternal", data: { url: "https://x.com/roo_code" } }, "*")
+			vscode.postMessage({ type: "openExternal", url: href })
 		}}>
-		X
-	</VSCodeLink>
-)
-
-const DiscordLink = () => (
-	<VSCodeLink
-		href="https://discord.gg/rCQcvT7Fnt"
-		onClick={(e) => {
-			e.preventDefault()
-			window.postMessage(
-				{ type: "action", action: "openExternal", data: { url: "https://discord.gg/rCQcvT7Fnt" } },
-				"*",
-			)
-		}}>
-		Discord
-	</VSCodeLink>
-)
-
-const RedditLink = () => (
-	<VSCodeLink
-		href="https://www.reddit.com/r/RooCode/"
-		onClick={(e) => {
-			e.preventDefault()
-			window.postMessage(
-				{ type: "action", action: "openExternal", data: { url: "https://www.reddit.com/r/RooCode/" } },
-				"*",
-			)
-		}}>
-		r/RooCode
+		{children}
 	</VSCodeLink>
 )
 

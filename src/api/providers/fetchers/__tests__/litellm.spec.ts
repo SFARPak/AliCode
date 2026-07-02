@@ -221,20 +221,22 @@ describe("getLiteLLMModels", () => {
 				maxTokens: 4096,
 				contextWindow: 200000,
 				supportsImages: true,
-				supportsComputerUse: true,
 				supportsPromptCache: false,
 				inputPrice: 3,
 				outputPrice: 15,
+				cacheWritesPrice: undefined,
+				cacheReadsPrice: undefined,
 				description: "claude-3-5-sonnet via LiteLLM proxy",
 			},
 			"gpt-4-turbo": {
 				maxTokens: 8192,
 				contextWindow: 128000,
 				supportsImages: false,
-				supportsComputerUse: false,
 				supportsPromptCache: false,
 				inputPrice: 10,
 				outputPrice: 30,
+				cacheWritesPrice: undefined,
+				cacheReadsPrice: undefined,
 				description: "gpt-4-turbo via LiteLLM proxy",
 			},
 		})
@@ -300,10 +302,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 4096,
 			contextWindow: 200000,
 			supportsImages: true,
-			supportsComputerUse: true,
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "test-computer-model via LiteLLM proxy",
 		})
 
@@ -311,10 +314,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 4096,
 			contextWindow: 200000,
 			supportsImages: false,
-			supportsComputerUse: false,
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "test-non-computer-model via LiteLLM proxy",
 		})
 	})
@@ -446,10 +450,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 4096,
 			contextWindow: 200000,
 			supportsImages: true,
-			supportsComputerUse: true, // Should be true due to fallback
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "claude-3-5-sonnet-latest via LiteLLM proxy",
 		})
 
@@ -457,10 +462,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 8192,
 			contextWindow: 128000,
 			supportsImages: false,
-			supportsComputerUse: false, // Should be false as it's not in fallback list
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "gpt-4-turbo via LiteLLM proxy",
 		})
 	})
@@ -520,10 +526,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 4096,
 			contextWindow: 200000,
 			supportsImages: true,
-			supportsComputerUse: false, // False because explicitly set to false (fallback ignored)
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "claude-3-5-sonnet-latest via LiteLLM proxy",
 		})
 
@@ -531,10 +538,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 8192,
 			contextWindow: 128000,
 			supportsImages: false,
-			supportsComputerUse: true, // True because explicitly set to true
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "custom-model via LiteLLM proxy",
 		})
 
@@ -542,10 +550,11 @@ describe("getLiteLLMModels", () => {
 			maxTokens: 8192,
 			contextWindow: 128000,
 			supportsImages: false,
-			supportsComputerUse: false, // False because explicitly set to false
 			supportsPromptCache: false,
 			inputPrice: undefined,
 			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
 			description: "another-custom-model via LiteLLM proxy",
 		})
 	})
@@ -597,9 +606,95 @@ describe("getLiteLLMModels", () => {
 		mockedAxios.get.mockResolvedValue(mockResponse)
 
 		const result = await getLiteLLMModels("test-api-key", "http://localhost:4000")
+	})
 
-		expect(result["vertex-claude"].supportsComputerUse).toBe(true)
-		expect(result["openrouter-claude"].supportsComputerUse).toBe(true)
-		expect(result["bedrock-claude"].supportsComputerUse).toBe(true)
+	it("prefers max_output_tokens over max_tokens when both are present", async () => {
+		const mockResponse = {
+			data: {
+				data: [
+					{
+						model_name: "claude-3-5-sonnet-4-5",
+						model_info: {
+							max_tokens: 200000, // This should be ignored
+							max_output_tokens: 64000, // This should be used
+							max_input_tokens: 200000,
+							supports_vision: true,
+							supports_prompt_caching: false,
+							supports_computer_use: true,
+						},
+						litellm_params: {
+							model: "anthropic/claude-3-5-sonnet-4-5",
+						},
+					},
+					{
+						model_name: "model-with-only-max-tokens",
+						model_info: {
+							max_tokens: 8192, // This should be used as fallback
+							// No max_output_tokens
+							max_input_tokens: 128000,
+							supports_vision: false,
+						},
+						litellm_params: {
+							model: "test/model-with-only-max-tokens",
+						},
+					},
+					{
+						model_name: "model-with-only-max-output-tokens",
+						model_info: {
+							// No max_tokens
+							max_output_tokens: 16384, // This should be used
+							max_input_tokens: 100000,
+							supports_vision: false,
+						},
+						litellm_params: {
+							model: "test/model-with-only-max-output-tokens",
+						},
+					},
+				],
+			},
+		}
+
+		mockedAxios.get.mockResolvedValue(mockResponse)
+
+		const result = await getLiteLLMModels("test-api-key", "http://localhost:4000")
+
+		// Should use max_output_tokens (64000) instead of max_tokens (200000)
+		expect(result["claude-3-5-sonnet-4-5"]).toEqual({
+			maxTokens: 64000,
+			contextWindow: 200000,
+			supportsImages: true,
+			supportsPromptCache: false,
+			inputPrice: undefined,
+			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
+			description: "claude-3-5-sonnet-4-5 via LiteLLM proxy",
+		})
+
+		// Should fall back to max_tokens when max_output_tokens is not present
+		expect(result["model-with-only-max-tokens"]).toEqual({
+			maxTokens: 8192,
+			contextWindow: 128000,
+			supportsImages: false,
+			supportsPromptCache: false,
+			inputPrice: undefined,
+			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
+			description: "model-with-only-max-tokens via LiteLLM proxy",
+		})
+
+		// Should use max_output_tokens when max_tokens is not present
+		expect(result["model-with-only-max-output-tokens"]).toEqual({
+			maxTokens: 16384,
+			contextWindow: 100000,
+			supportsImages: false,
+			supportsPromptCache: false,
+			inputPrice: undefined,
+			outputPrice: undefined,
+			cacheWritesPrice: undefined,
+			cacheReadsPrice: undefined,
+			description: "model-with-only-max-output-tokens via LiteLLM proxy",
+		})
 	})
 })

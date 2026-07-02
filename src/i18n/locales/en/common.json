@@ -5,8 +5,8 @@
 	},
 	"number_format": {
 		"thousand_suffix": "k",
-		"million_suffix": "m",
-		"billion_suffix": "b"
+		"million_suffix": "M",
+		"billion_suffix": "B"
 	},
 	"welcome": "Welcome, {{name}}! You have {{count}} notifications.",
 	"items": {
@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "Timed out when attempting to restore checkpoint.",
 		"checkpoint_failed": "Failed to restore checkpoint.",
 		"git_not_installed": "Git is required for the checkpoints feature. Please install Git to enable checkpoints.",
+		"checkpoint_no_first": "No first checkpoint to compare.",
+		"checkpoint_no_previous": "No previous checkpoint to compare.",
+		"checkpoint_no_changes": "No changes found.",
+		"checkpoint_diff_with_next": "Changes compared with next checkpoint",
+		"checkpoint_diff_since_first": "Changes since first checkpoint",
+		"checkpoint_diff_to_current": "Changes to current workspace",
 		"nested_git_repos_warning": "Checkpoints are disabled because a nested git repository was detected at: {{path}}. To use checkpoints, please remove or relocate this nested git repository.",
 		"no_workspace": "Please open a project folder first",
 		"update_support_prompt": "Failed to update support prompt",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "Not enough messages to condense context",
 		"condensed_recently": "Context was condensed recently; skipping this attempt",
 		"condense_handler_invalid": "API handler for condensing context is invalid",
-		"condense_context_grew": "Context size increased during condensing; skipping this attempt",
+		"condense_api_failed": "Condensing API call failed: {{message}}",
 		"url_timeout": "The website took too long to load (timeout). This could be due to a slow connection, heavy website, or the site being temporarily unavailable. You can try again later or check if the URL is correct.",
 		"url_not_found": "The website address could not be found. Please check if the URL is correct and try again.",
 		"no_internet": "No internet connection. Please check your network connection and try again.",
@@ -85,8 +91,7 @@
 			"errorOutput": "Error output: {{output}}",
 			"processExitedWithError": "Claude Code process exited with code {{exitCode}}. Error output: {{output}}",
 			"stoppedWithReason": "Claude Code stopped with reason: {{reason}}",
-			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan.",
-			"notFound": "Claude Code executable '{{claudePath}}' not found.\n\nPlease install Claude Code CLI:\n1. Visit {{installationUrl}} to download Claude Code\n2. Follow the installation instructions for your operating system\n3. Ensure the 'claude' command is available in your PATH\n4. Alternatively, configure a custom path in Roo settings under 'Claude Code Path'\n\nOriginal error: {{originalError}}"
+			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "No active task to delete messages from",
@@ -100,22 +105,33 @@
 		"gemini": {
 			"generate_stream": "Gemini generate context stream error: {{error}}",
 			"generate_complete_prompt": "Gemini completion error: {{error}}",
-			"sources": "Sources:"
+			"sources": "Sources:",
+			"thinking_complete_no_output": "(Thinking complete, but no output was generated.)",
+			"thinking_complete_truncated": "(Thinking complete, but output was truncated due to token limit.)",
+			"thinking_complete_safety": "(Thinking complete, but output was blocked due to safety settings.)",
+			"thinking_complete_recitation": "(Thinking complete, but output was blocked due to recitation check.)"
 		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API authentication failed. Please check your API key is valid and not expired.",
-			"accessForbidden": "Cerebras API access forbidden. Your API key may not have access to the requested model or feature.",
-			"rateLimitExceeded": "Cerebras API rate limit exceeded. Please wait before making another request.",
-			"serverError": "Cerebras API server error ({{status}}). Please try again later.",
-			"genericError": "Cerebras API Error ({{status}}): {{message}}",
-			"noResponseBody": "Cerebras API Error: No response body",
-			"completionError": "Cerebras completion error: {{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Roo provider requires cloud authentication. Please sign in to Roo Code Cloud."
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "API key contains invalid characters."
+			"invalidKeyInvalidChars": "API key contains invalid characters.",
+			"apiRequestFailed": "API request failed ({{status}})"
 		},
 		"manual_url_empty": "Please enter a valid callback URL",
 		"manual_url_no_query": "Invalid callback URL: missing query parameters",
@@ -161,6 +177,11 @@
 		"incomplete": "Task #{{taskNumber}} (Incomplete)",
 		"no_messages": "Task #{{taskNumber}} (No messages)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "Response interrupted by user",
+		"responseInterruptedByApiError": "Response interrupted by API error",
+		"streamTerminatedByProvider": "Provider ended the request"
+	},
 	"storage": {
 		"prompt_custom_path": "Enter custom conversation history storage path, leave empty to use default location",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -188,21 +209,6 @@
 			"global": "global"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "Mode removed successfully, but failed to delete rules folder at {{rulesFolderPath}}. You may need to delete it manually."
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "Your organization requires Roo Code Cloud authentication. Please sign in to continue.",
-			"organization_mismatch": "You must be authenticated with your organization's Roo Code Cloud account.",
-			"verification_failed": "Unable to verify organization authentication."
-		},
-		"info": {
-			"organization_requires_auth": "Your organization requires authentication."
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "Delete Custom Mode",
@@ -218,6 +224,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

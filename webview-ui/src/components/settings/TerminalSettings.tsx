@@ -1,24 +1,23 @@
 import { HTMLAttributes, useState, useCallback } from "react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { vscode } from "@/utils/vscode"
-import { SquareTerminal } from "lucide-react"
 import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { Trans } from "react-i18next"
 import { buildDocLink } from "@src/utils/docLinks"
 import { useEvent, useMount } from "react-use"
 
-import { ExtensionMessage } from "@roo/ExtensionMessage"
+import { type ExtensionMessage, type TerminalOutputPreviewSize } from "@roo-code/types"
 
 import { cn } from "@/lib/utils"
-import { Slider } from "@/components/ui"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Slider } from "@/components/ui"
 
 import { SetCachedStateField } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
+import { SearchableSetting } from "./SearchableSetting"
 
 type TerminalSettingsProps = HTMLAttributes<HTMLDivElement> & {
-	terminalOutputLineLimit?: number
-	terminalOutputCharacterLimit?: number
+	terminalOutputPreviewSize?: TerminalOutputPreviewSize
 	terminalShellIntegrationTimeout?: number
 	terminalShellIntegrationDisabled?: boolean
 	terminalCommandDelay?: number
@@ -27,10 +26,8 @@ type TerminalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	terminalZshOhMy?: boolean
 	terminalZshP10k?: boolean
 	terminalZdotdir?: boolean
-	terminalCompressProgressBar?: boolean
 	setCachedStateField: SetCachedStateField<
-		| "terminalOutputLineLimit"
-		| "terminalOutputCharacterLimit"
+		| "terminalOutputPreviewSize"
 		| "terminalShellIntegrationTimeout"
 		| "terminalShellIntegrationDisabled"
 		| "terminalCommandDelay"
@@ -39,13 +36,11 @@ type TerminalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "terminalZshOhMy"
 		| "terminalZshP10k"
 		| "terminalZdotdir"
-		| "terminalCompressProgressBar"
 	>
 }
 
 export const TerminalSettings = ({
-	terminalOutputLineLimit,
-	terminalOutputCharacterLimit,
+	terminalOutputPreviewSize,
 	terminalShellIntegrationTimeout,
 	terminalShellIntegrationDisabled,
 	terminalCommandDelay,
@@ -54,7 +49,6 @@ export const TerminalSettings = ({
 	terminalZshOhMy,
 	terminalZshP10k,
 	terminalZdotdir,
-	terminalCompressProgressBar,
 	setCachedStateField,
 	className,
 	...props
@@ -87,12 +81,7 @@ export const TerminalSettings = ({
 
 	return (
 		<div className={cn("flex flex-col", className)} {...props}>
-			<SectionHeader>
-				<div className="flex items-center gap-2">
-					<SquareTerminal className="w-4" />
-					<div>{t("settings:sections.terminal")}</div>
-				</div>
-			</SectionHeader>
+			<SectionHeader>{t("settings:sections.terminal")}</SectionHeader>
 
 			<Section>
 				{/* Basic Settings */}
@@ -104,86 +93,37 @@ export const TerminalSettings = ({
 						</div>
 					</div>
 					<div className="flex flex-col gap-3 pl-3 border-l-2 border-vscode-button-background">
-						<div>
+						<SearchableSetting
+							settingId="terminal-output-preview-size"
+							section="terminal"
+							label={t("settings:terminal.outputPreviewSize.label")}>
 							<label className="block font-medium mb-1">
-								{t("settings:terminal.outputLineLimit.label")}
+								{t("settings:terminal.outputPreviewSize.label")}
 							</label>
-							<div className="flex items-center gap-2">
-								<Slider
-									min={100}
-									max={5000}
-									step={100}
-									value={[terminalOutputLineLimit ?? 500]}
-									onValueChange={([value]) => setCachedStateField("terminalOutputLineLimit", value)}
-									data-testid="terminal-output-limit-slider"
-								/>
-								<span className="w-10">{terminalOutputLineLimit ?? 500}</span>
-							</div>
+							<Select
+								value={terminalOutputPreviewSize || "medium"}
+								onValueChange={(value) =>
+									setCachedStateField("terminalOutputPreviewSize", value as TerminalOutputPreviewSize)
+								}>
+								<SelectTrigger className="w-full" data-testid="terminal-output-preview-size-dropdown">
+									<SelectValue placeholder={t("settings:common.select")} />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="small">
+										{t("settings:terminal.outputPreviewSize.options.small")}
+									</SelectItem>
+									<SelectItem value="medium">
+										{t("settings:terminal.outputPreviewSize.options.medium")}
+									</SelectItem>
+									<SelectItem value="large">
+										{t("settings:terminal.outputPreviewSize.options.large")}
+									</SelectItem>
+								</SelectContent>
+							</Select>
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
-								<Trans i18nKey="settings:terminal.outputLineLimit.description">
-									<VSCodeLink
-										href={buildDocLink(
-											"features/shell-integration#terminal-output-limit",
-											"settings_terminal_output_limit",
-										)}
-										style={{ display: "inline" }}>
-										{" "}
-									</VSCodeLink>
-								</Trans>
+								{t("settings:terminal.outputPreviewSize.description")}
 							</div>
-						</div>
-						<div>
-							<label className="block font-medium mb-1">
-								{t("settings:terminal.outputCharacterLimit.label")}
-							</label>
-							<div className="flex items-center gap-2">
-								<Slider
-									min={1000}
-									max={100000}
-									step={1000}
-									value={[terminalOutputCharacterLimit ?? 50000]}
-									onValueChange={([value]) =>
-										setCachedStateField("terminalOutputCharacterLimit", value)
-									}
-									data-testid="terminal-output-character-limit-slider"
-								/>
-								<span className="w-16">{terminalOutputCharacterLimit ?? 50000}</span>
-							</div>
-							<div className="text-vscode-descriptionForeground text-sm mt-1">
-								<Trans i18nKey="settings:terminal.outputCharacterLimit.description">
-									<VSCodeLink
-										href={buildDocLink(
-											"features/shell-integration#terminal-output-limit",
-											"settings_terminal_output_character_limit",
-										)}
-										style={{ display: "inline" }}>
-										{" "}
-									</VSCodeLink>
-								</Trans>
-							</div>
-						</div>
-						<div>
-							<VSCodeCheckbox
-								checked={terminalCompressProgressBar ?? true}
-								onChange={(e: any) =>
-									setCachedStateField("terminalCompressProgressBar", e.target.checked)
-								}
-								data-testid="terminal-compress-progress-bar-checkbox">
-								<span className="font-medium">{t("settings:terminal.compressProgressBar.label")}</span>
-							</VSCodeCheckbox>
-							<div className="text-vscode-descriptionForeground text-sm mt-1">
-								<Trans i18nKey="settings:terminal.compressProgressBar.description">
-									<VSCodeLink
-										href={buildDocLink(
-											"features/shell-integration#compress-progress-bar-output",
-											"settings_terminal_compress_progress_bar",
-										)}
-										style={{ display: "inline" }}>
-										{" "}
-									</VSCodeLink>
-								</Trans>
-							</div>
-						</div>
+						</SearchableSetting>
 					</div>
 				</div>
 
@@ -199,37 +139,12 @@ export const TerminalSettings = ({
 						</div>
 					</div>
 					<div className="flex flex-col gap-3 pl-3 border-l-2 border-vscode-button-background">
-						<div>
+						<SearchableSetting
+							settingId="terminal-shell-integration-disabled"
+							section="terminal"
+							label={t("settings:terminal.shellIntegrationDisabled.label")}>
 							<VSCodeCheckbox
-								checked={inheritEnv}
-								onChange={(e: any) => {
-									setInheritEnv(e.target.checked)
-									vscode.postMessage({
-										type: "updateVSCodeSetting",
-										setting: "terminal.integrated.inheritEnv",
-										value: e.target.checked,
-									})
-								}}
-								data-testid="terminal-inherit-env-checkbox">
-								<span className="font-medium">{t("settings:terminal.inheritEnv.label")}</span>
-							</VSCodeCheckbox>
-							<div className="text-vscode-descriptionForeground text-sm mt-1">
-								<Trans i18nKey="settings:terminal.inheritEnv.description">
-									<VSCodeLink
-										href={buildDocLink(
-											"features/shell-integration#inherit-environment-variables",
-											"settings_terminal_inherit_env",
-										)}
-										style={{ display: "inline" }}>
-										{" "}
-									</VSCodeLink>
-								</Trans>
-							</div>
-						</div>
-
-						<div>
-							<VSCodeCheckbox
-								checked={terminalShellIntegrationDisabled ?? false}
+								checked={terminalShellIntegrationDisabled ?? true}
 								onChange={(e: any) =>
 									setCachedStateField("terminalShellIntegrationDisabled", e.target.checked)
 								}>
@@ -241,7 +156,7 @@ export const TerminalSettings = ({
 								<Trans i18nKey="settings:terminal.shellIntegrationDisabled.description">
 									<VSCodeLink
 										href={buildDocLink(
-											"features/shell-integration#disable-terminal-shell-integration",
+											"features/shell-integration#use-inline-terminal-recommended",
 											"settings_terminal_shell_integration_disabled",
 										)}
 										style={{ display: "inline" }}>
@@ -249,11 +164,45 @@ export const TerminalSettings = ({
 									</VSCodeLink>
 								</Trans>
 							</div>
-						</div>
+						</SearchableSetting>
 
 						{!terminalShellIntegrationDisabled && (
 							<>
-								<div>
+								<SearchableSetting
+									settingId="terminal-inherit-env"
+									section="terminal"
+									label={t("settings:terminal.inheritEnv.label")}>
+									<VSCodeCheckbox
+										checked={inheritEnv}
+										onChange={(e: any) => {
+											setInheritEnv(e.target.checked)
+											vscode.postMessage({
+												type: "updateVSCodeSetting",
+												setting: "terminal.integrated.inheritEnv",
+												value: e.target.checked,
+											})
+										}}
+										data-testid="terminal-inherit-env-checkbox">
+										<span className="font-medium">{t("settings:terminal.inheritEnv.label")}</span>
+									</VSCodeCheckbox>
+									<div className="text-vscode-descriptionForeground text-sm mt-1">
+										<Trans i18nKey="settings:terminal.inheritEnv.description">
+											<VSCodeLink
+												href={buildDocLink(
+													"features/shell-integration#inherit-environment-variables",
+													"settings_terminal_inherit_env",
+												)}
+												style={{ display: "inline" }}>
+												{" "}
+											</VSCodeLink>
+										</Trans>
+									</div>
+								</SearchableSetting>
+
+								<SearchableSetting
+									settingId="terminal-shell-integration-timeout"
+									section="terminal"
+									label={t("settings:terminal.shellIntegrationTimeout.label")}>
 									<label className="block font-medium mb-1">
 										{t("settings:terminal.shellIntegrationTimeout.label")}
 									</label>
@@ -286,9 +235,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-command-delay"
+									section="terminal"
+									label={t("settings:terminal.commandDelay.label")}>
 									<label className="block font-medium mb-1">
 										{t("settings:terminal.commandDelay.label")}
 									</label>
@@ -319,9 +271,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-powershell-counter"
+									section="terminal"
+									label={t("settings:terminal.powershellCounter.label")}>
 									<VSCodeCheckbox
 										checked={terminalPowershellCounter ?? false}
 										onChange={(e: any) =>
@@ -344,9 +299,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-zsh-clear-eol-mark"
+									section="terminal"
+									label={t("settings:terminal.zshClearEolMark.label")}>
 									<VSCodeCheckbox
 										checked={terminalZshClearEolMark ?? true}
 										onChange={(e: any) =>
@@ -369,9 +327,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-zsh-oh-my"
+									section="terminal"
+									label={t("settings:terminal.zshOhMy.label")}>
 									<VSCodeCheckbox
 										checked={terminalZshOhMy ?? false}
 										onChange={(e: any) => setCachedStateField("terminalZshOhMy", e.target.checked)}
@@ -390,9 +351,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-zsh-p10k"
+									section="terminal"
+									label={t("settings:terminal.zshP10k.label")}>
 									<VSCodeCheckbox
 										checked={terminalZshP10k ?? false}
 										onChange={(e: any) => setCachedStateField("terminalZshP10k", e.target.checked)}
@@ -411,9 +375,12 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 
-								<div>
+								<SearchableSetting
+									settingId="terminal-zdotdir"
+									section="terminal"
+									label={t("settings:terminal.zdotdir.label")}>
 									<VSCodeCheckbox
 										checked={terminalZdotdir ?? false}
 										onChange={(e: any) => setCachedStateField("terminalZdotdir", e.target.checked)}
@@ -432,7 +399,7 @@ export const TerminalSettings = ({
 											</VSCodeLink>
 										</Trans>
 									</div>
-								</div>
+								</SearchableSetting>
 							</>
 						)}
 					</div>

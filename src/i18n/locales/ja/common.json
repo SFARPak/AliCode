@@ -29,6 +29,12 @@
 		"checkpoint_timeout": "チェックポイントの復元を試みる際にタイムアウトしました。",
 		"checkpoint_failed": "チェックポイントの復元に失敗しました。",
 		"git_not_installed": "チェックポイント機能にはGitが必要です。チェックポイントを有効にするにはGitをインストールしてください。",
+		"checkpoint_no_first": "比較する最初のチェックポイントがありません。",
+		"checkpoint_no_previous": "比較する前のチェックポイントがありません。",
+		"checkpoint_no_changes": "変更は見つかりませんでした。",
+		"checkpoint_diff_with_next": "次のチェックポイントと比較した変更点",
+		"checkpoint_diff_since_first": "最初のチェックポイントからの変更点",
+		"checkpoint_diff_to_current": "現在のワークスペースへの変更点",
 		"nested_git_repos_warning": "{{path}} でネストされたgitリポジトリが検出されたため、チェックポイントが無効になっています。チェックポイントを使用するには、このネストされたgitリポジトリを削除または移動してください。",
 		"no_workspace": "まずプロジェクトフォルダを開いてください",
 		"update_support_prompt": "サポートメッセージの更新に失敗しました",
@@ -56,7 +62,7 @@
 		"condense_not_enough_messages": "コンテキストを圧縮するのに十分なメッセージがありません",
 		"condensed_recently": "コンテキストは最近圧縮されました；この試行をスキップします",
 		"condense_handler_invalid": "コンテキストを圧縮するためのAPIハンドラーが無効です",
-		"condense_context_grew": "圧縮中にコンテキストサイズが増加しました；この試行をスキップします",
+		"condense_api_failed": "圧縮API呼び出しが失敗しました：{{message}}",
 		"url_timeout": "ウェブサイトの読み込みがタイムアウトしました。接続が遅い、ウェブサイトが重い、または一時的に利用できない可能性があります。後でもう一度試すか、URLが正しいか確認してください。",
 		"url_not_found": "ウェブサイトのアドレスが見つかりませんでした。URLが正しいか確認してもう一度試してください。",
 		"no_internet": "インターネット接続がありません。ネットワーク接続を確認してもう一度試してください。",
@@ -85,8 +91,7 @@
 			"errorOutput": "エラー出力：{{output}}",
 			"processExitedWithError": "Claude Code プロセスがコード {{exitCode}} で終了しました。エラー出力：{{output}}",
 			"stoppedWithReason": "Claude Code が理由により停止しました：{{reason}}",
-			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan.",
-			"notFound": "Claude Code executable '{{claudePath}}' not found.\n\nPlease install Claude Code CLI:\n1. Visit {{installationUrl}} to download Claude Code\n2. Follow the installation instructions for your operating system\n3. Ensure the 'claude' command is available in your PATH\n4. Alternatively, configure a custom path in Roo settings under 'Claude Code Path'\n\nOriginal error: {{originalError}}"
+			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "メッセージを削除するアクティブなタスクがありません",
@@ -100,28 +105,39 @@
 		"gemini": {
 			"generate_stream": "Gemini 生成コンテキスト ストリーム エラー: {{error}}",
 			"generate_complete_prompt": "Gemini 完了エラー: {{error}}",
-			"sources": "ソース:"
-		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API認証が失敗しました。APIキーが有効で期限切れではないことを確認してください。",
-			"accessForbidden": "Cerebras APIアクセスが禁止されています。あなたのAPIキーは要求されたモデルや機能にアクセスできない可能性があります。",
-			"rateLimitExceeded": "Cerebras APIレート制限を超過しました。別のリクエストを行う前にお待ちください。",
-			"serverError": "Cerebras APIサーバーエラー ({{status}})。しばらくしてからもう一度お試しください。",
-			"genericError": "Cerebras APIエラー ({{status}}): {{message}}",
-			"noResponseBody": "Cerebras APIエラー: レスポンスボディなし",
-			"completionError": "Cerebras完了エラー: {{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Rooプロバイダーはクラウド認証が必要です。Roo Code Cloudにサインインしてください。"
+			"sources": "ソース:",
+			"thinking_complete_no_output": "（思考完了、出力なし）",
+			"thinking_complete_truncated": "（思考完了、トークン制限により出力切り捨て）",
+			"thinking_complete_safety": "（思考完了、安全設定により出力ブロック）",
+			"thinking_complete_recitation": "（思考完了、引用チェックにより出力ブロック）"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "APIキーに無効な文字が含まれています。"
+			"invalidKeyInvalidChars": "APIキーに無効な文字が含まれています。",
+			"apiRequestFailed": "APIリクエストが失敗しました ({{status}})"
 		},
 		"manual_url_empty": "有効なコールバック URL を入力してください",
 		"manual_url_no_query": "無効なコールバック URL：クエリパラメータがありません",
 		"manual_url_missing_params": "無効なコールバック URL：必要なパラメータ（code と state）がありません",
 		"manual_url_auth_failed": "手動 URL 認証が失敗しました",
-		"manual_url_auth_error": "認証に失敗しました"
+		"manual_url_auth_error": "認証に失敗しました",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "選択されたターミナルコンテンツがありません",
@@ -161,6 +177,11 @@
 		"incomplete": "タスク #{{taskNumber}} (未完了)",
 		"no_messages": "タスク #{{taskNumber}} (メッセージなし)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "ユーザーによって応答が中断されました",
+		"responseInterruptedByApiError": "APIエラーによって応答が中断されました",
+		"streamTerminatedByProvider": "プロバイダーがリクエストを終了しました"
+	},
 	"storage": {
 		"prompt_custom_path": "会話履歴のカスタムストレージパスを入力してください。デフォルトの場所を使用する場合は空のままにしてください",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -172,15 +193,7 @@
 		"task_placeholder": "タスクをここに入力してください"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Groq APIキー",
-			"getGroqApiKey": "Groq APIキーを取得",
-			"claudeCode": {
-				"pathLabel": "Claude Code パス",
-				"description": "Claude Code CLI へのオプションのパス。設定されていない場合は、デフォルトで「claude」になります。",
-				"placeholder": "デフォルト: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -199,26 +212,6 @@
 			"global": "グローバル"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "モードは正常に削除されましたが、{{rulesFolderPath}} にあるルールフォルダの削除に失敗しました。手動で削除する必要がある場合があります。"
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "あなたの組織では Roo Code Cloud 認証が必要です。続行するにはサインインしてください。",
-			"organization_mismatch": "組織の Roo Code Cloud アカウントで認証する必要があります。",
-			"manual_url_empty": "有効なコールバック URL を入力してください",
-			"manual_url_no_query": "無効なコールバック URL：クエリパラメータがありません",
-			"manual_url_missing_params": "無効なコールバック URL：必要なパラメータ（code と state）がありません",
-			"manual_url_auth_failed": "手動 URL 認証が失敗しました",
-			"manual_url_auth_error": "認証に失敗しました",
-			"verification_failed": "組織認証の確認ができませんでした。"
-		},
-		"info": {
-			"organization_requires_auth": "あなたの組織では認証が必要です。"
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "カスタムモードの削除",
@@ -234,6 +227,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

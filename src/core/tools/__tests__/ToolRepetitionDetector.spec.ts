@@ -403,161 +403,140 @@ describe("ToolRepetitionDetector", () => {
 		})
 	})
 
-	// ===== Browser Scroll Action Exclusion tests =====
-	describe("browser scroll action exclusion", () => {
-		it("should not count browser scroll_down actions as repetitions", () => {
+	// ===== Native Protocol (nativeArgs) tests =====
+	describe("native protocol with nativeArgs", () => {
+		it("should differentiate read_file calls with different files in nativeArgs", () => {
 			const detector = new ToolRepetitionDetector(2)
 
-			// Create browser_action tool use with scroll_down
-			const scrollDownTool: ToolUse = {
+			// Create read_file tool use with nativeArgs (like native protocol does)
+			const readFile1: ToolUse = {
 				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "scroll_down" },
+				name: "read_file" as ToolName,
+				params: {}, // Empty for native protocol
 				partial: false,
+				nativeArgs: {
+					path: "file1.ts",
+				},
 			}
 
-			// Should allow unlimited scroll_down actions
-			for (let i = 0; i < 10; i++) {
-				const result = detector.check(scrollDownTool)
-				expect(result.allowExecution).toBe(true)
-				expect(result.askUser).toBeUndefined()
+			const readFile2: ToolUse = {
+				type: "tool_use",
+				name: "read_file" as ToolName,
+				params: {}, // Empty for native protocol
+				partial: false,
+				nativeArgs: {
+					path: "file2.ts",
+				},
 			}
+
+			// First call with file1
+			expect(detector.check(readFile1).allowExecution).toBe(true)
+
+			// Second call with file2 - should be treated as different
+			expect(detector.check(readFile2).allowExecution).toBe(true)
+
+			// Third call with file1 again - should reset counter
+			expect(detector.check(readFile1).allowExecution).toBe(true)
 		})
 
-		it("should not count browser scroll_up actions as repetitions", () => {
+		it("should detect repetition when same files are read multiple times with nativeArgs", () => {
 			const detector = new ToolRepetitionDetector(2)
 
-			// Create browser_action tool use with scroll_up
-			const scrollUpTool: ToolUse = {
+			// Create identical read_file tool uses
+			const readFile: ToolUse = {
 				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "scroll_up" },
+				name: "read_file" as ToolName,
+				params: {}, // Empty for native protocol
 				partial: false,
-			}
-
-			// Should allow unlimited scroll_up actions
-			for (let i = 0; i < 10; i++) {
-				const result = detector.check(scrollUpTool)
-				expect(result.allowExecution).toBe(true)
-				expect(result.askUser).toBeUndefined()
-			}
-		})
-
-		it("should not count alternating scroll_down and scroll_up as repetitions", () => {
-			const detector = new ToolRepetitionDetector(2)
-
-			const scrollDownTool: ToolUse = {
-				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "scroll_down" },
-				partial: false,
-			}
-
-			const scrollUpTool: ToolUse = {
-				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "scroll_up" },
-				partial: false,
-			}
-
-			// Alternate between scroll_down and scroll_up
-			for (let i = 0; i < 5; i++) {
-				let result = detector.check(scrollDownTool)
-				expect(result.allowExecution).toBe(true)
-				expect(result.askUser).toBeUndefined()
-
-				result = detector.check(scrollUpTool)
-				expect(result.allowExecution).toBe(true)
-				expect(result.askUser).toBeUndefined()
-			}
-		})
-
-		it("should still apply repetition detection to other browser_action types", () => {
-			const detector = new ToolRepetitionDetector(2)
-
-			// Create browser_action tool use with click action
-			const clickTool: ToolUse = {
-				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "click", coordinate: "[100, 200]" },
-				partial: false,
+				nativeArgs: {
+					path: "same-file.ts",
+				},
 			}
 
 			// First call allowed
-			expect(detector.check(clickTool).allowExecution).toBe(true)
+			expect(detector.check(readFile).allowExecution).toBe(true)
 
 			// Second call allowed
-			expect(detector.check(clickTool).allowExecution).toBe(true)
+			expect(detector.check(readFile).allowExecution).toBe(true)
 
 			// Third identical call should be blocked (limit is 2)
-			const result = detector.check(clickTool)
+			const result = detector.check(readFile)
 			expect(result.allowExecution).toBe(false)
 			expect(result.askUser).toBeDefined()
 		})
 
-		it("should still apply repetition detection to non-browser tools", () => {
+		it("should treat different slice offsets as distinct read_file calls", () => {
 			const detector = new ToolRepetitionDetector(2)
 
-			const readFileTool = createToolUse("read_file", "read_file", { path: "test.txt" })
-
-			// First call allowed
-			expect(detector.check(readFileTool).allowExecution).toBe(true)
-
-			// Second call allowed
-			expect(detector.check(readFileTool).allowExecution).toBe(true)
-
-			// Third identical call should be blocked (limit is 2)
-			const result = detector.check(readFileTool)
-			expect(result.allowExecution).toBe(false)
-			expect(result.askUser).toBeDefined()
-		})
-
-		it("should not interfere with repetition detection of other tools when scroll actions are interspersed", () => {
-			const detector = new ToolRepetitionDetector(2)
-
-			const scrollTool: ToolUse = {
+			const readFile1: ToolUse = {
 				type: "tool_use",
-				name: "browser_action" as ToolName,
-				params: { action: "scroll_down" },
-				partial: false,
-			}
-
-			const otherTool = createToolUse("execute_command", "execute_command", { command: "ls" })
-
-			// First execute_command
-			expect(detector.check(otherTool).allowExecution).toBe(true)
-
-			// Scroll actions in between (should not affect counter)
-			expect(detector.check(scrollTool).allowExecution).toBe(true)
-			expect(detector.check(scrollTool).allowExecution).toBe(true)
-
-			// Second execute_command
-			expect(detector.check(otherTool).allowExecution).toBe(true)
-
-			// More scroll actions
-			expect(detector.check(scrollTool).allowExecution).toBe(true)
-
-			// Third execute_command should be blocked
-			const result = detector.check(otherTool)
-			expect(result.allowExecution).toBe(false)
-			expect(result.askUser).toBeDefined()
-		})
-
-		it("should handle browser_action with missing or invalid action parameter gracefully", () => {
-			const detector = new ToolRepetitionDetector(2)
-
-			// Browser action without action parameter
-			const noActionTool: ToolUse = {
-				type: "tool_use",
-				name: "browser_action" as ToolName,
+				name: "read_file" as ToolName,
 				params: {},
 				partial: false,
+				nativeArgs: {
+					path: "a.ts",
+					offset: 1,
+					limit: 2000,
+				},
 			}
 
-			// Should apply normal repetition detection
-			expect(detector.check(noActionTool).allowExecution).toBe(true)
-			expect(detector.check(noActionTool).allowExecution).toBe(true)
-			const result = detector.check(noActionTool)
+			const readFile2: ToolUse = {
+				type: "tool_use",
+				name: "read_file" as ToolName,
+				params: {},
+				partial: false,
+				nativeArgs: {
+					path: "a.ts",
+					offset: 2001,
+					limit: 2000,
+				},
+			}
+
+			// Different offsets should be treated as different calls
+			expect(detector.check(readFile1).allowExecution).toBe(true)
+			expect(detector.check(readFile2).allowExecution).toBe(true)
+		})
+
+		it("should handle tools with both params and nativeArgs", () => {
+			const detector = new ToolRepetitionDetector(2)
+
+			const tool1: ToolUse = {
+				type: "tool_use",
+				name: "execute_command" as ToolName,
+				params: { command: "ls" },
+				partial: false,
+				nativeArgs: {
+					command: "ls",
+					cwd: "/home/user",
+				},
+			}
+
+			const tool2: ToolUse = {
+				type: "tool_use",
+				name: "execute_command" as ToolName,
+				params: { command: "ls" },
+				partial: false,
+				nativeArgs: {
+					command: "ls",
+					cwd: "/home/admin",
+				},
+			}
+
+			// Different cwd in nativeArgs should make these different
+			expect(detector.check(tool1).allowExecution).toBe(true)
+			expect(detector.check(tool2).allowExecution).toBe(true)
+		})
+
+		it("should handle tools with only params (no nativeArgs)", () => {
+			const detector = new ToolRepetitionDetector(2)
+
+			const legacyTool = createToolUse("read_file", "read_file", { path: "test.txt" })
+
+			// Should work the same as before
+			expect(detector.check(legacyTool).allowExecution).toBe(true)
+			expect(detector.check(legacyTool).allowExecution).toBe(true)
+
+			const result = detector.check(legacyTool)
 			expect(result.allowExecution).toBe(false)
 			expect(result.askUser).toBeDefined()
 		})

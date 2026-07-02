@@ -1,12 +1,18 @@
 import { Anthropic } from "@anthropic-ai/sdk"
-import { Message, Ollama, type Config as OllamaOptions } from "ollama"
+import OpenAI from "openai"
+import { Message, Ollama, Tool as OllamaTool, type Config as OllamaOptions } from "ollama"
 import { ModelInfo, openAiModelInfoSaneDefaults, DEEP_SEEK_DEFAULT_TEMPERATURE } from "@roo-code/types"
 import { ApiStream } from "../transform/stream"
 import { BaseProvider } from "./base-provider"
 import type { ApiHandlerOptions } from "../../shared/api"
 import { getOllamaModels } from "./fetchers/ollama"
-import { XmlMatcher } from "../../utils/xml-matcher"
+import { TagMatcher } from "../../utils/tag-matcher"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
+
+interface OllamaChatOptions {
+	temperature: number
+	num_ctx?: number
+}
 
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
 	const ollamaMessages: Message[] = []
@@ -88,7 +94,7 @@ function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessagePa
 					})
 				}
 			} else if (anthropicMessage.role === "assistant") {
-				const { nonToolMessages } = anthropicMessage.content.reduce<{
+				const { nonToolMessages, toolMessages } = anthropicMessage.content.reduce<{
 					nonToolMessages: (Anthropic.TextBlockParam | Anthropic.ImageBlockParam)[]
 					toolMessages: Anthropic.ToolUseBlockParam[]
 				}>(
@@ -116,9 +122,21 @@ function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessagePa
 						.join("\n")
 				}
 
+				// Convert tool_use blocks to Ollama tool_calls format
+				const toolCalls =
+					toolMessages.length > 0
+						? toolMessages.map((tool) => ({
+								function: {
+									name: tool.name,
+									arguments: tool.input as Record<string, unknown>,
+								},
+							}))
+						: undefined
+
 				ollamaMessages.push({
 					role: "assistant",
 					content,
+					tool_calls: toolCalls,
 				})
 			}
 		}
@@ -160,13 +178,35 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		return this.client
 	}
 
+	/**
+	 * Converts OpenAI-format tools to Ollama's native tool format.
+	 * This allows NativeOllamaHandler to use the same tool definitions
+	 * that are passed to OpenAI-compatible providers.
+	 */
+	private convertToolsToOllama(tools: OpenAI.Chat.ChatCompletionTool[] | undefined): OllamaTool[] | undefined {
+		if (!tools || tools.length === 0) {
+			return undefined
+		}
+
+		return tools
+			.filter((tool): tool is OpenAI.Chat.ChatCompletionTool & { type: "function" } => tool.type === "function")
+			.map((tool) => ({
+				type: tool.type,
+				function: {
+					name: tool.function.name,
+					description: tool.function.description,
+					parameters: tool.function.parameters as OllamaTool["function"]["parameters"],
+				},
+			}))
+	}
+
 	override async *createMessage(
 		systemPrompt: string,
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		const client = this.ensureClient()
-		const { id: modelId, info: modelInfo } = await this.fetchModel()
+		const { id: modelId } = await this.fetchModel()
 		const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
 		const ollamaMessages: Message[] = [
@@ -174,7 +214,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			...convertToOllamaMessages(messages),
 		]
 
-		const matcher = new XmlMatcher(
+		const matcher = new TagMatcher(
 			"think",
 			(chunk) =>
 				({
@@ -184,26 +224,55 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		)
 
 		try {
+			// Build options object conditionally
+			const chatOptions: OllamaChatOptions = {
+				temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
+			}
+
+			// Only include num_ctx if explicitly set via ollamaNumCtx
+			if (this.options.ollamaNumCtx !== undefined) {
+				chatOptions.num_ctx = this.options.ollamaNumCtx
+			}
+
 			// Create the actual API request promise
 			const stream = await client.chat({
 				model: modelId,
 				messages: ollamaMessages,
 				stream: true,
-				options: {
-					num_ctx: modelInfo.contextWindow,
-					temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
-				},
+				options: chatOptions,
+				tools: this.convertToolsToOllama(metadata?.tools),
 			})
 
 			let totalInputTokens = 0
 			let totalOutputTokens = 0
+			// Track tool calls across chunks (Ollama may send complete tool_calls in final chunk)
+			let toolCallIndex = 0
+			// Track tool call IDs for emitting end events
+			const toolCallIds: string[] = []
 
 			try {
 				for await (const chunk of stream) {
-					if (typeof chunk.message.content === "string") {
+					if (typeof chunk.message.content === "string" && chunk.message.content.length > 0) {
 						// Process content through matcher for reasoning detection
 						for (const matcherChunk of matcher.update(chunk.message.content)) {
 							yield matcherChunk
+						}
+					}
+
+					// Handle tool calls - emit partial chunks for NativeToolCallParser compatibility
+					if (chunk.message.tool_calls && chunk.message.tool_calls.length > 0) {
+						for (const toolCall of chunk.message.tool_calls) {
+							// Generate a unique ID for this tool call
+							const toolCallId = `ollama-tool-${toolCallIndex}`
+							toolCallIds.push(toolCallId)
+							yield {
+								type: "tool_call_partial",
+								index: toolCallIndex,
+								id: toolCallId,
+								name: toolCall.function.name,
+								arguments: JSON.stringify(toolCall.function.arguments),
+							}
+							toolCallIndex++
 						}
 					}
 
@@ -221,6 +290,13 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 				// Yield any remaining content from the matcher
 				for (const chunk of matcher.final()) {
 					yield chunk
+				}
+
+				for (const toolCallId of toolCallIds) {
+					yield {
+						type: "tool_call_end",
+						id: toolCallId,
+					}
 				}
 
 				// Yield usage information if available
@@ -274,13 +350,21 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			const { id: modelId } = await this.fetchModel()
 			const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
+			// Build options object conditionally
+			const chatOptions: OllamaChatOptions = {
+				temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
+			}
+
+			// Only include num_ctx if explicitly set via ollamaNumCtx
+			if (this.options.ollamaNumCtx !== undefined) {
+				chatOptions.num_ctx = this.options.ollamaNumCtx
+			}
+
 			const response = await client.chat({
 				model: modelId,
 				messages: [{ role: "user", content: prompt }],
 				stream: false,
-				options: {
-					temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
-				},
+				options: chatOptions,
 			})
 
 			return response.message?.content || ""

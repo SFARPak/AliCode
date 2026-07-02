@@ -8,14 +8,11 @@ type AutoApproveToggles = Pick<
 	GlobalSettings,
 	| "alwaysAllowReadOnly"
 	| "alwaysAllowWrite"
-	| "alwaysAllowBrowser"
-	| "alwaysApproveResubmit"
 	| "alwaysAllowMcp"
 	| "alwaysAllowModeSwitch"
 	| "alwaysAllowSubtasks"
 	| "alwaysAllowExecute"
 	| "alwaysAllowFollowupQuestions"
-	| "alwaysAllowUpdateTodoList"
 >
 
 export type AutoApproveSetting = keyof AutoApproveToggles
@@ -42,20 +39,6 @@ export const autoApproveSettingsConfig: Record<AutoApproveSetting, AutoApproveCo
 		descriptionKey: "settings:autoApprove.write.description",
 		icon: "edit",
 		testId: "always-allow-write-toggle",
-	},
-	alwaysAllowBrowser: {
-		key: "alwaysAllowBrowser",
-		labelKey: "settings:autoApprove.browser.label",
-		descriptionKey: "settings:autoApprove.browser.description",
-		icon: "globe",
-		testId: "always-allow-browser-toggle",
-	},
-	alwaysApproveResubmit: {
-		key: "alwaysApproveResubmit",
-		labelKey: "settings:autoApprove.retry.label",
-		descriptionKey: "settings:autoApprove.retry.description",
-		icon: "refresh",
-		testId: "always-approve-resubmit-toggle",
 	},
 	alwaysAllowMcp: {
 		key: "alwaysAllowMcp",
@@ -92,13 +75,6 @@ export const autoApproveSettingsConfig: Record<AutoApproveSetting, AutoApproveCo
 		icon: "question",
 		testId: "always-allow-followup-questions-toggle",
 	},
-	alwaysAllowUpdateTodoList: {
-		key: "alwaysAllowUpdateTodoList",
-		labelKey: "settings:autoApprove.updateTodoList.label",
-		descriptionKey: "settings:autoApprove.updateTodoList.description",
-		icon: "checklist",
-		testId: "always-allow-update-todo-list-toggle",
-	},
 }
 
 type AutoApproveToggleProps = AutoApproveToggles & {
@@ -113,15 +89,12 @@ export const AutoApproveToggle = ({ onToggle, ...props }: AutoApproveToggleProps
 			{Object.values(autoApproveSettingsConfig).map(({ key, descriptionKey, labelKey, icon, testId }) => (
 				<StandardTooltip key={key} content={t(descriptionKey || "")}>
 					<Button
-						variant={props[key] ? "default" : "outline"}
+						variant={props[key] ? "primary" : "secondary"}
 						onClick={() => onToggle(key, !props[key])}
 						aria-label={t(labelKey)}
 						aria-pressed={!!props[key]}
 						data-testid={testId}
-						className={cn(
-							"h-7 px-2 rounded-md flex items-center gap-1.5 text-xs whitespace-nowrap",
-							!props[key] && "opacity-50",
-						)}>
+						className={cn("gap-1.5 text-xs whitespace-nowrap", !props[key] && "opacity-50")}>
 						<span className={`codicon codicon-${icon} text-sm`} />
 						<span>{t(labelKey)}</span>
 					</Button>

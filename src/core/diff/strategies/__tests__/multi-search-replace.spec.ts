@@ -900,12 +900,12 @@ function sum(a, b) {
 
 		it("should match content with smart quotes", async () => {
 			const originalContent =
-				"**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. If you have questions or feature ideas, drop by our [Reddit community](https://www.reddit.com/r/RooCode/) or [Discord](https://discord.gg/roocode). Happy coding!"
+				"**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. Happy coding!"
 			const diffContent = `test.ts
 <<<<<<< SEARCH
-**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. If you have questions or feature ideas, drop by our [Reddit community](https://www.reddit.com/r/RooCode/) or [Discord](https://discord.gg/roocode). Happy coding!
+**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. Happy coding!
 =======
-**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. If you have questions or feature ideas, drop by our [Reddit community](https://www.reddit.com/r/RooCode/) or [Discord](https://discord.gg/roocode). Happy coding!
+**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. Happy coding!
 
 You're still here?
 >>>>>>> REPLACE`
@@ -914,7 +914,7 @@ You're still here?
 			expect(result.success).toBe(true)
 			if (result.success) {
 				expect(result.content).toBe(
-					"**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. If you have questions or feature ideas, drop by our [Reddit community](https://www.reddit.com/r/RooCode/) or [Discord](https://discord.gg/roocode). Happy coding!\n\nYou're still here?",
+					"**Enjoy Roo Code!** Whether you keep it on a short leash or let it roam autonomously, we can't wait to see what you build. Happy coding!\n\nYou're still here?",
 				)
 			}
 		})
@@ -1038,29 +1038,6 @@ function sum(a, b) {
 			if (result.success) {
 				expect(result.content).toBe("line 1\nline 3")
 			}
-		})
-	})
-
-	describe("getToolDescription", () => {
-		let strategy: MultiSearchReplaceDiffStrategy
-
-		beforeEach(() => {
-			strategy = new MultiSearchReplaceDiffStrategy()
-		})
-
-		it("should include the current workspace directory", async () => {
-			const cwd = "/test/dir"
-			const description = await strategy.getToolDescription({ cwd })
-			expect(description).toContain(`relative to the current workspace directory ${cwd}`)
-		})
-
-		it("should include required format elements", async () => {
-			const description = await strategy.getToolDescription({ cwd: "/test" })
-			expect(description).toContain("<<<<<<< SEARCH")
-			expect(description).toContain("=======")
-			expect(description).toContain(">>>>>>> REPLACE")
-			expect(description).toContain("<apply_diff>")
-			expect(description).toContain("</apply_diff>")
 		})
 	})
 

@@ -1,22 +1,28 @@
 import * as vscode from "vscode"
+import { Ignore } from "ignore"
+
+import type { EmbedderProvider } from "@roo-code/types"
+
+import { t } from "../../i18n"
+
+import { getDefaultModelId, getModelDimension } from "../../shared/embeddingModels"
+import { Package } from "../../shared/package"
+
+import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
+
 import { OpenAiEmbedder } from "./embedders/openai"
 import { CodeIndexOllamaEmbedder } from "./embedders/ollama"
 import { OpenAICompatibleEmbedder } from "./embedders/openai-compatible"
 import { GeminiEmbedder } from "./embedders/gemini"
 import { MistralEmbedder } from "./embedders/mistral"
 import { VercelAiGatewayEmbedder } from "./embedders/vercel-ai-gateway"
-import { EmbedderProvider, getDefaultModelId, getModelDimension } from "../../shared/embeddingModels"
+import { BedrockEmbedder } from "./embedders/bedrock"
+import { OpenRouterEmbedder } from "./embedders/openrouter"
 import { QdrantVectorStore } from "./vector-store/qdrant-client"
 import { codeParser, DirectoryScanner, FileWatcher } from "./processors"
 import { ICodeParser, IEmbedder, IFileWatcher, IVectorStore } from "./interfaces"
 import { CodeIndexConfigManager } from "./config-manager"
 import { CacheManager } from "./cache-manager"
-import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
-import { Ignore } from "ignore"
-import { t } from "../../i18n"
-import { TelemetryService } from "@roo-code/telemetry"
-import { TelemetryEventName } from "@roo-code/types"
-import { Package } from "../../shared/package"
 import { BATCH_SEGMENT_THRESHOLD } from "./constants"
 
 /**
@@ -79,6 +85,22 @@ export class CodeIndexServiceFactory {
 				throw new Error(t("embeddings:serviceFactory.vercelAiGatewayConfigMissing"))
 			}
 			return new VercelAiGatewayEmbedder(config.vercelAiGatewayOptions.apiKey, config.modelId)
+		} else if (provider === "bedrock") {
+			// Only region is required for Bedrock (profile is optional)
+			if (!config.bedrockOptions?.region) {
+				throw new Error(t("embeddings:serviceFactory.bedrockConfigMissing"))
+			}
+			return new BedrockEmbedder(config.bedrockOptions.region, config.bedrockOptions.profile, config.modelId)
+		} else if (provider === "openrouter") {
+			if (!config.openRouterOptions?.apiKey) {
+				throw new Error(t("embeddings:serviceFactory.openRouterConfigMissing"))
+			}
+			return new OpenRouterEmbedder(
+				config.openRouterOptions.apiKey,
+				config.modelId,
+				undefined, // maxItemTokens
+				config.openRouterOptions.specificProvider,
+			)
 		}
 
 		throw new Error(
@@ -95,13 +117,6 @@ export class CodeIndexServiceFactory {
 		try {
 			return await embedder.validateConfiguration()
 		} catch (error) {
-			// Capture telemetry for the error
-			TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
-				error: error instanceof Error ? error.message : String(error),
-				stack: error instanceof Error ? error.stack : undefined,
-				location: "validateEmbedder",
-			})
-
 			// If validation throws an exception, preserve the original error message
 			return {
 				valid: false,

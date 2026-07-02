@@ -33,7 +33,13 @@
 		"could_not_open_file_generic": "无法打开文件！",
 		"checkpoint_timeout": "尝试恢复检查点时超时。",
 		"checkpoint_failed": "恢复检查点失败。",
-		"git_not_installed": "存档点功能需要 Git。请安装 Git 以启用存档点。",
+		"git_not_installed": "检查点功能需要 Git。请安装 Git 以启用检查点。",
+		"checkpoint_no_first": "没有第一个存档点可供比较。",
+		"checkpoint_no_previous": "没有上一个存档点可供比较。",
+		"checkpoint_no_changes": "未发现任何更改。",
+		"checkpoint_diff_with_next": "与下一个存档点比较的更改",
+		"checkpoint_diff_since_first": "自第一个存档点以来的更改",
+		"checkpoint_diff_to_current": "对当前工作区的更改",
 		"nested_git_repos_warning": "存档点已禁用，因为在 {{path}} 检测到嵌套的 git 仓库。要使用存档点，请移除或重新定位此嵌套的 git 仓库。",
 		"no_workspace": "请先打开项目文件夹",
 		"update_support_prompt": "更新支持消息失败",
@@ -61,7 +67,7 @@
 		"condense_not_enough_messages": "没有足够的对话来压缩上下文",
 		"condensed_recently": "上下文最近已压缩；跳过此次尝试",
 		"condense_handler_invalid": "压缩上下文的API处理程序无效",
-		"condense_context_grew": "压缩过程中上下文大小增加；跳过此次尝试",
+		"condense_api_failed": "压缩 API 调用失败：{{message}}",
 		"url_timeout": "网站加载超时。这可能是由于网络连接缓慢、网站负载过重或暂时不可用。你可以稍后重试或检查 URL 是否正确。",
 		"url_not_found": "找不到网站地址。请检查 URL 是否正确并重试。",
 		"no_internet": "无网络连接。请检查网络连接并重试。",
@@ -90,8 +96,7 @@
 			"errorOutput": "错误输出：{{output}}",
 			"processExitedWithError": "Claude Code 进程退出，退出码：{{exitCode}}。错误输出：{{output}}",
 			"stoppedWithReason": "Claude Code 停止，原因：{{reason}}",
-			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan.",
-			"notFound": "Claude Code executable '{{claudePath}}' not found.\n\nPlease install Claude Code CLI:\n1. Visit {{installationUrl}} to download Claude Code\n2. Follow the installation instructions for your operating system\n3. Ensure the 'claude' command is available in your PATH\n4. Alternatively, configure a custom path in Roo settings under 'Claude Code Path'\n\nOriginal error: {{originalError}}"
+			"apiKeyModelPlanMismatch": "API keys and subscription plans allow different models. Make sure the selected model is included in your plan."
 		},
 		"message": {
 			"no_active_task_to_delete": "没有可删除消息的活跃任务",
@@ -105,28 +110,39 @@
 		"gemini": {
 			"generate_stream": "Gemini 生成上下文流错误：{{error}}",
 			"generate_complete_prompt": "Gemini 完成错误：{{error}}",
-			"sources": "来源："
-		},
-		"cerebras": {
-			"authenticationFailed": "Cerebras API 身份验证失败。请检查你的 API 密钥是否有效且未过期。",
-			"accessForbidden": "Cerebras API 访问被禁止。你的 API 密钥可能无法访问请求的模型或功能。",
-			"rateLimitExceeded": "Cerebras API 速率限制已超出。请稍等后再发起另一个请求。",
-			"serverError": "Cerebras API 服务器错误 ({{status}})。请稍后重试。",
-			"genericError": "Cerebras API 错误 ({{status}})：{{message}}",
-			"noResponseBody": "Cerebras API 错误：无响应主体",
-			"completionError": "Cerebras 完成错误：{{error}}"
-		},
-		"roo": {
-			"authenticationRequired": "Roo 提供商需要云认证。请登录 Roo Code Cloud。"
+			"sources": "来源：",
+			"thinking_complete_no_output": "（思考完成，但未生成输出。）",
+			"thinking_complete_truncated": "（思考完成，但由于 Token 限制输出被截断。）",
+			"thinking_complete_safety": "（思考完成，但由于安全设置输出被阻止。）",
+			"thinking_complete_recitation": "（思考完成，但由于引用检查输出被阻止。）"
 		},
 		"api": {
-			"invalidKeyInvalidChars": "API 密钥包含无效字符。"
+			"invalidKeyInvalidChars": "API 密钥包含无效字符.",
+			"apiRequestFailed": "API 请求失败 ({{status}})"
 		},
 		"manual_url_empty": "请输入有效的回调 URL",
 		"manual_url_no_query": "无效的回调 URL：缺少查询参数",
 		"manual_url_missing_params": "无效的回调 URL：缺少必需参数（code 和 state）",
 		"manual_url_auth_failed": "手动 URL 身份验证失败",
-		"manual_url_auth_error": "身份验证失败"
+		"manual_url_auth_error": "身份验证失败",
+		"openAiCodex": {
+			"notAuthenticated": "Not authenticated with OpenAI Codex. Please sign in using the OpenAI Codex OAuth flow.",
+			"invalidRequest": "Invalid request to Codex API. Please check your input parameters.",
+			"authenticationFailed": "Authentication failed. Please re-authenticate with OpenAI Codex.",
+			"accessDenied": "Access denied. Your ChatGPT subscription may not include Codex access.",
+			"endpointNotFound": "Codex API endpoint not found.",
+			"rateLimitExceeded": "Rate limit exceeded. Please try again later.",
+			"serviceError": "OpenAI Codex service error. Please try again later.",
+			"genericError": "Codex API error ({{status}})",
+			"noResponseBody": "Codex API error: No response body",
+			"connectionFailed": "Failed to connect to Codex API: {{message}}",
+			"unexpectedConnectionError": "Unexpected error connecting to Codex API",
+			"apiError": "Codex API error: {{message}}",
+			"responseFailed": "Response failed: {{message}}",
+			"streamProcessingError": "Error processing response stream: {{message}}",
+			"unexpectedStreamError": "Unexpected error processing response stream",
+			"completionError": "OpenAI Codex completion error: {{message}}"
+		}
 	},
 	"warnings": {
 		"no_terminal_content": "没有选择终端内容",
@@ -166,6 +182,11 @@
 		"incomplete": "任务 #{{taskNumber}} (未完成)",
 		"no_messages": "任务 #{{taskNumber}} (无消息)"
 	},
+	"interruption": {
+		"responseInterruptedByUser": "响应被用户中断",
+		"responseInterruptedByApiError": "响应被 API 错误中断",
+		"streamTerminatedByProvider": "提供方终止了请求"
+	},
 	"storage": {
 		"prompt_custom_path": "输入自定义会话历史存储路径，留空以使用默认位置",
 		"path_placeholder": "D:\\RooCodeStorage",
@@ -177,15 +198,7 @@
 		"task_placeholder": "在这里输入任务"
 	},
 	"settings": {
-		"providers": {
-			"groqApiKey": "Groq API 密钥",
-			"getGroqApiKey": "获取 Groq API 密钥",
-			"claudeCode": {
-				"pathLabel": "Claude Code 路径",
-				"description": "Claude Code CLI 的可选路径。如果未设置，默认为 'claude'。",
-				"placeholder": "默认: claude"
-			}
-		}
+		"providers": {}
 	},
 	"customModes": {
 		"errors": {
@@ -204,26 +217,6 @@
 			"global": "全局"
 		}
 	},
-	"marketplace": {
-		"mode": {
-			"rulesCleanupFailed": "模式已成功移除，但无法删除位于 {{rulesFolderPath}} 的规则文件夹。您可能需要手动删除。"
-		}
-	},
-	"mdm": {
-		"errors": {
-			"cloud_auth_required": "您的组织需要 Roo Code Cloud 身份验证。请登录以继续。",
-			"organization_mismatch": "您必须使用组织的 Roo Code Cloud 账户进行身份验证。",
-			"manual_url_empty": "请输入有效的回调 URL",
-			"manual_url_no_query": "无效的回调 URL：缺少查询参数",
-			"manual_url_missing_params": "无效的回调 URL：缺少必需参数（code 和 state）",
-			"manual_url_auth_failed": "手动 URL 身份验证失败",
-			"manual_url_auth_error": "身份验证失败",
-			"verification_failed": "无法验证组织身份验证。"
-		},
-		"info": {
-			"organization_requires_auth": "您的组织需要身份验证。"
-		}
-	},
 	"prompts": {
 		"deleteMode": {
 			"title": "删除自定义模式",
@@ -239,6 +232,6 @@
 	},
 	"docsLink": {
 		"label": "Docs",
-		"url": "https://docs.roocode.com"
+		"url": "https://github.com/RooCodeInc/Roo-Code"
 	}
 }

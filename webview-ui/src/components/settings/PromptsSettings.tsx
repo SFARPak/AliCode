@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, FormEvent } from "react"
 import { VSCodeTextArea, VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
 
 import { supportPrompt, SupportPromptType } from "@roo/support-prompt"
@@ -15,9 +15,10 @@ import {
 	SelectValue,
 	StandardTooltip,
 } from "@src/components/ui"
+
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
-import { MessageSquare } from "lucide-react"
+import { SearchableSetting } from "./SearchableSetting"
 
 interface PromptsSettingsProps {
 	customSupportPrompts: Record<string, string | undefined>
@@ -37,10 +38,6 @@ const PromptsSettings = ({
 		listApiConfigMeta,
 		enhancementApiConfigId,
 		setEnhancementApiConfigId,
-		condensingApiConfigId,
-		setCondensingApiConfigId,
-		customCondensingPrompt,
-		setCustomCondensingPrompt,
 		includeTaskHistoryInEnhance: contextIncludeTaskHistoryInEnhance,
 		setIncludeTaskHistoryInEnhance: contextSetIncludeTaskHistoryInEnhance,
 	} = useExtensionState()
@@ -69,36 +66,26 @@ const PromptsSettings = ({
 	}, [])
 
 	const updateSupportPrompt = (type: SupportPromptType, value: string | undefined) => {
-		if (type === "CONDENSE") {
-			setCustomCondensingPrompt(value || supportPrompt.default.CONDENSE)
-			vscode.postMessage({
-				type: "updateCondensingPrompt",
-				text: value || supportPrompt.default.CONDENSE,
-			})
+		// Don't trim during editing to preserve intentional whitespace
+		// Use nullish coalescing to preserve empty strings
+		const finalValue = value ?? undefined
+
+		const updatedPrompts = { ...customSupportPrompts }
+		if (finalValue === undefined) {
+			delete updatedPrompts[type]
 		} else {
-			const updatedPrompts = { ...customSupportPrompts, [type]: value }
-			setCustomSupportPrompts(updatedPrompts)
+			updatedPrompts[type] = finalValue
 		}
+		setCustomSupportPrompts(updatedPrompts)
 	}
 
 	const handleSupportReset = (type: SupportPromptType) => {
-		if (type === "CONDENSE") {
-			setCustomCondensingPrompt(supportPrompt.default.CONDENSE)
-			vscode.postMessage({
-				type: "updateCondensingPrompt",
-				text: supportPrompt.default.CONDENSE,
-			})
-		} else {
-			const updatedPrompts = { ...customSupportPrompts }
-			delete updatedPrompts[type]
-			setCustomSupportPrompts(updatedPrompts)
-		}
+		const updatedPrompts = { ...customSupportPrompts }
+		delete updatedPrompts[type]
+		setCustomSupportPrompts(updatedPrompts)
 	}
 
 	const getSupportPromptValue = (type: SupportPromptType): string => {
-		if (type === "CONDENSE") {
-			return customCondensingPrompt || supportPrompt.default.CONDENSE
-		}
 		return supportPrompt.get(customSupportPrompts, type)
 	}
 
@@ -115,14 +102,14 @@ const PromptsSettings = ({
 	return (
 		<div>
 			<SectionHeader description={t("settings:prompts.description")}>
-				<div className="flex items-center gap-2">
-					<MessageSquare className="w-4" />
-					<div>{t("settings:sections.prompts")}</div>
-				</div>
+				{t("settings:sections.prompts")}
 			</SectionHeader>
 
 			<Section>
-				<div>
+				<SearchableSetting
+					settingId="prompts-support-prompt-select"
+					section="prompts"
+					label={t("settings:sections.prompts")}>
 					<Select
 						value={activeSupportOption}
 						onValueChange={(type) => setActiveSupportOption(type as SupportPromptType)}>
@@ -130,17 +117,19 @@ const PromptsSettings = ({
 							<SelectValue placeholder={t("settings:common.select")} />
 						</SelectTrigger>
 						<SelectContent>
-							{Object.keys(supportPrompt.default).map((type) => (
-								<SelectItem key={type} value={type} data-testid={`${type}-option`}>
-									{t(`prompts:supportPrompts.types.${type}.label`)}
-								</SelectItem>
-							))}
+							{Object.keys(supportPrompt.default)
+								.filter((type) => type !== "CONDENSE")
+								.map((type) => (
+									<SelectItem key={type} value={type} data-testid={`${type}-option`}>
+										{t(`prompts:supportPrompts.types.${type}.label`)}
+									</SelectItem>
+								))}
 						</SelectContent>
 					</Select>
 					<div className="text-sm text-vscode-descriptionForeground mt-1">
 						{t(`prompts:supportPrompts.types.${activeSupportOption}.description`)}
 					</div>
-				</div>
+				</SearchableSetting>
 
 				<div key={activeSupportOption} className="mt-4">
 					<div className="flex justify-between items-center mb-1">
@@ -158,61 +147,40 @@ const PromptsSettings = ({
 					<VSCodeTextArea
 						resize="vertical"
 						value={getSupportPromptValue(activeSupportOption)}
-						onChange={(e) => {
+						onInput={(e) => {
 							const value =
-								(e as unknown as CustomEvent)?.detail?.target?.value ||
+								(e as unknown as CustomEvent)?.detail?.target?.value ??
 								((e as any).target as HTMLTextAreaElement).value
-							const trimmedValue = value.trim()
-							updateSupportPrompt(activeSupportOption, trimmedValue || undefined)
+							updateSupportPrompt(activeSupportOption, value)
 						}}
 						rows={6}
 						className="w-full"
 					/>
 
-					{(activeSupportOption === "ENHANCE" || activeSupportOption === "CONDENSE") && (
+					{activeSupportOption === "ENHANCE" && (
 						<div className="mt-4 flex flex-col gap-3 pl-3 border-l-2 border-vscode-button-background">
 							<div>
 								<label className="block font-medium mb-1">
-									{activeSupportOption === "ENHANCE"
-										? t("prompts:supportPrompts.enhance.apiConfiguration")
-										: t("prompts:supportPrompts.condense.apiConfiguration")}
+									{t("prompts:supportPrompts.enhance.apiConfiguration")}
 								</label>
 								<Select
-									value={
-										activeSupportOption === "ENHANCE"
-											? enhancementApiConfigId || "-"
-											: condensingApiConfigId || "-"
-									}
+									value={enhancementApiConfigId || "-"}
 									onValueChange={(value) => {
 										const newConfigId = value === "-" ? "" : value
-										if (activeSupportOption === "ENHANCE") {
-											setEnhancementApiConfigId(newConfigId)
-											vscode.postMessage({
-												type: "enhancementApiConfigId",
-												text: value,
-											})
-										} else {
-											setCondensingApiConfigId(newConfigId)
-											vscode.postMessage({
-												type: "condensingApiConfigId",
-												text: newConfigId,
-											})
-										}
+										setEnhancementApiConfigId(newConfigId)
+										vscode.postMessage({
+											type: "enhancementApiConfigId",
+											text: value,
+										})
 									}}>
 									<SelectTrigger data-testid="api-config-select" className="w-full">
 										<SelectValue
-											placeholder={
-												activeSupportOption === "ENHANCE"
-													? t("prompts:supportPrompts.enhance.useCurrentConfig")
-													: t("prompts:supportPrompts.condense.useCurrentConfig")
-											}
+											placeholder={t("prompts:supportPrompts.enhance.useCurrentConfig")}
 										/>
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="-">
-											{activeSupportOption === "ENHANCE"
-												? t("prompts:supportPrompts.enhance.useCurrentConfig")
-												: t("prompts:supportPrompts.condense.useCurrentConfig")}
+											{t("prompts:supportPrompts.enhance.useCurrentConfig")}
 										</SelectItem>
 										{(listApiConfigMeta || []).map((config) => (
 											<SelectItem
@@ -225,58 +193,55 @@ const PromptsSettings = ({
 									</SelectContent>
 								</Select>
 								<div className="text-sm text-vscode-descriptionForeground mt-1">
-									{activeSupportOption === "ENHANCE"
-										? t("prompts:supportPrompts.enhance.apiConfigDescription")
-										: t("prompts:supportPrompts.condense.apiConfigDescription")}
+									{t("prompts:supportPrompts.enhance.apiConfigDescription")}
 								</div>
 							</div>
 
-							{activeSupportOption === "ENHANCE" && (
-								<>
-									<div>
-										<VSCodeCheckbox
-											checked={includeTaskHistoryInEnhance}
-											onChange={(e: any) => {
-												const value = e.target.checked
-												setIncludeTaskHistoryInEnhance(value)
-												vscode.postMessage({
-													type: "includeTaskHistoryInEnhance",
-													bool: value,
-												})
-											}}>
-											<span className="font-medium">
-												{t("prompts:supportPrompts.enhance.includeTaskHistory")}
-											</span>
-										</VSCodeCheckbox>
-										<div className="text-vscode-descriptionForeground text-sm mt-1 mb-3">
-											{t("prompts:supportPrompts.enhance.includeTaskHistoryDescription")}
-										</div>
-									</div>
+							<div>
+								<VSCodeCheckbox
+									checked={includeTaskHistoryInEnhance}
+									onChange={(e: Event | FormEvent<HTMLElement>) => {
+										const target = ("target" in e ? e.target : null) as HTMLInputElement | null
 
-									<div>
-										<label className="block font-medium mb-1">
-											{t("prompts:supportPrompts.enhance.testEnhancement")}
-										</label>
-										<VSCodeTextArea
-											resize="vertical"
-											value={testPrompt}
-											onChange={(e) => setTestPrompt((e.target as HTMLTextAreaElement).value)}
-											placeholder={t("prompts:supportPrompts.enhance.testPromptPlaceholder")}
-											rows={3}
-											className="w-full"
-											data-testid="test-prompt-textarea"
-										/>
-										<div className="mt-2 flex justify-start items-center gap-2">
-											<Button
-												variant="default"
-												onClick={handleTestEnhancement}
-												disabled={isEnhancing}>
-												{t("prompts:supportPrompts.enhance.previewButton")}
-											</Button>
-										</div>
-									</div>
-								</>
-							)}
+										if (!target) {
+											return
+										}
+
+										setIncludeTaskHistoryInEnhance(target.checked)
+
+										vscode.postMessage({
+											type: "updateSettings",
+											updatedSettings: { includeTaskHistoryInEnhance: target.checked },
+										})
+									}}>
+									<span className="font-medium">
+										{t("prompts:supportPrompts.enhance.includeTaskHistory")}
+									</span>
+								</VSCodeCheckbox>
+								<div className="text-vscode-descriptionForeground text-sm mt-1 mb-3">
+									{t("prompts:supportPrompts.enhance.includeTaskHistoryDescription")}
+								</div>
+							</div>
+
+							<div>
+								<label className="block font-medium mb-1">
+									{t("prompts:supportPrompts.enhance.testEnhancement")}
+								</label>
+								<VSCodeTextArea
+									resize="vertical"
+									value={testPrompt}
+									onChange={(e) => setTestPrompt((e.target as HTMLTextAreaElement).value)}
+									placeholder={t("prompts:supportPrompts.enhance.testPromptPlaceholder")}
+									rows={3}
+									className="w-full"
+									data-testid="test-prompt-textarea"
+								/>
+								<div className="mt-2 flex justify-start items-center gap-2">
+									<Button variant="primary" onClick={handleTestEnhancement} disabled={isEnhancing}>
+										{t("prompts:supportPrompts.enhance.previewButton")}
+									</Button>
+								</div>
+							</div>
 						</div>
 					)}
 				</div>

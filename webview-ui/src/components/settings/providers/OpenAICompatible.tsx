@@ -8,11 +8,10 @@ import {
 	type ModelInfo,
 	type ReasoningEffort,
 	type OrganizationAllowList,
+	type ExtensionMessage,
 	azureOpenAiDefaultApiVersion,
 	openAiModelInfoSaneDefaults,
 } from "@roo-code/types"
-
-import { ExtensionMessage } from "@roo/ExtensionMessage"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { Button, StandardTooltip } from "@src/components/ui"
@@ -25,9 +24,14 @@ import { ThinkingBudget } from "../ThinkingBudget"
 
 type OpenAICompatibleProps = {
 	apiConfiguration: ProviderSettings
-	setApiConfigurationField: (field: keyof ProviderSettings, value: ProviderSettings[keyof ProviderSettings]) => void
+	setApiConfigurationField: <K extends keyof ProviderSettings>(
+		field: K,
+		value: ProviderSettings[K],
+		isUserAction?: boolean,
+	) => void
 	organizationAllowList: OrganizationAllowList
 	modelValidationError?: string
+	simplifySettings?: boolean
 }
 
 export const OpenAICompatible = ({
@@ -35,11 +39,11 @@ export const OpenAICompatible = ({
 	setApiConfigurationField,
 	organizationAllowList,
 	modelValidationError,
+	simplifySettings,
 }: OpenAICompatibleProps) => {
 	const { t } = useAppTranslation()
 
 	const [azureApiVersionSelected, setAzureApiVersionSelected] = useState(!!apiConfiguration?.azureApiVersion)
-	const [openAiLegacyFormatSelected, setOpenAiLegacyFormatSelected] = useState(!!apiConfiguration?.openAiLegacyFormat)
 
 	const [openAiModels, setOpenAiModels] = useState<Record<string, ModelInfo> | null>(null)
 
@@ -88,7 +92,7 @@ export const OpenAICompatible = ({
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			const headerObject = convertHeadersToObject(customHeaders)
-			setApiConfigurationField("openAiHeaders", headerObject)
+			setApiConfigurationField("openAiHeaders", headerObject, false)
 		}, 300)
 
 		return () => clearTimeout(timer)
@@ -147,21 +151,12 @@ export const OpenAICompatible = ({
 				serviceUrl="https://platform.openai.com"
 				organizationAllowList={organizationAllowList}
 				errorMessage={modelValidationError}
+				simplifySettings={simplifySettings}
 			/>
 			<R1FormatSetting
 				onChange={handleInputChange("openAiR1FormatEnabled", noTransform)}
 				openAiR1FormatEnabled={apiConfiguration?.openAiR1FormatEnabled ?? false}
 			/>
-			<div>
-				<Checkbox
-					checked={openAiLegacyFormatSelected}
-					onChange={(checked: boolean) => {
-						setOpenAiLegacyFormatSelected(checked)
-						setApiConfigurationField("openAiLegacyFormat", checked)
-					}}>
-					{t("settings:providers.useLegacyFormat")}
-				</Checkbox>
-			</div>
 			<Checkbox
 				checked={apiConfiguration?.openAiStreamingEnabled ?? true}
 				onChange={handleInputChange("openAiStreamingEnabled", noTransform)}>
@@ -277,7 +272,7 @@ export const OpenAICompatible = ({
 						}}
 						modelInfo={{
 							...(apiConfiguration.openAiCustomModelInfo || openAiModelInfoSaneDefaults),
-							supportsReasoningEffort: true,
+							supportsReasoningEffort: ["low", "medium", "high", "xhigh"],
 						}}
 					/>
 				)}
@@ -390,30 +385,6 @@ export const OpenAICompatible = ({
 					</div>
 					<div className="text-sm text-vscode-descriptionForeground pt-1">
 						{t("settings:providers.customModel.imageSupport.description")}
-					</div>
-				</div>
-
-				<div>
-					<div className="flex items-center gap-1">
-						<Checkbox
-							checked={apiConfiguration?.openAiCustomModelInfo?.supportsComputerUse ?? false}
-							onChange={handleInputChange("openAiCustomModelInfo", (checked) => {
-								return {
-									...(apiConfiguration?.openAiCustomModelInfo || openAiModelInfoSaneDefaults),
-									supportsComputerUse: checked,
-								}
-							})}>
-							<span className="font-medium">{t("settings:providers.customModel.computerUse.label")}</span>
-						</Checkbox>
-						<StandardTooltip content={t("settings:providers.customModel.computerUse.description")}>
-							<i
-								className="codicon codicon-info text-vscode-descriptionForeground"
-								style={{ fontSize: "12px" }}
-							/>
-						</StandardTooltip>
-					</div>
-					<div className="text-sm text-vscode-descriptionForeground pt-1">
-						{t("settings:providers.customModel.computerUse.description")}
 					</div>
 				</div>
 

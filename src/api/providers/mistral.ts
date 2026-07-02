@@ -1,5 +1,6 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import { Mistral } from "@mistralai/mistralai"
+import OpenAI from "openai"
 
 import { type MistralModelId, mistralDefaultModelId, mistralModels, MISTRAL_DEFAULT_TEMPERATURE } from "@roo-code/types"
 
@@ -7,6 +8,7 @@ import { ApiHandlerOptions } from "../../shared/api"
 
 import { convertToMistralMessages } from "../transform/mistral-format"
 import { ApiStream } from "../transform/stream"
+import { handleProviderError } from "./utils/error-handler"
 
 import { BaseProvider } from "./base-provider"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
@@ -19,9 +21,30 @@ type ContentChunkWithThinking = {
 	thinking?: Array<{ type: string; text?: string }>
 }
 
+// Type for Mistral tool calls in stream delta
+type MistralToolCall = {
+	id?: string
+	type?: string
+	function?: {
+		name?: string
+		arguments?: string
+	}
+}
+
+// Type for Mistral tool definition - matches Mistral SDK Tool type
+type MistralTool = {
+	type: "function"
+	function: {
+		name: string
+		description?: string
+		parameters: Record<string, unknown>
+	}
+}
+
 export class MistralHandler extends BaseProvider implements SingleCompletionHandler {
 	protected options: ApiHandlerOptions
 	private client: Mistral
+	private readonly providerName = "Mistral"
 
 	constructor(options: ApiHandlerOptions) {
 		super()
@@ -47,14 +70,37 @@ export class MistralHandler extends BaseProvider implements SingleCompletionHand
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
-		const { id: model, maxTokens, temperature } = this.getModel()
+		const { id: model, info, maxTokens, temperature } = this.getModel()
 
-		const response = await this.client.chat.stream({
+		// Build request options
+		const requestOptions: {
+			model: string
+			messages: ReturnType<typeof convertToMistralMessages>
+			maxTokens: number
+			temperature: number
+			tools?: MistralTool[]
+			toolChoice?: "auto" | "none" | "any" | "required" | { type: "function"; function: { name: string } }
+		} = {
 			model,
 			messages: [{ role: "system", content: systemPrompt }, ...convertToMistralMessages(messages)],
-			maxTokens,
+			maxTokens: maxTokens ?? info.maxTokens,
 			temperature,
-		})
+		}
+
+		requestOptions.tools = this.convertToolsForMistral(metadata?.tools ?? [])
+		// Always use "any" to require tool use
+		requestOptions.toolChoice = "any"
+
+		// Temporary debug log for QA
+		// console.log("[MISTRAL DEBUG] Raw API request body:", requestOptions)
+
+		let response
+		try {
+			response = await this.client.chat.stream(requestOptions)
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			throw new Error(`Mistral completion error: ${errorMessage}`)
+		}
 
 		for await (const event of response) {
 			const delta = event.data.choices[0]?.delta
@@ -83,6 +129,22 @@ export class MistralHandler extends BaseProvider implements SingleCompletionHand
 				}
 			}
 
+			// Handle tool calls in stream
+			// Mistral SDK provides tool_calls in delta similar to OpenAI format
+			const toolCalls = (delta as { toolCalls?: MistralToolCall[] })?.toolCalls
+			if (toolCalls) {
+				for (let i = 0; i < toolCalls.length; i++) {
+					const toolCall = toolCalls[i]
+					yield {
+						type: "tool_call_partial",
+						index: i,
+						id: toolCall.id,
+						name: toolCall.function?.name,
+						arguments: toolCall.function?.arguments,
+					}
+				}
+			}
+
 			if (event.data.usage) {
 				yield {
 					type: "usage",
@@ -91,6 +153,24 @@ export class MistralHandler extends BaseProvider implements SingleCompletionHand
 				}
 			}
 		}
+	}
+
+	/**
+	 * Convert OpenAI tool definitions to Mistral format.
+	 * Mistral uses the same format as OpenAI for function tools.
+	 */
+	private convertToolsForMistral(tools: OpenAI.Chat.ChatCompletionTool[]): MistralTool[] {
+		return tools
+			.filter((tool) => tool.type === "function")
+			.map((tool) => ({
+				type: "function" as const,
+				function: {
+					name: tool.function.name,
+					description: tool.function.description,
+					// Mistral SDK requires parameters to be defined, use empty object as fallback
+					parameters: (tool.function.parameters as Record<string, unknown>) || {},
+				},
+			}))
 	}
 
 	override getModel() {
@@ -105,9 +185,9 @@ export class MistralHandler extends BaseProvider implements SingleCompletionHand
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
-		try {
-			const { id: model, temperature } = this.getModel()
+		const { id: model, temperature } = this.getModel()
 
+		try {
 			const response = await this.client.chat.complete({
 				model,
 				messages: [{ role: "user", content: prompt }],
@@ -126,11 +206,8 @@ export class MistralHandler extends BaseProvider implements SingleCompletionHand
 
 			return content || ""
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new Error(`Mistral completion error: ${error.message}`)
-			}
-
-			throw error
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			throw new Error(`Mistral completion error: ${errorMessage}`)
 		}
 	}
 }

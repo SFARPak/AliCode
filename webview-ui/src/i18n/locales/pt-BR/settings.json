@@ -1,4 +1,5 @@
 {
+	"back": "Voltar para a visão de tarefas",
 	"common": {
 		"save": "Salvar",
 		"done": "Concluído",
@@ -7,6 +8,10 @@
 		"select": "Selecionar",
 		"add": "Adicionar cabeçalho",
 		"remove": "Remover"
+	},
+	"search": {
+		"placeholder": "Pesquisar configurações...",
+		"noResults": "Nenhuma configuração encontrada"
 	},
 	"header": {
 		"title": "Configurações",
@@ -22,20 +27,72 @@
 	},
 	"sections": {
 		"providers": "Provedores",
+		"modes": "Modos",
+		"mcp": "Servidores MCP",
+		"worktrees": "Worktrees",
 		"autoApprove": "Aprovação",
-		"browser": "Navegador",
 		"checkpoints": "Checkpoints",
 		"notifications": "Notificações",
 		"contextManagement": "Contexto",
 		"terminal": "Terminal",
 		"slashCommands": "Comandos de Barra",
 		"prompts": "Prompts",
+		"ui": "UI",
 		"experimental": "Experimental",
 		"language": "Idioma",
-		"about": "Sobre"
+		"about": "Sobre",
+		"skills": "Skills"
+	},
+	"about": {
+		"bugReport": {
+			"label": "Encontrou um bug?",
+			"link": "Relatar no GitHub"
+		},
+		"securityIssue": {
+			"label": "Descobriu uma vulnerabilidade?",
+			"link": "Siga nosso processo de divulgação"
+		},
+		"contact": "GitHub",
+		"manageSettings": "Gerenciar Configurações",
+		"debugMode": {
+			"label": "Ativar modo de debug",
+			"description": "Ative o modo de depuração para mostrar botões adicionais no cabeçalho da tarefa para visualizar o histórico de conversação da API e as mensagens da UI como JSON formatado em arquivos temporários."
+		}
 	},
 	"slashCommands": {
-		"description": "Gerencie seus comandos de barra para executar rapidamente fluxos de trabalho e ações personalizadas. <DocsLink>Saiba mais</DocsLink>"
+		"description": "Gerencie seus comandos de barra para executar rapidamente fluxos de trabalho e ações personalizadas. <DocsLink>Saiba mais</DocsLink>",
+		"workspaceCommands": "Comandos do espaço de trabalho",
+		"globalCommands": "Comandos globais",
+		"noWorkspaceCommands": "Sem comandos neste projeto ainda.",
+		"noGlobalCommands": "Sem comandos globais ainda.",
+		"addCommand": "Adicionar comando de barra",
+		"editCommand": "Editar comando",
+		"deleteCommand": "Excluir comando",
+		"deleteDialog": {
+			"title": "Excluir comando",
+			"description": "Tem certeza de que deseja excluir o comando \"{{name}}\"? Esta ação não pode ser desfeita.",
+			"confirm": "Excluir",
+			"cancel": "Cancelar"
+		},
+		"createDialog": {
+			"title": "Criar novo comando de barra",
+			"nameLabel": "Nome",
+			"namePlaceholder": "my-command-name",
+			"nameHint": "Apenas letras minúsculas, números, hífens e sublinhados",
+			"sourceLabel": "Localização",
+			"create": "Criar",
+			"cancel": "Cancelar"
+		},
+		"source": {
+			"global": "Global (disponível em todos os espaços de trabalho)",
+			"project": "Espaço de trabalho"
+		},
+		"validation": {
+			"nameRequired": "Nome é obrigatório",
+			"nameTooLong": "O nome deve ter 64 caracteres ou menos",
+			"nameInvalid": "O nome pode conter apenas letras, números, hífens e sublinhados"
+		},
+		"footer": "Use comandos de barra para acesso rápido a prompts e fluxos de trabalho usados com frequência."
 	},
 	"prompts": {
 		"description": "Configure prompts de suporte usados para ações rápidas como melhorar prompts, explicar código e corrigir problemas. Esses prompts ajudam o Roo a fornecer melhor assistência para tarefas comuns de desenvolvimento."
@@ -54,6 +111,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "Chave de API",
 		"vercelAiGatewayApiKeyPlaceholder": "Digite sua chave de API do Vercel AI Gateway",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "Região da AWS",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "Perfil da AWS",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "Nome do perfil da AWS em ~/.aws/credentials (obrigatório).",
+		"openRouterProvider": "OpenRouter",
+		"openRouterApiKeyLabel": "Chave de API do OpenRouter",
+		"openRouterApiKeyPlaceholder": "Digite sua chave de API do OpenRouter",
+		"openRouterProviderRoutingLabel": "Roteamento de Provedores OpenRouter",
+		"openRouterProviderRoutingDescription": "OpenRouter direciona solicitações para os melhores provedores disponíveis para seu modelo de embedding. Por padrão, as solicitações são balanceadas entre os principais provedores para maximizar o tempo de atividade. No entanto, você pode escolher um provedor específico para usar com este modelo.",
 		"mistralProvider": "Mistral",
 		"mistralApiKeyLabel": "Chave de API:",
 		"mistralApiKeyPlaceholder": "Digite sua chave de API da Mistral",
@@ -121,19 +189,29 @@
 			"geminiApiKeyRequired": "A chave de API do Gemini é obrigatória",
 			"mistralApiKeyRequired": "A chave de API Mistral é obrigatória",
 			"vercelAiGatewayApiKeyRequired": "A chave de API do Vercel AI Gateway é obrigatória",
+			"bedrockRegionRequired": "A região da AWS é obrigatória",
+			"bedrockProfileRequired": "O perfil da AWS é obrigatório",
 			"ollamaBaseUrlRequired": "A URL base do Ollama é obrigatória",
 			"baseUrlRequired": "A URL base é obrigatória",
-			"modelDimensionMinValue": "A dimensão do modelo deve ser maior que 0"
+			"modelDimensionMinValue": "A dimensão do modelo deve ser maior que 0",
+			"openRouterApiKeyRequired": "Chave API do OpenRouter é obrigatória"
 		},
+		"optional": "opcional",
 		"advancedConfigLabel": "Configuração Avançada",
 		"searchMinScoreLabel": "Limite de pontuação de busca",
 		"searchMinScoreDescription": "Pontuação mínima de similaridade (0.0-1.0) necessária para os resultados da busca. Valores mais baixos retornam mais resultados, mas podem ser menos relevantes. Valores mais altos retornam menos resultados, mas mais relevantes.",
 		"searchMinScoreResetTooltip": "Redefinir para o valor padrão (0.4)",
 		"searchMaxResultsLabel": "Resultados máximos de busca",
 		"searchMaxResultsDescription": "Número máximo de resultados de busca a retornar ao consultar o índice de código. Valores mais altos fornecem mais contexto, mas podem incluir resultados menos relevantes.",
-		"resetToDefault": "Redefinir para o padrão"
+		"resetToDefault": "Redefinir para o padrão",
+		"stopIndexingButton": "Parar indexação",
+		"stoppingButton": "Parando...",
+		"workspaceToggleLabel": "Ativar indexação para este workspace",
+		"workspaceDisabledMessage": "A indexação está configurada, mas não ativada para este workspace.",
+		"autoEnableDefaultLabel": "Ativar indexação automaticamente para novos workspaces"
 	},
 	"autoApprove": {
+		"toggleShortcut": "Você pode configurar um atalho global para esta configuração <SettingsLink>nas preferências do seu IDE</SettingsLink>.",
 		"description": "Permitir que o Roo realize operações automaticamente sem exigir aprovação. Ative essas configurações apenas se confiar totalmente na IA e compreender os riscos de segurança associados.",
 		"enabled": "Aprovação automática habilitada",
 		"toggleAriaLabel": "Alternar aprovação automática",
@@ -158,15 +236,6 @@
 				"label": "Incluir arquivos protegidos",
 				"description": "Permitir que o Roo crie e edite arquivos protegidos (como .rooignore e arquivos de configuração .roo/) sem exigir aprovação."
 			}
-		},
-		"browser": {
-			"label": "Navegador",
-			"description": "Realizar ações do navegador automaticamente sem exigir aprovação. Nota: Aplica-se apenas quando o modelo suporta uso do computador"
-		},
-		"retry": {
-			"label": "Tentar novamente",
-			"description": "Tentar novamente automaticamente requisições de API com falha quando o servidor retorna uma resposta de erro",
-			"delayLabel": "Atraso antes de tentar novamente a requisição"
 		},
 		"mcp": {
 			"label": "MCP",
@@ -197,13 +266,8 @@
 			"addButton": "Adicionar",
 			"autoDenied": "Comandos com o prefixo `{{prefix}}` foram proibidos pelo usuário. Não contorne esta restrição executando outro comando."
 		},
-		"updateTodoList": {
-			"label": "Todo",
-			"description": "A lista de tarefas é atualizada automaticamente sem aprovação"
-		},
 		"apiRequestLimit": {
 			"title": "Máximo de Solicitações",
-			"description": "Fazer automaticamente este número de requisições à API antes de pedir aprovação para continuar com a tarefa.",
 			"unlimited": "Ilimitado"
 		},
 		"selectOptionsFirst": "Selecione pelo menos uma opção abaixo para habilitar a aprovação automática",
@@ -220,6 +284,7 @@
 		"configProfile": "Perfil de configuração",
 		"description": "Salve diferentes configurações de API para alternar rapidamente entre provedores e configurações.",
 		"apiProvider": "Provedor de API",
+		"apiProviderDocs": "Documentação do Provedor",
 		"model": "Modelo",
 		"nameEmpty": "O nome não pode estar vazio",
 		"nameExists": "Já existe um perfil com este nome",
@@ -236,6 +301,7 @@
 		"searchProviderPlaceholder": "Pesquisar provedores",
 		"noProviderMatchFound": "Nenhum provedor encontrado",
 		"noMatchFound": "Nenhum perfil correspondente encontrado",
+		"retiredProviderMessage": "This provider is no longer supported. Please select a different provider in your API profile settings.",
 		"vscodeLmDescription": "A API do Modelo de Linguagem do VS Code permite executar modelos fornecidos por outras extensões do VS Code (incluindo, mas não se limitando, ao GitHub Copilot). A maneira mais fácil de começar é instalar as extensões Copilot e Copilot Chat no VS Code Marketplace.",
 		"awsCustomArnUse": "Insira um ARN Amazon Bedrock válido para o modelo que deseja usar. Exemplos de formato:",
 		"awsCustomArnDesc": "Certifique-se de que a região no ARN corresponde à região AWS selecionada acima.",
@@ -244,16 +310,46 @@
 		"vercelAiGatewayApiKey": "Chave API do Vercel AI Gateway",
 		"getVercelAiGatewayApiKey": "Obter chave API do Vercel AI Gateway",
 		"apiKeyStorageNotice": "As chaves de API são armazenadas com segurança no Armazenamento Secreto do VSCode",
-		"glamaApiKey": "Chave de API Glama",
-		"getGlamaApiKey": "Obter chave de API Glama",
+		"openAiCodexRateLimits": {
+			"title": "Usage Limits for Codex{{planLabel}}",
+			"loading": "Loading usage limits...",
+			"loadError": "Failed to load usage limits",
+			"retry": "Retry",
+			"usedPercent": "{{percent}}% used",
+			"resetsIn": "Resets in {{time}}",
+			"plan": {
+				"default": "",
+				"withType": " ({{planType}})"
+			},
+			"time": {
+				"now": "Now",
+				"notAvailable": "N/A"
+			},
+			"duration": {
+				"daysHours": "{{days}}d {{hours}}h",
+				"hoursMinutes": "{{hours}}h {{minutes}}m",
+				"minutes": "{{minutes}}m"
+			},
+			"window": {
+				"usage": "Usage",
+				"fiveHour": "5h limit",
+				"oneHour": "1h limit",
+				"daily": "Daily limit",
+				"weekly": "Weekly limit",
+				"days": "{{days}}d limit",
+				"hours": "{{hours}}h limit",
+				"minutes": "{{minutes}}m limit"
+			}
+		},
 		"useCustomBaseUrl": "Usar URL base personalizado",
 		"useReasoning": "Habilitar raciocínio",
 		"useHostHeader": "Usar cabeçalho Host personalizado",
-		"useLegacyFormat": "Usar formato de API OpenAI legado",
 		"customHeaders": "Cabeçalhos personalizados",
 		"headerName": "Nome do cabeçalho",
 		"headerValue": "Valor do cabeçalho",
 		"noCustomHeaders": "Nenhum cabeçalho personalizado definido. Clique no botão + para adicionar um.",
+		"unboundApiKey": "Chave de API Unbound",
+		"getUnboundApiKey": "Obter chave de API Unbound",
 		"requestyApiKey": "Chave de API Requesty",
 		"refreshModels": {
 			"label": "Atualizar modelos",
@@ -265,29 +361,24 @@
 		"getRequestyApiKey": "Obter chave de API Requesty",
 		"getRequestyBaseUrl": "URL Base",
 		"requestyUseCustomBaseUrl": "Usar URL base personalizada",
-		"openRouterTransformsText": "Comprimir prompts e cadeias de mensagens para o tamanho do contexto (<a>Transformações OpenRouter</a>)",
 		"anthropicApiKey": "Chave de API Anthropic",
 		"getAnthropicApiKey": "Obter chave de API Anthropic",
 		"anthropicUseAuthToken": "Passar a chave de API Anthropic como cabeçalho Authorization em vez de X-Api-Key",
 		"anthropic1MContextBetaLabel": "Ativar janela de contexto de 1M (Beta)",
-		"anthropic1MContextBetaDescription": "Estende a janela de contexto para 1 milhão de tokens para o Claude Sonnet 4",
+		"anthropic1MContextBetaDescription": "Estende a janela de contexto para 1 milhão de tokens para o Claude Sonnet 4.x / Claude Opus 4.6",
 		"awsBedrock1MContextBetaLabel": "Ativar janela de contexto de 1M (Beta)",
-		"awsBedrock1MContextBetaDescription": "Estende a janela de contexto para 1 milhão de tokens para o Claude Sonnet 4",
-		"cerebrasApiKey": "Chave de API Cerebras",
-		"getCerebrasApiKey": "Obter chave de API Cerebras",
-		"chutesApiKey": "Chave de API Chutes",
-		"getChutesApiKey": "Obter chave de API Chutes",
+		"awsBedrock1MContextBetaDescription": "Estende a janela de contexto para 1 milhão de tokens para o Claude Sonnet 4.x / Claude Opus 4.6",
+		"vertex1MContextBetaLabel": "Ativar janela de contexto de 1M (Beta)",
+		"vertex1MContextBetaDescription": "Estende a janela de contexto para 1 milhão de tokens para o Claude Sonnet 4.x / Claude Opus 4.6",
+		"basetenApiKey": "Chave de API Baseten",
+		"getBasetenApiKey": "Obter chave de API Baseten",
+		"poeApiKey": "Chave de API Poe",
+		"getPoeApiKey": "Obter chave de API Poe",
+		"poeBaseUrl": "URL base do Poe",
 		"fireworksApiKey": "Chave de API Fireworks",
 		"getFireworksApiKey": "Obter chave de API Fireworks",
-		"featherlessApiKey": "Chave de API Featherless",
-		"getFeatherlessApiKey": "Obter chave de API Featherless",
-		"ioIntelligenceApiKey": "Chave de API IO Intelligence",
-		"ioIntelligenceApiKeyPlaceholder": "Insira sua chave de API da IO Intelligence",
-		"getIoIntelligenceApiKey": "Obter chave de API IO Intelligence",
 		"deepSeekApiKey": "Chave de API DeepSeek",
 		"getDeepSeekApiKey": "Obter chave de API DeepSeek",
-		"doubaoApiKey": "Chave de API Doubao",
-		"getDoubaoApiKey": "Obter chave de API Doubao",
 		"moonshotApiKey": "Chave de API Moonshot",
 		"getMoonshotApiKey": "Obter chave de API Moonshot",
 		"moonshotBaseUrl": "Ponto de entrada Moonshot",
@@ -295,25 +386,13 @@
 		"getZaiApiKey": "Obter chave de API Z AI",
 		"zaiEntrypoint": "Ponto de entrada Z AI",
 		"zaiEntrypointDescription": "Selecione o ponto de entrada da API apropriado com base na sua localização. Se você estiver na China, escolha open.bigmodel.cn. Caso contrário, escolha api.z.ai.",
+		"minimaxApiKey": "Chave de API MiniMax",
+		"getMiniMaxApiKey": "Obter chave de API MiniMax",
+		"minimaxBaseUrl": "Ponto de entrada MiniMax",
 		"geminiApiKey": "Chave de API Gemini",
-		"getGroqApiKey": "Obter chave de API Groq",
-		"groqApiKey": "Chave de API Groq",
 		"getSambaNovaApiKey": "Obter chave de API SambaNova",
 		"sambaNovaApiKey": "Chave de API SambaNova",
 		"getGeminiApiKey": "Obter chave de API Gemini",
-		"getHuggingFaceApiKey": "Obter chave de API Hugging Face",
-		"huggingFaceApiKey": "Chave de API Hugging Face",
-		"huggingFaceModelId": "ID do modelo",
-		"huggingFaceLoading": "Carregando...",
-		"huggingFaceModelsCount": "({{count}} modelos)",
-		"huggingFaceSelectModel": "Selecionar um modelo...",
-		"huggingFaceSearchModels": "Buscar modelos...",
-		"huggingFaceNoModelsFound": "Nenhum modelo encontrado",
-		"huggingFaceProvider": "Provedor",
-		"huggingFaceProviderAuto": "Automático",
-		"huggingFaceSelectProvider": "Selecionar um provedor...",
-		"huggingFaceSearchProviders": "Buscar provedores...",
-		"huggingFaceNoProvidersFound": "Nenhum provedor encontrado",
 		"apiKey": "Chave de API",
 		"openAiApiKey": "Chave de API OpenAI",
 		"openAiBaseUrl": "URL Base",
@@ -335,6 +414,15 @@
 		"awsSessionToken": "Token de Sessão AWS",
 		"awsRegion": "Região AWS",
 		"awsCrossRegion": "Usar inferência entre regiões",
+		"awsGlobalInference": "Usar inferência global (selecionar automaticamente a região ideal da AWS)",
+		"awsServiceTier": "Nível de serviço",
+		"awsServiceTierStandard": "Padrão",
+		"awsServiceTierStandardDesc": "Desempenho e custo equilibrados",
+		"awsServiceTierFlex": "Flex (50% de desconto)",
+		"awsServiceTierFlexDesc": "Custo mais baixo, latência mais alta para tarefas não críticas",
+		"awsServiceTierPriority": "Priority (75% de prêmio)",
+		"awsServiceTierPriorityDesc": "Desempenho mais rápido para aplicações críticas",
+		"awsServiceTierNote": "Os níveis de serviço afetam preços e desempenho. Flex oferece 50% de desconto com latência mais alta, Priority oferece 25% melhor desempenho com 75% de prêmio.",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Usar endpoint VPC personalizado",
 			"vpcEndpointUrlPlaceholder": "Digite a URL do endpoint VPC (opcional)",
@@ -344,17 +432,7 @@
 		"enablePromptCachingTitle": "Ativar cache de prompts para melhorar o desempenho e reduzir custos para modelos suportados.",
 		"cacheUsageNote": "Nota: Se você não vir o uso do cache, tente selecionar um modelo diferente e depois selecionar novamente o modelo desejado.",
 		"vscodeLmModel": "Modelo de Linguagem",
-		"vscodeLmWarning": "Nota: Esta é uma integração muito experimental e o suporte do provedor pode variar. Se você receber um erro sobre um modelo não ser suportado, isso é um problema do lado do provedor.",
-		"geminiParameters": {
-			"urlContext": {
-				"title": "Ativar contexto de URL",
-				"description": "Permite que o Gemini acesse e processe URLs para contexto adicional ao gerar respostas. Útil para tarefas que exijam análise de conteúdo da web."
-			},
-			"groundingSearch": {
-				"title": "Ativar grounding com pesquisa no Google",
-				"description": "Permite que o Gemini pesquise informações atuais no Google e fundamente as respostas em dados em tempo real. Útil para consultas que requerem informações atualizadas."
-			}
-		},
+		"vscodeLmWarning": "Observação: Modelos acessados pela VS Code Language Model API podem ser encapsulados ou ajustados pelo provedor, portanto o comportamento pode diferir do uso direto do mesmo modelo em um provedor ou roteador típico. Para usar um modelo no menu suspenso «Language Model», primeiro altere para esse modelo e depois clique em «Aceitar» no prompt do Copilot Chat; caso contrário, você pode ver um erro como 400 «The requested model is not supported».",
 		"googleCloudSetup": {
 			"title": "Para usar o Google Cloud Vertex AI, você precisa:",
 			"step1": "1. Criar uma conta Google Cloud, ativar a API Vertex AI e ativar os modelos Claude desejados.",
@@ -380,20 +458,10 @@
 			"modelId": "ID do Modelo",
 			"apiKey": "Chave API Ollama",
 			"apiKeyHelp": "Chave API opcional para instâncias Ollama autenticadas ou serviços em nuvem. Deixe vazio para instalações locais.",
+			"numCtx": "Tamanho da janela de contexto (num_ctx)",
+			"numCtxHelp": "Substitui o tamanho da janela de contexto padrão do modelo. Deixe em branco para usar a configuração do Modelfile do modelo. O valor mínimo é 128.",
 			"description": "O Ollama permite que você execute modelos localmente em seu computador. Para instruções sobre como começar, veja o guia de início rápido deles.",
 			"warning": "Nota: O Roo Code usa prompts complexos e funciona melhor com modelos Claude. Modelos menos capazes podem não funcionar como esperado."
-		},
-		"unboundApiKey": "Chave de API Unbound",
-		"getUnboundApiKey": "Obter chave de API Unbound",
-		"unboundRefreshModelsSuccess": "Lista de modelos atualizada! Agora você pode selecionar entre os modelos mais recentes.",
-		"unboundInvalidApiKey": "Chave API inválida. Por favor, verifique sua chave API e tente novamente.",
-		"humanRelay": {
-			"description": "Não é necessária chave de API, mas o usuário precisa ajudar a copiar e colar as informações para a IA do chat web.",
-			"instructions": "Durante o uso, uma caixa de diálogo será exibida e a mensagem atual será copiada para a área de transferência automaticamente. Você precisa colar isso nas versões web de IA (como ChatGPT ou Claude), depois copiar a resposta da IA de volta para a caixa de diálogo e clicar no botão confirmar."
-		},
-		"roo": {
-			"authenticatedMessage": "Autenticado com segurança através da sua conta Roo Code Cloud.",
-			"connectButton": "Conectar ao Roo Code Cloud"
 		},
 		"openRouter": {
 			"providerRouting": {
@@ -418,7 +486,7 @@
 			},
 			"computerUse": {
 				"label": "Uso do Computador",
-				"description": "Este modelo é capaz de interagir com um navegador? (ex. Claude 3.7 Sonnet)."
+				"description": "Este modelo é capaz de interagir com um navegador?"
 			},
 			"promptCache": {
 				"label": "Cache de Prompts",
@@ -450,14 +518,16 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "Limite de Erros e Repetições",
-			"description": "Número de erros consecutivos ou ações repetidas antes de exibir o diálogo 'Roo está com problemas'",
+			"description": "Número de erros consecutivos ou ações repetidas antes de exibir o diálogo 'Roo está com problemas'. Defina como 0 para desativar este mecanismo de segurança (ele nunca será acionado).",
 			"unlimitedDescription": "Tentativas ilimitadas ativadas (prosseguimento automático). O diálogo nunca aparecerá.",
 			"warning": "⚠️ Definir como 0 permite tentativas ilimitadas, o que pode consumir um uso significativo da API"
 		},
 		"reasoningEffort": {
 			"label": "Esforço de raciocínio do modelo",
+			"none": "Nenhum",
 			"minimal": "Mínimo (mais rápido)",
 			"high": "Alto",
+			"xhigh": "Muito alto",
 			"medium": "Médio",
 			"low": "Baixo"
 		},
@@ -475,37 +545,14 @@
 			"placeholder": "Padrão: claude",
 			"maxTokensLabel": "Tokens de saída máximos",
 			"maxTokensDescription": "Número máximo de tokens de saída para respostas do Claude Code. O padrão é 8000."
-		}
-	},
-	"browser": {
-		"enable": {
-			"label": "Ativar ferramenta de navegador",
-			"description": "Quando ativado, o Roo pode usar um navegador para interagir com sites ao usar modelos que suportam o uso do computador. <0>Saiba mais</0>"
 		},
-		"viewport": {
-			"label": "Tamanho da viewport",
-			"description": "Selecione o tamanho da viewport para interações do navegador. Isso afeta como os sites são exibidos e como se interage com eles.",
-			"options": {
-				"largeDesktop": "Desktop grande (1280x800)",
-				"smallDesktop": "Desktop pequeno (900x600)",
-				"tablet": "Tablet (768x1024)",
-				"mobile": "Móvel (360x640)"
-			}
-		},
-		"screenshotQuality": {
-			"label": "Qualidade das capturas de tela",
-			"description": "Ajuste a qualidade WebP das capturas de tela do navegador. Valores mais altos fornecem capturas mais nítidas, mas aumentam o uso de token."
-		},
-		"remote": {
-			"label": "Usar conexão remota de navegador",
-			"description": "Conectar a um navegador Chrome executando com depuração remota ativada (--remote-debugging-port=9222).",
-			"urlPlaceholder": "URL personalizado (ex. http://localhost:9222)",
-			"testButton": "Testar conexão",
-			"testingButton": "Testando...",
-			"instructions": "Digite o endereço do host do protocolo DevTools ou deixe em branco para descobrir automaticamente instâncias locais do Chrome. O botão Testar Conexão tentará usar o URL personalizado, se fornecido, ou descobrirá automaticamente se o campo estiver vazio."
-		}
+		"retiredRooProviderMessage": "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
 	},
 	"checkpoints": {
+		"timeout": {
+			"label": "Tempo limite para inicialização do checkpoint (segundos)",
+			"description": "Tempo máximo de espera para inicializar o serviço de checkpoint. Padrão: 15 segundos. Faixa: 10-60 segundos."
+		},
 		"enable": {
 			"label": "Ativar pontos de verificação automáticos",
 			"description": "Quando ativado, o Roo criará automaticamente pontos de verificação durante a execução de tarefas, facilitando a revisão de alterações ou o retorno a estados anteriores. <0>Saiba mais</0>"
@@ -576,7 +623,6 @@
 				"label": "Máximo de mensagens de diagnóstico",
 				"description": "Número máximo de mensagens de diagnóstico a serem incluídas por arquivo. Este limite se aplica tanto à inclusão automática (quando a caixa de seleção está ativada) quanto às menções manuais de @problems. Valores mais altos fornecem mais contexto, mas aumentam o uso de tokens.",
 				"resetTooltip": "Redefinir para o valor padrão (50)",
-				"unlimited": "Mensagens de diagnóstico ilimitadas",
 				"unlimitedLabel": "Ilimitado"
 			},
 			"delayAfterWrite": {
@@ -602,6 +648,22 @@
 			"label": "Tamanho total máximo da imagem",
 			"mb": "MB",
 			"description": "Limite máximo de tamanho cumulativo (em MB) para todas as imagens processadas em uma única operação read_file. Ao ler várias imagens, o tamanho de cada imagem é adicionado ao total. Se incluir outra imagem exceder esse limite, ela será ignorada."
+		},
+		"includeCurrentTime": {
+			"label": "Incluir hora atual no contexto",
+			"description": "Quando ativado, a hora atual e as informações de fuso horário serão incluídas no prompt do sistema. Desative se os modelos pararem de funcionar por problemas de tempo."
+		},
+		"includeCurrentCost": {
+			"label": "Incluir custo atual no contexto",
+			"description": "Quando ativado, o custo de uso atual da API será incluído no prompt do sistema. Desative se os modelos pararem de funcionar por problemas de custo."
+		},
+		"maxGitStatusFiles": {
+			"label": "Git status máx. arquivos",
+			"description": "Número máximo de entradas de arquivo a serem incluídas no contexto de status do git. Defina como 0 para desativar. Informações sobre o branch e os commits são sempre exibidos quando > 0."
+		},
+		"enableSubfolderRules": {
+			"label": "Ativar regras de subpastas",
+			"description": "Descobrir e carregar recursivamente arquivos .roo/rules e AGENTS.md de subdiretórios. Útil para monorepos com regras por pacote."
 		}
 	},
 	"terminal": {
@@ -610,56 +672,61 @@
 			"description": "Configurações básicas do terminal"
 		},
 		"advanced": {
-			"label": "Configurações do terminal: Avançadas",
-			"description": "As seguintes opções podem exigir reiniciar o terminal para aplicar a configuração."
+			"label": "Configurações do Terminal: Avançado",
+			"description": "Estas configurações só se aplicam quando 'Usar Terminal Inline' está desativado. Afetam apenas o terminal do VS Code e podem exigir reiniciar o IDE."
 		},
 		"outputLineLimit": {
 			"label": "Limite de saída do terminal",
-			"description": "Número máximo de linhas a incluir na saída do terminal ao executar comandos. Quando excedido, as linhas serão removidas do meio, economizando token. <0>Saiba mais</0>"
+			"description": "Mantém as primeiras e últimas linhas e descarta as do meio para ficar abaixo do limite. Diminua para economizar tokens; aumente para dar ao Roo mais detalhes do meio. O Roo vê um placeholder onde o conteúdo é pulado.<0>Saiba mais</0>"
 		},
 		"outputCharacterLimit": {
 			"label": "Limite de caracteres do terminal",
-			"description": "Número máximo de caracteres a serem incluídos na saída do terminal ao executar comandos. Este limite tem precedência sobre o limite de linhas para evitar problemas de memória com linhas extremamente longas. Quando excedido, a saída será truncada. <0>Saiba mais</0>"
+			"description": "Substitui o limite de linhas para evitar problemas de memória, impondo um limite rígido no tamanho da saída. Se excedido, mantém o início e o fim e mostra um placeholder para o Roo onde o conteúdo é pulado. <0>Saiba mais</0>"
+		},
+		"outputPreviewSize": {
+			"label": "Tamanho da visualização da saída de comandos",
+			"description": "Controla quanto da saída de comandos Roo vê diretamente. A saída completa é sempre salva e acessível quando necessário.",
+			"options": {
+				"small": "Pequeno (5KB)",
+				"medium": "Médio (10KB)",
+				"large": "Grande (20KB)"
+			}
 		},
 		"shellIntegrationTimeout": {
 			"label": "Tempo limite de integração do shell do terminal",
-			"description": "Tempo máximo de espera para a inicialização da integração do shell antes de executar comandos. Para usuários com tempos de inicialização de shell longos, este valor pode precisar ser aumentado se você vir erros \"Shell Integration Unavailable\" no terminal. <0>Saiba mais</0>"
+			"description": "Quanto tempo esperar pela integração do shell do VS Code antes de executar comandos. Aumente se o seu shell demorar para iniciar ou se você vir erros de 'Integração do Shell Indisponível'. <0>Saiba mais</0>"
 		},
 		"shellIntegrationDisabled": {
-			"label": "Desativar integração do shell do terminal",
-			"description": "Ative isso se os comandos do terminal não estiverem funcionando corretamente ou se você vir erros de 'Shell Integration Unavailable'. Isso usa um método mais simples para executar comandos, ignorando alguns recursos avançados do terminal. <0>Saiba mais</0>"
+			"label": "Usar Terminal Inline (recomendado)",
+			"description": "Execute comandos no Terminal Inline (chat) para contornar perfis/integração de shell para execuções mais rápidas e confiáveis. Quando desativado, o Roo usa o terminal do VS Code com seu perfil de shell, prompts e plugins. <0>Saiba mais</0>"
 		},
 		"commandDelay": {
 			"label": "Atraso de comando do terminal",
-			"description": "Atraso em milissegundos para adicionar após a execução do comando. A configuração padrão de 0 desativa completamente o atraso. Isso pode ajudar a garantir que a saída do comando seja totalmente capturada em terminais com problemas de temporização. Na maioria dos terminais, isso é implementado definindo `PROMPT_COMMAND='sleep N'` e o PowerShell adiciona `start-sleep` ao final de cada comando. Originalmente era uma solução para o bug VSCode#237208 e pode não ser necessário. <0>Saiba mais</0>"
-		},
-		"compressProgressBar": {
-			"label": "Comprimir saída de barras de progresso",
-			"description": "Quando ativado, processa a saída do terminal com retornos de carro (\\r) para simular como um terminal real exibiria o conteúdo. Isso remove os estados intermediários das barras de progresso, mantendo apenas o estado final, o que conserva espaço de contexto para informações mais relevantes. <0>Saiba mais</0>"
+			"description": "Adiciona uma pequena pausa após cada comando para que o terminal do VS Code possa liberar toda a saída (bash/zsh: PROMPT_COMMAND sleep; PowerShell: start-sleep). Use apenas se você vir a saída final faltando; caso contrário, deixe em 0. <0>Saiba mais</0>"
 		},
 		"powershellCounter": {
-			"label": "Ativar solução alternativa do contador PowerShell",
-			"description": "Quando ativado, adiciona um contador aos comandos PowerShell para garantir a execução correta dos comandos. Isso ajuda com terminais PowerShell que podem ter problemas com a captura de saída. <0>Saiba mais</0>"
+			"label": "Ativar solução alternativa do contador do PowerShell",
+			"description": "Ative isso quando a saída do PowerShell estiver faltando ou duplicada; ele adiciona um pequeno contador a cada comando para estabilizar a saída. Mantenha desativado se a saída já parecer correta. <0>Saiba mais</0>"
 		},
 		"zshClearEolMark": {
 			"label": "Limpar marca de fim de linha do ZSH",
-			"description": "Quando ativado, limpa a marca de fim de linha do ZSH definindo PROMPT_EOL_MARK=''. Isso evita problemas com a interpretação da saída de comandos quando termina com caracteres especiais como '%'. <0>Saiba mais</0>"
+			"description": "Ative isso quando vir % perdidos no final das linhas ou a análise parecer errada; ele omite a marca de fim de linha (%) do Zsh. <0>Saiba mais</0>"
 		},
 		"zshOhMy": {
-			"label": "Ativar integração Oh My Zsh",
-			"description": "Quando ativado, define ITERM_SHELL_INTEGRATION_INSTALLED=Yes para habilitar os recursos de integração do shell Oh My Zsh. A aplicação desta configuração pode exigir a reinicialização do IDE. <0>Saiba mais</0>"
+			"label": "Ativar integração com o Oh My Zsh",
+			"description": "Ative isso quando seu tema/plugins do Oh My Zsh esperarem integração com o shell; ele define ITERM_SHELL_INTEGRATION_INSTALLED=Yes. Desative para evitar a configuração dessa variável. <0>Saiba mais</0>"
 		},
 		"zshP10k": {
-			"label": "Ativar integração Powerlevel10k",
-			"description": "Quando ativado, define POWERLEVEL9K_TERM_SHELL_INTEGRATION=true para habilitar os recursos de integração do shell Powerlevel10k. <0>Saiba mais</0>"
+			"label": "Ativar integração com o Powerlevel10k",
+			"description": "Ative isso ao usar a integração do shell Powerlevel10k. <0>Saiba mais</0>"
 		},
 		"zdotdir": {
-			"label": "Ativar gerenciamento do ZDOTDIR",
-			"description": "Quando ativado, cria um diretório temporário para o ZDOTDIR para lidar corretamente com a integração do shell zsh. Isso garante que a integração do shell do VSCode funcione corretamente com o zsh enquanto preserva sua configuração do zsh. <0>Saiba mais</0>"
+			"label": "Ativar manipulação de ZDOTDIR",
+			"description": "Ative isso quando a integração do shell zsh falhar ou entrar em conflito com seus dotfiles. <0>Saiba mais</0>"
 		},
 		"inheritEnv": {
 			"label": "Herdar variáveis de ambiente",
-			"description": "Quando ativado, o terminal herda variáveis de ambiente do processo pai do VSCode, como configurações de integração do shell definidas no perfil do usuário. Isso alterna diretamente a configuração global do VSCode `terminal.integrated.inheritEnv`. <0>Saiba mais</0>"
+			"description": "Ative isso para herdar variáveis de ambiente do processo pai do VS Code. <0>Saiba mais</0>"
 		}
 	},
 	"advancedSettings": {
@@ -668,7 +735,7 @@
 	"advanced": {
 		"diff": {
 			"label": "Ativar edição através de diffs",
-			"description": "Quando ativado, o Roo poderá editar arquivos mais rapidamente e rejeitará automaticamente escritas completas de arquivos truncados. Funciona melhor com o modelo mais recente Claude 3.7 Sonnet.",
+			"description": "Quando ativado, o Roo poderá editar arquivos mais rapidamente e rejeitará automaticamente escritas completas de arquivos truncados",
 			"strategy": {
 				"label": "Estratégia de diff",
 				"options": {
@@ -681,10 +748,6 @@
 					"unified": "A estratégia de diff unificado adota várias abordagens para aplicar diffs e escolhe a melhor abordagem.",
 					"multiBlock": "A estratégia de diff multi-bloco permite atualizar vários blocos de código em um arquivo em uma única requisição."
 				}
-			},
-			"matchPrecision": {
-				"label": "Precisão de correspondência",
-				"description": "Este controle deslizante controla quão precisamente as seções de código devem corresponder ao aplicar diffs. Valores mais baixos permitem correspondências mais flexíveis, mas aumentam o risco de substituições incorretas. Use valores abaixo de 100% com extrema cautela."
 			}
 		},
 		"todoList": {
@@ -697,17 +760,9 @@
 			"name": "Usar estratégia diff unificada experimental",
 			"description": "Ativar a estratégia diff unificada experimental. Esta estratégia pode reduzir o número de novas tentativas causadas por erros do modelo, mas pode causar comportamento inesperado ou edições incorretas. Ative apenas se compreender os riscos e estiver disposto a revisar cuidadosamente todas as alterações."
 		},
-		"SEARCH_AND_REPLACE": {
-			"name": "Usar ferramenta de busca e substituição experimental",
-			"description": "Ativar a ferramenta de busca e substituição experimental, permitindo que o Roo substitua várias instâncias de um termo de busca em uma única solicitação."
-		},
 		"INSERT_BLOCK": {
 			"name": "Usar ferramenta de inserção de conteúdo experimental",
 			"description": "Ativar a ferramenta de inserção de conteúdo experimental, permitindo que o Roo insira conteúdo em números de linha específicos sem precisar criar um diff."
-		},
-		"POWER_STEERING": {
-			"name": "Usar modo \"direção assistida\" experimental",
-			"description": "Quando ativado, o Roo lembrará o modelo sobre os detalhes da sua definição de modo atual com mais frequência. Isso levará a uma adesão mais forte às definições de função e instruções personalizadas, mas usará mais tokens por mensagem."
 		},
 		"MULTI_SEARCH_AND_REPLACE": {
 			"name": "Usar ferramenta diff de múltiplos blocos experimental",
@@ -716,14 +771,6 @@
 		"CONCURRENT_FILE_READS": {
 			"name": "Habilitar leitura simultânea de arquivos",
 			"description": "Quando habilitado, o Roo pode ler vários arquivos em uma única solicitação. Quando desabilitado, o Roo deve ler arquivos um de cada vez. Desabilitar pode ajudar ao trabalhar com modelos menos capazes ou quando você deseja mais controle sobre o acesso aos arquivos."
-		},
-		"MARKETPLACE": {
-			"name": "Ativar Marketplace",
-			"description": "Quando ativado, você pode instalar MCPs e modos personalizados do Marketplace."
-		},
-		"MULTI_FILE_APPLY_DIFF": {
-			"name": "Habilitar edições de arquivos concorrentes",
-			"description": "Quando habilitado, o Roo pode editar múltiplos arquivos em uma única solicitação. Quando desabilitado, o Roo deve editar arquivos um de cada vez. Desabilitar isso pode ajudar ao trabalhar com modelos menos capazes ou quando você quer mais controle sobre modificações de arquivos."
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Edição em segundo plano",
@@ -738,6 +785,8 @@
 			"description": "Quando ativado, a ferramenta new_task exigirá que um parâmetro todos seja fornecido. Isso garante que todas as novas tarefas comecem com uma lista clara de objetivos. Quando desativado (padrão), o parâmetro todos permanece opcional para compatibilidade com versões anteriores."
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "Provedor",
+			"providerDescription": "Selecione o provedor para geração de imagens.",
 			"name": "Habilitar geração de imagens com IA",
 			"description": "Quando habilitado, Roo pode gerar imagens a partir de prompts de texto usando os modelos de geração de imagens do OpenRouter. Requer uma chave de API do OpenRouter configurada.",
 			"openRouterApiKeyLabel": "Chave de API do OpenRouter",
@@ -751,6 +800,17 @@
 		"RUN_SLASH_COMMAND": {
 			"name": "Ativar comandos slash iniciados pelo modelo",
 			"description": "Quando ativado, Roo pode executar seus comandos slash para executar fluxos de trabalho."
+		},
+		"CUSTOM_TOOLS": {
+			"name": "Ativar ferramentas personalizadas",
+			"description": "Quando habilitado, o Roo pode carregar e usar ferramentas TypeScript/JavaScript personalizadas do diretório .roo/tools do seu projeto ou ~/.roo/tools para ferramentas globais. Nota: estas ferramentas serão aprovadas automaticamente.",
+			"toolsHeader": "Ferramentas personalizadas disponíveis",
+			"noTools": "Nenhuma ferramenta personalizada carregada. Adicione arquivos .ts ou .js ao diretório .roo/tools do seu projeto ou ~/.roo/tools para ferramentas globais.",
+			"refreshButton": "Atualizar",
+			"refreshing": "Atualizando...",
+			"refreshSuccess": "Ferramentas atualizadas com sucesso",
+			"refreshError": "Falha ao atualizar ferramentas",
+			"toolParameters": "Parâmetros"
 		}
 	},
 	"promptCaching": {
@@ -765,8 +825,6 @@
 	"modelInfo": {
 		"supportsImages": "Suporta imagens",
 		"noImages": "Não suporta imagens",
-		"supportsComputerUse": "Suporta uso do computador",
-		"noComputerUse": "Não suporta uso do computador",
 		"supportsPromptCache": "Suporta cache de prompts",
 		"noPromptCache": "Não suporta cache de prompts",
 		"contextWindow": "Janela de Contexto:",
@@ -791,14 +849,10 @@
 		"label": "Modelo",
 		"searchPlaceholder": "Pesquisar",
 		"noMatchFound": "Nenhuma correspondência encontrada",
-		"useCustomModel": "Usar personalizado: {{modelId}}"
+		"useCustomModel": "Usar personalizado: {{modelId}}",
+		"simplifiedExplanation": "Você pode ajustar as configurações detalhadas do modelo mais tarde."
 	},
 	"footer": {
-		"feedback": "Se tiver alguma dúvida ou feedback, sinta-se à vontade para abrir um problema em <githubLink>github.com/RooCodeInc/Roo-Code</githubLink> ou juntar-se a <redditLink>reddit.com/r/RooCode</redditLink> ou <discordLink>discord.gg/roocode</discordLink>",
-		"telemetry": {
-			"label": "Permitir relatórios anônimos de erros e uso",
-			"description": "Ajude a melhorar o Roo Code enviando dados de uso anônimos e relatórios de erros. Esta telemetria não coleta código, prompts ou informações pessoais. Consulte nossa <privacyLink>política de privacidade</privacyLink> para mais detalhes."
-		},
 		"settings": {
 			"import": "Importar",
 			"export": "Exportar",
@@ -821,6 +875,7 @@
 			"regionMismatch": "Aviso: A região em seu ARN ({{arnRegion}}) não corresponde à região selecionada ({{region}}). Isso pode causar problemas de acesso. O provedor usará a região do ARN."
 		},
 		"modelAvailability": "O ID do modelo ({{modelId}}) que você forneceu não está disponível. Por favor, escolha outro modelo.",
+		"modelDeprecated": "Este modelo não está mais disponível. Por favor, selecione um modelo diferente.",
 		"providerNotAllowed": "O provedor '{{provider}}' não é permitido pela sua organização",
 		"modelNotAllowed": "O modelo '{{model}}' não é permitido para o provedor '{{provider}}' pela sua organização",
 		"profileInvalid": "Este perfil contém um provedor ou modelo que não é permitido pela sua organização",
@@ -876,6 +931,68 @@
 			"input": "Entrada",
 			"output": "Saída",
 			"cacheReads": "Leituras de cache"
+		}
+	},
+	"ui": {
+		"collapseThinking": {
+			"label": "Recolher mensagens de pensamento por padrão",
+			"description": "Quando ativado, os blocos de pensamento serão recolhidos por padrão até que você interaja com eles"
+		},
+		"requireCtrlEnterToSend": {
+			"label": "Requer {{primaryMod}}+Enter para enviar mensagens",
+			"description": "Quando ativado, você deve pressionar {{primaryMod}}+Enter para enviar mensagens em vez de apenas Enter"
+		}
+	},
+	"skills": {
+		"description": "Gerencie skills que fornecem instruções contextuais ao agente. As skills são aplicadas automaticamente quando relevantes para suas tarefas. <DocsLink>Saiba mais</DocsLink>",
+		"workspaceSkills": "Skills do espaço de trabalho",
+		"globalSkills": "Skills Globais",
+		"noWorkspaceSkills": "Sem skills neste projeto ainda.",
+		"noGlobalSkills": "Nenhuma skill global configurada. Crie uma para adicionar capacidades ao agente disponíveis em todos os projetos.",
+		"addSkill": "Adicionar Skill",
+		"editSkill": "Editar skill",
+		"deleteSkill": "Excluir skill",
+		"configureModes": "Disponibilidade de modo",
+		"modeAny": "Qualquer modo",
+		"modeCount": "{{count}} modos",
+		"deleteDialog": {
+			"title": "Excluir Skill",
+			"description": "Tem certeza de que deseja excluir a skill \"{{name}}\"? Esta ação não pode ser desfeita.",
+			"confirm": "Excluir",
+			"cancel": "Cancelar"
+		},
+		"modeDialog": {
+			"title": "Configurar modos de Skill",
+			"description": "Escolha quais modos podem usar esta skill",
+			"intro": "Para manter seu contexto leve, recomendamos tornar skills disponíveis apenas para os modos que os precisam.",
+			"anyMode": "Qualquer modo (disponível em qualquer lugar)",
+			"save": "Salvar",
+			"cancel": "Cancelar"
+		},
+		"createDialog": {
+			"title": "Criar Nova Skill",
+			"nameLabel": "Nome",
+			"namePlaceholder": "meu-nome-de-skill",
+			"descriptionLabel": "Descrição",
+			"descriptionPlaceholder": "Descreva quando esta skill deve ser usada...",
+			"sourceLabel": "Localização",
+			"modeLabel": "Modo (opcional)",
+			"modePlaceholder": "Qualquer modo",
+			"modeHint": "Restrinja esta skill a um modo específico",
+			"modeAny": "Qualquer modo",
+			"create": "Criar",
+			"cancel": "Cancelar"
+		},
+		"source": {
+			"global": "Global (disponível em todos os projetos)",
+			"project": "Projeto (apenas este workspace)"
+		},
+		"validation": {
+			"nameRequired": "O nome é obrigatório",
+			"nameTooLong": "O nome deve ter no máximo 64 caracteres",
+			"nameInvalid": "O nome deve ter 1-64 letras minúsculas, números ou hífens",
+			"descriptionRequired": "A descrição é obrigatória",
+			"descriptionTooLong": "A descrição deve ter no máximo 1024 caracteres"
 		}
 	}
 }

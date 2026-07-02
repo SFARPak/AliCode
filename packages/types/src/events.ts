@@ -1,6 +1,7 @@
 import { z } from "zod"
 
-import { clineMessageSchema, tokenUsageSchema } from "./message.js"
+import { clineMessageSchema, queuedMessageSchema, tokenUsageSchema } from "./message.js"
+import { modelInfoSchema } from "./model.js"
 import { toolNamesSchema, toolUsageSchema } from "./tool.js"
 
 /**
@@ -26,12 +27,16 @@ export enum RooCodeEventName {
 	TaskPaused = "taskPaused",
 	TaskUnpaused = "taskUnpaused",
 	TaskSpawned = "taskSpawned",
+	TaskDelegated = "taskDelegated",
+	TaskDelegationCompleted = "taskDelegationCompleted",
+	TaskDelegationResumed = "taskDelegationResumed",
 
 	// Task Execution
 	Message = "message",
 	TaskModeSwitched = "taskModeSwitched",
 	TaskAskResponded = "taskAskResponded",
 	TaskUserMessage = "taskUserMessage",
+	QueuedMessagesUpdated = "queuedMessagesUpdated",
 
 	// Task Analytics
 	TaskTokenUsageUpdated = "taskTokenUsageUpdated",
@@ -41,9 +46,10 @@ export enum RooCodeEventName {
 	ModeChanged = "modeChanged",
 	ProviderProfileChanged = "providerProfileChanged",
 
-	// Evals
-	EvalPass = "evalPass",
-	EvalFail = "evalFail",
+	// Query Responses
+	CommandsResponse = "commandsResponse",
+	ModesResponse = "modesResponse",
+	ModelsResponse = "modelsResponse",
 }
 
 /**
@@ -73,6 +79,19 @@ export const rooCodeEventsSchema = z.object({
 	[RooCodeEventName.TaskPaused]: z.tuple([z.string()]),
 	[RooCodeEventName.TaskUnpaused]: z.tuple([z.string()]),
 	[RooCodeEventName.TaskSpawned]: z.tuple([z.string(), z.string()]),
+	[RooCodeEventName.TaskDelegated]: z.tuple([
+		z.string(), // parentTaskId
+		z.string(), // childTaskId
+	]),
+	[RooCodeEventName.TaskDelegationCompleted]: z.tuple([
+		z.string(), // parentTaskId
+		z.string(), // childTaskId
+		z.string(), // completionResultSummary
+	]),
+	[RooCodeEventName.TaskDelegationResumed]: z.tuple([
+		z.string(), // parentTaskId
+		z.string(), // childTaskId
+	]),
 
 	[RooCodeEventName.Message]: z.tuple([
 		z.object({
@@ -84,12 +103,27 @@ export const rooCodeEventsSchema = z.object({
 	[RooCodeEventName.TaskModeSwitched]: z.tuple([z.string(), z.string()]),
 	[RooCodeEventName.TaskAskResponded]: z.tuple([z.string()]),
 	[RooCodeEventName.TaskUserMessage]: z.tuple([z.string()]),
+	[RooCodeEventName.QueuedMessagesUpdated]: z.tuple([z.string(), z.array(queuedMessageSchema)]),
 
 	[RooCodeEventName.TaskToolFailed]: z.tuple([z.string(), toolNamesSchema, z.string()]),
-	[RooCodeEventName.TaskTokenUsageUpdated]: z.tuple([z.string(), tokenUsageSchema]),
+	[RooCodeEventName.TaskTokenUsageUpdated]: z.tuple([z.string(), tokenUsageSchema, toolUsageSchema]),
 
 	[RooCodeEventName.ModeChanged]: z.tuple([z.string()]),
 	[RooCodeEventName.ProviderProfileChanged]: z.tuple([z.object({ name: z.string(), provider: z.string() })]),
+
+	[RooCodeEventName.CommandsResponse]: z.tuple([
+		z.array(
+			z.object({
+				name: z.string(),
+				source: z.enum(["global", "project", "built-in"]),
+				filePath: z.string().optional(),
+				description: z.string().optional(),
+				argumentHint: z.string().optional(),
+			}),
+		),
+	]),
+	[RooCodeEventName.ModesResponse]: z.tuple([z.array(z.object({ slug: z.string(), name: z.string() }))]),
+	[RooCodeEventName.ModelsResponse]: z.tuple([z.record(z.string(), modelInfoSchema)]),
 })
 
 export type RooCodeEvents = z.infer<typeof rooCodeEventsSchema>
@@ -169,6 +203,21 @@ export const taskEventSchema = z.discriminatedUnion("eventName", [
 		payload: rooCodeEventsSchema.shape[RooCodeEventName.TaskSpawned],
 		taskId: z.number().optional(),
 	}),
+	z.object({
+		eventName: z.literal(RooCodeEventName.TaskDelegated),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.TaskDelegated],
+		taskId: z.number().optional(),
+	}),
+	z.object({
+		eventName: z.literal(RooCodeEventName.TaskDelegationCompleted),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.TaskDelegationCompleted],
+		taskId: z.number().optional(),
+	}),
+	z.object({
+		eventName: z.literal(RooCodeEventName.TaskDelegationResumed),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.TaskDelegationResumed],
+		taskId: z.number().optional(),
+	}),
 
 	// Task Execution
 	z.object({
@@ -186,6 +235,11 @@ export const taskEventSchema = z.discriminatedUnion("eventName", [
 		payload: rooCodeEventsSchema.shape[RooCodeEventName.TaskAskResponded],
 		taskId: z.number().optional(),
 	}),
+	z.object({
+		eventName: z.literal(RooCodeEventName.QueuedMessagesUpdated),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.QueuedMessagesUpdated],
+		taskId: z.number().optional(),
+	}),
 
 	// Task Analytics
 	z.object({
@@ -199,16 +253,21 @@ export const taskEventSchema = z.discriminatedUnion("eventName", [
 		taskId: z.number().optional(),
 	}),
 
-	// Evals
+	// Query Responses
 	z.object({
-		eventName: z.literal(RooCodeEventName.EvalPass),
-		payload: z.undefined(),
-		taskId: z.number(),
+		eventName: z.literal(RooCodeEventName.CommandsResponse),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.CommandsResponse],
+		taskId: z.number().optional(),
 	}),
 	z.object({
-		eventName: z.literal(RooCodeEventName.EvalFail),
-		payload: z.undefined(),
-		taskId: z.number(),
+		eventName: z.literal(RooCodeEventName.ModesResponse),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.ModesResponse],
+		taskId: z.number().optional(),
+	}),
+	z.object({
+		eventName: z.literal(RooCodeEventName.ModelsResponse),
+		payload: rooCodeEventsSchema.shape[RooCodeEventName.ModelsResponse],
+		taskId: z.number().optional(),
 	}),
 ])
 

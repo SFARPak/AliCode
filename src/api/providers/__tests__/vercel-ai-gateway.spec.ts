@@ -26,7 +26,6 @@ vitest.mock("../fetchers/modelCache", () => ({
 				cacheWritesPrice: 3.75,
 				cacheReadsPrice: 0.3,
 				description: "Claude Sonnet 4",
-				supportsComputerUse: true,
 			},
 			"anthropic/claude-3.5-haiku": {
 				maxTokens: 32000,
@@ -38,7 +37,6 @@ vitest.mock("../fetchers/modelCache", () => ({
 				cacheWritesPrice: 1.25,
 				cacheReadsPrice: 0.1,
 				description: "Claude 3.5 Haiku",
-				supportsComputerUse: false,
 			},
 			"openai/gpt-4o": {
 				maxTokens: 16000,
@@ -50,10 +48,10 @@ vitest.mock("../fetchers/modelCache", () => ({
 				cacheWritesPrice: 3.125,
 				cacheReadsPrice: 0.25,
 				description: "GPT-4o",
-				supportsComputerUse: true,
 			},
 		})
 	}),
+	getModelsFromCache: vitest.fn().mockReturnValue(undefined),
 }))
 
 vitest.mock("../../transform/caching/vercel-ai-gateway", () => ({
@@ -115,7 +113,6 @@ describe("VercelAiGatewayHandler", () => {
 			expect(result.info.contextWindow).toBe(200000)
 			expect(result.info.supportsImages).toBe(true)
 			expect(result.info.supportsPromptCache).toBe(true)
-			expect(result.info.supportsComputerUse).toBe(true)
 		})
 
 		it("returns default model info when options are not provided", async () => {
@@ -276,6 +273,213 @@ describe("VercelAiGatewayHandler", () => {
 				cacheWriteTokens: 2,
 				cacheReadTokens: 3,
 				totalCost: 0.005,
+			})
+		})
+
+		describe("native tool calling", () => {
+			const testTools = [
+				{
+					type: "function" as const,
+					function: {
+						name: "test_tool",
+						description: "A test tool",
+						parameters: {
+							type: "object",
+							properties: {
+								arg1: { type: "string" },
+							},
+							required: ["arg1"],
+						},
+					},
+				},
+			]
+
+			beforeEach(() => {
+				mockCreate.mockImplementation(async () => ({
+					[Symbol.asyncIterator]: async function* () {
+						yield {
+							choices: [
+								{
+									delta: {},
+									index: 0,
+								},
+							],
+						}
+					},
+				}))
+			})
+
+			it("should include tools when provided", async () => {
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const messageGenerator = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+					tools: testTools,
+				})
+				await messageGenerator.next()
+
+				expect(mockCreate).toHaveBeenCalledWith(
+					expect.objectContaining({
+						tools: expect.arrayContaining([
+							expect.objectContaining({
+								type: "function",
+								function: expect.objectContaining({
+									name: "test_tool",
+								}),
+							}),
+						]),
+					}),
+				)
+			})
+
+			it("should include tool_choice when provided", async () => {
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const messageGenerator = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+					tools: testTools,
+					tool_choice: "auto",
+				})
+				await messageGenerator.next()
+
+				expect(mockCreate).toHaveBeenCalledWith(
+					expect.objectContaining({
+						tool_choice: "auto",
+					}),
+				)
+			})
+
+			it("should set parallel_tool_calls when parallelToolCalls is enabled", async () => {
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const messageGenerator = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+					tools: testTools,
+					parallelToolCalls: true,
+				})
+				await messageGenerator.next()
+
+				expect(mockCreate).toHaveBeenCalledWith(
+					expect.objectContaining({
+						parallel_tool_calls: true,
+					}),
+				)
+			})
+
+			it("should include parallel_tool_calls: true by default", async () => {
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const messageGenerator = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+					tools: testTools,
+				})
+				await messageGenerator.next()
+
+				expect(mockCreate).toHaveBeenCalledWith(
+					expect.objectContaining({
+						tools: expect.any(Array),
+						parallel_tool_calls: true,
+					}),
+				)
+			})
+
+			it("should yield tool_call_partial chunks when streaming tool calls", async () => {
+				mockCreate.mockImplementation(async () => ({
+					[Symbol.asyncIterator]: async function* () {
+						yield {
+							choices: [
+								{
+									delta: {
+										tool_calls: [
+											{
+												index: 0,
+												id: "call_123",
+												function: {
+													name: "test_tool",
+													arguments: '{"arg1":',
+												},
+											},
+										],
+									},
+									index: 0,
+								},
+							],
+						}
+						yield {
+							choices: [
+								{
+									delta: {
+										tool_calls: [
+											{
+												index: 0,
+												function: {
+													arguments: '"value"}',
+												},
+											},
+										],
+									},
+									index: 0,
+								},
+							],
+						}
+						yield {
+							choices: [
+								{
+									delta: {},
+									index: 0,
+								},
+							],
+							usage: {
+								prompt_tokens: 10,
+								completion_tokens: 5,
+							},
+						}
+					},
+				}))
+
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const stream = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+					tools: testTools,
+				})
+
+				const chunks = []
+				for await (const chunk of stream) {
+					chunks.push(chunk)
+				}
+
+				const toolCallChunks = chunks.filter((chunk) => chunk.type === "tool_call_partial")
+				expect(toolCallChunks).toHaveLength(2)
+				expect(toolCallChunks[0]).toEqual({
+					type: "tool_call_partial",
+					index: 0,
+					id: "call_123",
+					name: "test_tool",
+					arguments: '{"arg1":',
+				})
+				expect(toolCallChunks[1]).toEqual({
+					type: "tool_call_partial",
+					index: 0,
+					id: undefined,
+					name: undefined,
+					arguments: '"value"}',
+				})
+			})
+
+			it("should include stream_options with include_usage", async () => {
+				const handler = new VercelAiGatewayHandler(mockOptions)
+
+				const messageGenerator = handler.createMessage("test prompt", [], {
+					taskId: "test-task-id",
+				})
+				await messageGenerator.next()
+
+				expect(mockCreate).toHaveBeenCalledWith(
+					expect.objectContaining({
+						stream_options: { include_usage: true },
+					}),
+				)
 			})
 		})
 	})
