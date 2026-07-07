@@ -150,6 +150,10 @@
 
 - Add Anthropic Claude Sonnet 4.6 support across all providers — Anthropic, Bedrock, Vertex, OpenRouter, and Vercel AI Gateway (PR #11509 by @PeterDaveHello)
 - Add lock toggle to pin API config across all modes in a workspace (PR #11295 by @hannesrudolph)
+- Re‑branding of the extension to "Roo Code" (PR #12000 by @hannesrudolph)
+- Integrated new CLI commands for project initialization and management (PR #12001 by @hannesrudolph)
+- Added a stub module for future feature scaffolding (PR #12002 by @hannesrudolph)
+- Implemented branch creation utilities for version control integration (PR #12003 by @hannesrudolph)
 - Fix: Prevent parent task state loss during orchestrator delegation (PR #11281 by @hannesrudolph)
 - Fix: Resolve race condition in new_task delegation that loses parent task history (PR #11331 by @daniel-lxs)
 - Fix: Serialize taskHistory writes and fix delegation status overwrite race (PR #11335 by @hannesrudolph)
