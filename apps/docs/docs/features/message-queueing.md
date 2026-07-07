@@ -1,12 +1,12 @@
 ---
-description: Learn how message queueing in Roo Code allows you to send multiple messages while the AI is working, with messages being processed sequentially for uninterrupted workflow.
+description: Learn how message queueing in AliCode allows you to send multiple messages while the AI is working, with messages being processed sequentially for uninterrupted workflow.
 keywords:
     - message queueing
     - queued messages
     - sequential processing
     - workflow efficiency
     - chat interface
-    - Roo Code features
+    - AliCode features
 ---
 
 # Message Queueing

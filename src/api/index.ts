@@ -1,7 +1,7 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 
-import { isRetiredProvider, type ProviderSettings, type ModelInfo } from "@roo-code/types"
+import { isRetiredProvider, type ProviderSettings, type ModelInfo } from "@ali-code/types"
 
 import { ApiStream } from "./transform/stream"
 
@@ -32,6 +32,7 @@ import {
 	FireworksHandler,
 	VercelAiGatewayHandler,
 	MiniMaxHandler,
+	NvidiaNimHandler,
 	BasetenHandler,
 } from "./providers"
 import { NativeOllamaHandler } from "./providers/native-ollama"
@@ -114,7 +115,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 	if (apiProvider && isRetiredProvider(apiProvider)) {
 		const retiredProviderMessage =
 			apiProvider === "roo"
-				? "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
+				? "As part of our decision to sunset the AliCode extension, we also ended the AliCode Router, which only existed to support the extension. Sorry about the hassle."
 				: "This provider is no longer supported."
 
 		throw new Error(`${retiredProviderMessage}\n\nPlease select a different provider in your API profile settings.`)
@@ -173,6 +174,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new VercelAiGatewayHandler(options)
 		case "minimax":
 			return new MiniMaxHandler(options)
+		case "nvidia-nim":
+			return new NvidiaNimHandler(options)
 		case "baseten":
 			return new BasetenHandler(options)
 		case "poe":

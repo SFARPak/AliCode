@@ -1,11 +1,11 @@
 ---
-description: Execute terminal commands in Roo Code for system operations, dependency installation, builds, and development workflows.
+description: Execute terminal commands in AliCode for system operations, dependency installation, builds, and development workflows.
 keywords:
     - execute_command
     - CLI commands
     - terminal
     - system operations
-    - Roo Code tools
+    - AliCode tools
     - command execution
     - shell integration
 ---

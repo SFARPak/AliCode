@@ -1,5 +1,5 @@
 ---
-description: Browse all Roo Code release notes and version updates. Find detailed changelogs, new features, bug fixes, and improvements for each version.
+description: Browse all AliCode release notes and version updates. Find detailed changelogs, new features, bug fixes, and improvements for each version.
 keywords:
     - roo code updates
     - release notes

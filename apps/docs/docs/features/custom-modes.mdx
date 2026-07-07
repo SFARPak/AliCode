@@ -1,8 +1,8 @@
 ---
-description: Learn how to create custom modes in Roo Code to tailor AI behavior for specific tasks. Configure tool access, file permissions, and specialized instructions.
+description: Learn how to create custom modes in AliCode to tailor AI behavior for specific tasks. Configure tool access, file permissions, and specialized instructions.
 keywords:
   - custom modes
-  - Roo Code customization
+  - AliCode customization
   - AI assistant configuration
   - mode creation
   - tool permissions
@@ -11,14 +11,14 @@ keywords:
 
 # Customizing Modes
 
-Roo Code allows you to create **custom modes** to tailor Roo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
+AliCode allows you to create **custom modes** to tailor Roo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
 
 :::tip Sticky Models for Efficient Workflow
-Each mode—including custom ones—features **Sticky Models**. This means Roo Code automatically remembers and selects the last model you used with a particular mode. This lets you assign different preferred models to different tasks without constant reconfiguration, as Roo switches between models when you change modes.
+Each mode—including custom ones—features **Sticky Models**. This means AliCode automatically remembers and selects the last model you used with a particular mode. This lets you assign different preferred models to different tasks without constant reconfiguration, as Roo switches between models when you change modes.
 :::
 
 :::info Discover Modes
-Looking for ready-to-use custom modes? Visit the [Roo Code Marketplace](/features/marketplace) to browse and install modes with a single click. The marketplace offers specialized modes for various tasks like React development, documentation writing, testing, and more.
+Looking for ready-to-use custom modes? Visit the [AliCode Marketplace](/features/marketplace) to browse and install modes with a single click. The marketplace offers specialized modes for various tasks like React development, documentation writing, testing, and more.
 :::
 
 ---
@@ -32,7 +32,7 @@ Looking for ready-to-use custom modes? Visit the [Roo Code Marketplace](/feature
 
 <img src="/img/custom-modes/custom-modes-3.png" alt="Overview of custom modes interface" width="500" />
 
-    *Roo Code's interface for creating and managing custom modes.*
+    *AliCode's interface for creating and managing custom modes.*
 
 ---
 
@@ -42,8 +42,8 @@ Custom modes are defined by several key properties. Understanding these concepts
 
 | UI Field / YAML Property                 | Conceptual Description                                                                                                                                                                                                                                                                                                                                                                                       |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Slug (`slug`)                            | A **unique internal identifier** for the mode. It's used by Roo Code to reference the mode, especially for associating [mode-specific instruction files](#mode-specific-instructions-via-filesdirectories).                                                                                                                                                                                                   |
-| Name (`name`)                            | The **display name** for the mode as it appears in the Roo Code user interface. This should be human-readable and descriptive.                                                                                                                                                                                                                                                                               |
+| Slug (`slug`)                            | A **unique internal identifier** for the mode. It's used by AliCode to reference the mode, especially for associating [mode-specific instruction files](#mode-specific-instructions-via-filesdirectories).                                                                                                                                                                                                   |
+| Name (`name`)                            | The **display name** for the mode as it appears in the AliCode user interface. This should be human-readable and descriptive.                                                                                                                                                                                                                                                                               |
 | Description (`description`)              | A **short, user-friendly summary** of the mode's purpose displayed in the mode selector UI.<br />- This text appears below the mode's name in the redesigned mode selector, offering users a quick understanding of the mode's function.<br />- Keep this concise and focused on what the mode does for the user.                                                                                              |
 | Role Definition (`roleDefinition`)       | Defines the **core identity and expertise** of the mode. This text is placed at the beginning of the system prompt.<br />- Its primary function is to define Roo's personality and behavior when this mode is active.<br />- With the introduction of the `description` field, the `roleDefinition` should provide a detailed description of the mode's identity, while the `description` field handles the short summary for the UI.<br />- The `whenToUse` property now takes precedence for summarization in automated contexts like task orchestration. |
 | Available Tools (`groups`)               | Defines the **allowed toolsets and file access permissions** for the mode.<br />- In the UI, this corresponds to selecting which general categories of tools (like reading files, editing files, browsing, or executing commands) the mode can use.<br />- The UI shows which files can be edited in the 'Allowed files' section under each mode.<br />- File type restrictions for the "edit" group are typically managed via manual YAML/JSON configuration or by asking Roo to set them up, as detailed in the [Property Details for `groups`](#groups). |
@@ -146,19 +146,19 @@ Note: The automatic slug change handling during import ensures that rule file pa
 
 You can create and configure custom modes in several ways:
 
-To configure modes, open the Roo Code panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />. From there, use "Edit Global Modes" to open settings/custom_modes.yaml, or "Edit Project Modes (.roomodes)" to open your workspace-level configuration.
+To configure modes, open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />. From there, use "Edit Global Modes" to open settings/custom_modes.yaml, or "Edit Project Modes (.roomodes)" to open your workspace-level configuration.
 
 ### 1. Ask Roo! (Recommended)
 
-You can quickly create a basic custom mode by asking Roo Code to do it for you. For example:
+You can quickly create a basic custom mode by asking AliCode to do it for you. For example:
 ```
 Create a new mode called "Documentation Writer". It should only be able to read files and write Markdown files.
 ```
-Roo Code will guide you through the process, prompting for necessary information for the properties described in the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table. Roo will create the mode using the preferred YAML format. For fine-tuning or making specific adjustments later, you can use the Modes page or manual configuration.
+AliCode will guide you through the process, prompting for necessary information for the properties described in the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table. Roo will create the mode using the preferred YAML format. For fine-tuning or making specific adjustments later, you can use the Modes page or manual configuration.
 
 ### 2. Using the Modes Page
 
-1.  **Open the Modes page:** Open the Roo Code panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
+1.  **Open the Modes page:** Open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
 2.  **Create New Mode:** Click the <Codicon name="add" /> button to the right of the Modes heading.
 3.  **Fill in Fields:**
 
@@ -166,13 +166,13 @@ Roo Code will guide you through the process, prompting for necessary information
 
     *The custom mode creation interface showing fields for name, slug, description, save location, role definition, available tools, custom instructions.*
 
-    The interface provides fields for `Name`, `Slug`, `Description`, `Save Location`, `Role Definition`, `When to Use (optional)`, `Available Tools`, and `Custom Instructions`. After filling these, click the "Create Mode" button. Roo Code will save the new mode in YAML format.
+    The interface provides fields for `Name`, `Slug`, `Description`, `Save Location`, `Role Definition`, `When to Use (optional)`, `Available Tools`, and `Custom Instructions`. After filling these, click the "Create Mode" button. AliCode will save the new mode in YAML format.
 
 *Refer to the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table for conceptual explanations of each property. File type restrictions for the "edit" tool group can be added by asking Roo or through manual YAML/JSON configuration.*
 
 ### 3. Manual Configuration (YAML & JSON)
 
-You can directly edit the configuration files to create or modify custom modes. This method offers the most control over all properties. Roo Code now supports both YAML (preferred) and JSON formats.
+You can directly edit the configuration files to create or modify custom modes. This method offers the most control over all properties. AliCode now supports both YAML (preferred) and JSON formats.
 
 *   **Global Modes:** Edit the `custom_modes.yaml` (preferred) or `custom_modes.json` file. From the Modes page, click "Edit Global Modes" to open `settings/custom_modes.yaml`.
 *   **Project Modes:** Edit the `.roomodes` file (which can be YAML or JSON) in your project root. From the Modes page, click "Edit Project Modes (.roomodes)" to open or create the workspace file.
@@ -234,7 +234,7 @@ customModes:
 *   *JSON Example:* `"slug": "docs-writer"`
 
 ##### `name`
-*   **Purpose:** The display name shown in the Roo Code UI.
+*   **Purpose:** The display name shown in the AliCode UI.
 *   **Format:** Can include spaces and proper capitalization.
 *   *YAML Example:* `name: 📝 Documentation Writer`
 *   *JSON Example:* `"name": "Documentation Writer"`
@@ -362,16 +362,16 @@ When editing YAML manually, keep these points in mind:
 
 ### Migration to YAML Format
 
-*   **Global Modes:** The automatic migration from `custom_modes.json` to `custom_modes.yaml` happens only for global modes when Roo Code starts up, under these conditions:
-    1.  Roo Code starts up.
+*   **Global Modes:** The automatic migration from `custom_modes.json` to `custom_modes.yaml` happens only for global modes when AliCode starts up, under these conditions:
+    1.  AliCode starts up.
     2.  A `custom_modes.json` file exists.
     3.  No `custom_modes.yaml` file exists yet.
     The migration process reads the existing JSON file, converts it to YAML format, creates a new `custom_modes.yaml` file, and preserves the original JSON file (e.g., by renaming it) for rollback purposes. If `custom_modes.yaml` already exists, it will be used, and no automatic migration of `custom_modes.json` will occur.
 
 *   **Project Modes (`.roomodes`):**
-    *   **No automatic startup migration:** Unlike global modes, project-specific `.roomodes` files are not automatically converted from JSON to YAML when Roo Code starts. Manual conversion is required for existing JSON `.roomodes` files.
-    *   **Format Detection:** Roo Code can read `.roomodes` files in either YAML or JSON format. Roo Code automatically detects the format of `.roomodes` files by attempting to parse them as YAML first.
-    *   **Conversion on UI Edit:** If you edit a project-specific mode through the Roo Code UI (e.g., via the Modes page), and the existing `.roomodes` file is in JSON format, Roo Code will save the changes in YAML format. This effectively converts the file to YAML. The original JSON content will be overwritten with YAML.
+    *   **No automatic startup migration:** Unlike global modes, project-specific `.roomodes` files are not automatically converted from JSON to YAML when AliCode starts. Manual conversion is required for existing JSON `.roomodes` files.
+    *   **Format Detection:** AliCode can read `.roomodes` files in either YAML or JSON format. AliCode automatically detects the format of `.roomodes` files by attempting to parse them as YAML first.
+    *   **Conversion on UI Edit:** If you edit a project-specific mode through the AliCode UI (e.g., via the Modes page), and the existing `.roomodes` file is in JSON format, AliCode will save the changes in YAML format. This effectively converts the file to YAML. The original JSON content will be overwritten with YAML.
     *   **Manual Conversion:** If you want to convert an existing `.roomodes` JSON file to YAML without making UI edits, you'll need to do this manually. You can:
         1.  Open your existing JSON `.roomodes` file.
         2.  Convert its content to YAML (you can ask Roo to help with this, or use an online converter).
@@ -421,7 +421,7 @@ In addition to the `customInstructions` property, you can provide mode-specific 
 *   Managing instructions easily with version control.
 *   Allowing non-technical team members to modify instructions without editing YAML/JSON.
 
-There are two ways Roo Code loads these instructions, with a clear preference for the newer directory-based method:
+There are two ways AliCode loads these instructions, with a clear preference for the newer directory-based method:
 
 **1. Preferred Method: Directory-Based Instructions (`.roo/rules-{mode-slug}/`)**
 
@@ -432,7 +432,7 @@ There are two ways Roo Code loads these instructions, with a clear preference fo
 
 **2. Fallback (Backward Compatibility): File-Based Instructions (`.roorules-{mode-slug}`)**
 
-*   **Structure:** If the `.roo/rules-{mode-slug}/` directory **does not exist or is empty**, Roo Code will look for a single file named `.roorules-{mode-slug}` in your workspace root (e.g., `.roorules-docs-writer`).
+*   **Structure:** If the `.roo/rules-{mode-slug}/` directory **does not exist or is empty**, AliCode will look for a single file named `.roorules-{mode-slug}` in your workspace root (e.g., `.roorules-docs-writer`).
 *   **Loading:** If found, the content of this single file will be loaded as instructions for the mode.
 
 **Precedence:**
@@ -465,13 +465,13 @@ You can override any default mode by including a mode with the same slug in your
 
 ## Overriding Default Modes
 
-You can override Roo Code's built-in modes (like `💻 Code`, `🪲 Debug`, `❓ Ask`, `🏗️ Architect`, `🪃 Orchestrator`) with customized versions. This is done by creating a custom mode with the same slug as a default mode (e.g., `code`, `debug`).
+You can override AliCode's built-in modes (like `💻 Code`, `🪲 Debug`, `❓ Ask`, `🏗️ Architect`, `🪃 Orchestrator`) with customized versions. This is done by creating a custom mode with the same slug as a default mode (e.g., `code`, `debug`).
 
 ### Overriding Modes Globally
 
 To customize a default mode across all your projects:
 
-1. **Open the Modes page:** Open the Roo Code panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
+1. **Open the Modes page:** Open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
 2. **Edit Global Modes:** Click "Edit Global Modes" to open `settings/custom_modes.yaml` (or `custom_modes.json`).
 3. **Add Your Override:**
 
@@ -512,7 +512,7 @@ This example replaces the default `💻 Code` mode with a version restricted to 
 
 To override a default mode for just one project:
 
-1. **Open the Modes page:** Open the Roo Code panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
+1. **Open the Modes page:** Open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
 2. **Edit Project Modes (.roomodes):** Click "Edit Project Modes (.roomodes)" to open or create the workspace file.
 3. **Add Your Override:**
 
@@ -629,7 +629,7 @@ This information helps you understand why your operation was blocked and what fi
 When exporting built-in modes (like Code, Architect, Ask, Debug), any customizations you've made are included in the export. This allows you to share your personalized versions of built-in modes with others.
 
 ### Mode Deletion and Rules
-When deleting a mode through the UI, Roo Code will prompt you about deleting the associated rules folder, showing the exact path before deletion. This helps prevent accidental loss of custom instructions.
+When deleting a mode through the UI, AliCode will prompt you about deleting the associated rules folder, showing the exact path before deletion. This helps prevent accidental loss of custom instructions.
 
 ### Global Rules Directory
 In addition to mode-specific rules directories, there's also a generic `.roo/rules/` directory (without mode suffix) that can be used for shared rules across all modes.

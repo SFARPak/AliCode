@@ -1,5 +1,5 @@
 ---
-description: Combined notes for Roo Code 3.33, including Gemini 3 Pro Preview support, native tool calling for OpenAI-compatible providers, and various native tool reliability fixes.
+description: Combined notes for AliCode 3.33, including Gemini 3 Pro Preview support, native tool calling for OpenAI-compatible providers, and various native tool reliability fixes.
 keywords:
   - roo code 3.33
   - release notes
@@ -9,18 +9,18 @@ keywords:
   - bug fixes
 ---
 
-# Roo Code 3.33 Release Notes (2025-11-18)
+# AliCode 3.33 Release Notes (2025-11-18)
 
-Roo Code 3.33 introduces support for Gemini 3 Pro Preview and native tool calling for OpenAI-compatible providers, along with improved Gemini defaults and numerous native tool protocol fixes.
+AliCode 3.33 introduces support for Gemini 3 Pro Preview and native tool calling for OpenAI-compatible providers, along with improved Gemini defaults and numerous native tool protocol fixes.
 
 ## Major Features
 
 ### Gemini 3 Pro Preview
 
-Roo Code now supports Google’s Gemini 3 Pro Preview model through direct Gemini, Vertex AI, and aggregator providers like OpenRouter and Requesty ([#9357](https://github.com/RooCodeInc/Roo-Code/pull/9357), [#9327](https://github.com/RooCodeInc/Roo-Code/pull/9327)):
+AliCode now supports Google’s Gemini 3 Pro Preview model through direct Gemini, Vertex AI, and aggregator providers like OpenRouter and Requesty ([#9357](https://github.com/RooCodeInc/Roo-Code/pull/9357), [#9327](https://github.com/RooCodeInc/Roo-Code/pull/9327)):
 
 - **1M-token, reasoning-capable model**: Handles very large conversations while providing higher-quality multi-step reasoning on complex coding and refactoring tasks.
-- **Strong eval performance**: Achieves a 100% score on internal Roo Code evals and 76.2% on SWE-bench Verified, giving more consistent solutions on real-world coding tasks.
+- **Strong eval performance**: Achieves a 100% score on internal AliCode evals and 76.2% on SWE-bench Verified, giving more consistent solutions on real-world coding tasks.
 - **Reliable tool usage**: Executes complex multi-step tool workflows without getting stuck or losing track, especially in long, tool-heavy tasks.
 - **Better out-of-the-box defaults**: Uses `gemini-2.5-pro` by default where supported, sets a more natural temperature of 1, cleans up the Gemini model list, and includes reasoning / “thought” tokens in cost reporting so usage numbers better match provider billing.
 - **Image Preview Support**: Added support for image previews with Google Gemini 3 Pro image generation models ([#9440](https://github.com/RooCodeInc/Roo-Code/pull/9440)).
@@ -37,9 +37,9 @@ Roo Code now supports Google’s Gemini 3 Pro Preview model through direct Gemin
 - **Dynamic tool protocol resolution** ([#9286](https://github.com/RooCodeInc/Roo-Code/pull/9286)): Resolves the active tool protocol using a clear precedence hierarchy.
 - **Improved Modes view toolbar** ([#9077](https://github.com/RooCodeInc/Roo-Code/pull/9077)): Moves Import/Export into the Modes view toolbar and cleans up the Mode edit view.
 - **Cloud agent CTA points to setup page** ([#9338](https://github.com/RooCodeInc/Roo-Code/pull/9338)): Updates the cloud agent call-to-action to link directly to the setup page.
-- **Roo Code Cloud provider pricing page** ([#9195](https://github.com/RooCodeInc/Roo-Code/pull/9195)): Adds a pricing page and related Cloud provider tweaks.
+- **AliCode Cloud provider pricing page** ([#9195](https://github.com/RooCodeInc/Roo-Code/pull/9195)): Adds a pricing page and related Cloud provider tweaks.
 - **Gemini native tool calling (experimental, Google Gemini provider only)** ([#9343](https://github.com/RooCodeInc/Roo-Code/pull/9343)): Adds an experimental native tool option (off by default) for the Google Gemini provider so Gemini-based workflows can use tools without XML translation and behave more like other native-tool providers.
-- **Roo Code Cloud credit balance in the extension** ([#9386](https://github.com/RooCodeInc/Roo-Code/pull/9386)): Shows your Roo Code Cloud RCC credit balance directly in the Roo provider settings so you can track usage and avoid unexpected interruptions.
+- **AliCode Cloud credit balance in the extension** ([#9386](https://github.com/RooCodeInc/Roo-Code/pull/9386)): Shows your AliCode Cloud RCC credit balance directly in the Roo provider settings so you can track usage and avoid unexpected interruptions.
 - **Explicit 0 pricing for free models** ([#9419](https://github.com/RooCodeInc/Roo-Code/pull/9419)): Displays explicit 0 input/output token prices for free models in the pricing UI so it is always clear which options are free.
 
 ## Bug Fixes

@@ -17,7 +17,7 @@ if (fs.existsSync(envPath)) {
 	}
 }
 
-import { customToolRegistry } from "@roo-code/core"
+import { customToolRegistry } from "@ali-code/core"
 
 import "./utils/path" // Necessary to have access to String.prototype.toPosix.
 import { initializeNetworkProxy } from "./utils/networkProxy"
@@ -28,6 +28,7 @@ import { ContextProxy } from "./core/config/ContextProxy"
 import { ClineProvider } from "./core/webview/ClineProvider"
 import { DIFF_VIEW_URI_SCHEME } from "./integrations/editor/DiffViewProvider"
 import { TerminalRegistry } from "./integrations/terminal/TerminalRegistry"
+import { VscodeHost } from "./kilo-vscode/VscodeHost"
 import { openAiCodexOAuthManager } from "./integrations/openai-codex/oauth"
 import { McpServerManager } from "./services/mcp/McpServerManager"
 import { CodeIndexManager } from "./services/code-index/manager"
@@ -44,6 +45,16 @@ import {
 } from "./activate"
 import { initializeI18n } from "./i18n"
 import { initializeModelCacheRefresh } from "./api/providers/fetchers/modelCache"
+import { KiloConnectionService } from "./kilo-vscode/KiloConnectionService"
+import { KiloProvider } from "./kilo-vscode/KiloProvider"
+import { KiloClawProvider } from "./kilo-vscode/KiloClawProvider"
+import { MarketplacePanelProvider } from "./kilo-vscode/MarketplacePanelProvider"
+import { AgentManagerProvider } from "./kilo-vscode/AgentManagerProvider"
+import { SettingsEditorProvider } from "./kilo-vscode/SettingsEditorProvider"
+import { SubAgentViewerProvider } from "./kilo-vscode/SubAgentViewerProvider"
+import { RemoteStatusService } from "./kilo-vscode/RemoteStatusService"
+import { DiffViewerProvider } from "./kilo-vscode/diff/DiffViewerProvider"
+import { DiffVirtualProvider } from "./kilo-vscode/DiffVirtualProvider"
 
 /**
  * Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -57,7 +68,7 @@ let outputChannel: vscode.OutputChannel
 let extensionContext: vscode.ExtensionContext
 
 /**
- * Check if we should auto-open the Roo Code sidebar after switching to a worktree.
+ * Check if we should auto-open the AliCode sidebar after switching to a worktree.
  * This is called during extension activation to handle the worktree auto-open flow.
  */
 async function checkWorktreeAutoOpen(
@@ -85,9 +96,9 @@ async function checkWorktreeAutoOpen(
 			// Clear the state first to prevent re-triggering
 			await context.globalState.update("worktreeAutoOpenPath", undefined)
 
-			outputChannel.appendLine(`[Worktree] Auto-opening Roo Code sidebar for worktree: ${worktreeAutoOpenPath}`)
+			outputChannel.appendLine(`[Worktree] Auto-opening AliCode sidebar for worktree: ${worktreeAutoOpenPath}`)
 
-			// Open the Roo Code sidebar with a slight delay to ensure UI is ready
+			// Open the AliCode sidebar with a slight delay to ensure UI is ready
 			setTimeout(async () => {
 				try {
 					await vscode.commands.executeCommand("roo-cline.plusButtonClicked")
@@ -174,6 +185,68 @@ export async function activate(context: vscode.ExtensionContext) {
 		}),
 	)
 
+	// Initialize shared connection service and remote status service for Kilo providers
+	const connectionService = new KiloConnectionService(context)
+	const remoteService = new RemoteStatusService()
+	context.subscriptions.push(remoteService)
+	connectionService.setRemoteService(remoteService)
+
+	// Create additional Kilo providers
+	const kiloClawProvider = new KiloClawProvider(context.extensionUri, connectionService)
+	// Instantiate VscodeHost to satisfy Host interface for AgentManagerProvider
+	const vscodeHost = new VscodeHost(context.extensionUri, connectionService, context, remoteService)
+	const agentManagerProvider = new AgentManagerProvider(vscodeHost, connectionService)
+	const settingsEditorProvider = new SettingsEditorProvider(context.extensionUri, connectionService, context)
+	const marketplacePanelProvider = new MarketplacePanelProvider(context.extensionUri, connectionService, context)
+	const subAgentViewerProvider = new SubAgentViewerProvider(context.extensionUri, connectionService, context)
+
+	// Register providers and their serializers
+	context.subscriptions.push(
+		kiloClawProvider,
+		agentManagerProvider,
+		settingsEditorProvider,
+		marketplacePanelProvider,
+		subAgentViewerProvider,
+		// Serializers
+		vscode.window.registerWebviewPanelSerializer(KiloClawProvider.viewType, {
+			deserializeWebviewPanel(panel) {
+				kiloClawProvider.restorePanel(panel)
+				return Promise.resolve()
+			},
+		}),
+		vscode.window.registerWebviewPanelSerializer(AgentManagerProvider.viewType, {
+			deserializeWebviewPanel(panel) {
+				// Simplified: dispose on restore
+				panel.dispose()
+				return Promise.resolve()
+			},
+		}),
+		vscode.window.registerWebviewPanelSerializer("kilo-code.new.settingsPanel", {
+			deserializeWebviewPanel(panel) {
+				settingsEditorProvider.deserializePanel(panel)
+				return Promise.resolve()
+			},
+		}),
+		vscode.window.registerWebviewPanelSerializer("kilo-code.new.profilePanel", {
+			deserializeWebviewPanel(panel) {
+				settingsEditorProvider.deserializePanel(panel)
+				return Promise.resolve()
+			},
+		}),
+		vscode.window.registerWebviewPanelSerializer(MarketplacePanelProvider.viewType, {
+			deserializeWebviewPanel(panel) {
+				marketplacePanelProvider.deserializePanel(panel)
+				return Promise.resolve()
+			},
+		}),
+		vscode.window.registerWebviewPanelSerializer("kilo-code.new.SubAgentViewerPanel", {
+			deserializeWebviewPanel(panel) {
+				panel.dispose()
+				return Promise.resolve()
+			},
+		}),
+	)
+
 	// Check for worktree auto-open path (set when switching to a worktree)
 	await checkWorktreeAutoOpen(context, outputChannel)
 
@@ -233,7 +306,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Allows other extensions to activate once Roo is ready.
 	vscode.commands.executeCommand(`${Package.name}.activationCompleted`)
 
-	// Implements the `RooCodeAPI` interface.
+	// Implements the `AliCodeAPI` interface.
 	const socketPath = process.env.ROO_CODE_IPC_SOCKET_PATH
 	const enableLogging = typeof socketPath === "string"
 

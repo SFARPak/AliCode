@@ -1,20 +1,20 @@
 ---
-description: Roo Code 3.39 includes task-level provider profile persistence, improved multimodal workflows, new provider/model options, and reliability fixes across tool calling.
+description: AliCode 3.39 includes task-level provider profile persistence, improved multimodal workflows, new provider/model options, and reliability fixes across tool calling.
 keywords:
   - roo code 3.39
   - new features
   - bug fixes
 ---
 
-# Roo Code 3.39 Release Notes (Combined)
+# AliCode 3.39 Release Notes (Combined)
 
-Roo Code 3.39 includes task-level provider profile persistence, improved multimodal workflows, new provider/model options, and reliability fixes across tool calling.
+AliCode 3.39 includes task-level provider profile persistence, improved multimodal workflows, new provider/model options, and reliability fixes across tool calling.
 
 ## Features
 
 * **Task-level API configuration profiles**: Roo can persist the selected provider profile per task so follow-up sessions keep using the same provider/model settings.
 * **Image file @mentions**: You can mention images in your workspace to give the model visual context directly from chat.
-* **Headless Roo Code (CLI + VS Code shim)**: Run Roo Code in a headless environment with a basic CLI, plus an installer and an option to use the CLI for evals.
+* **Headless AliCode (CLI + VS Code shim)**: Run AliCode in a headless environment with a basic CLI, plus an installer and an option to use the CLI for evals.
 * **Debug proxy routing**: Adds debug-mode proxy routing to help troubleshoot API calls.
 
 ## QOL Improvements
@@ -41,8 +41,8 @@ Roo Code 3.39 includes task-level provider profile persistence, improved multimo
 
 ### 3.39.3 (2026-01-10)
 
-* Renames Roo Code Cloud Provider to **Roo Code Router** for clearer branding.
-* Updates Roo Code Router service name and related wording so the UI uses consistent naming.
+* Renames AliCode Cloud Provider to **AliCode Router** for clearer branding.
+* Updates AliCode Router service name and related wording so the UI uses consistent naming.
 * Improves ExtensionHost internal organization around mode changes.
 * Adds options to build and install the CLI release locally for testing.
 * Reorganizes the CLI file structure for better maintainability.
@@ -50,7 +50,7 @@ Roo Code 3.39 includes task-level provider profile persistence, improved multimo
 
 ### 3.39.2 (2026-01-09)
 
-* Adds an **Enable debug mode** toggle in Roo Code settings (About Roo Code) so you can turn debug logging on/off from the extension UI.
+* Adds an **Enable debug mode** toggle in AliCode settings (About AliCode) so you can turn debug logging on/off from the extension UI.
 * Improves the error message shown when a provider terminates a streaming response early, making it clearer the interruption came from the provider.
 * Fixes an issue where Cerebras could fail tool calling when a chat included both built-in tools and MCP tools.
 * Fixes tool calling for OpenAI-compatible providers.
@@ -60,8 +60,8 @@ Roo Code 3.39 includes task-level provider profile persistence, improved multimo
 * Fixes an issue where approving a tool run while adding feedback could produce duplicate tool results.
 * Improves Gemini tool calling reliability by preserving thought signatures correctly.
 * Improves file-edit reliability for Gemini and Vertex models.
-* Updates Roo Code CLI defaults by switching the default model to `anthropic/claude-opus-4.5`.
-* Updates Roo Code Cloud’s Terms of Service (effective 2026-01-09).
+* Updates AliCode CLI defaults by switching the default model to `anthropic/claude-opus-4.5`.
+* Updates AliCode Cloud’s Terms of Service (effective 2026-01-09).
 
 ### 3.39.1 (2026-01-08)
 

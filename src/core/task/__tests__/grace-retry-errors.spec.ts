@@ -4,14 +4,14 @@ import * as os from "os"
 import * as path from "path"
 import * as vscode from "vscode"
 
-import type { GlobalState, ProviderSettings } from "@roo-code/types"
+import type { GlobalState, ProviderSettings } from "@ali-code/types"
 
 import { Task } from "../Task"
 import { ClineProvider } from "../../webview/ClineProvider"
 import { ContextProxy } from "../../config/ContextProxy"
 
-// Mock @roo-code/core
-vi.mock("@roo-code/core", () => ({
+// Mock @ali-code/core
+vi.mock("@ali-code/core", () => ({
 	customToolRegistry: {
 		getTools: vi.fn().mockReturnValue([]),
 		hasTool: vi.fn().mockReturnValue(false),

@@ -1,4 +1,4 @@
-# Roo Code Docs
+# AliCode Docs
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator, and lives at https://roocodeinc.github.io/Roo-Code/
 

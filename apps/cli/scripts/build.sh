@@ -1,5 +1,5 @@
 #!/bin/bash
-# Roo Code CLI Local Build Script
+# AliCode CLI Local Build Script
 #
 # Usage:
 #   ./apps/cli/scripts/build.sh [options]
@@ -340,7 +340,7 @@ main() {
     echo ""
     printf "${BLUE}${BOLD}"
     echo "  ╭─────────────────────────────────╮"
-    echo "  │   Roo Code CLI Local Build      │"
+    echo "  │   AliCode CLI Local Build      │"
     echo "  ╰─────────────────────────────────╯"
     printf "${NC}"
     echo ""

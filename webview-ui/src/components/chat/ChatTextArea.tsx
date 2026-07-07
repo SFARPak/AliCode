@@ -737,6 +737,11 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					} else {
 						console.warn(t("chat:noValidImages"))
 					}
+				} else if (shouldDisableImages && imageItems.length > 0) {
+					// Image paste attempted but model does not support images
+					e.preventDefault()
+					// Show a warning toast/message to the user
+					vscode.postMessage({ type: "showMessage", message: t("chat:imagePasteNotSupported") })
 				}
 			},
 			[shouldDisableImages, setSelectedImages, cursorPosition, setInputValue, inputValue, t],

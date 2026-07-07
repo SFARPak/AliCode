@@ -1,5 +1,5 @@
 ---
-description: Learn how to use custom instructions to tailor Roo Code's behavior to your preferences, coding style, and project requirements.
+description: Learn how to use custom instructions to tailor AliCode's behavior to your preferences, coding style, and project requirements.
 keywords:
     - custom instructions
     - personalization
@@ -75,8 +75,8 @@ These instructions apply across all workspaces and maintain your preferences reg
 
 **How to set them:**
 
-<img src="/img/custom-instructions/custom-instructions.png" alt="Roo Code Prompts tab showing global custom instructions interface" width="600" />
-1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+<img src="/img/custom-instructions/custom-instructions.png" alt="AliCode Prompts tab showing global custom instructions interface" width="600" />
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the AliCode top menu bar
 2.  **Find Section:** Find the "Custom Instructions for All Modes" section
 3.  **Enter Instructions:** Enter your instructions in the text area
 4.  **Save Changes:** Click "Done" to save your changes
@@ -192,7 +192,7 @@ Within each level, mode-specific rules are loaded before general rules.
 
 ### Workspace-Level Instructions
 
-These instructions only apply within your current workspace, allowing you to customize Roo Code's behavior for specific projects.
+These instructions only apply within your current workspace, allowing you to customize AliCode's behavior for specific projects.
 
 #### Workspace-Wide Instructions via Files/Directories
 
@@ -200,11 +200,11 @@ Workspace-wide instructions apply to all modes within the current project and ca
 
 - **Preferred Method: Directory-Based (`.roo/rules/`)**
     - Create a directory named `.roo/rules/` in your workspace root.
-    - Place instruction files (e.g., `.md`, `.txt`) inside. Roo Code reads files recursively (including subdirectories), appending their content to the system prompt in **alphabetical order** based on filename.
+    - Place instruction files (e.g., `.md`, `.txt`) inside. AliCode reads files recursively (including subdirectories), appending their content to the system prompt in **alphabetical order** based on filename.
     - When this directory exists and contains files, its contents are loaded along with any global rules directories.
-    - Note: If the `.roo/rules/` directory exists but is empty, Roo Code will fall back to using the `.roorules` file instead.
+    - Note: If the `.roo/rules/` directory exists but is empty, AliCode will fall back to using the `.roorules` file instead.
 - **Fallback Method: File-Based (`.roorules`)**
-    - If `.roo/rules/` doesn't exist or is empty, Roo Code looks for a single `.roorules` file in the workspace root.
+    - If `.roo/rules/` doesn't exist or is empty, AliCode looks for a single `.roorules` file in the workspace root.
     - If found, its content is loaded.
 
 #### Mode-Specific Instructions
@@ -213,8 +213,8 @@ Mode-specific instructions can be set in two independent ways that can be used s
 
 1.  **Using the Prompts Tab:**
 
-    <img src="/img/custom-instructions/custom-instructions-2.png" alt="Roo Code Prompts tab showing mode-specific custom instructions interface" width="600" />
-    * **Open Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+    <img src="/img/custom-instructions/custom-instructions-2.png" alt="AliCode Prompts tab showing mode-specific custom instructions interface" width="600" />
+    * **Open Tab:** Click the <Codicon name="notebook" /> icon in the AliCode top menu bar
     * **Select Mode:** Under the Modes heading, click the button for the mode you want to customize
     * **Enter Instructions:** Enter your instructions in the text area under "Mode-specific Custom Instructions (optional)"
     * **Save Changes:** Click "Done" to save your changes
@@ -229,7 +229,7 @@ Mode-specific instructions can be set in two independent ways that can be used s
         - Place instruction files inside (recursive loading, including subdirectories). Files are read and appended to the system prompt in **alphabetical order** by filename.
         - This method takes precedence over the fallback file method for the specific mode if the directory exists and contains files.
     - **Fallback Method: File-Based (`.roorules-{modeSlug}`)**
-        - If `.roo/rules-{modeSlug}/` doesn't exist or is empty, Roo Code looks for a single `.roorules-{modeSlug}` file (e.g., `.roorules-code`) in the workspace root.
+        - If `.roo/rules-{modeSlug}/` doesn't exist or is empty, AliCode looks for a single `.roorules-{modeSlug}` file (e.g., `.roorules-code`) in the workspace root.
         - If found, its content is loaded for that mode.
 
 Instructions from the Prompts tab, global rules, workspace rules, and mode-specific rules are all combined. See the section below for the exact order.
@@ -299,7 +299,7 @@ _Note: The system loads rules from ALL applicable directories (both global `~/.r
 
 ## AGENTS.md Support
 
-Roo Code also supports loading rules from an `AGENTS.md` (or `AGENT.md` as fallback) file in your workspace root:
+AliCode also supports loading rules from an `AGENTS.md` (or `AGENT.md` as fallback) file in your workspace root:
 
 - **Purpose:** Provides agent-specific rules and guidelines for AI behavior
 - **Location:** Must be in the workspace root directory

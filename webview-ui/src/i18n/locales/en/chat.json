@@ -158,6 +158,7 @@
 	"edit": "Edit...",
 	"forNextMode": "for next mode",
 	"forPreviousMode": "for previous mode",
+	"imagePasteNotSupported": "Current model does not support images. Please switch to a vision-capable model.",
 	"apiRequest": {
 		"title": "API Request",
 		"failed": "API Request Failed",

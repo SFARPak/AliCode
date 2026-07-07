@@ -1,10 +1,10 @@
 ---
 sidebar_label: Mistral AI
-description: Configure Roo Code to use Mistral AI models including Codestral for code generation, with support for function calling and vision.
+description: Configure AliCode to use Mistral AI models including Codestral for code generation, with support for function calling and vision.
 keywords:
     - Mistral AI
     - Codestral
-    - Roo Code
+    - AliCode
     - AI models
     - code generation
     - Pixtral
@@ -13,9 +13,9 @@ keywords:
     - La Plateforme
 ---
 
-# Using Mistral AI With Roo Code
+# Using Mistral AI With AliCode
 
-Roo Code supports accessing models through the Mistral AI API, including both standard Mistral models and the code-specialized Codestral model.
+AliCode supports accessing models through the Mistral AI API, including both standard Mistral models and the code-specialized Codestral model.
 
 **Website:** [https://mistral.ai/](https://mistral.ai/)
 
@@ -32,15 +32,15 @@ Roo Code supports accessing models through the Mistral AI API, including both st
 
 ## Available Models
 
-Roo Code supports all models available through Mistral AI's API.
+AliCode supports all models available through Mistral AI's API.
 
 For the complete, up-to-date model list and capabilities, see [Mistral's model documentation](https://docs.mistral.ai/getting-started/models/models_overview/).
 
 ---
 
-## Configuration in Roo Code
+## Configuration in AliCode
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open AliCode Settings:** Click the gear icon (<Codicon name="gear" />) in the AliCode panel.
 2.  **Select Provider:** Choose "Mistral" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Mistral API key into the "Mistral API Key" field if you're using a `mistral` model. If you intend to use `codestral-latest`, see the "Codestral" section below.
 4.  **Select Model:** Choose your desired model from the "Model" dropdown.

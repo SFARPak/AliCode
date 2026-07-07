@@ -1,5 +1,5 @@
 ---
-description: Improve your AI interactions with Roo Code's Enhance Prompt feature. Automatically refine prompts for clarity, context, and better results with one click.
+description: Improve your AI interactions with AliCode's Enhance Prompt feature. Automatically refine prompts for clarity, context, and better results with one click.
 keywords:
     - enhance prompt
     - prompt optimization
@@ -12,16 +12,16 @@ keywords:
 
 # Enhance Prompt
 
-The "Enhance Prompt" feature in Roo Code helps you improve the quality and effectiveness of your prompts before sending them to the AI model. By clicking the wand icon in the chat input, you can automatically refine your initial request, making it clearer, more specific, and more likely to produce the desired results.
+The "Enhance Prompt" feature in AliCode helps you improve the quality and effectiveness of your prompts before sending them to the AI model. By clicking the wand icon in the chat input, you can automatically refine your initial request, making it clearer, more specific, and more likely to produce the desired results.
 
 ---
 
 ## Why Use Enhance Prompt?
 
-- **Improved Clarity:** Roo Code can rephrase your prompt to make it more understandable for the AI model.
+- **Improved Clarity:** AliCode can rephrase your prompt to make it more understandable for the AI model.
 - **Added Context:** The enhancement process can add relevant context to your prompt, such as the current file path or selected code.
-- **Better Instructions:** Roo Code can add instructions to guide the AI towards a more helpful response (e.g., requesting specific formatting or a particular level of detail).
-- **Reduced Ambiguity:** Enhance Prompt helps to eliminate ambiguity and ensure that Roo Code understands your intent.
+- **Better Instructions:** AliCode can add instructions to guide the AI towards a more helpful response (e.g., requesting specific formatting or a particular level of detail).
+- **Reduced Ambiguity:** Enhance Prompt helps to eliminate ambiguity and ensure that AliCode understands your intent.
 - **Consistency**: Roo will consistently format prompts the same way to the AI.
 - **Context-Aware Suggestions:** When enabled, uses your recent conversation history to generate more relevant and accurate enhancements.
 
@@ -29,10 +29,10 @@ The "Enhance Prompt" feature in Roo Code helps you improve the quality and effec
 
 ## How to Use Enhance Prompt
 
-1.  **Type your initial prompt:** Enter your request in the Roo Code chat input box as you normally would. This can be a simple question, a complex task description, or anything in between.
+1.  **Type your initial prompt:** Enter your request in the AliCode chat input box as you normally would. This can be a simple question, a complex task description, or anything in between.
 2.  **Click the Wand Icon:** Instead of pressing Enter, click the wand icon located in the top right corner of the chat input box. While Roo processes your enhancement request, the wand icon will spin to indicate it's working.
-3.  **Review the Enhanced Prompt:** Roo Code will replace your original prompt with an enhanced version. Review the enhanced prompt to make sure it accurately reflects your intent. You can further refine the enhanced prompt before sending. Changed your mind? You can undo the enhancement using Ctrl+Z (Cmd+Z on Mac) to restore your original prompt.
-4.  **Send the Enhanced Prompt:** Press Enter or click the Send icon (<Codicon name="send" />) to send the enhanced prompt to Roo Code.
+3.  **Review the Enhanced Prompt:** AliCode will replace your original prompt with an enhanced version. Review the enhanced prompt to make sure it accurately reflects your intent. You can further refine the enhanced prompt before sending. Changed your mind? You can undo the enhancement using Ctrl+Z (Cmd+Z on Mac) to restore your original prompt.
+4.  **Send the Enhanced Prompt:** Press Enter or click the Send icon (<Codicon name="send" />) to send the enhanced prompt to AliCode.
 
 ---
 
@@ -54,7 +54,7 @@ The "Enhance Prompt" feature uses a customizable prompt template. You can modify
 
 ### Accessing Prompts Settings
 
-1.  **Open Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel or use the settings command.
+1.  **Open Settings:** Click the gear icon (<Codicon name="gear" />) in the AliCode panel or use the settings command.
 2.  **Navigate to Prompts:** Go to the "Prompts" tab in the settings.
 3.  **Select "ENHANCE":** From the dropdown menu, select "ENHANCE" to view and edit the enhancement prompt.
 
@@ -83,9 +83,9 @@ The Prompts settings include a test area where you can preview how your custom e
 
 ## API Configuration
 
-The API configuration used for Enhance Prompt is, by default, the same one that is selected for Roo Code tasks, but it can be changed:
+The API configuration used for Enhance Prompt is, by default, the same one that is selected for AliCode tasks, but it can be changed:
 
-1.  **Open Settings:** Navigate to Roo Code settings
+1.  **Open Settings:** Navigate to AliCode settings
 2.  **Go to Prompts Tab:** Select the "Prompts" tab
 3.  **Select "ENHANCE":** Choose "ENHANCE" from the dropdown
 4.  **Configure API:** You'll see an "API Configuration" dropdown where you can choose an existing configuration. Future Enhance Prompt requests will be sent to that configured provider/model.
@@ -109,7 +109,7 @@ When enabled, the enhancement process includes your last 10 messages from the cu
 
 To enable or disable the use of conversation history in prompt enhancement:
 
-1. **Open Settings:** Navigate to Roo Code settings
+1. **Open Settings:** Navigate to AliCode settings
 2. **Go to Prompts Tab:** Select the "Prompts" tab
 3. **Select "ENHANCE":** Choose "ENHANCE" from the dropdown
 4. **Toggle History Option:** Check or uncheck "Include task history in enhancement" for better context
@@ -142,8 +142,8 @@ When disabled, the enhancement will only consider your current prompt without an
 ## Limitations and Best Practices
 
 - **Experimental Feature:** Prompt enhancement is an experimental feature. The quality of the enhanced prompt may vary depending on the complexity of your request and the capabilities of the underlying model.
-- **Review Carefully:** Always review the enhanced prompt before sending it. Roo Code may make changes that don't align with your intentions.
+- **Review Carefully:** Always review the enhanced prompt before sending it. AliCode may make changes that don't align with your intentions.
 - **Iterative Process:** You can use the "Enhance Prompt" feature multiple times to iteratively refine your prompt.
 - **Not a Replacement for Clear Instructions:** While "Enhance Prompt" can help, it's still important to write clear and specific prompts from the start.
 
-By using the "Enhance Prompt" feature, you can improve the quality of your interactions with Roo Code and get more accurate and helpful responses.
+By using the "Enhance Prompt" feature, you can improve the quality of your interactions with AliCode and get more accurate and helpful responses.

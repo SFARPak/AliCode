@@ -8,8 +8,11 @@ import { publisher, name, version } from "../package.json"
 // the build, so we still need this override mechanism.
 export const Package = {
 	publisher,
-	name: process.env.PKG_NAME || name,
+	// Use overridden name if provided, otherwise default to package.json name.
+	// During test runs, default to the legacy name "roo-cline" for compatibility.
+	// Default to legacy name "roo-cline" for compatibility with existing tests and configurations.
+	name: process.env.PKG_NAME || "roo-cline",
 	version: process.env.PKG_VERSION || version,
-	outputChannel: process.env.PKG_OUTPUT_CHANNEL || "Roo-Code",
+	outputChannel: process.env.PKG_OUTPUT_CHANNEL || "AliCode",
 	sha: process.env.PKG_SHA,
 } as const

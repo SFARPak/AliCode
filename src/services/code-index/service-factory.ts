@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 import { Ignore } from "ignore"
 
-import type { EmbedderProvider } from "@roo-code/types"
+import type { EmbedderProvider } from "@ali-code/types"
 
 import { t } from "../../i18n"
 

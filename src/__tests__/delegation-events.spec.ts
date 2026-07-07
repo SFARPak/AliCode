@@ -1,29 +1,29 @@
 // npx vitest run __tests__/delegation-events.spec.ts
 
-import { RooCodeEventName, rooCodeEventsSchema, taskEventSchema } from "@roo-code/types"
+import { AliCodeEventName, rooCodeEventsSchema, taskEventSchema } from "@ali-code/types"
 
 describe("delegation event schemas", () => {
 	test("rooCodeEventsSchema validates tuples", () => {
-		expect(() => (rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegated].parse(["p", "c"])).not.toThrow()
+		expect(() => (rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegated].parse(["p", "c"])).not.toThrow()
 		expect(() =>
-			(rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegationCompleted].parse(["p", "c", "s"]),
+			(rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegationCompleted].parse(["p", "c", "s"]),
 		).not.toThrow()
 		expect(() =>
-			(rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegationResumed].parse(["p", "c"]),
+			(rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegationResumed].parse(["p", "c"]),
 		).not.toThrow()
 
 		// invalid shapes
-		expect(() => (rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegated].parse(["p"])).toThrow()
+		expect(() => (rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegated].parse(["p"])).toThrow()
 		expect(() =>
-			(rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegationCompleted].parse(["p", "c"]),
+			(rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegationCompleted].parse(["p", "c"]),
 		).toThrow()
-		expect(() => (rooCodeEventsSchema.shape as any)[RooCodeEventName.TaskDelegationResumed].parse(["p"])).toThrow()
+		expect(() => (rooCodeEventsSchema.shape as any)[AliCodeEventName.TaskDelegationResumed].parse(["p"])).toThrow()
 	})
 
 	test("taskEventSchema discriminated union includes delegation events", () => {
 		expect(() =>
 			taskEventSchema.parse({
-				eventName: RooCodeEventName.TaskDelegated,
+				eventName: AliCodeEventName.TaskDelegated,
 				payload: ["p", "c"],
 				taskId: 1,
 			}),
@@ -31,7 +31,7 @@ describe("delegation event schemas", () => {
 
 		expect(() =>
 			taskEventSchema.parse({
-				eventName: RooCodeEventName.TaskDelegationCompleted,
+				eventName: AliCodeEventName.TaskDelegationCompleted,
 				payload: ["p", "c", "s"],
 				taskId: 1,
 			}),
@@ -39,7 +39,7 @@ describe("delegation event schemas", () => {
 
 		expect(() =>
 			taskEventSchema.parse({
-				eventName: RooCodeEventName.TaskDelegationResumed,
+				eventName: AliCodeEventName.TaskDelegationResumed,
 				payload: ["p", "c"],
 				taskId: 1,
 			}),

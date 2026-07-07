@@ -1,5 +1,5 @@
 #!/bin/sh
-# Roo Code CLI Installer
+# AliCode CLI Installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/RooCodeInc/Roo-Code/main/apps/cli/install.sh | sh
 #
 # Environment variables:
@@ -315,7 +315,7 @@ verify_install() {
 # Print success message
 print_success() {
     echo ""
-    printf "${GREEN}${BOLD}✓ Roo Code CLI installed successfully!${NC}\n"
+    printf "${GREEN}${BOLD}✓ AliCode CLI installed successfully!${NC}\n"
     echo ""
     echo "  Installation: $INSTALL_DIR"
     echo "  Binary: $BIN_DIR/roo"
@@ -335,7 +335,7 @@ main() {
     echo ""
     printf "${BLUE}${BOLD}"
     echo "  ╭─────────────────────────────────╮"
-    echo "  │     Roo Code CLI Installer      │"
+    echo "  │     AliCode CLI Installer      │"
     echo "  ╰─────────────────────────────────╯"
     printf "${NC}"
     echo ""

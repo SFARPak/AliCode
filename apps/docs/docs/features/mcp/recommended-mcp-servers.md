@@ -1,9 +1,9 @@
 ---
-description: Discover recommended MCP servers for Roo Code, including Context7. Learn how to install and configure MCP servers with step-by-step instructions.
+description: Discover recommended MCP servers for AliCode, including Context7. Learn how to install and configure MCP servers with step-by-step instructions.
 keywords:
     - MCP servers
     - Context7
-    - Roo Code MCP
+    - AliCode MCP
     - MCP installation
     - MCP configuration
     - recommended servers
@@ -12,7 +12,7 @@ sidebar_label: Recommended MCP Servers
 
 # Recommended MCP Servers
 
-While Roo Code can connect to any Model Context Protocol (MCP) server that follows the specification, several high-quality servers work out-of-the-box. This page curates the servers we **actively recommend** and provides step-by-step setup instructions so you can get productive in minutes.
+While AliCode can connect to any Model Context Protocol (MCP) server that follows the specification, several high-quality servers work out-of-the-box. This page curates the servers we **actively recommend** and provides step-by-step setup instructions so you can get productive in minutes.
 
 > We'll keep this list up-to-date.
 
@@ -32,7 +32,7 @@ While Roo Code can connect to any Model Context Protocol (MCP) server that follo
 
 ---
 
-## Installing Context7 in Roo Code
+## Installing Context7 in AliCode
 
 There are two common ways to register the server:
 
@@ -43,7 +43,7 @@ We'll cover both below.
 
 ### 1. Global configuration
 
-1. Open the Roo Code **MCP settings** panel by clicking the <Codicon name="server" /> icon.
+1. Open the AliCode **MCP settings** panel by clicking the <Codicon name="server" /> icon.
 2. Click **Edit Global MCP**.
 3. Paste the JSON below inside the `mcpServers` object and save.
 
@@ -115,9 +115,9 @@ If you prefer to commit the configuration to your repository, create a file call
 
 1. Make sure **Enable MCP Servers** is turned on in the MCP settings panel.
 2. You should now see **Context7** listed. Click the <Codicon name="activate" /> toggle to start it if it isn't already running.
-3. Roo Code will prompt you the first time a Context7 tool is invoked. Approve the request to continue.
+3. AliCode will prompt you the first time a Context7 tool is invoked. Approve the request to continue.
 
-<img src="/img/recommended-mcp-servers/context7-running-fixed.png" alt="Context7 running in Roo Code" width="400" />
+<img src="/img/recommended-mcp-servers/context7-running-fixed.png" alt="Context7 running in AliCode" width="400" />
 
 ---
 

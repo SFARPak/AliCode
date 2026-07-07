@@ -1,10 +1,10 @@
 ---
-description: Learn how the attempt_completion tool signals task completion, presents results, and enables iterative refinement in Roo Code.
+description: Learn how the attempt_completion tool signals task completion, presents results, and enables iterative refinement in AliCode.
 keywords:
     - attempt_completion
     - task completion
     - result presentation
-    - Roo Code tools
+    - AliCode tools
     - user feedback
     - task summary
 ---

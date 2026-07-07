@@ -1,7 +1,7 @@
 ---
-description: Find answers to common questions about Roo Code, including setup, usage, troubleshooting, and advanced features. Get help with API keys, modes, and more.
+description: Find answers to common questions about AliCode, including setup, usage, troubleshooting, and advanced features. Get help with API keys, modes, and more.
 keywords:
-    - Roo Code FAQ
+    - AliCode FAQ
     - frequently asked questions
     - troubleshooting
     - API setup
@@ -14,30 +14,30 @@ import KangarooIcon from '@site/src/components/KangarooIcon';
 
 # Frequently Asked Questions
 
-This page answers some common questions about Roo Code.
+This page answers some common questions about AliCode.
 
 ---
 
 ## General
 
-### What is Roo Code?
+### What is AliCode?
 
-Roo Code is an open-source AI coding agent for VS Code designed to take full advantage of advanced large-language models.
+AliCode is an open-source AI coding agent for VS Code designed to take full advantage of advanced large-language models.
 
-### How does Roo Code work?
+### How does AliCode work?
 
-Roo Code uses large language models (LLMs) to understand your requests and translate them into actions. It can:
+AliCode uses large language models (LLMs) to understand your requests and translate them into actions. It can:
 
 - Read and write files in your project
 - Execute shell commands
 - Perform web browsing (if enabled)
 - Use external tools via the Model Context Protocol (MCP)
 
-You interact with Roo Code through a chat interface in the extension.
+You interact with AliCode through a chat interface in the extension.
 
-### What can Roo Code do?
+### What can AliCode do?
 
-Roo Code can help with a variety of coding tasks, including:
+AliCode can help with a variety of coding tasks, including:
 
 - Generating code from natural language descriptions.
 - Refactoring existing code.
@@ -48,26 +48,26 @@ Roo Code can help with a variety of coding tasks, including:
 - Automating repetitive tasks.
 - Creating new files and projects.
 
-### Is Roo Code free to use?
+### Is AliCode free to use?
 
-The Roo Code extension is free and [open-source](https://github.com/RooCodeInc/Roo-Code/).
+The AliCode extension is free and [open-source](https://github.com/RooCodeInc/Roo-Code/).
 
-Roo Code relies on external LLM inference providers (like [Anthropic](providers/anthropic), [OpenAI](providers/openai), [OpenRouter](providers/openrouter), [Requesty](providers/requesty), etc.) for its AI capabilities.
+AliCode relies on external LLM inference providers (like [Anthropic](providers/anthropic), [OpenAI](providers/openai), [OpenRouter](providers/openrouter), [Requesty](providers/requesty), etc.) for its AI capabilities.
 These providers typically charge for API usage based on the number of tokens processed. You will need to create an account and obtain an API key from your chosen provider. Learn more [about providers and how to set them up](/providers/) for details.
 
-### What are the risks of using Roo Code?
+### What are the risks of using AliCode?
 
-Roo Code is a powerful tool, and it's important to use it responsibly. Here are some things to keep in mind:
+AliCode is a powerful tool, and it's important to use it responsibly. Here are some things to keep in mind:
 
-- **Roo Code can make mistakes.** Always review Roo Code's proposed changes carefully before approving them.
-- **Roo Code can execute commands.** Be very cautious about allowing Roo Code to run commands, especially if you're using auto-approval.
-- **Roo Code can access the internet.** If you're using a provider that supports web browsing, be aware that Roo Code could potentially access sensitive information.
+- **AliCode can make mistakes.** Always review AliCode's proposed changes carefully before approving them.
+- **AliCode can execute commands.** Be very cautious about allowing AliCode to run commands, especially if you're using auto-approval.
+- **AliCode can access the internet.** If you're using a provider that supports web browsing, be aware that AliCode could potentially access sensitive information.
 
 ---
 
 ## Setup & Installation
 
-### How do I install Roo Code?
+### How do I install AliCode?
 
 See the [Installation Guide](/getting-started/installing) for detailed instructions.
 
@@ -79,9 +79,9 @@ See the [full list here](/providers/).
 
 Each API provider has its own process for obtaining an API key. See the [Setting Up Your First AI Provider](/getting-started/connecting-api-provider) for links to the relevant documentation for each provider.
 
-### Can I use Roo Code with local models?
+### Can I use AliCode with local models?
 
-Yes, Roo Code supports running models locally using [Ollama](/providers/ollama) and [LM Studio](/providers/lmstudio). See [Using Local Models](/advanced-usage/local-models) for instructions.
+Yes, AliCode supports running models locally using [Ollama](/providers/ollama) and [LM Studio](/providers/lmstudio). See [Using Local Models](/advanced-usage/local-models) for instructions.
 
 ---
 
@@ -89,11 +89,11 @@ Yes, Roo Code supports running models locally using [Ollama](/providers/ollama) 
 
 ### How do I start a new task?
 
-Open the Roo Code panel (<KangarooIcon />) and type your task in the chat box. Be clear and specific about what you want Roo Code to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
+Open the AliCode panel (<KangarooIcon />) and type your task in the chat box. Be clear and specific about what you want AliCode to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
 
-### What are modes in Roo Code?
+### What are modes in AliCode?
 
-[Modes](/basic-usage/using-modes) are different personas that Roo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:
+[Modes](/basic-usage/using-modes) are different personas that AliCode can adopt, each with a specific focus and set of capabilities. The built-in modes are:
 
 - **Code:** For general-purpose coding tasks.
 - **Architect:** For planning and technical leadership.
@@ -107,36 +107,36 @@ Use the dropdown menu in the chat input area to select a different mode, or use 
 
 ### What are tools and how do I use them?
 
-[Tools](/basic-usage/how-tools-work) are how Roo Code interacts with your system. Roo Code automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
+[Tools](/basic-usage/how-tools-work) are how AliCode interacts with your system. AliCode automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
 
 ### What are context mentions?
 
-[Context mentions](/basic-usage/context-mentions) are a way to provide Roo Code with specific information about your project, such as files, folders, or problems. Use the "@" symbol followed by the item you want to mention (e.g., `@/src/file.ts`, `@problems`).
+[Context mentions](/basic-usage/context-mentions) are a way to provide AliCode with specific information about your project, such as files, folders, or problems. Use the "@" symbol followed by the item you want to mention (e.g., `@/src/file.ts`, `@problems`).
 
-### Can Roo Code access the internet?
+### Can AliCode access the internet?
 
 Yes, if you are using a provider with a model that support web browsing. Be mindful of the security implications of allowing this.
 
-### Can Roo Code run commands in my terminal?
+### Can AliCode run commands in my terminal?
 
-Yes, Roo Code can execute commands in your VS Code terminal. You will be prompted to approve each command before it's executed, unless you've enabled auto-approval for commands. Be extremely cautious about auto-approving commands. If you're experiencing issues with terminal commands, see the [Shell Integration Guide](/features/shell-integration) for troubleshooting.
+Yes, AliCode can execute commands in your VS Code terminal. You will be prompted to approve each command before it's executed, unless you've enabled auto-approval for commands. Be extremely cautious about auto-approving commands. If you're experiencing issues with terminal commands, see the [Shell Integration Guide](/features/shell-integration) for troubleshooting.
 
-### How do I provide feedback to Roo Code?
+### How do I provide feedback to AliCode?
 
-You can provide feedback by approving or rejecting Roo Code's proposed actions. You can provide additional feedback by using the feedback field.
+You can provide feedback by approving or rejecting AliCode's proposed actions. You can provide additional feedback by using the feedback field.
 
-### Can I customize Roo Code's behavior?
+### Can I customize AliCode's behavior?
 
-Yes, you can customize Roo Code in several ways:
+Yes, you can customize AliCode in several ways:
 
 - **Custom Instructions:** Provide general instructions that apply to all modes, or mode-specific instructions.
 - **Custom Modes:** Create your own modes with tailored prompts and some tool permissions.
 - **`.roorules` Files:** Create `.roorules` files in your project to provide additional guidelines.
 - **Settings:** Adjust various settings, such as auto-approval, diff editing, and more.
 
-### Does Roo Code have any auto approval settings?
+### Does AliCode have any auto approval settings?
 
-Yes, Roo Code has a few settings that when enabled will automatically approve actions. Find out more [here](/features/auto-approving-actions).
+Yes, AliCode has a few settings that when enabled will automatically approve actions. Find out more [here](/features/auto-approving-actions).
 
 ---
 
@@ -148,15 +148,15 @@ Yes, if you use a [local model](/advanced-usage/local-models).
 
 ### What is MCP (Model Context Protocol)?
 
-[MCP](/features/mcp/overview) is a protocol that allows Roo Code to communicate with external servers, extending its capabilities with custom tools and resources.
+[MCP](/features/mcp/overview) is a protocol that allows AliCode to communicate with external servers, extending its capabilities with custom tools and resources.
 
 ### Can I create my own MCP servers?
 
-Yes, you can create your own MCP servers to add custom functionality to Roo Code. See the [MCP documentation](https://github.com/modelcontextprotocol) for details.
+Yes, you can create your own MCP servers to add custom functionality to AliCode. See the [MCP documentation](https://github.com/modelcontextprotocol) for details.
 
 ### What is Codebase Indexing?
 
-[Codebase Indexing](/features/codebase-indexing) creates a semantic search index of your project using AI embeddings. This enables Roo Code to better understand and navigate large codebases by finding relevant code based on meaning rather than just keywords.
+[Codebase Indexing](/features/codebase-indexing) creates a semantic search index of your project using AI embeddings. This enables AliCode to better understand and navigate large codebases by finding relevant code based on meaning rather than just keywords.
 
 ### How much does Codebase Indexing cost?
 
@@ -166,7 +166,7 @@ Codebase Indexing requires an OpenAI API key for generating embeddings and a Qdr
 
 ## Troubleshooting
 
-### Roo Code isn't responding. What should I do?
+### AliCode isn't responding. What should I do?
 
 - Make sure your API key is correct and hasn't expired.
 - Check your internet connection.
@@ -175,13 +175,13 @@ Codebase Indexing requires an OpenAI API key for generating embeddings and a Qdr
 
 ### I'm seeing an error message. What does it mean?
 
-### Roo Code made changes I didn't want. How do I undo them?
+### AliCode made changes I didn't want. How do I undo them?
 
-Roo Code uses VS Code's built-in file editing capabilities. You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Roo can revert changes made to a file.
+AliCode uses VS Code's built-in file editing capabilities. You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Roo can revert changes made to a file.
 
-### Roo Code can't write to markdown files. What's wrong?
+### AliCode can't write to markdown files. What's wrong?
 
-If Roo Code fails to write to `.md` files with errors like "Failed to open diff editor" or "write_to_file tool failed", this is typically caused by VS Code extensions or settings that interfere with file editing:
+If AliCode fails to write to `.md` files with errors like "Failed to open diff editor" or "write_to_file tool failed", this is typically caused by VS Code extensions or settings that interfere with file editing:
 
 **Common causes:**
 

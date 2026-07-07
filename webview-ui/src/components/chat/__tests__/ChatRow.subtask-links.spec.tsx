@@ -96,6 +96,10 @@ describe("ChatRow - subtask links", () => {
 				childIds: ["child-task-123"],
 			})
 
+			// Expand the collapsible section first
+			const toggleButton = screen.getAllByRole("button")[0]
+			fireEvent.click(toggleButton)
+
 			const goToSubtaskButton = screen.getByText("Go to subtask")
 			expect(goToSubtaskButton).toBeInTheDocument()
 
@@ -124,6 +128,10 @@ describe("ChatRow - subtask links", () => {
 			renderChatRow(message, {
 				childIds: ["first-child", "second-child"],
 			})
+
+			// Expand the collapsible section first
+			const toggleButton = screen.getAllByRole("button")[0]
+			fireEvent.click(toggleButton)
 
 			const goToSubtaskButton = screen.getByText("Go to subtask")
 			expect(goToSubtaskButton).toBeInTheDocument()
@@ -198,6 +206,10 @@ describe("ChatRow - subtask links", () => {
 			renderChatRow(message, {
 				completedByChildId: "completed-child-456",
 			})
+
+			// Expand the collapsible section first
+			const toggleButton = screen.getAllByRole("button")[0]
+			fireEvent.click(toggleButton)
 
 			const goToSubtaskButton = screen.getByText("Go to subtask")
 			expect(goToSubtaskButton).toBeInTheDocument()

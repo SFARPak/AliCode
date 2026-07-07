@@ -15,8 +15,8 @@ import type {
 	WorktreeIncludeStatus,
 	WorktreeListResponse,
 	WorktreeDefaultsResponse,
-} from "@roo-code/types"
-import { worktreeService, worktreeIncludeService, type CopyProgressCallback } from "@roo-code/core"
+} from "@ali-code/types"
+import { worktreeService, worktreeIncludeService, type CopyProgressCallback } from "@ali-code/core"
 
 import type { ClineProvider } from "../ClineProvider"
 
@@ -189,7 +189,7 @@ export async function handleSwitchWorktree(
 		const worktreeUri = vscode.Uri.file(worktreePath)
 
 		if (newWindow) {
-			// Set the auto-open path so the new window opens Roo Code sidebar.
+			// Set the auto-open path so the new window opens AliCode sidebar.
 			await provider.contextProxy.setValue("worktreeAutoOpenPath", worktreePath)
 
 			// Open in new window.

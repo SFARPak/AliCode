@@ -23,6 +23,7 @@ import {
 	mainlandZAiModels,
 	fireworksModels,
 	basetenModels,
+	nvidiaNimModels,
 	qwenCodeModels,
 	litellmDefaultModelInfo,
 	lMStudioDefaultModelInfo,
@@ -177,6 +178,11 @@ function getSelectedModel({
 		case "baseten": {
 			const id = apiConfiguration.apiModelId ?? defaultModelId
 			const info = basetenModels[id as keyof typeof basetenModels]
+			return { id, info }
+		}
+		case "nvidia-nim": {
+			const id = apiConfiguration.apiModelId ?? defaultModelId
+			const info = nvidiaNimModels[id as keyof typeof nvidiaNimModels]
 			return { id, info }
 		}
 		case "bedrock": {
@@ -339,7 +345,7 @@ function getSelectedModel({
 		// case "anthropic":
 		// case "fake-ai":
 		default: {
-			provider satisfies "anthropic" | "gemini-cli" | "fake-ai"
+			provider satisfies "anthropic" | "gemini-cli" | "fake-ai" | "nvidia-nim"
 			const id = apiConfiguration.apiModelId ?? defaultModelId
 			const baseInfo = anthropicModels[id as keyof typeof anthropicModels]
 

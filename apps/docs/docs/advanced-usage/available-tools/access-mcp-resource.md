@@ -1,11 +1,11 @@
 ---
-description: Learn how the access_mcp_resource tool retrieves data from Model Context Protocol servers for additional context in Roo Code tasks.
+description: Learn how the access_mcp_resource tool retrieves data from Model Context Protocol servers for additional context in AliCode tasks.
 keywords:
     - access_mcp_resource
     - MCP
     - Model Context Protocol
     - MCP resources
-    - Roo Code tools
+    - AliCode tools
     - context retrieval
     - API integration
 ---

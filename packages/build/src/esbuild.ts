@@ -86,7 +86,7 @@ type CopyPathOptions = {
 export function copyPaths(copyPaths: [string, string, CopyPathOptions?][], srcDir: string, dstDir: string) {
 	copyPaths.forEach(([srcRelPath, dstRelPath, options = {}]) => {
 		try {
-			const stats = fs.lstatSync(path.join(srcDir, srcRelPath))
+			const stats = fs.statSync(path.join(srcDir, srcRelPath))
 
 			if (stats.isDirectory()) {
 				if (fs.existsSync(path.join(dstDir, dstRelPath))) {

@@ -1,5 +1,5 @@
 ---
-description: Master keyboard navigation in Roo Code with customizable shortcuts, command execution, and prompt history navigation for efficient coding workflows.
+description: Master keyboard navigation in AliCode with customizable shortcuts, command execution, and prompt history navigation for efficient coding workflows.
 keywords:
     - keyboard shortcuts
     - keyboard navigation
@@ -12,19 +12,19 @@ sidebar_label: Keyboard Navigation
 
 # Keyboard Navigation
 
-The Roo Code interface supports keyboard navigation and shortcuts to streamline your workflow and reduce dependence on mouse interactions.
+The AliCode interface supports keyboard navigation and shortcuts to streamline your workflow and reduce dependence on mouse interactions.
 
 ---
 
 ## Available Keyboard Commands
 
-Roo Code offers keyboard commands to enhance your workflow. This page focuses on the `roo-cline.acceptInput` command, but here's a quick reference to all keyboard commands:
+AliCode offers keyboard commands to enhance your workflow. This page focuses on the `roo-cline.acceptInput` command, but here's a quick reference to all keyboard commands:
 
 | Command                  | Description                                  | Default Shortcut                                 |
 | ------------------------ | -------------------------------------------- | ------------------------------------------------ |
 | `roo-cline.acceptInput`  | Submit text or accept the primary suggestion | None (configurable)                              |
 | `roo-cline.focusInput`   | Focus the Roo input box                      | None (configurable)                              |
-| `roo-cline.openInNewTab` | Open Roo Code in a new editor tab            | None (via Command Palette)                       |
+| `roo-cline.openInNewTab` | Open AliCode in a new editor tab             | None (via Command Palette)                       |
 | Add to Context           | Add selected code to Roo's context           | macOS: Cmd+K Cmd+A; Windows/Linux: Ctrl+K Ctrl+A |
 | Arrow Up/Down            | Navigate through prompt history              | Built-in                                         |
 

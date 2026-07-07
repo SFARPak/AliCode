@@ -16,7 +16,7 @@ const tmpDir = path.join(os.tmpdir(), "CheckpointService")
 
 const initWorkspaceRepo = async ({
 	workspaceDir,
-	userName = "Roo Code",
+	userName = "AliCode",
 	userEmail = "support@roocode.com",
 	testFileName = "test.txt",
 	textFileContent = "Hello, world!",
@@ -388,7 +388,7 @@ describe.each([[RepoPerTaskCheckpointService, "RepoPerTaskCheckpointService"]])(
 				await fs.mkdir(workspaceDir, { recursive: true })
 				const mainGit = simpleGit(workspaceDir)
 				await mainGit.init()
-				await mainGit.addConfig("user.name", "Roo Code")
+				await mainGit.addConfig("user.name", "AliCode")
 				await mainGit.addConfig("user.email", "support@roocode.com")
 
 				// Create a nested repo inside the workspace.
@@ -396,7 +396,7 @@ describe.each([[RepoPerTaskCheckpointService, "RepoPerTaskCheckpointService"]])(
 				await fs.mkdir(nestedRepoPath, { recursive: true })
 				const nestedGit = simpleGit(nestedRepoPath)
 				await nestedGit.init()
-				await nestedGit.addConfig("user.name", "Roo Code")
+				await nestedGit.addConfig("user.name", "AliCode")
 				await nestedGit.addConfig("user.email", "support@roocode.com")
 
 				// Add a file to the nested repo.
@@ -458,7 +458,7 @@ describe.each([[RepoPerTaskCheckpointService, "RepoPerTaskCheckpointService"]])(
 				await fs.mkdir(workspaceDir, { recursive: true })
 				const mainGit = simpleGit(workspaceDir)
 				await mainGit.init()
-				await mainGit.addConfig("user.name", "Roo Code")
+				await mainGit.addConfig("user.name", "AliCode")
 				await mainGit.addConfig("user.email", "support@roocode.com")
 
 				// Create a test file in the main workspace.
@@ -974,7 +974,7 @@ describe("worktree path comparison", () => {
 			await fs.mkdir(workspaceDir, { recursive: true })
 			const mainGit = simpleGit(workspaceDir)
 			await mainGit.init()
-			await mainGit.addConfig("user.name", "Roo Code")
+			await mainGit.addConfig("user.name", "AliCode")
 			await mainGit.addConfig("user.email", "support@roocode.com")
 
 			await fs.writeFile(path.join(workspaceDir, "main.txt"), "main content")
@@ -1009,7 +1009,7 @@ describe("worktree path comparison", () => {
 			await fs.mkdir(workspaceDir, { recursive: true })
 			const mainGit = simpleGit(workspaceDir)
 			await mainGit.init()
-			await mainGit.addConfig("user.name", "Roo Code")
+			await mainGit.addConfig("user.name", "AliCode")
 			await mainGit.addConfig("user.email", "support@roocode.com")
 
 			await fs.writeFile(path.join(workspaceDir, "main.txt"), "main content")

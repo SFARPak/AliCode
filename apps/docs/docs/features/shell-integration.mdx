@@ -1,5 +1,5 @@
 ---
-description: Learn how Roo Code integrates with your shell to execute commands. Troubleshooting guide for terminal issues and shell configuration.
+description: Learn how AliCode integrates with your shell to execute commands. Troubleshooting guide for terminal issues and shell configuration.
 keywords:
   - shell integration
   - terminal commands
@@ -11,13 +11,13 @@ import Codicon from '@site/src/components/Codicon';
 
 # Terminal Shell Integration
 
-Terminal Shell Integration is a key feature that enables Roo Code to execute commands in your terminal and intelligently process their output. This bidirectional communication between the AI and your development environment unlocks powerful automation capabilities.
+Terminal Shell Integration is a key feature that enables AliCode to execute commands in your terminal and intelligently process their output. This bidirectional communication between the AI and your development environment unlocks powerful automation capabilities.
 
 ---
 
 ## What is Shell Integration?
 
-Shell integration is automatically enabled in Roo Code and connects directly to your terminal's command execution lifecycle without requiring any setup from you. This built-in feature allows Roo to:
+Shell integration is automatically enabled in AliCode and connects directly to your terminal's command execution lifecycle without requiring any setup from you. This built-in feature allows Roo to:
 
 - Execute commands on your behalf through the [`execute_command`](/advanced-usage/available-tools/execute-command) tool
 - Read command output in real-time without manual copy-pasting
@@ -36,8 +36,8 @@ When you ask Roo to perform tasks like installing dependencies, starting a devel
 
 ## Terminal Integration Settings
 
-Roo Code provides settings to fine-tune how it interacts with terminals. To access these settings:
-1. Click the <Codicon name="gear" /> icon in the top-right corner of the Roo Code sidebar.
+AliCode provides settings to fine-tune how it interacts with terminals. To access these settings:
+1. Click the <Codicon name="gear" /> icon in the top-right corner of the AliCode sidebar.
 2. In the settings pane that opens, select the "Terminal" group from the left-hand menu.
 
 ### Command Execution Timeout Settings
@@ -107,11 +107,11 @@ Always restart all open terminals after changing any of these settings.
 <a id="disable-terminal-shell-integration"></a>
 #### Use Inline Terminal (recommended)
 <img src="/img/shell-integration/shell-integration-16.png" alt="Use Inline Terminal (recommended) switch" width="600" />
-Controls how Roo Code executes terminal commands.
+Controls how AliCode executes terminal commands.
 
 - ON (Use Inline Terminal): Runs commands with the Inline Terminal (in chat), bypassing shell profiles and VS Code shell integration for reliability and faster starts. Mechanism: uses a background “execa” provider and streams output directly (no VS Code OSC 633/133 markers).
 
-    <img src="/img/shell-integration/shell-integration-12.png" alt="Roo Code Inline Terminal when 'Use Inline Terminal (recommended)' is ON" width="600" />
+    <img src="/img/shell-integration/shell-integration-12.png" alt="AliCode Inline Terminal when 'Use Inline Terminal (recommended)' is ON" width="600" />
     *Inline Terminal active (Use Inline Terminal is ON).*
 
 - OFF (Use VS Code terminal): Uses the VS Code integrated terminal and your shell profile; may require shell integration and is more likely to hit “Shell Integration Unavailable” issues. Use this only when you specifically need terminal UI features or interactive profile behavior.
@@ -122,9 +122,9 @@ Controls how Roo Code executes terminal commands.
 - Tip: If terminal commands fail or stall, switch ON and retry.
 
 :::info Runtime Environment
-On macOS (and possibly other operating systems) the environment provided to VS Code, and consequently Roo Code, can differ depending on how VS Code is launched.
+On macOS (and possibly other operating systems) the environment provided to VS Code, and consequently AliCode, can differ depending on how VS Code is launched.
 
-If launched from the command line with the `code` command, VS Code and Roo Code inherit the environment from the shell that launched it.
+If launched from the command line with the `code` command, VS Code and AliCode inherit the environment from the shell that launched it.
 
 If launched from the Finder, Dock, or Spotlight, environment exported from `.zshrc` or `.zprofile` will likely be missing.
 
@@ -155,11 +155,11 @@ ON: Omits Zsh’s end-of-line mark (%) so output is parsed correctly. Mechanism:
 
 #### Enable Oh My Zsh integration
 <img src="/img/shell-integration/shell-integration-22.png" alt="Enable Oh My Zsh integration checkbox" width="600" />
-For users of the popular Oh My Zsh framework for Zsh. Enable this if you use Oh My Zsh and experience general issues with terminal command execution or output rendering that aren't solved by other settings. This helps Roo Code align with Oh My Zsh's specific shell integration mechanisms by setting `ITERM_SHELL_INTEGRATION_INSTALLED=Yes`. Restarting the IDE might be necessary.
+For users of the popular Oh My Zsh framework for Zsh. Enable this if you use Oh My Zsh and experience general issues with terminal command execution or output rendering that aren't solved by other settings. This helps AliCode align with Oh My Zsh's specific shell integration mechanisms by setting `ITERM_SHELL_INTEGRATION_INSTALLED=Yes`. Restarting the IDE might be necessary.
 
 #### Enable Powerlevel10k integration
 <img src="/img/shell-integration/shell-integration-23.png" alt="Enable Powerlevel10k integration checkbox" width="600" />
-For users of the Powerlevel10k theme for Zsh. Enable this if your Powerlevel10k prompt (which can be quite complex) seems to interfere with Roo Code's ability to correctly detect command boundaries, parse output, or track the current working directory. This sets `POWERLEVEL9K_TERM_SHELL_INTEGRATION=true`.
+For users of the Powerlevel10k theme for Zsh. Enable this if your Powerlevel10k prompt (which can be quite complex) seems to interfere with AliCode's ability to correctly detect command boundaries, parse output, or track the current working directory. This sets `POWERLEVEL9K_TERM_SHELL_INTEGRATION=true`.
 
 #### Enable ZDOTDIR handling
 <img src="/img/shell-integration/shell-integration-24.png" alt="Enable ZDOTDIR handling checkbox" width="600" />
@@ -242,7 +242,7 @@ If you use terminal customization tools:
 typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
 ```
 
-**Alternative**: Enable the Powerlevel10k Integration setting in Roo Code.
+**Alternative**: Enable the Powerlevel10k Integration setting in AliCode.
 
 #### Verifying Shell Integration Status
 
@@ -456,7 +456,7 @@ This setup works reliably on Windows systems using Cygwin, Fish, and the Starshi
 
 **Issue**: Disabling shell integration will disable venv; venv is VS Code–managed, Roo does not know anything about it because disabling shell integration uses a completely different mechanism for running commands (execa).
 
-**Workaround**: If you need to use Python virtual environments with Roo Code, you might be able to:
+**Workaround**: If you need to use Python virtual environments with AliCode, you might be able to:
 
 ```bash
 killall code # closes all VS Code windows!

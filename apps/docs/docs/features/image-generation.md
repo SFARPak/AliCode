@@ -1,5 +1,5 @@
 ---
-description: Generate new images from text prompts or edit existing images in Roo Code using OpenRouter API. Transform, enhance, and save AI-processed images to your workspace with preview support.
+description: Generate new images from text prompts or edit existing images in AliCode using OpenRouter API. Transform, enhance, and save AI-processed images to your workspace with preview support.
 keywords:
     - image generation
     - image editing

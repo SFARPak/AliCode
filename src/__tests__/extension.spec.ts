@@ -3,9 +3,20 @@
 import type * as vscode from "vscode"
 
 vi.mock("vscode", () => ({
+	// Provide minimal VS Code API needed for tests, including StatusBarAlignment and createStatusBarItem.
+	StatusBarAlignment: { Right: 1 },
 	window: {
 		createOutputChannel: vi.fn().mockReturnValue({
 			appendLine: vi.fn(),
+		}),
+		// Stub for status bar item used by RemoteStatusService.
+		createStatusBarItem: vi.fn().mockReturnValue({
+			text: "",
+			tooltip: "",
+			color: null,
+			show: vi.fn(),
+			hide: vi.fn(),
+			dispose: vi.fn(),
 		}),
 		registerWebviewViewProvider: vi.fn(),
 		registerUriHandler: vi.fn(),
@@ -38,6 +49,10 @@ vi.mock("vscode", () => ({
 	},
 	ExtensionMode: {
 		Production: 1,
+	},
+	// Add extensions mock to satisfy MarketplacePanelProvider usage
+	extensions: {
+		getExtension: vi.fn().mockReturnValue(undefined),
 	},
 }))
 

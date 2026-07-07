@@ -6,7 +6,7 @@ const sidebars: SidebarsConfig = {
 		"index",
 		{
 			type: "category",
-			label: "Roo Code VSCode Extension",
+			label: "AliCode VSCode Extension",
 			items: [
 				"getting-started/installing",
 				"getting-started/connecting-api-provider",

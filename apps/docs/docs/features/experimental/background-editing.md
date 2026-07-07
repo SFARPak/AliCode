@@ -1,5 +1,5 @@
 ---
-description: Learn about the experimental Background Editing setting that allows uninterrupted coding while Roo Code makes file edits in the background.
+description: Learn about the experimental Background Editing setting that allows uninterrupted coding while AliCode makes file edits in the background.
 keywords:
     - experimental features
     - editor focus
@@ -11,7 +11,7 @@ keywords:
 
 # Background Editing
 
-Work without interruption while Roo Code edits files in the background—no more losing focus from automatic diff views.
+Work without interruption while AliCode edits files in the background—no more losing focus from automatic diff views.
 
 :::warning Experimental Feature
 This is an experimental feature that changes how file edits are displayed. While it can significantly improve workflow, you'll need to manually review changes through source control or file history.
@@ -21,7 +21,7 @@ This is an experimental feature that changes how file edits are displayed. While
 
 ## Overview
 
-The "Background Editing" setting is an experimental feature that disables automatic diff view displays when Roo Code edits files. Instead of switching your editor focus to show diffs, Roo works silently in the background, allowing you to continue coding without interruption. This feature affects all file editing operations including write, apply diff, search/replace, insert content, and multi-file apply diff tools.
+The "Background Editing" setting is an experimental feature that disables automatic diff view displays when AliCode edits files. Instead of switching your editor focus to show diffs, Roo works silently in the background, allowing you to continue coding without interruption. This feature affects all file editing operations including write, apply diff, search/replace, insert content, and multi-file apply diff tools.
 
 ### Key Benefits
 
@@ -46,12 +46,12 @@ The "Background Editing" setting is an experimental feature that disables automa
 
 To enable Background Editing:
 
-1. Open Roo Code settings (gear icon in the top right)
+1. Open AliCode settings (gear icon in the top right)
 2. Navigate to the "Experimental" tab
 3. Find "Background editing" in the list
 4. Toggle the setting to enable it
 
-<img src="/img/background-editing/background-editing.png" alt="Background editing setting in Roo Code experimental features" width="400" />
+<img src="/img/background-editing/background-editing.png" alt="Background editing setting in AliCode experimental features" width="400" />
 
 ---
 

@@ -1,11 +1,11 @@
 ---
-description: Replace a uniquely-identified occurrence of text in a file using the search_replace tool in Roo Code.
+description: Replace a uniquely-identified occurrence of text in a file using the search_replace tool in AliCode.
 keywords:
     - search_replace
     - search and replace
     - file editing
     - text replacement
-    - Roo Code tools
+    - AliCode tools
     - code modifications
 ---
 

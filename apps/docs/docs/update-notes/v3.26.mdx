@@ -1,5 +1,5 @@
 ---
-description: Roo Code v3.26 series - Grok Code Fast, built-in /init command, Qwen Code CLI API support, Vercel AI Gateway integration, and image generation enhancements.
+description: AliCode v3.26 series - Grok Code Fast, built-in /init command, Qwen Code CLI API support, Vercel AI Gateway integration, and image generation enhancements.
 keywords:
   - roo code 3.26
   - grok code fast
@@ -10,11 +10,11 @@ keywords:
 image: /img/v3.26.0/v3.26.0.png
 ---
 
-# Roo Code 3.26 Release Notes
+# AliCode 3.26 Release Notes
 
 This document combines all releases in the v3.26 series.
 
-<img src="/img/v3.26.0/v3.26.0.png" alt="Roo Code v3.26 Release" width="600" />
+<img src="/img/v3.26.0/v3.26.0.png" alt="AliCode v3.26 Release" width="600" />
 ### Grok Code Fast
 
 As you may have already figured out, our stealth model Sonic has officially been uncloaked! ([#7426](https://github.com/RooCodeInc/Roo-Code/pull/7426))
@@ -24,13 +24,13 @@ From xAI, this model is optimized for coding tasks and already beloved by the co
 - **Plan execution at scale**
 - **Code suggestions with UI taste and intuition**
 
-If you've already been enjoying Sonic in Roo Code Cloud, you'll be transitioned to Grok Code Fast. The model `xai/grok-code-fast-1` is also available under the [xAI Provider](/providers/xai) and is not free (for when the free period ends on Aug 28th, 2025).
+If you've already been enjoying Sonic in AliCode Cloud, you'll be transitioned to Grok Code Fast. The model `xai/grok-code-fast-1` is also available under the [xAI Provider](/providers/xai) and is not free (for when the free period ends on Aug 28th, 2025).
 
 A massive thank-you to our partners at xAI and to all of you — over 100B tokens (and counting!) ran through Sonic during stealth! Your incredible adoption and helpful feedback shaped Grok Code Fast into the powerful model it is today.
 
-**Important:** Grok Code Fast remains **FREE** when accessed through Roo Code Router during the promotional period. Using it directly through the xAI provider will incur standard charges once pricing is established.
+**Important:** Grok Code Fast remains **FREE** when accessed through AliCode Router during the promotional period. Using it directly through the xAI provider will incur standard charges once pricing is established.
 
-> **📚 Documentation**: See Roo Code Router for free access or [xAI Provider](/providers/xai) for direct configuration.
+> **📚 Documentation**: See AliCode Router for free access or [xAI Provider](/providers/xai) for direct configuration.
 
 ### Built-in /init Command
 
@@ -38,7 +38,7 @@ We've added a new /init slash command for project onboarding ([#7381](https://gi
 
 - **Automatic Project Analysis**: Analyzes your entire codebase and creates comprehensive AGENTS.md files
 - **AI Assistant Optimization**: Generates documentation that enables AI assistants to be immediately productive in your codebase
-- **Mode-Specific Guidance**: Creates tailored documentation for different Roo Code modes (code, debug, architect, etc.)
+- **Mode-Specific Guidance**: Creates tailored documentation for different AliCode modes (code, debug, architect, etc.)
 
 The /init command helps LLMs understand your project's unique patterns and conventions by documenting project-specific information that isn't obvious from the code structure alone.
 
@@ -52,13 +52,13 @@ We've added a powerful new tool that allows the AI to execute slash commands as 
 - **Seamless Integration**: Existing slash commands work directly within AI workflows without manual intervention
 - **Enhanced Automation**: Combine multiple slash commands to create complex automated sequences
 
-This opens up new possibilities for task automation, letting the AI leverage the full power of Roo Code's slash command ecosystem programmatically.
+This opens up new possibilities for task automation, letting the AI leverage the full power of AliCode's slash command ecosystem programmatically.
 
 > **📚 Documentation**: See the [run_slash_command tool documentation](/advanced-usage/available-tools/run-slash-command) for usage examples and integration patterns.
 
 ### Qwen Code CLI API Support
 
-We've integrated with the Qwen Code CLI tool, allowing Roo Code to leverage its free access tier for Alibaba's Qwen3 Coder models ([#7380](https://github.com/RooCodeInc/Roo-Code/pull/7380)):
+We've integrated with the Qwen Code CLI tool, allowing AliCode to leverage its free access tier for Alibaba's Qwen3 Coder models ([#7380](https://github.com/RooCodeInc/Roo-Code/pull/7380)):
 
 - **Free Inference**: Piggybacks off the Qwen Code CLI's generous free tier (2,000 requests/day and 60 requests/minute with no token limits) via OAuth, available during a promotional period.
 - **1M Context Windows**: Handle entire codebases in a single conversation.
@@ -80,7 +80,7 @@ We've added Vercel AI Gateway as a complete provider integration (thanks joshual
 
 ### Image Generation (OpenRouter) — Free option: Gemini 2.5 Flash Image Preview
 
-Generate images from natural‑language prompts directly inside Roo Code using OpenRouter's image generation models. Configure your OpenRouter API key, pick a supported model, and preview results in the built‑in Image Viewer. See [Image Generation](/features/image-generation) and [OpenRouter Provider](/providers/openrouter) for setup and model selection.
+Generate images from natural‑language prompts directly inside AliCode using OpenRouter's image generation models. Configure your OpenRouter API key, pick a supported model, and preview results in the built‑in Image Viewer. See [Image Generation](/features/image-generation) and [OpenRouter Provider](/providers/openrouter) for setup and model selection.
 
 - **Free option available: Gemini 2.5 Flash Image Preview** — try image generation without paid credits for faster onboarding and quick experiments
 - Prompt‑to‑image workflow inside the editor with approvals flow (supports auto‑approval when write permissions are granted)
@@ -95,7 +95,7 @@ PRs: [#7474](https://github.com/RooCodeInc/Roo-Code/pull/7474), [#7492](https://
 
 > **📚 Documentation**: See [Image Generation - Editing Existing Images](/features/image-generation#editing-existing-images) for transformation examples.
 
-### Kimi K2-0905: Moonshot's Latest Open Source Model is Live in Roo Code
+### Kimi K2-0905: Moonshot's Latest Open Source Model is Live in AliCode
 
 We've upgraded to the latest Kimi K2-0905 models across multiple providers (thanks CellenLee!) ([#7663](https://github.com/RooCodeInc/Roo-Code/pull/7663), [#7693](https://github.com/RooCodeInc/Roo-Code/pull/7693)):
 
@@ -184,4 +184,4 @@ Select your preferred tier directly in the UI based on your needs and budget. Th
 * **Test Debugging** (v3.26.3): Console logs now visible in tests when using the --no-silent flag (thanks hassoncs!) ([#7467](https://github.com/RooCodeInc/Roo-Code/pull/7467))
 * Release automation: version bumps, changelog updates, and auto-publishing on merge for a faster, more reliable release process ([#7490](https://github.com/RooCodeInc/Roo-Code/pull/7490))
 * New TaskSpawned developer event so integrations can detect when a subtask is created and capture its ID for chaining or monitoring ([#7465](https://github.com/RooCodeInc/Roo-Code/pull/7465))
-* Roo Code Cloud SDK bumped to 0.25.0 ([#7475](https://github.com/RooCodeInc/Roo-Code/pull/7475))
+* AliCode Cloud SDK bumped to 0.25.0 ([#7475](https://github.com/RooCodeInc/Roo-Code/pull/7475))

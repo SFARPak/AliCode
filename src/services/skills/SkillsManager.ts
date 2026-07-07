@@ -12,7 +12,7 @@ import {
 	validateSkillName as validateSkillNameShared,
 	SkillNameValidationError,
 	SKILL_NAME_MAX_LENGTH,
-} from "@roo-code/types"
+} from "@ali-code/types"
 import { t } from "../../i18n"
 
 // Re-export for convenience

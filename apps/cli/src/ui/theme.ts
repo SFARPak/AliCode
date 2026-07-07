@@ -1,5 +1,5 @@
 /**
- * Theme configuration for Roo Code CLI TUI
+ * Theme configuration for AliCode CLI TUI
  * Using Hardcore color scheme
  */
 

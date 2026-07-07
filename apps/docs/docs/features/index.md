@@ -1,7 +1,7 @@
 ---
-description: "Explore all Roo Code features including AI-powered coding assistance, multi-file editing, codebase indexing, MCP integration, custom modes, and experimental capabilities."
+description: "Explore all AliCode features including AI-powered coding assistance, multi-file editing, codebase indexing, MCP integration, custom modes, and experimental capabilities."
 keywords:
-    - Roo Code features
+    - AliCode features
     - AI coding assistant
     - code editing
     - developer tools
@@ -12,9 +12,9 @@ keywords:
 sidebar_label: "Features Overview"
 ---
 
-# Roo Code Features
+# AliCode Features
 
-Discover the powerful features that make Roo Code your ultimate AI-powered coding assistant. From intelligent code editing to advanced integrations, Roo Code enhances your development workflow.
+Discover the powerful features that make AliCode your ultimate AI-powered coding assistant. From intelligent code editing to advanced integrations, AliCode enhances your development workflow.
 
 ## Core Features
 
@@ -43,7 +43,7 @@ Discover the powerful features that make Roo Code your ultimate AI-powered codin
 - [**API Configuration Profiles**](/features/api-configuration-profiles) - Manage multiple API configurations
 - [**Custom Instructions**](/features/custom-instructions) - Personalize AI behavior
 - [**Skills**](/features/skills) - Create reusable task-specific instruction packages
-- [**Settings Management**](/features/settings-management) - Fine-tune Roo Code to your preferences
+- [**Settings Management**](/features/settings-management) - Fine-tune AliCode to your preferences
 - [**.rooignore**](/features/rooignore) - Control file access and visibility
 
 ### Integration Features
@@ -69,7 +69,7 @@ Push the boundaries with cutting-edge capabilities:
 ## Additional Resources
 
 - [**More Features**](/features/more-features) - Discover additional capabilities
-- [**Tips & Tricks**](/tips-and-tricks) - Get the most out of Roo Code
+- [**Tips & Tricks**](/tips-and-tricks) - Get the most out of AliCode
 - [**FAQ**](/faq) - Common questions answered
 
 ---

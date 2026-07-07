@@ -1,5 +1,5 @@
 ---
-description: Configure Requesty in Roo Code to access 150+ LLMs with cost optimizations, unified billing, and comprehensive usage tracking features.
+description: Configure Requesty in AliCode to access 150+ LLMs with cost optimizations, unified billing, and comprehensive usage tracking features.
 keywords:
     - roo code
     - requesty
@@ -12,9 +12,9 @@ keywords:
 sidebar_label: Requesty
 ---
 
-# Using Requesty With Roo Code
+# Using Requesty With AliCode
 
-Roo Code supports accessing models through the [Requesty](https://www.requesty.ai/) AI platform. Requesty provides an easy and optimized API for interacting with 150+ large language models (LLMs).
+AliCode supports accessing models through the [Requesty](https://www.requesty.ai/) AI platform. Requesty provides an easy and optimized API for interacting with 150+ large language models (LLMs).
 
 **Website:** [https://www.requesty.ai/](https://www.requesty.ai/)
 
@@ -29,15 +29,15 @@ Roo Code supports accessing models through the [Requesty](https://www.requesty.a
 
 ## Available Models
 
-Roo Code automatically fetches all available models from Requesty's API (150+ models from multiple providers).
+AliCode automatically fetches all available models from Requesty's API (150+ models from multiple providers).
 
 For the complete, up-to-date model list with pricing, see [Requesty's model list](https://app.requesty.ai/router/list).
 
 ---
 
-## Configuration in Roo Code
+## Configuration in AliCode
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open AliCode Settings:** Click the gear icon (<Codicon name="gear" />) in the AliCode panel.
 2.  **Select Provider:** Choose "Requesty" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Requesty API key into the "Requesty API Key" field.
 4.  **Select Model:** Choose your desired model from the "Model" dropdown.

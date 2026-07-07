@@ -1,8 +1,8 @@
 ---
-description: Explore write_to_file for creating new files or replacing content with interactive diff view approval, ensuring safe file operations in Roo Code.
+description: Explore write_to_file for creating new files or replacing content with interactive diff view approval, ensuring safe file operations in AliCode.
 keywords:
     - write_to_file
-    - Roo Code tools
+    - AliCode tools
     - file creation
     - file writing
     - diff view

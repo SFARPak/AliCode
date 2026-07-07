@@ -1,17 +1,17 @@
 import * as vscode from "vscode"
 
-import { CodeActionName, CodeActionId } from "@roo-code/types"
+import { CodeActionName, CodeActionId } from "@ali-code/types"
 import { Package } from "../shared/package"
 
 import { getCodeActionCommand } from "../utils/commands"
 import { EditorUtils } from "../integrations/editor/EditorUtils"
 
 export const TITLES: Record<CodeActionName, string> = {
-	EXPLAIN: "Explain with Roo Code",
-	FIX: "Fix with Roo Code",
-	IMPROVE: "Improve with Roo Code",
-	ADD_TO_CONTEXT: "Add to Roo Code",
-	NEW_TASK: "New Roo Code Task",
+	EXPLAIN: "Explain with AliCode",
+	FIX: "Fix with AliCode",
+	IMPROVE: "Improve with AliCode",
+	ADD_TO_CONTEXT: "Add to AliCode",
+	NEW_TASK: "New AliCode Task",
 } as const
 
 export class CodeActionProvider implements vscode.CodeActionProvider {

@@ -1,5 +1,5 @@
 ---
-description: Roo Code 3.49.0 adds a file changes panel per conversation, per-workspace codebase indexing control, and fixes chat scroll and multi-window history reliability.
+description: AliCode 3.49.0 adds a file changes panel per conversation, per-workspace codebase indexing control, and fixes chat scroll and multi-window history reliability.
 keywords:
   - roo code 3.49.0
   - file changes panel
@@ -8,7 +8,7 @@ keywords:
   - chat scroll fix
 ---
 
-# Roo Code 3.49.0 Release Notes (2026-02-19)
+# AliCode 3.49.0 Release Notes (2026-02-19)
 
 This release adds a file changes panel showing all edits made during a conversation, introduces per-workspace codebase indexing opt-in with a stop control, and fixes chat scroll and multi-window history reliability.
 
@@ -23,4 +23,4 @@ Codebase indexing no longer silently auto-starts every time a workspace folder i
 ## Bug Fixes
 
 * **Chat Scroll on Reopen**: Fixes an issue where reopening an existing chat would not reliably scroll to the newest message, leaving users viewing older messages mid-conversation. Auto-scroll-to-bottom now consistently activates on chat open, the scroll-to-bottom button reliably re-anchors the view, and manually scrolling up to browse history properly pauses auto-follow without interference from nested scroll areas such as code blocks. ([#11483](https://github.com/RooCodeInc/Roo-Code/pull/11483))
-* **Multi-Window Task History Data Loss**: Fixes silent task history data loss when Roo Code runs in two or more VS Code windows at the same time. Each task's history is now stored in its own file with cross-process file locking, so concurrent multi-window writes no longer overwrite each other. Migration from the previous storage format is automatic and backward-compatible. ([#11490](https://github.com/RooCodeInc/Roo-Code/pull/11490))
+* **Multi-Window Task History Data Loss**: Fixes silent task history data loss when AliCode runs in two or more VS Code windows at the same time. Each task's history is now stored in its own file with cross-process file locking, so concurrent multi-window writes no longer overwrite each other. Migration from the previous storage format is automatic and backward-compatible. ([#11490](https://github.com/RooCodeInc/Roo-Code/pull/11490))

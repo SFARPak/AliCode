@@ -1,6 +1,6 @@
 ---
 sidebar_label: "Multi-File Edits"
-description: "Speed up refactoring and multi-file changes with Roo Code's Concurrent File Edits feature. Edit multiple files in a single operation with batch approval."
+description: "Speed up refactoring and multi-file changes with AliCode's Concurrent File Edits feature. Edit multiple files in a single operation with batch approval."
 keywords:
     - concurrent file edits
     - multi-file edits
@@ -52,7 +52,7 @@ This reduces interruptions and speeds up complex tasks like:
 
 ## Availability
 
-Multi-file edits are now available by default in Roo Code. The feature has graduated from experimental status and no longer requires manual activation in settings.
+Multi-file edits are now available by default in AliCode. The feature has graduated from experimental status and no longer requires manual activation in settings.
 
 ---
 
@@ -109,7 +109,7 @@ This feature leverages the [`apply_diff`](/advanced-usage/available-tools/apply-
 
 ### Approval UI Not Appearing
 
-- Update to the latest version of Roo Code
+- Update to the latest version of AliCode
 - Check VS Code's output panel for errors
 - Try disabling and re-enabling the feature
 

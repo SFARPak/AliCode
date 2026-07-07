@@ -1,5 +1,5 @@
 ---
-description: Learn how Roo Code's Concurrent File Reads feature speeds up development by reading up to 100 files simultaneously for better context understanding.
+description: Learn how AliCode's Concurrent File Reads feature speeds up development by reading up to 100 files simultaneously for better context understanding.
 keywords:
     - concurrent file reads
     - multi-file reads

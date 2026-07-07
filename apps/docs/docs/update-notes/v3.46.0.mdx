@@ -7,11 +7,11 @@ keywords:
 image: /img/v3.46.0/v3.46.0.png
 ---
 
-# Roo Code 3.46.0 Release Notes (2026-01-30)
+# AliCode 3.46.0 Release Notes (2026-01-30)
 
 This is a BIG UPDATE! This release adds parallel tool calling, overhauls how Roo reads files and handles terminal output, and begins a major refactor to use the AI SDK at Roo's core for much better reliability. Together, these changes shift how Roo manages context and executes multi-step workflows in a serious way! Oh, and we also added a UI to manage your skills!!
 
-<img src="/img/v3.46.0/v3.46.0.png" alt="Roo Code v3.46.0 Release" width="600" />
+<img src="/img/v3.46.0/v3.46.0.png" alt="AliCode v3.46.0 Release" width="600" />
 
 ## Parallel tool calling
 
@@ -37,7 +37,7 @@ We’ve started migrating providers toward a shared Vercel AI SDK foundation, so
 
 * The collapsed task header’s context percentage now reflects actual input usage (accounting for reserved output tokens), so it’s a more reliable indicator of how close you are to the context limit. ([#11034](https://github.com/RooCodeInc/Roo-Code/pull/11034), [#11054](https://github.com/RooCodeInc/Roo-Code/pull/11054))
 * Improves webview UI responsiveness by enabling React Compiler optimizations, reducing unnecessary re-renders without requiring manual memoization. (thanks In-line!) ([#9565](https://github.com/RooCodeInc/Roo-Code/pull/9565))
-* Adds `pnpm serve` / `pnpm serve:rebuild` commands to build and run the Roo Code extension in a web-based VS Code environment (via code-server), making it easier for maintainers and contributors to reproduce and validate web-specific behavior and ship fixes more reliably. ([#10964](https://github.com/RooCodeInc/Roo-Code/pull/10964))
-* Keeps the Roo Code web apps up to date with the latest Next.js release and related dependency/config updates, which helps reduce build and lint friction and improves compatibility/performance for the website and eval tooling. ([#11108](https://github.com/RooCodeInc/Roo-Code/pull/11108))
-* Improves the Roo Code website header navigation dropdowns by switching to the shadcn/Radix Navigation Menu component, giving smoother open/close animations, more reliable keyboard navigation, and more stable dropdown sizing during transitions. ([#11117](https://github.com/RooCodeInc/Roo-Code/pull/11117))
+* Adds `pnpm serve` / `pnpm serve:rebuild` commands to build and run the AliCode extension in a web-based VS Code environment (via code-server), making it easier for maintainers and contributors to reproduce and validate web-specific behavior and ship fixes more reliably. ([#10964](https://github.com/RooCodeInc/Roo-Code/pull/10964))
+* Keeps the AliCode web apps up to date with the latest Next.js release and related dependency/config updates, which helps reduce build and lint friction and improves compatibility/performance for the website and eval tooling. ([#11108](https://github.com/RooCodeInc/Roo-Code/pull/11108))
+* Improves the AliCode website header navigation dropdowns by switching to the shadcn/Radix Navigation Menu component, giving smoother open/close animations, more reliable keyboard navigation, and more stable dropdown sizing during transitions. ([#11117](https://github.com/RooCodeInc/Roo-Code/pull/11117))
 * Replaces the legacy instruction-loading flow with a unified `skill` tool system, making it easier for Roo to load specialized instructions (like creating MCP servers or custom modes) on demand; also removes the old MCP “Enable MCP Server Creation” toggle. ([#11084](https://github.com/RooCodeInc/Roo-Code/pull/11084))

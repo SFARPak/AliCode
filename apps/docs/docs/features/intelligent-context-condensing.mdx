@@ -18,7 +18,7 @@ The Intelligent Context Condensing feature helps manage long conversations by su
 
 ## How It Works
 
-As your conversation with Roo Code grows, it might approach the context window limit of the underlying AI model. When this happens, older messages would typically be removed to make space. Intelligent Context Condensing aims to prevent this abrupt loss by:
+As your conversation with AliCode grows, it might approach the context window limit of the underlying AI model. When this happens, older messages would typically be removed to make space. Intelligent Context Condensing aims to prevent this abrupt loss by:
 
 1.  **Summarizing:** Using an AI model, it condenses earlier parts of the conversation.
 2.  **Retaining Essentials:** The goal is to reduce the overall token count while keeping the key information from the summarized messages.
@@ -35,7 +35,7 @@ As your conversation with Roo Code grows, it might approach the context window l
 
 Intelligent Context Condensing is **enabled by default** and offers several configuration options:
 
-1.  Open Roo Code settings (<Codicon name="gear" /> icon in the top right corner of the Roo Code panel).
+1.  Open AliCode settings (<Codicon name="gear" /> icon in the top right corner of the AliCode panel).
 2.  Navigate to the **Context Management** settings section.
 3.  Configure the available options:
     - **Automatically trigger intelligent context condensing**: Enabled by default, this controls whether condensing happens automatically (found in "Context" settings)
@@ -48,10 +48,10 @@ Intelligent Context Condensing is **enabled by default** and offers several conf
 
 ## Controlling and Understanding Context Condensing
 
-Roo Code provides several ways to control and understand the Intelligent Context Condensing feature:
+AliCode provides several ways to control and understand the Intelligent Context Condensing feature:
 
 #### Controlling context condensing
-*   **Automatic Threshold:** The threshold slider in "Context" settings allows you to define a percentage (e.g., 80%) of context window usage. Roo Code will attempt to condense the context automatically when the conversation reaches this level of capacity.
+*   **Automatic Threshold:** The threshold slider in "Context" settings allows you to define a percentage (e.g., 80%) of context window usage. AliCode will attempt to condense the context automatically when the conversation reaches this level of capacity.
 *   **Custom Prompt:** Modify the prompt used for condensing to better suit your workflow or emphasize what should be preserved.
 *   **Manual Trigger:** A **Condense Context** button is available at the top of the task, positioned to the right of the context bar. This allows you to initiate the context condensing process at any time.
 
@@ -59,7 +59,7 @@ Roo Code provides several ways to control and understand the Intelligent Context
     *The Manual Condense Context button (highlighted with a yellow arrow) is easily accessible for manual control.*
 
 #### Understanding context condensing activity
-*   **Context Condensing Metrics:** When context condensing occurs, Roo Code displays:
+*   **Context Condensing Metrics:** When context condensing occurs, AliCode displays:
     *   The context token counts before and after context condensing.
     *   The cost associated with the context condensing AI call.
     *   An expandable summary detailing what was condensed (this information is part of the `ContextCondenseRow` component visible in the chat history).
@@ -83,7 +83,7 @@ Roo Code provides several ways to control and understand the Intelligent Context
 You can customize the context reduction prompt to better suit your specific domain or use case. This is particularly useful if you find that the default condensing process loses important information specific to your workflow.
 
 To customize the prompt:
-1. Go to Roo Code settings (<Codicon name="gear" /> icon)
+1. Go to AliCode settings (<Codicon name="gear" /> icon)
 2. Open **Context Management**
 3. Find the **Custom Context Condensing Prompt** editor
 4. Enter your custom prompt that instructs Roo on what must be preserved
@@ -99,13 +99,13 @@ This customization ensures that the context condensing process retains the infor
 
 ## Automatic Error Recovery
 
-When Roo Code encounters context window limit errors, it now automatically recovers to keep your work flowing:
+When AliCode encounters context window limit errors, it now automatically recovers to keep your work flowing:
 
 #### How error recovery works
 
-1. **Error Detection**: Roo Code detects context window errors from multiple providers (OpenAI, Anthropic, and others)
+1. **Error Detection**: AliCode detects context window errors from multiple providers (OpenAI, Anthropic, and others)
 2. **Automatic Truncation**: The system automatically reduces the context by 25%
-3. **Retry Mechanism**: After truncation, Roo Code retries your request (up to the built-in retry limit)
+3. **Retry Mechanism**: After truncation, AliCode retries your request (up to the built-in retry limit)
 4. **Continuation**: Roo retries without manual intervention
 
 This automatic recovery ensures that:
@@ -127,7 +127,7 @@ This feature works alongside Intelligent Context Condensing to provide multiple 
 ## Technical Implementation
 
 #### Token counting
-Roo Code uses a sophisticated token counting system that:
+AliCode uses a sophisticated token counting system that:
 - Employs native token counting endpoints when available (e.g., Anthropic's API)
 - Falls back to tiktoken estimation if API calls fail
 - Provides accurate counting for different content types:

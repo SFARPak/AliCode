@@ -1,7 +1,7 @@
 ---
-description: Learn how to use context mentions (@) in Roo Code to reference files, folders, problems, terminal output, and Git commits for more accurate AI assistance.
+description: Learn how to use context mentions (@) in AliCode to reference files, folders, problems, terminal output, and Git commits for more accurate AI assistance.
 keywords:
-    - "Roo Code context mentions"
+    - "AliCode context mentions"
     - "@ mentions"
     - "file references"
     - "folder mentions"
@@ -12,7 +12,7 @@ keywords:
 
 # Context Mentions
 
-Context mentions are a powerful way to provide Roo Code with specific information about your project, allowing it to perform tasks more accurately and efficiently. You can use mentions to refer to files, folders, problems, and Git commits. Context mentions start with the `@` symbol.
+Context mentions are a powerful way to provide AliCode with specific information about your project, allowing it to perform tasks more accurately and efficiently. You can use mentions to refer to files, folders, problems, and Git commits. Context mentions start with the `@` symbol.
 
 <img src="/img/context-mentions/context-mentions.png" alt="Context Mentions Overview - showing the @ symbol dropdown menu in the chat interface" width="600" />
 
@@ -90,7 +90,7 @@ _Problems mentions import diagnostics directly from VS Code's problems panel._
 | **Groups** | Problems organized by file for better clarity |
 | **Best for** | Fixing errors without manual copying |
 
-For comprehensive details on how Roo Code integrates with VSCode's diagnostics system, see [Diagnostics Integration](/features/diagnostics-integration).
+For comprehensive details on how AliCode integrates with VSCode's diagnostics system, see [Diagnostics Integration](/features/diagnostics-integration).
 
 ### Terminal Mention
 

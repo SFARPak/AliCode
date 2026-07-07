@@ -1205,4 +1205,34 @@ describe("ChatTextArea", () => {
 			expect(sendButton).toHaveClass("pointer-events-auto")
 		})
 	})
+
+	describe("handlePaste when images disabled", () => {
+		it("shows warning message when pasting image and model does not support images, and prevents default", () => {
+			const props = {
+				...defaultProps,
+				shouldDisableImages: true,
+				selectedImages: [],
+			}
+			render(<ChatTextArea {...props} />)
+			const textarea = document.querySelector("textarea") as HTMLElement
+			// Create a custom paste event with a mocked preventDefault
+			const pasteEvent = new Event("paste", { bubbles: true, cancelable: true }) as any
+			pasteEvent.clipboardData = {
+				items: [{ type: "image/png", getAsFile: () => null }],
+				getData: () => "",
+			}
+			pasteEvent.preventDefault = vi.fn()
+			// Dispatch the event directly to ensure the original event object is used
+			textarea.dispatchEvent(pasteEvent)
+			// Verify that preventDefault was called by the component
+			expect(pasteEvent.preventDefault).toHaveBeenCalled()
+			// Verify that a warning message was posted to VSCode
+			expect(mockPostMessage).toHaveBeenCalledWith(
+				expect.objectContaining({
+					type: "showMessage",
+					message: expect.any(String),
+				}),
+			)
+		})
+	})
 })

@@ -20,6 +20,7 @@ import {
 	xaiModels,
 	internationalZAiModels,
 	minimaxModels,
+	nvidiaNimModels,
 } from "./providers/index.js"
 
 /**
@@ -112,6 +113,7 @@ export const providerNames = [
 	"mistral",
 	"moonshot",
 	"minimax",
+	"nvidia-nim",
 	"openai-codex",
 	"openai-native",
 	"qwen-code",
@@ -381,6 +383,11 @@ const basetenSchema = apiModelIdProviderModelSchema.extend({
 	basetenApiKey: z.string().optional(),
 })
 
+const nvidiaNimSchema = apiModelIdProviderModelSchema.extend({
+	nvidiaNimApiKey: z.string().optional(),
+	nvidiaNimBaseUrl: z.string().optional(),
+})
+
 const defaultSchema = z.object({
 	apiProvider: z.undefined(),
 })
@@ -403,6 +410,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	poeSchema.merge(z.object({ apiProvider: z.literal("poe") })),
 	moonshotSchema.merge(z.object({ apiProvider: z.literal("moonshot") })),
 	minimaxSchema.merge(z.object({ apiProvider: z.literal("minimax") })),
+	nvidiaNimSchema.merge(z.object({ apiProvider: z.literal("nvidia-nim") })),
 	requestySchema.merge(z.object({ apiProvider: z.literal("requesty") })),
 	unboundSchema.merge(z.object({ apiProvider: z.literal("unbound") })),
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
@@ -442,6 +450,7 @@ export const providerSettingsSchema = z.object({
 	...xaiSchema.shape,
 	...basetenSchema.shape,
 	...litellmSchema.shape,
+	...nvidiaNimSchema.shape,
 	...sambaNovaSchema.shape,
 	...zaiSchema.shape,
 	...fireworksSchema.shape,
@@ -509,6 +518,7 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	mistral: "apiModelId",
 	moonshot: "apiModelId",
 	minimax: "apiModelId",
+	"nvidia-nim": "apiModelId",
 	deepseek: "apiModelId",
 	poe: "apiModelId",
 	"qwen-code": "apiModelId",
@@ -594,6 +604,11 @@ export const MODELS_BY_PROVIDER: Record<
 		id: "minimax",
 		label: "MiniMax",
 		models: Object.keys(minimaxModels),
+	},
+	"nvidia-nim": {
+		id: "nvidia-nim",
+		label: "NVIDIA NIM",
+		models: Object.keys(nvidiaNimModels),
 	},
 	"openai-codex": {
 		id: "openai-codex",

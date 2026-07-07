@@ -1,10 +1,10 @@
 ---
-description: Enable interactive communication in Roo Code with the ask_followup_question tool for gathering clarification and user preferences.
+description: Enable interactive communication in AliCode with the ask_followup_question tool for gathering clarification and user preferences.
 keywords:
     - ask_followup_question
     - user interaction
     - interactive communication
-    - Roo Code tools
+    - AliCode tools
     - clarification
     - user feedback
 ---

@@ -1,10 +1,10 @@
 ---
-description: Execute predefined slash commands that provide templated instructions for common tasks, with support for built-in, global, and project-specific commands in Roo Code.
+description: Execute predefined slash commands that provide templated instructions for common tasks, with support for built-in, global, and project-specific commands in AliCode.
 keywords:
     - run_slash_command
     - slash commands
     - command templates
-    - Roo Code tools
+    - AliCode tools
     - workflow automation
     - instruction templates
     - custom commands

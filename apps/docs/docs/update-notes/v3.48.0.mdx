@@ -1,5 +1,5 @@
 ---
-description: Roo Code 3.48.0 adds API config locking, Claude Sonnet 4.6 support, and a recursive subtask history tree, while removing browser automation, nine low-usage providers, built-in skills, and file-based system prompt overrides.
+description: AliCode 3.48.0 adds API config locking, Claude Sonnet 4.6 support, and a recursive subtask history tree, while removing browser automation, nine low-usage providers, built-in skills, and file-based system prompt overrides.
 keywords:
   - roo code 3.48.0
   - api config lock
@@ -9,7 +9,7 @@ keywords:
   - provider removal
 ---
 
-# Roo Code 3.48.0 Release Notes (2026-02-17)
+# AliCode 3.48.0 Release Notes (2026-02-17)
 
 This release adds API configuration locking, Claude Sonnet 4.6 support across major providers, and a recursive subtask history tree, alongside significant removals of browser automation, nine low-usage providers, built-in skills, and file-based system prompt overrides.
 
@@ -45,7 +45,7 @@ The History view now renders the complete nested subtask hierarchy as an expanda
 * **Gemini Empty Stream Errors**: Fixes "No output generated" errors for Gemini models with restricted reasoning levels (such as `gemini-3-pro-preview`) caused by stale reasoning effort values being forwarded from other models. ([#11303](https://github.com/RooCodeInc/Roo-Code/pull/11303))
 * **Auto-Approval Countdown Not Cancelling**: Fixes an issue where toggling auto-approve off while a countdown timer was active would stop the visual countdown but continue executing the auto-submission in the background. (thanks SannidhyaSah!) ([#11439](https://github.com/RooCodeInc/Roo-Code/pull/11439))
 * **`ask_followup_question` Validation**: Fixes a crash when AI models omit the `follow_up` parameter in `ask_followup_question` calls, replacing a cryptic `TypeError` with an actionable retry prompt. (thanks rossdonald!) ([#11484](https://github.com/RooCodeInc/Roo-Code/pull/11484))
-* **Webview Crash on Panel Close**: Fixes unhandled promise rejection errors in the VS Code developer console when the Roo Code panel is closed or reloaded while a task is running. (thanks 0xMink!) ([#11313](https://github.com/RooCodeInc/Roo-Code/pull/11313))
+* **Webview Crash on Panel Close**: Fixes unhandled promise rejection errors in the VS Code developer console when the AliCode panel is closed or reloaded while a task is running. (thanks 0xMink!) ([#11313](https://github.com/RooCodeInc/Roo-Code/pull/11313))
 * **False "Unsaved Changes" Prompt**: Fixes an issue where switching modes or API configs and then opening Settings would incorrectly show an unsaved changes warning even when nothing had been edited. (thanks robertjmcintyre!) ([#11334](https://github.com/RooCodeInc/Roo-Code/pull/11334))
 * **Double Notification Sound**: Fixes notification sounds playing twice caused by React StrictMode's double-invocation behavior during development. ([#11283](https://github.com/RooCodeInc/Roo-Code/pull/11283))
 * **Scroll Anchoring Race Conditions**: Fixes scroll anchoring issues in the chat view, including bottom-anchor drift when starting new tasks, code-block jitter, and the sticky-follow mode breaking during streaming. ([#11385](https://github.com/RooCodeInc/Roo-Code/pull/11385))

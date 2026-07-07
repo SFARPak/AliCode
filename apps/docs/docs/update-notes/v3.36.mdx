@@ -1,5 +1,5 @@
 ---
-description: Roo Code 3.36 introduces non-destructive context management, new debugging and UI controls, and a steady stream of reliability fixes and provider improvements.
+description: AliCode 3.36 introduces non-destructive context management, new debugging and UI controls, and a steady stream of reliability fixes and provider improvements.
 keywords:
   - roo code 3.36
   - release notes
@@ -9,11 +9,11 @@ keywords:
 image: /img/v3.36.0/v3.36.0.png
 ---
 
-# Roo Code 3.36 Release Notes (Combined)
+# AliCode 3.36 Release Notes (Combined)
 
-Roo Code 3.36 introduces non-destructive context management, new debugging and UI controls, and a steady stream of reliability fixes and provider improvements.
+AliCode 3.36 introduces non-destructive context management, new debugging and UI controls, and a steady stream of reliability fixes and provider improvements.
 
-<img src="/img/v3.36.0/v3.36.0.png" alt="Roo Code v3.36 Release" width="600" />
+<img src="/img/v3.36.0/v3.36.0.png" alt="AliCode v3.36 Release" width="600" />
 
 ## Non-Destructive Context Management
 
@@ -21,7 +21,7 @@ Context condensing and sliding window truncation now preserve your original mess
 
 ## GPT-5.1 Codex Max Support
 
-Roo Code supports GPT-5.1 Codex Max, OpenAI’s long-horizon coding model, including model defaults for gpt-5.1 / gpt-5 / gpt-5-mini variants ([#9848](https://github.com/RooCodeInc/Roo-Code/pull/9848)).
+AliCode supports GPT-5.1 Codex Max, OpenAI’s long-horizon coding model, including model defaults for gpt-5.1 / gpt-5 / gpt-5-mini variants ([#9848](https://github.com/RooCodeInc/Roo-Code/pull/9848)).
 
 ## Browser Screenshot Saving
 
@@ -49,7 +49,7 @@ You can now configure how Enter behaves in the chat input so it better fits mult
 
 ## Gemini 3 Flash preview model
 
-The `gemini-3-flash-preview` model is now available in the Roo Code Cloud provider, Google Gemini, GCP Vertex AI, Requesty, and OpenRouter providers. It’s the latest model from Google, released this morning (thanks contributors!) ([#10151](https://github.com/RooCodeInc/Roo-Code/pull/10151)).
+The `gemini-3-flash-preview` model is now available in the AliCode Cloud provider, Google Gemini, GCP Vertex AI, Requesty, and OpenRouter providers. It’s the latest model from Google, released this morning (thanks contributors!) ([#10151](https://github.com/RooCodeInc/Roo-Code/pull/10151)).
 
 ## DeepSeek reasoner: interleaved thinking during tool use
 
@@ -87,7 +87,7 @@ Chat error states now make it easier to understand what went wrong and to share 
 * **Improved File Editing with Gemini Models**: New edit_file tool makes Gemini models more effective at editing files ([#9983](https://github.com/RooCodeInc/Roo-Code/pull/9983))
 * **VS Code LM Native Tools**: Native tool calling now works with VS Code's built-in Copilot models ([#10191](https://github.com/RooCodeInc/Roo-Code/pull/10191))
 * **Smarter Tool Defaults for Gemini and OpenAI**: Gemini and OpenAI models now use better default tools for file editing, improving reliability out of the box. ([#10170](https://github.com/RooCodeInc/Roo-Code/pull/10170))
-* **Grace Retry for Tool Errors**: When models fail to use tools, Roo Code now silently retries before showing errors. Clearer "Model Response Incomplete" messages appear only after consecutive failures ([#10196](https://github.com/RooCodeInc/Roo-Code/pull/10196))
+* **Grace Retry for Tool Errors**: When models fail to use tools, AliCode now silently retries before showing errors. Clearer "Model Response Incomplete" messages appear only after consecutive failures ([#10196](https://github.com/RooCodeInc/Roo-Code/pull/10196))
 
 ## Bug Fixes
 
@@ -139,10 +139,10 @@ Chat error states now make it easier to understand what went wrong and to share 
 * **MCP Tool Schema Normalization**: Fixes an issue where MCP tool schemas could fail validation when used with Amazon Bedrock or OpenAI in strict mode by normalizing JSON Schema formats ([#10148](https://github.com/RooCodeInc/Roo-Code/pull/10148))
 * **MCP Tool Names with Bedrock**: Fixes validation errors when using MCP servers with dots or colons in their names (like `awslabs.aws-documentation-mcp-server`) with Amazon Bedrock ([#10152](https://github.com/RooCodeInc/Roo-Code/pull/10152))
 * **Bedrock Task Resumption**: Fixes an error when resuming tasks with Amazon Bedrock when native tools are disabled, where users would encounter `The toolConfig field must be defined` errors ([#10155](https://github.com/RooCodeInc/Roo-Code/pull/10155))
-* **Roo Code Cloud Model Refresh**: Fixes an issue where authentication-required models (like `google/gemini-3-flash`) wouldn't appear immediately after logging into Roo Code Cloud ([#10156](https://github.com/RooCodeInc/Roo-Code/pull/10156))
+* **AliCode Cloud Model Refresh**: Fixes an issue where authentication-required models (like `google/gemini-3-flash`) wouldn't appear immediately after logging into AliCode Cloud ([#10156](https://github.com/RooCodeInc/Roo-Code/pull/10156))
 * **LiteLLM Tool Protocol Dropdown**: The Native/XML protocol selector now appears correctly for LiteLLM models ([#10187](https://github.com/RooCodeInc/Roo-Code/pull/10187))
 * **Task Resumption**: Tasks no longer break when resuming after changing the Native Tool Calling setting ([#10192](https://github.com/RooCodeInc/Roo-Code/pull/10192))
-* **Bedrock Embedder CloudTrail Fix**: AWS Bedrock users now see Roo Code identified in CloudTrail logs when using Codebase Indexing. (thanks jackrein!) ([#10166](https://github.com/RooCodeInc/Roo-Code/pull/10166))
+* **Bedrock Embedder CloudTrail Fix**: AWS Bedrock users now see AliCode identified in CloudTrail logs when using Codebase Indexing. (thanks jackrein!) ([#10166](https://github.com/RooCodeInc/Roo-Code/pull/10166))
 * **MCP Compatibility with OpenAI Providers**: Fixes an issue where MCP servers using `format: "uri"` in their tool schemas would fail with OpenAI providers ([#10198](https://github.com/RooCodeInc/Roo-Code/pull/10198))
 * **Native tool calling support for LM Studio and Qwen-Code**: Fixes an issue where these providers were missing OpenAI-style native tool call support, which could make tool use unreliable compared to other providers ([#10208](https://github.com/RooCodeInc/Roo-Code/pull/10208))
 * **More reliable tool defaults for OpenAI Compatible providers**: Fixes cases where tool calling could be inconsistent unless you manually adjusted custom model info, by applying native tool defaults unless you've explicitly overridden them ([#10213](https://github.com/RooCodeInc/Roo-Code/pull/10213))
@@ -167,7 +167,7 @@ Chat error states now make it easier to understand what went wrong and to share 
 * **Infrastructure**: Updates Next.js dependencies for web applications ([#9799](https://github.com/RooCodeInc/Roo-Code/pull/9799))
 * **Removed deprecated tool**: Removes the deprecated `list_code_definition_names` tool ([#10005](https://github.com/RooCodeInc/Roo-Code/pull/10005))
 * **Tool aliases for model-specific tool naming**: Adds support for alternative tool names so different models can call the same tool using the naming they expect ([#9989](https://github.com/RooCodeInc/Roo-Code/pull/9989))
-* **Workspace task visibility controls for organizations**: Adds an org-level setting for how visible Roo Code Cloud “extension tasks” are across the workspace ([#10020](https://github.com/RooCodeInc/Roo-Code/pull/10020))
+* **Workspace task visibility controls for organizations**: Adds an org-level setting for how visible AliCode Cloud “extension tasks” are across the workspace ([#10020](https://github.com/RooCodeInc/Roo-Code/pull/10020))
 * **Improved web-evals run logs**: Makes evaluation runs easier to inspect by improving run logs and formatting ([#10081](https://github.com/RooCodeInc/Roo-Code/pull/10081))
 * **Control public task sharing**: Adds an organization-level setting to disable public task sharing links ([#10105](https://github.com/RooCodeInc/Roo-Code/pull/10105))
 * **Evals UI: clearer tool grouping + duration fixes**: Improves the evals UI by grouping related tools and fixing cases where run duration could be missing or incorrect ([#10133](https://github.com/RooCodeInc/Roo-Code/pull/10133))

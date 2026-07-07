@@ -65,7 +65,7 @@ Tools are dynamically loaded and transpiled with esbuild. Automatic reload on fi
 
 ## Enabling the feature
 
-1. Open Roo Code settings (gear icon in top right)
+1. Open AliCode settings (gear icon in top right)
 2. Go to the "Experimental" tab
 3. Toggle "Enable custom tools"
 

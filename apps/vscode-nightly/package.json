@@ -1,6 +1,6 @@
 {
-	"name": "@roo-code/vscode-nightly",
-	"description": "Nightly build for the Roo Code VSCode extension.",
+	"name": "@ali-code/vscode-nightly",
+	"description": "Nightly build for the AliCode VSCode extension.",
 	"private": true,
 	"packageManager": "pnpm@10.8.1",
 	"scripts": {

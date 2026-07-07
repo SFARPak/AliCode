@@ -1,7 +1,7 @@
 ---
-description: Learn how Roo Code uses tools to interact with your system. Understand file operations, command execution, and the approval workflow.
+description: Learn how AliCode uses tools to interact with your system. Understand file operations, command execution, and the approval workflow.
 keywords:
-    - Roo Code tools
+    - AliCode tools
     - AI tools
     - file operations
     - command execution
@@ -10,13 +10,13 @@ keywords:
 
 # How Tools Work
 
-Roo Code uses tools to interact with your code and environment. These specialized helpers perform specific actions like reading files, making edits, running commands, or searching your codebase. Tools provide automation for common development tasks without requiring manual execution.
+AliCode uses tools to interact with your code and environment. These specialized helpers perform specific actions like reading files, making edits, running commands, or searching your codebase. Tools provide automation for common development tasks without requiring manual execution.
 
 ---
 
 ## Tool Workflow
 
-Describe what you want to accomplish in natural language, and Roo Code will:
+Describe what you want to accomplish in natural language, and AliCode will:
 
 1. Select the appropriate tool based on your request
 2. Present the tool with its parameters for your review
@@ -47,7 +47,7 @@ _The tool approval interface shows Save/Reject buttons and Auto-approve options.
 
 **User:** Create a file named `greeting.js` that logs a greeting message
 
-**Roo Code:** (Proposes the `write_to_file` tool as shown in the image above)
+**AliCode:** (Proposes the `write_to_file` tool as shown in the image above)
 
 ```xml
 <write_to_file>
@@ -65,7 +65,7 @@ greet('World');
 
 **User:** (Clicks "Save" in the interface)
 
-**Roo Code:** (Confirms file creation)
+**AliCode:** (Confirms file creation)
 
 ---
 

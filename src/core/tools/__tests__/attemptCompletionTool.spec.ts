@@ -1,4 +1,4 @@
-import { RooCodeEventName, TodoItem } from "@roo-code/types"
+import { AliCodeEventName, TodoItem } from "@ali-code/types"
 
 import { AttemptCompletionToolUse } from "../../../shared/tools"
 
@@ -495,7 +495,7 @@ describe("attemptCompletionTool", () => {
 
 				expect(mockHandleError).not.toHaveBeenCalled()
 				expect(mockTask.emit).toHaveBeenCalledWith(
-					RooCodeEventName.TaskCompleted,
+					AliCodeEventName.TaskCompleted,
 					"task_1",
 					expect.anything(),
 					expect.anything(),
@@ -529,7 +529,7 @@ describe("attemptCompletionTool", () => {
 
 				expect(mockHandleError).not.toHaveBeenCalled()
 				expect(mockTask.emit).not.toHaveBeenCalledWith(
-					RooCodeEventName.TaskCompleted,
+					AliCodeEventName.TaskCompleted,
 					expect.anything(),
 					expect.anything(),
 					expect.anything(),

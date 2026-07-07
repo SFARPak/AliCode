@@ -1,12 +1,12 @@
 ---
 sidebar_label: ChatGPT Plus/Pro
 title: ChatGPT Plus/Pro
-description: Use OpenAI models in Roo Code with your ChatGPT Plus/Pro subscription (OAuth sign-in, no API key).
+description: Use OpenAI models in AliCode with your ChatGPT Plus/Pro subscription (OAuth sign-in, no API key).
 keywords:
     - OpenAI Codex
     - ChatGPT Plus
     - ChatGPT Pro
-    - Roo Code
+    - AliCode
     - OAuth
     - no api key
     - subscription
@@ -14,13 +14,13 @@ keywords:
 
 ---
 
-## Quickstart: Connect your subscription to Roo Code
+## Quickstart: Connect your subscription to AliCode
 
-1. Open Roo Code settings (click the gear icon <Codicon name="gear" /> in the Roo Code panel).
+1. Open AliCode settings (click the gear icon <Codicon name="gear" /> in the AliCode panel).
 2. In **API Provider**, select **OpenAI – ChatGPT Plus/Pro**.
 3. Click **Sign in to OpenAI Codex**.
 4. Finish the sign-in flow in your browser.
-5. Back in Roo Code settings, pick a model from the dropdown.
+5. Back in AliCode settings, pick a model from the dropdown.
 6. Save.
 
 ## Tips and Notes

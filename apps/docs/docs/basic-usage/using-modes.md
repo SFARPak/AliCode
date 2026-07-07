@@ -1,7 +1,7 @@
 ---
-description: Learn how to use Roo Code's specialized modes for different tasks. Switch between Code, Ask, Architect, Debug, and Orchestrator modes for optimal AI assistance.
+description: Learn how to use AliCode's specialized modes for different tasks. Switch between Code, Ask, Architect, Debug, and Orchestrator modes for optimal AI assistance.
 keywords:
-    - Roo Code modes
+    - AliCode modes
     - Code mode
     - Ask mode
     - Architect mode
@@ -13,7 +13,7 @@ keywords:
 
 # Using Modes
 
-Modes in Roo Code are specialized personas that tailor the assistant's behavior to your current task. Each mode offers different capabilities, expertise, and access levels to help you accomplish specific goals.
+Modes in AliCode are specialized personas that tailor the assistant's behavior to your current task. Each mode offers different capabilities, expertise, and access levels to help you accomplish specific goals.
 
 :::info Sticky Models & Mode Persistence
 Each mode remembers your last-used model. When switching modes, Roo automatically selects that model—no manual selection needed. Assign different models to different modes (e.g., Gemini 2.5 Preview for `🏗️ Architect` mode, Claude Sonnet 3.7 for `💻 Code` mode) and Roo will switch models automatically when you change modes.
@@ -38,11 +38,11 @@ Four ways to switch modes:
 
 1. **Dropdown menu:** Click the selector to the left of the chat input
 
-    <img src="/img/using-modes/using-modes.png" alt="Using the dropdown menu to switch modes" width="400" />
+ <img src="/img/using-modes/using-modes.png" alt="Using the dropdown menu to switch modes" width="400" />
 
 2. **Slash command:** Type `/architect`, `/ask`, `/debug`, `/code`, or `/orchestrator` at the beginning of your message. This will switch to that mode and clear the input field.
 
-    <img src="/img/using-modes/using-modes-1.png" alt="Using slash commands to switch modes" width="400" />
+ <img src="/img/using-modes/using-modes-1.png" alt="Using slash commands to switch modes" width="400" />
 
 3. **Toggle command/Keyboard shortcut:** Use the keyboard shortcut below, applicable to your operating system. Each press cycles through the available modes in sequence, wrapping back to the first mode after reaching the end.
 
@@ -114,7 +114,7 @@ Four ways to switch modes:
 
 ## Customizing Modes
 
-Tailor Roo Code's behavior by customizing existing modes or creating new specialized assistants. Define tool access, file permissions, and behavior instructions to enforce team standards or create purpose-specific assistants. See [Custom Modes documentation](/features/custom-modes) for setup instructions.
+Tailor AliCode's behavior by customizing existing modes or creating new specialized assistants. Define tool access, file permissions, and behavior instructions to enforce team standards or create purpose-specific assistants. See [Custom Modes documentation](/features/custom-modes) for setup instructions.
 
 ### Understanding Tool Groups
 

@@ -1,5 +1,5 @@
 ---
-description: Learn how to use .rooignore files to control Roo Code's file access, protect sensitive information, and manage which files the AI can read or modify.
+description: Learn how to use .rooignore files to control AliCode's file access, protect sensitive information, and manage which files the AI can read or modify.
 keywords:
     - rooignore
     - file access control
@@ -12,7 +12,7 @@ sidebar_label: .rooignore
 
 # Using .rooignore to Control File Access
 
-The `.rooignore` file is a key feature for managing Roo Code's interaction with your project files. It allows you to specify files and directories that Roo should not access or modify, similar to how `.gitignore` works for Git.
+The `.rooignore` file is a key feature for managing AliCode's interaction with your project files. It allows you to specify files and directories that Roo should not access or modify, similar to how `.gitignore` works for Git.
 
 ---
 

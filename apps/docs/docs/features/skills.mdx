@@ -1,5 +1,5 @@
 ---
-description: Learn how to create reusable skills that package task-specific instructions, making Roo Code more effective at specialized workflows.
+description: Learn how to create reusable skills that package task-specific instructions, making AliCode more effective at specialized workflows.
 keywords:
   - skills
   - task-specific instructions
@@ -313,7 +313,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 ## Skill Specification
 
-Roo Code skills follow the [Agent Skills](https://agentskills.io/) format for skill packaging and metadata. Skills are **instruction packages with optional bundled files**—they don't register new executable tools.
+AliCode skills follow the [Agent Skills](https://agentskills.io/) format for skill packaging and metadata. Skills are **instruction packages with optional bundled files**—they don't register new executable tools.
 
 **Required conventions:**
 - The frontmatter `name` must exactly match the directory (or symlink) name
@@ -323,7 +323,7 @@ Roo Code skills follow the [Agent Skills](https://agentskills.io/) format for sk
 
 #### Roo-specific enhancements
 
-Roo Code adds mode-specific targeting and cross-agent compatibility beyond the base format:
+AliCode adds mode-specific targeting and cross-agent compatibility beyond the base format:
 
 - **Roo-specific locations**: `.roo/skills/`, `~/.roo/skills/` (higher priority)
 - **Cross-agent locations**: `.agents/skills/`, `~/.agents/skills/` (shared with other agent tools)

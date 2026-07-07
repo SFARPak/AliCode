@@ -5,9 +5,9 @@ import * as vscode from "vscode"
 vi.mock("../../../shared/package", () => ({
 	Package: {
 		name: "roo-cline",
-		publisher: "RooVeterinaryInc",
+		publisher: "AliCodeInc",
 		version: "1.0.0",
-		outputChannel: "Roo-Code",
+		outputChannel: "Ali-Code",
 	},
 }))
 

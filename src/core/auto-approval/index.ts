@@ -5,7 +5,7 @@ import {
 	type FollowUpData,
 	type ExtensionState,
 	isNonBlockingAsk,
-} from "@roo-code/types"
+} from "@ali-code/types"
 
 import { ClineAskResponse } from "../../shared/WebviewMessage"
 
@@ -50,7 +50,7 @@ export async function checkAutoApproval({
 	text,
 	isProtected,
 }: {
-	state?: Pick<ExtensionState, AutoApprovalState | AutoApprovalStateOptions>
+	state?: Pick<ExtensionState, AutoApprovalState | AutoApprovalStateOptions | "mode">
 	ask: ClineAsk
 	text?: string
 	isProtected?: boolean
@@ -129,6 +129,12 @@ export async function checkAutoApproval({
 		}
 	}
 
+	// Prevent auto‑approval in autonomous mode for commands and tools
+	if (state.mode === "autonomous") {
+		if (ask === "command" || ask === "tool") {
+			return { decision: "ask" }
+		}
+	}
 	if (ask === "tool") {
 		let tool: ClineSayTool | undefined
 

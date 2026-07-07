@@ -16,14 +16,14 @@ vi.mock("../../tools/validateToolUse", () => ({
 }))
 
 // Mock custom tool registry - must be done inline without external variable references
-vi.mock("@roo-code/core", () => ({
+vi.mock("@ali-code/core", () => ({
 	customToolRegistry: {
 		has: vi.fn(),
 		get: vi.fn(),
 	},
 }))
 
-import { customToolRegistry } from "@roo-code/core"
+import { customToolRegistry } from "@ali-code/core"
 
 describe("presentAssistantMessage - Custom Tool Recording", () => {
 	let mockTask: any

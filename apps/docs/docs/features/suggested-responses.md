@@ -1,5 +1,5 @@
 ---
-description: Learn how suggested responses in Roo Code help you quickly answer follow-up questions with pre-formulated options, speeding up your workflow.
+description: Learn how suggested responses in AliCode help you quickly answer follow-up questions with pre-formulated options, speeding up your workflow.
 keywords:
     - suggested responses
     - follow-up questions

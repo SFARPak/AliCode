@@ -8,7 +8,7 @@ import OpenAI from "openai"
 
 import { VercelAiGatewayHandler } from "../vercel-ai-gateway"
 import { ApiHandlerOptions } from "../../../shared/api"
-import { vercelAiGatewayDefaultModelId, VERCEL_AI_GATEWAY_DEFAULT_TEMPERATURE } from "@roo-code/types"
+import { vercelAiGatewayDefaultModelId, VERCEL_AI_GATEWAY_DEFAULT_TEMPERATURE } from "@ali-code/types"
 
 // Mock dependencies
 vitest.mock("openai")
@@ -96,9 +96,9 @@ describe("VercelAiGatewayHandler", () => {
 			baseURL: "https://ai-gateway.vercel.sh/v1",
 			apiKey: mockOptions.vercelAiGatewayApiKey,
 			defaultHeaders: expect.objectContaining({
-				"HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
-				"X-Title": "Roo Code",
-				"User-Agent": expect.stringContaining("RooCode/"),
+				"HTTP-Referer": "https://github.com/AliCodeInc/Ali-Code",
+				"X-Title": "AliCode",
+				"User-Agent": expect.stringContaining("AliCode/"),
 			}),
 		})
 	})

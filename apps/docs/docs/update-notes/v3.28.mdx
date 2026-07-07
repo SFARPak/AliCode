@@ -1,5 +1,5 @@
 ---
-description: Combined release notes for Roo Code v3.28, featuring the Supernova model, Task Sync for mobile task management, Roo Code Cloud integration, improved chat editing, and various bug fixes.
+description: Combined release notes for AliCode v3.28, featuring the Supernova model, Task Sync for mobile task management, AliCode Cloud integration, improved chat editing, and various bug fixes.
 keywords:
   - roo code 3.28
   - supernova model
@@ -9,29 +9,29 @@ keywords:
 image: /img/v3.28.0/v3.28.0.png
 ---
 
-# Roo Code 3.28 Combined Release Notes
+# AliCode 3.28 Combined Release Notes
 
-This version introduces the Supernova model to Roo Code Cloud, Task Sync for monitoring tasks from your phone, plus Roo Code Cloud integration features, enhanced chat editing, conversation preservation improvements, and multiple bug fixes.
+This version introduces the Supernova model to AliCode Cloud, Task Sync for monitoring tasks from your phone, plus AliCode Cloud integration features, enhanced chat editing, conversation preservation improvements, and multiple bug fixes.
 
 ## Supernova Model - FREE Access
 
-We've added the new **roo/code-supernova** stealth model to the Roo Code Cloud provider - **completely FREE during the promotional period** ([#8175](https://github.com/RooCodeInc/Roo-Code/pull/8175)):
+We've added the new **roo/code-supernova** stealth model to the AliCode Cloud provider - **completely FREE during the promotional period** ([#8175](https://github.com/RooCodeInc/Roo-Code/pull/8175)):
 
-- **FREE ACCESS**: No API keys, no costs - completely free through Roo Code Cloud
+- **FREE ACCESS**: No API keys, no costs - completely free through AliCode Cloud
 - **Advanced Capabilities**: Powerful AI model with **image support** for multimodal coding tasks
 - **Not So Massive Context**: 200,000 token context window with 16,384 max output
 - **Stealth Performance**: Experience cutting-edge model performance with the code-supernova variant
-- **Zero Setup**: Just select it from your Roo Code Cloud provider - no configuration needed
+- **Zero Setup**: Just select it from your AliCode Cloud provider - no configuration needed
 
 Select the **FREE** code-supernova model from the Roo provider to start using this powerful new capability at **no cost**.
 
-> **Documentation**: See the Roo Code Router guide for model selection details.
+> **Documentation**: See the AliCode Router guide for model selection details.
 
 ## Task Sync
 
 Introducing our new cloud connectivity feature that lets you **monitor long-running tasks from your phone** - no more waiting at your desk! ([#7799](https://github.com/RooCodeInc/Roo-Code/pull/7799), [#7805](https://github.com/RooCodeInc/Roo-Code/pull/7805), [#7850](https://github.com/RooCodeInc/Roo-Code/pull/7850)):
 
-> **Important**: Roo Code remains **completely free and open source**. Task Sync is an optional supplementary service that connects your local VS Code to the cloud - all processing still happens in your VS Code instance.
+> **Important**: AliCode remains **completely free and open source**. Task Sync is an optional supplementary service that connects your local VS Code to the cloud - all processing still happens in your VS Code instance.
 
 <img src="/img/v3.28.0/v3.28.0.png" alt="Task Sync interface showing real-time task monitoring from browser" width="300" />
 
@@ -57,7 +57,7 @@ This gives teams a higher-capacity OpenAI option without extra configuration.[#8
 
 * **Cloud Account Management**: Added account switcher and "Create Team Account" option for logged-in users, making it easier to manage multiple accounts ([#8291](https://github.com/RooCodeInc/Roo-Code/pull/8291))
 * **Chat Icon Sizing**: Chat interface icons now maintain consistent size in limited space ([#8343](https://github.com/RooCodeInc/Roo-Code/pull/8343))
-* **Social Media Sharing**: Improved OpenGraph images for better preview cards when sharing Roo Code links on Slack, Twitter, and Facebook ([#8285](https://github.com/RooCodeInc/Roo-Code/pull/8285))
+* **Social Media Sharing**: Improved OpenGraph images for better preview cards when sharing AliCode links on Slack, Twitter, and Facebook ([#8285](https://github.com/RooCodeInc/Roo-Code/pull/8285))
 * **Auto-approve keyboard shortcut**: Toggle approvals with Cmd/Ctrl+Alt+A from anywhere in the editor so you can stay in the flow while reviewing changes (via [#8214](https://github.com/RooCodeInc/Roo-Code/pull/8214))
 * **Click-to-Edit Chat Messages**: Click directly on any message text to edit it, with ESC to cancel and improved padding consistency ([#7790](https://github.com/RooCodeInc/Roo-Code/pull/7790))
 * **Enhanced Reasoning Display**: The AI's thinking process now shows a persistent timer and displays reasoning content in clean italic text ([#7752](https://github.com/RooCodeInc/Roo-Code/pull/7752))
@@ -82,7 +82,7 @@ This gives teams a higher-capacity OpenAI option without extra configuration.[#8
 * **Network Resilience**: Telemetry data now automatically retries on network failures, ensuring analytics and diagnostics aren't lost during connectivity issues ([#7597](https://github.com/RooCodeInc/Roo-Code/pull/7597))
 * **Code blocks wrap by default**: Code blocks now wrap text by default, and the snippet toolbar no longer includes language or wrap toggles, keeping snippets readable across locales (via [#8194](https://github.com/RooCodeInc/Roo-Code/pull/8194); [#8208](https://github.com/RooCodeInc/Roo-Code/pull/8208))
 
-* **Reset logs you out of Roo Code Cloud**: Reset now also logs you out of Roo Code Cloud for a truly clean slate; the reset still completes even if logout fails. ([#8312](https://github.com/RooCodeInc/Roo-Code/pull/8312))
+* **Reset logs you out of AliCode Cloud**: Reset now also logs you out of AliCode Cloud for a truly clean slate; the reset still completes even if logout fails. ([#8312](https://github.com/RooCodeInc/Roo-Code/pull/8312))
 * **Measure engagement with upsell messages**: Telemetry for DismissibleUpsell tracks dismiss vs click (upsellId only) to tune messaging and reduce noise; no user-facing behavior change. ([#8309](https://github.com/RooCodeInc/Roo-Code/pull/8309))
 * **Welcome screen Roo provider experiment**: Surfaces the Roo provider on the welcome screen (localized, with click telemetry) to speed up setup. ([#8317](https://github.com/RooCodeInc/Roo-Code/pull/8317))
 * **Cleaner prompts (no “thinking” tags)**: Removes `<thinking>` tags for cleaner output, fewer tokens, and better model compatibility; preserves the plain‑language rule to confirm tool success. ([#8319](https://github.com/RooCodeInc/Roo-Code/pull/8319))
@@ -160,7 +160,7 @@ This gives teams a higher-capacity OpenAI option without extra configuration.[#8
 * **Claude Code**: Added a 1M‑context variant of Claude Sonnet 4.5; select via the `[1m]` suffix to fit larger repos and logs with fewer truncations (thanks ColbySerpa!) ([#8586](https://github.com/RooCodeInc/Roo-Code/pull/8586))
 * **Claude Haiku 4.5**: Available across Anthropic, AWS Bedrock, and Vertex AI with 200k context, up to 64k output, image input, and prompt caching support ([#8673](https://github.com/RooCodeInc/Roo-Code/pull/8673))
 * **Gemini**: Remove unsupported free “2.5 Flash Image Preview”; paid path unaffected ([#8359](https://github.com/RooCodeInc/Roo-Code/pull/8359))
-* **Roo Code Cloud**: Deprecate “Grok 4 Fast”; show warning if selected and hide when not selected ([#8481](https://github.com/RooCodeInc/Roo-Code/pull/8481))
+* **AliCode Cloud**: Deprecate “Grok 4 Fast”; show warning if selected and hide when not selected ([#8481](https://github.com/RooCodeInc/Roo-Code/pull/8481))
 * **Bedrock**: Claude Sonnet 4 1M‑context handling and compatibility improvements ([#8421](https://github.com/RooCodeInc/Roo-Code/pull/8421))
 
 * Bedrock: add versioned user agent for per‑version metrics and error tracking; no action needed (thanks ajjuaire!) ([#8663](https://github.com/RooCodeInc/Roo-Code/pull/8663))
@@ -174,9 +174,9 @@ This gives teams a higher-capacity OpenAI option without extra configuration.[#8
 * **Contributor Recognition**: Improved contributor badge workflow with automated cache refreshing ([#8083](https://github.com/RooCodeInc/Roo-Code/pull/8083))
 * **Internal cleanup**: Removes the deprecated pr-reviewer mode. No changes to the extension UX. ([#8222](https://github.com/RooCodeInc/Roo-Code/pull/8222))
 * **Infrastructure**: Set port 3446 for web-evals service in production mode ([#8288](https://github.com/RooCodeInc/Roo-Code/pull/8288))
-* **Cloud Task Button**: Added a new button for opening tasks in Roo Code Cloud with QR codes and shareable URLs ([#7572](https://github.com/RooCodeInc/Roo-Code/pull/7572))
+* **Cloud Task Button**: Added a new button for opening tasks in AliCode Cloud with QR codes and shareable URLs ([#7572](https://github.com/RooCodeInc/Roo-Code/pull/7572))
 * **Telemetry Default**: Posthog telemetry is now enabled by default with easy opt-out options in settings ([#7909](https://github.com/RooCodeInc/Roo-Code/pull/7909))
-* **Roo Code Cloud Announcement**: Updated in-app announcements about Roo Code Cloud features, localized in 18 languages ([#7914](https://github.com/RooCodeInc/Roo-Code/pull/7914))
+* **AliCode Cloud Announcement**: Updated in-app announcements about AliCode Cloud features, localized in 18 languages ([#7914](https://github.com/RooCodeInc/Roo-Code/pull/7914))
 * **Merge Resolver Mode**: Added GIT_EDITOR environment variable to prevent hanging during non-interactive rebase operations ([#7819](https://github.com/RooCodeInc/Roo-Code/pull/7819))
 * Updated dependency esbuild to v0.25.9 for improved build performance ([#5455](https://github.com/RooCodeInc/Roo-Code/pull/5455))
 * Updated dependency @changesets/cli to v2.29.6 ([#7376](https://github.com/RooCodeInc/Roo-Code/pull/7376))

@@ -1,5 +1,5 @@
 ---
-description: Understand the technical structure of prompts in Roo Code. Learn how messages are constructed, system prompts work, and optimize your interactions.
+description: Understand the technical structure of prompts in AliCode. Learn how messages are constructed, system prompts work, and optimize your interactions.
 keywords:
     - prompt structure
     - system prompt
@@ -10,13 +10,13 @@ keywords:
 
 # Prompt Structure
 
-This page explains the technical structure of prompts in Roo Code - how messages are constructed and sent to the Large Language Model (LLM).
+This page explains the technical structure of prompts in AliCode - how messages are constructed and sent to the Large Language Model (LLM).
 
 ---
 
 ## Core Message Types
 
-Roo Code uses three primary message types when communicating with LLMs:
+AliCode uses three primary message types when communicating with LLMs:
 
 - **System Prompt**: The initial instructions that define Roo's capabilities, persona, and operational rules
 - **User Messages**: Content sent by you (the user) to Roo

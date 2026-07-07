@@ -1,7 +1,7 @@
 ---
-description: Learn how to use the Roo Code chat interface effectively. Understand the layout, features, and best practices for communicating with your AI coding assistant.
+description: Learn how to use the AliCode chat interface effectively. Understand the layout, features, and best practices for communicating with your AI coding assistant.
 keywords:
-    - Roo Code chat interface
+    - AliCode chat interface
     - AI assistant interaction
     - chat features
     - user interface
@@ -12,7 +12,7 @@ import KangarooIcon from '@site/src/components/KangarooIcon';
 
 # The Chat Interface
 
-The Roo Code chat interface is your primary way of interacting with it. It's located in the Roo Code panel, which you can open by clicking the Roo Code icon (<KangarooIcon />) in the VS Code Activity Bar.
+The AliCode chat interface is your primary way of interacting with it. It's located in the AliCode panel, which you can open by clicking the AliCode icon (<KangarooIcon />) in the VS Code Activity Bar.
 
 ---
 
@@ -20,11 +20,11 @@ The Roo Code chat interface is your primary way of interacting with it. It's loc
 
 The chat interface consists of the following main elements:
 
-1. **Chat History:** This area displays the conversation history between you and Roo Code. It shows your requests, Roo Code's responses, and any actions taken (like file edits or command executions).
+1. **Chat History:** This area displays the conversation history between you and AliCode. It shows your requests, AliCode's responses, and any actions taken (like file edits or command executions).
 
-2. **Input Field:** This is where you type your tasks and questions for Roo Code. You can use plain English to communicate.
+2. **Input Field:** This is where you type your tasks and questions for AliCode. You can use plain English to communicate.
 
-3. **Action Buttons:** These buttons appear above the input field and allow you to approve or reject Roo Code's proposed actions. The available buttons change depending on the context.
+3. **Action Buttons:** These buttons appear above the input field and allow you to approve or reject AliCode's proposed actions. The available buttons change depending on the context.
 
 4. **Send Button:** This looks like a small plane and it's located to the far right of the input field. This sends messages to Roo after you've typed them.
 
@@ -36,17 +36,17 @@ The chat interface consists of the following main elements:
 
 <img src="/img/the-chat-interface/the-chat-interface-1.png" alt="Chat interface components labeled with numbered callouts" width="900" />
 
-_Numbered interface elements showing the key components of the Roo Code chat interface._
+_Numbered interface elements showing the key components of the AliCode chat interface._
 
 ---
 
 ## Tip: Using the Secondary Sidebar
 
-For a better workflow, you can drag Roo Code to VS Code's [Secondary Sidebar](https://code.visualstudio.com/api/ux-guidelines/sidebars#secondary-sidebar). This allows you to keep Roo Code visible while still having access to the Explorer, Search, Source Control, and other panels in the primary sidebar.
+For a better workflow, you can drag AliCode to VS Code's [Secondary Sidebar](https://code.visualstudio.com/api/ux-guidelines/sidebars#secondary-sidebar). This allows you to keep AliCode visible while still having access to the Explorer, Search, Source Control, and other panels in the primary sidebar.
 
 To set this up:
 
-1. Click and drag the Roo Code icon from the Activity Bar
+1. Click and drag the AliCode icon from the Activity Bar
 2. Drop it on the right side of your editor to create a secondary sidebar
 3. Now you can use both sidebars simultaneously!
 
@@ -64,6 +64,6 @@ For more productivity tips, check out our [Tips & Tricks](/tips-and-tricks) guid
 
 ## Status Indicators
 
-- **Loading Spinner:** When Roo Code is processing a request, you'll see a loading spinner.
+- **Loading Spinner:** When AliCode is processing a request, you'll see a loading spinner.
 - **Error Messages:** If an error occurs, a red error message will be displayed.
 - **Success Messages:** Green messages indicate successful completion of actions.

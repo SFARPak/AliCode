@@ -315,7 +315,7 @@ div[style*="min-height:100vh"] {
 	display: none;
 }
 
-/* Video Grid Styles with Roo Code styling */
+/* Video Grid Styles with AliCode styling */
 .video-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -372,7 +372,7 @@ div[style*="min-height:100vh"] {
 	line-height: 1;
 }
 
-/* Enhanced code blocks with Roo Code styling */
+/* Enhanced code blocks with AliCode styling */
 pre {
 	white-space: pre-wrap !important;
 	word-wrap: break-word !important;

@@ -1,16 +1,16 @@
 # @roo-code/cli
 
-Command Line Interface for Roo Code - Run the Roo Code agent from the terminal without VSCode.
+Command Line Interface for AliCode - Run the AliCode agent from the terminal without VSCode.
 
 ## Overview
 
-This CLI uses the `@roo-code/vscode-shim` package to provide a VSCode API compatibility layer, allowing the main Roo Code extension to run in a Node.js environment.
+This CLI uses the `@roo-code/vscode-shim` package to provide a VSCode API compatibility layer, allowing the main AliCode extension to run in a Node.js environment.
 
 ## Installation
 
 ### Quick Install (Recommended)
 
-Install the Roo Code CLI with a single command:
+Install the AliCode CLI with a single command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/RooCodeInc/Roo-Code/main/apps/cli/install.sh | sh

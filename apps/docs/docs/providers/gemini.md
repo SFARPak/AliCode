@@ -1,6 +1,6 @@
 ---
 sidebar_label: Google Gemini
-description: Use Google's Gemini AI models with Roo Code. Configure Gemini Flash, Pro, and experimental models for your development workflow.
+description: Use Google's Gemini AI models with AliCode. Configure Gemini Flash, Pro, and experimental models for your development workflow.
 keywords:
     - google gemini
     - gemini ai
@@ -13,9 +13,9 @@ keywords:
     - ai studio
 ---
 
-# Using Google Gemini With Roo Code
+# Using Google Gemini With AliCode
 
-Roo Code supports Google's Gemini family of models through the Google AI Gemini API.
+AliCode supports Google's Gemini family of models through the Google AI Gemini API.
 
 **Website:** [https://ai.google.dev/](https://ai.google.dev/)
 
@@ -32,20 +32,20 @@ Roo Code supports Google's Gemini family of models through the Google AI Gemini 
 
 ## Available Models
 
-Roo Code supports all Gemini models available through Google's API and automatically tracks Google's latest stable releases.
+AliCode supports all Gemini models available through Google's API and automatically tracks Google's latest stable releases.
 
 For the complete, up-to-date model list and capabilities, see [Google's Gemini models documentation](https://ai.google.dev/models/gemini).
 
 ---
 
-## Configuration in Roo Code
+## Configuration in AliCode
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open AliCode Settings:** Click the gear icon (<Codicon name="gear" />) in the AliCode panel.
 2.  **Select Provider:** Choose "Google Gemini" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Gemini API key into the "Gemini API Key" field.
 4.  **Select Model:** Choose your desired Gemini model from the "Model" dropdown.
 
-By default, Roo Code selects a stable Pro model with a temperature of **1.0** where your provider supports it. This keeps suggestions more expressive and natural while still staying on task. If you need highly deterministic output (for example, for code generation in CI), you can lower the temperature toward `0.0`.
+By default, AliCode selects a stable Pro model with a temperature of **1.0** where your provider supports it. This keeps suggestions more expressive and natural while still staying on task. If you need highly deterministic output (for example, for code generation in CI), you can lower the temperature toward `0.0`.
 
 ---
 
@@ -62,7 +62,7 @@ Gemini models can now access and analyze web content directly through URL contex
 
 #### Enabling URL Context
 
-1. Open Roo Code Settings
+1. Open AliCode Settings
 2. Navigate to the Gemini provider settings
 3. Enable "URL Context" option
 4. Save your settings
@@ -84,7 +84,7 @@ Enable Google Search grounding to enhance Gemini's responses with real-time sear
 
 #### Enabling Search Grounding
 
-1. Open Roo Code Settings
+1. Open AliCode Settings
 2. Navigate to the Gemini provider settings
 3. Enable "Google Search Grounding" option
 4. Save your settings
