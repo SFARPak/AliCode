@@ -6,12 +6,14 @@ export default defineConfig({
 		alias: {
 			"@": path.resolve(__dirname, "src"),
 		},
+		dedupe: ["react", "react-dom"],
 	},
 	test: {
 		globals: true,
-		environment: "node",
+		environment: "jsdom",
 		watch: false,
 		testTimeout: 120_000, // 2m for integration tests.
 		include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
 	},
+	server: {},
 })
