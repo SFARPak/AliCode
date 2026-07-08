@@ -1,4 +1,4 @@
-import fs, { createReadStream } from "fs"
+import * as fs from "fs"
 import { createInterface } from "readline"
 import { countTokens } from "../../utils/countTokens"
 import { Anthropic } from "@anthropic-ai/sdk"
@@ -12,7 +12,7 @@ import { Anthropic } from "@anthropic-ai/sdk"
 export async function countFileLines(filePath: string): Promise<number> {
 	// Check if file exists
 	try {
-		await fs.promises.access(filePath, fs.constants.F_OK)
+		await fs.default.promises.access(filePath, fs.default.constants.F_OK)
 	} catch (error) {
 		throw new Error(`File not found: ${filePath}`)
 	}
@@ -20,7 +20,7 @@ export async function countFileLines(filePath: string): Promise<number> {
 	return new Promise((resolve, reject) => {
 		let lineCount = 0
 
-		const readStream = createReadStream(filePath)
+		const readStream = fs.createReadStream(filePath)
 		const rl = createInterface({
 			input: readStream,
 			crlfDelay: Infinity,
@@ -76,7 +76,7 @@ export async function countFileLinesAndTokens(
 
 	// Check if file exists
 	try {
-		await fs.promises.access(filePath, fs.constants.F_OK)
+		await fs.default.promises.access(filePath, fs.default.constants.F_OK)
 	} catch (error) {
 		throw new Error(`File not found: ${filePath}`)
 	}
@@ -89,7 +89,7 @@ export async function countFileLinesAndTokens(
 		let isProcessing = false
 		let shouldClose = false
 
-		const readStream = createReadStream(filePath)
+		const readStream = fs.createReadStream(filePath)
 		const rl = createInterface({
 			input: readStream,
 			crlfDelay: Infinity,

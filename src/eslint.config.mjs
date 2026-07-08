@@ -1,4 +1,4 @@
-import { config } from "@ali-code/config-eslint/base"
+import { config } from "./@ali-code/config-eslint/base.js"
 
 /** @type {import("eslint").Linter.Config} */
 export default [

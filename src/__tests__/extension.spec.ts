@@ -20,6 +20,8 @@ vi.mock("vscode", () => ({
 		}),
 		registerWebviewViewProvider: vi.fn(),
 		registerUriHandler: vi.fn(),
+		// Mock registerWebviewPanelSerializer to prevent TypeError in tests
+		registerWebviewPanelSerializer: vi.fn(),
 		tabGroups: {
 			onDidChangeTabs: vi.fn(),
 		},

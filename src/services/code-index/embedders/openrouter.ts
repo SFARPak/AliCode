@@ -7,6 +7,7 @@ import {
 	INITIAL_RETRY_DELAY_MS as INITIAL_DELAY_MS,
 } from "../constants"
 import { getDefaultModelId, getModelQueryPrefix } from "../../../shared/embeddingModels"
+import { DEFAULT_HEADERS } from "../../../api/providers/constants"
 import { t } from "../../../i18n"
 import { withValidationErrorHandling, HttpError, formatEmbeddingError } from "../shared/validation-helpers"
 import { Mutex } from "async-mutex"
@@ -74,7 +75,7 @@ export class OpenRouterEmbedder implements IEmbedder {
 				baseURL: this.baseUrl,
 				apiKey: apiKey,
 				defaultHeaders: {
-					"HTTP-Referer": "https://github.com/AliCodeInc/Ali-Code",
+					"HTTP-Referer": "https://github.com/AliCodeInc/Roo-Code",
 					"X-Title": "AliCode",
 				},
 			})

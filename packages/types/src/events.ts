@@ -272,3 +272,6 @@ export const taskEventSchema = z.discriminatedUnion("eventName", [
 ])
 
 export type TaskEvent = z.infer<typeof taskEventSchema>
+
+// Alias for backward compatibility
+export const AliCodeEventName = RooCodeEventName
