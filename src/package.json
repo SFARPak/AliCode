@@ -65,31 +65,6 @@
 					"type": "webview",
 					"id": "alicode.SidebarProvider",
 					"name": "%views.sidebar.name%"
-				},
-				{
-					"type": "webview",
-					"id": "alicode.KiloClawPanel",
-					"name": "KiloClaw"
-				},
-				{
-					"type": "webview",
-					"id": "alicode.MarketplacePanel",
-					"name": "Marketplace"
-				},
-				{
-					"type": "webview",
-					"id": "alicode.AgentManagerPanel",
-					"name": "Agent Manager"
-				},
-				{
-					"type": "webview",
-					"id": "alicode.SettingsEditorPanel",
-					"name": "Settings"
-				},
-				{
-					"type": "webview",
-					"id": "alicode.SubAgentViewerPanel",
-					"name": "Sub Agent Viewer"
 				}
 			]
 		},

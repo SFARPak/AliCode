@@ -100,6 +100,10 @@ export default defineConfig(({ mode }) => {
 				"@": resolve(__dirname, "./src"),
 				"@src": resolve(__dirname, "./src"),
 				"@roo": resolve(__dirname, "../src/shared"),
+				"../core/prompts/sections/custom-instructions": resolve(
+					__dirname,
+					"./src/__mocks__/custom-instructions.ts",
+				),
 			},
 		},
 		build: {
