@@ -1,4 +1,4 @@
-import type { ClineAskUseMcpServer } from "@roo-code/types"
+import type { ClineAskUseMcpServer } from "@ali-code/types"
 
 import type { ToolUse } from "../../shared/tools"
 import { Task } from "../task/Task"

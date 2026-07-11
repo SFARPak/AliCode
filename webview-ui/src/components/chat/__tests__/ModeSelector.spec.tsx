@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@/utils/test-utils"
 
-import type { ModeConfig } from "@roo-code/types"
+import type { ModeConfig } from "@ali-code/types"
 
 import type { Mode } from "@roo/modes"
 

@@ -1,6 +1,6 @@
-// pnpm --filter @roo-code/core test src/custom-tools/__tests__/format-native.spec.ts
+// pnpm --filter @ali-code/core test src/custom-tools/__tests__/format-native.spec.ts
 
-import { type SerializedCustomToolDefinition, parametersSchema as z, defineCustomTool } from "@roo-code/types"
+import { type SerializedCustomToolDefinition, parametersSchema as z, defineCustomTool } from "@ali-code/types"
 
 import { serializeCustomTool, serializeCustomTools } from "../serialize.js"
 import { formatNative } from "../format-native.js"

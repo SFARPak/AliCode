@@ -35,7 +35,7 @@ Tools live in `.roo/tools/` (project-specific) or `~/.roo/tools/` (global) as `.
 #### Basic structure
 
 ```typescript
-import { parametersSchema as z, defineCustomTool } from "@roo-code/types"
+import { parametersSchema as z, defineCustomTool } from "@ali-code/types"
 
 export default defineCustomTool({
 	name: "tool_name",
@@ -98,7 +98,7 @@ npm install axios lodash
 Then import in your tool:
 
 ```typescript
-import { parametersSchema as z, defineCustomTool } from "@roo-code/types"
+import { parametersSchema as z, defineCustomTool } from "@ali-code/types"
 import axios from "axios"
 
 export default defineCustomTool({
@@ -142,7 +142,7 @@ Roo copies `.env` and `.env.*` files from your tool directory into the tool's ca
 3. Load the `.env` in your tool using `dotenv` and `__dirname`:
 
     ```typescript
-    import { parametersSchema as z, defineCustomTool } from "@roo-code/types"
+    import { parametersSchema as z, defineCustomTool } from "@ali-code/types"
     import dotenv from "dotenv"
     import path from "path"
 

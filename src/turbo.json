@@ -3,7 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"bundle": {
-			"dependsOn": ["^build", "@roo-code/vscode-webview#build"],
+			"dependsOn": ["^build", "@ali-code/vscode-webview#build"],
 			"outputs": ["dist/**"]
 		},
 		"vsix": {

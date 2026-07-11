@@ -1,5 +1,5 @@
 {
-	"name": "@roo-code/ipc",
+	"name": "@ali-code/ipc",
 	"description": "IPC server and client for remote Roo Code access.",
 	"version": "0.0.1",
 	"type": "module",
@@ -10,12 +10,12 @@
 		"clean": "rimraf .turbo"
 	},
 	"dependencies": {
-		"@roo-code/types": "workspace:^",
+		"@ali-code/types": "workspace:^",
 		"node-ipc": "^12.0.0"
 	},
 	"devDependencies": {
-		"@roo-code/config-eslint": "workspace:^",
-		"@roo-code/config-typescript": "workspace:^",
+		"@ali-code/config-eslint": "workspace:^",
+		"@ali-code/config-typescript": "workspace:^",
 		"@types/node": "20.x",
 		"@types/node-ipc": "^9.2.3",
 		"vitest": "^3.2.3"

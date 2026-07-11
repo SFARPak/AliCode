@@ -138,7 +138,7 @@
 - Add per-workspace indexing opt-in and stop/cancel indexing controls (#11455 by @JamesRobert20, PR #11456 by @JamesRobert20)
 - Add per-task file-based history store for cross-instance safety (PR #11490 by @roomote)
 - Fix: Redesign rehydration scroll lifecycle for smoother chat experience (PR #11483 by @hannesrudolph)
-- Fix: Bump @roo-code/types metadata version to 1.111.0 after revert regression (PR #11588 by @roomote)
+- Fix: Bump @ali-code/types metadata version to 1.111.0 after revert regression (PR #11588 by @roomote)
 
 ## [3.48.1] - 2026-02-18
 
@@ -375,8 +375,8 @@
 - Chore: Stop overriding tool allow/deny lists for Gemini (PR #10592 by @hannesrudolph)
 - Chore: Change default CLI model to anthropic/claude-opus-4.5 (PR #10544 by @mrubens)
 - Chore: Update Terms of Service effective January 9, 2026 (PR #10568 by @mrubens)
-- Chore: Move more types to @roo-code/types for CLI support (PR #10583 by @cte)
-- Chore: Add functionality to @roo-code/core for CLI support (PR #10584 by @cte)
+- Chore: Move more types to @ali-code/types for CLI support (PR #10583 by @cte)
+- Chore: Add functionality to @ali-code/core for CLI support (PR #10584 by @cte)
 - Chore: Add slash commands useful for CLI development (PR #10586 by @cte)
 
 ## [3.39.1] - 2026-01-08

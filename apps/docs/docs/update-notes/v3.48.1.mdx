@@ -15,7 +15,7 @@ This release fixes the Bedrock Claude Sonnet 4.6 model ID, resolves MCP tools be
 
 * **MCP Tools Unavailable on First Turn**: Fixes an issue where MCP tools were missing from the system prompt on the very first API call when a task was started via IPC. The MCP server manager now awaits all server connections before returning the hub, so tools appear correctly from the start. ([#11518](https://github.com/RooCodeInc/Roo-Code/pull/11518))
 * **IPC Queue Message Deletion**: Fixes an issue where messages deleted from the AliCode Cloud queue were still being processed by the extension internally. The IPC protocol now supports a true `DeleteQueuedMessage` command so deleted messages are fully dropped rather than silently re-processed on dequeue. ([#11464](https://github.com/RooCodeInc/Roo-Code/pull/11464))
-* **Package Metadata Version Regression**: Fixes an internal package metadata version that was incorrectly rolled back by a prior revert, which would have caused the next `@roo-code/types` npm publish to fail. ([#11588](https://github.com/RooCodeInc/Roo-Code/pull/11588))
+* **Package Metadata Version Regression**: Fixes an internal package metadata version that was incorrectly rolled back by a prior revert, which would have caused the next `@ali-code/types` npm publish to fail. ([#11588](https://github.com/RooCodeInc/Roo-Code/pull/11588))
 
 ## Provider Updates
 

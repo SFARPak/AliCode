@@ -6,7 +6,7 @@ import { fileURLToPath } from "url"
 import { randomUUID } from "crypto"
 
 import { execa } from "execa"
-import type { TaskSessionEntry } from "@roo-code/core/cli"
+import type { TaskSessionEntry } from "@ali-code/core/cli"
 
 type StreamEvent = {
 	type?: string

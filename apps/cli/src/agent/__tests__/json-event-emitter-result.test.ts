@@ -1,4 +1,4 @@
-import type { ClineMessage } from "@roo-code/types"
+import type { ClineMessage } from "@ali-code/types"
 import { Writable } from "stream"
 
 import type { TaskCompletedEvent } from "../events.js"

@@ -1,4 +1,4 @@
-import { type NvidiaNimModelId, nvidiaNimDefaultModelId, nvidiaNimModels } from "@roo-code/types"
+import { type NvidiaNimModelId, nvidiaNimDefaultModelId, nvidiaNimModels } from "@ali-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 

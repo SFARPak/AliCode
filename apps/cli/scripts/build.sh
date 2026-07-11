@@ -116,7 +116,7 @@ build() {
     pnpm bundle
 
     step "3/6" "Building CLI..."
-    pnpm --filter @roo-code/cli build
+    pnpm --filter @ali-code/cli build
 
     info "Build complete"
 }
@@ -146,7 +146,7 @@ create_tarball() {
     node -e "
       const pkg = require('$CLI_DIR/package.json');
       const newPkg = {
-        name: '@roo-code/cli',
+        name: '@ali-code/cli',
         version: '$VERSION',
         type: 'module',
         dependencies: {

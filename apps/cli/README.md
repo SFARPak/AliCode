@@ -1,10 +1,10 @@
-# @roo-code/cli
+# @ali-code/cli
 
 Command Line Interface for AliCode - Run the AliCode agent from the terminal without VSCode.
 
 ## Overview
 
-This CLI uses the `@roo-code/vscode-shim` package to provide a VSCode API compatibility layer, allowing the main AliCode extension to run in a Node.js environment.
+This CLI uses the `@ali-code/vscode-shim` package to provide a VSCode API compatibility layer, allowing the main AliCode extension to run in a Node.js environment.
 
 ## Installation
 
@@ -181,7 +181,7 @@ The CLI will look for API keys in environment variables if not provided via `--a
 
 2. **ExtensionHost** (`extension-host.ts`):
 
-    - Creates a VSCode API mock using `@roo-code/vscode-shim`
+    - Creates a VSCode API mock using `@ali-code/vscode-shim`
     - Intercepts `require('vscode')` to return the mock
     - Loads and activates the extension bundle
     - Manages bidirectional message flow

@@ -5,7 +5,7 @@ import { fileURLToPath } from "url"
 import { createElement } from "react"
 import pWaitFor from "p-wait-for"
 
-import { setLogger } from "@roo-code/vscode-shim"
+import { setLogger } from "@ali-code/vscode-shim"
 
 import {
 	FlagOptions,

@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { Trans } from "react-i18next"
 import { ArrowLeft, Brain } from "lucide-react"
 
-import { openRouterDefaultModelId, type ProviderSettings } from "@roo-code/types"
+import { openRouterDefaultModelId, type ProviderSettings } from "@ali-code/types"
 
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { validateApiConfiguration } from "@src/utils/validate"

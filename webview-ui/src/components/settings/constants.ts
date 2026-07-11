@@ -18,7 +18,7 @@ import {
 	minimaxModels,
 	basetenModels,
 	nvidiaNimModels,
-} from "@roo-code/types"
+} from "@ali-code/types"
 
 export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, ModelInfo>>> = {
 	anthropic: anthropicModels,

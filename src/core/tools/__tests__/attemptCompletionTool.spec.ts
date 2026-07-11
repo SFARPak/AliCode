@@ -1,4 +1,4 @@
-import { AliCodeEventName, TodoItem } from "@roo-code/types"
+import { AliCodeEventName, TodoItem } from "@ali-code/types"
 
 import { AttemptCompletionToolUse } from "../../../shared/tools"
 

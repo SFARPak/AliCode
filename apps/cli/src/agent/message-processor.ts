@@ -17,8 +17,8 @@
  * - "invoke": Command invocations
  */
 
-import { ExtensionMessage, ClineMessage } from "@roo-code/types"
-import { debugLog } from "@roo-code/core/cli"
+import { ExtensionMessage, ClineMessage } from "@ali-code/types"
+import { debugLog } from "@ali-code/core/cli"
 
 import type { StateStore } from "./state-store.js"
 import type { TypedEventEmitter, AgentStateChangeEvent, WaitingForInputEvent, TaskCompletedEvent } from "./events.js"

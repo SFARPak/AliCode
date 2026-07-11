@@ -1,7 +1,7 @@
 // npx vitest run __tests__/nested-delegation-resume.spec.ts
 
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { AliCodeEventName } from "@roo-code/types"
+import { AliCodeEventName } from "@ali-code/types"
 
 // Mock safe-stable-stringify to avoid runtime error
 

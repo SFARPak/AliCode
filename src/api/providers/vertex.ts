@@ -1,4 +1,4 @@
-import { type ModelInfo, type VertexModelId, vertexDefaultModelId, vertexModels } from "@roo-code/types"
+import { type ModelInfo, type VertexModelId, vertexDefaultModelId, vertexModels } from "@ali-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 

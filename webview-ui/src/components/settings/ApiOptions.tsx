@@ -33,7 +33,7 @@ import {
 	minimaxDefaultModelId,
 	nvidiaNimDefaultModelId,
 	unboundDefaultModelId,
-} from "@roo-code/types"
+} from "@ali-code/types"
 
 import {
 	getProviderServiceConfig,

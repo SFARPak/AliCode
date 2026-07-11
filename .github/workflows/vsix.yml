@@ -10,11 +10,11 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Install vsce
         run: npm i -g vsce
       - name: Build VSIX
-        run: npm run vsix
+        run: pnpm run vsix
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
         with:

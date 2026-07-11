@@ -1,6 +1,6 @@
 import * as vscode from "vscode"
 
-import { AliCodeEventName, type HistoryItem } from "@roo-code/types"
+import { AliCodeEventName, type HistoryItem } from "@ali-code/types"
 
 import { Task } from "../task/Task"
 import { formatResponse } from "../prompts/responses"

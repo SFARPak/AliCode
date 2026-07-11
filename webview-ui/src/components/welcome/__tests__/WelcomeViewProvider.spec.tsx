@@ -1,7 +1,7 @@
 // npx vitest src/components/welcome/__tests__/WelcomeViewProvider.spec.tsx
 
 import { render, screen, fireEvent } from "@/utils/test-utils"
-import { openRouterDefaultModelId } from "@roo-code/types"
+import { openRouterDefaultModelId } from "@ali-code/types"
 
 import * as ExtensionStateContext from "@src/context/ExtensionStateContext"
 const { ExtensionStateContextProvider } = ExtensionStateContext

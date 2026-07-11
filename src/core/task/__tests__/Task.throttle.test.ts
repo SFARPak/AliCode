@@ -1,4 +1,4 @@
-import { AliCodeEventName, ProviderSettings, TokenUsage, ToolUsage } from "@roo-code/types"
+import { AliCodeEventName, ProviderSettings, TokenUsage, ToolUsage } from "@ali-code/types"
 
 import { Task } from "../Task"
 import { ClineProvider } from "../../webview/ClineProvider"

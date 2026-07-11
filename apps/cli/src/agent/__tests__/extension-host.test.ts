@@ -1,9 +1,9 @@
-// pnpm --filter @roo-code/cli test src/agent/__tests__/extension-host.test.ts
+// pnpm --filter @ali-code/cli test src/agent/__tests__/extension-host.test.ts
 
 import { EventEmitter } from "events"
 import fs from "fs"
 
-import type { ExtensionMessage, WebviewMessage } from "@roo-code/types"
+import type { ExtensionMessage, WebviewMessage } from "@ali-code/types"
 
 import { DEFAULT_FLAGS } from "@/types/index.js"
 
@@ -11,7 +11,7 @@ import { type ExtensionHostOptions, ExtensionHost } from "../extension-host.js"
 import { ExtensionClient } from "../extension-client.js"
 import { AgentLoopState } from "../agent-state.js"
 
-vi.mock("@roo-code/vscode-shim", () => ({
+vi.mock("@ali-code/vscode-shim", () => ({
 	createVSCodeAPI: vi.fn(() => ({
 		context: { extensionPath: "/test/extension" },
 	})),

@@ -1,4 +1,4 @@
-import type { ClineMessage, ClineSayTool } from "@roo-code/types"
+import type { ClineMessage, ClineSayTool } from "@ali-code/types"
 import { safeJsonParse } from "@roo/core"
 
 /** File-edit tool names from ClineSayTool["tool"] (packages/types). */

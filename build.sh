@@ -17,8 +17,8 @@ else
     echo "[1/4] Dependencies already installed, skipping..."
 fi
 
-# Step 2: Build the @roo-code/types package
-echo "[2/4] Building @roo-code/types package..."
+# Step 2: Build the @ali-code/types package
+echo "[2/4] Building @ali-code/types package..."
 cd packages/types && pnpm build && cd ../..
 
 # Step 3: Bundle the extension

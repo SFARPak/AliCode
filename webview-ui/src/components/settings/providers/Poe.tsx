@@ -8,7 +8,7 @@ import {
 	type ExtensionMessage,
 	poeDefaultModelId,
 	type ProviderName,
-} from "@roo-code/types"
+} from "@ali-code/types"
 
 import { RouterName } from "@roo/api"
 

@@ -1,4 +1,4 @@
-import { publisher, name, version } from "../package.json"
+import { publisher, name as packageName, version } from "../package.json"
 
 // These ENV variables can be defined by ESBuild when building the extension
 // in order to override the values in package.json. This allows us to build
@@ -8,10 +8,9 @@ import { publisher, name, version } from "../package.json"
 // the build, so we still need this override mechanism.
 export const Package = {
 	publisher,
-	// Use overridden name if provided, otherwise default to package.json name.
-	// During test runs, default to the legacy name "roo-cline" for compatibility.
-	// Default to legacy name "roo-cline" for compatibility with existing tests and configurations.
-	name: process.env.PKG_NAME || "roo-cline",
+	// Use the overridden name if provided (set by the build via PKG_NAME),
+	// otherwise fall back to the published extension name from package.json.
+	name: process.env.PKG_NAME || packageName,
 	version: process.env.PKG_VERSION || version,
 	outputChannel: process.env.PKG_OUTPUT_CHANNEL || "AliCode",
 	sha: process.env.PKG_SHA,

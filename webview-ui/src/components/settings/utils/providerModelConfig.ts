@@ -1,4 +1,4 @@
-import type { ProviderName, ModelInfo, ProviderSettings } from "@roo-code/types"
+import type { ProviderName, ModelInfo, ProviderSettings } from "@ali-code/types"
 import {
 	anthropicDefaultModelId,
 	bedrockDefaultModelId,
@@ -17,7 +17,7 @@ import {
 	minimaxDefaultModelId,
 	basetenDefaultModelId,
 	nvidiaNimDefaultModelId,
-} from "@roo-code/types"
+} from "@ali-code/types"
 
 import { MODELS_BY_PROVIDER } from "../constants"
 

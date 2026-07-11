@@ -57,7 +57,7 @@ jobs:
         run: pnpm bundle
 
       - name: Build CLI
-        run: pnpm --filter @roo-code/cli build
+        run: pnpm --filter @ali-code/cli build
 
       - name: Create release tarball
         id: tarball
@@ -86,7 +86,7 @@ jobs:
           node -e "
             const pkg = require('./apps/cli/package.json');
             const newPkg = {
-              name: '@roo-code/cli',
+              name: '@ali-code/cli',
               version: '$VERSION',
               type: 'module',
               dependencies: {

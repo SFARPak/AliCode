@@ -1,6 +1,6 @@
 import * as assert from "assert"
 
-import { RooCodeEventName, type ClineMessage } from "@roo-code/types"
+import { RooCodeEventName, type ClineMessage } from "@ali-code/types"
 
 import { sleep, waitFor, waitUntilCompleted } from "./utils"
 

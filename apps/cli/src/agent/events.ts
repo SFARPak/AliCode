@@ -8,7 +8,7 @@
 
 import { EventEmitter } from "events"
 
-import { ClineMessage, ClineAsk } from "@roo-code/types"
+import { ClineMessage, ClineAsk } from "@ali-code/types"
 
 import type { AgentStateInfo } from "./agent-state.js"
 
