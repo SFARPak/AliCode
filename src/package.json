@@ -75,17 +75,17 @@
 				"icon": "$(edit)"
 			},
 			{
-				"command": "roo-cline.historyButtonClicked",
+				"command": "alicode.historyButtonClicked",
 				"title": "%command.history.title%",
 				"icon": "$(history)"
 			},
 			{
-				"command": "roo-cline.popoutButtonClicked",
+				"command": "alicode.popoutButtonClicked",
 				"title": "%command.openInEditor.title%",
 				"icon": "$(link-external)"
 			},
 			{
-				"command": "roo-cline.settingsButtonClicked",
+				"command": "alicode.settingsButtonClicked",
 				"title": "%command.settings.title%",
 				"icon": "$(settings-gear)"
 			},
@@ -155,253 +155,9 @@
 				"category": "%configuration.title%"
 			},
 			{
-				"command": "roo-cline.toggleAutoApprove",
+				"command": "alicode.toggleAutoApprove",
 				"title": "%command.toggleAutoApprove.title%",
 				"category": "%configuration.title%"
-			},
-			{
-				"command": "kilo-code.new.plusButtonClicked",
-				"title": "Kilo Code: kilo-code.new.plusButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.agentManagerOpen",
-				"title": "Kilo Code: kilo-code.new.agentManagerOpen"
-			},
-			{
-				"command": "kilo-code.new.kiloClawOpen",
-				"title": "Kilo Code: kilo-code.new.kiloClawOpen"
-			},
-			{
-				"command": "kilo-code.new.marketplaceButtonClicked",
-				"title": "Kilo Code: kilo-code.new.marketplaceButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.historyButtonClicked",
-				"title": "Kilo Code: kilo-code.new.historyButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.profileButtonClicked",
-				"title": "Kilo Code: kilo-code.new.profileButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.settingsButtonClicked",
-				"title": "Kilo Code: kilo-code.new.settingsButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.plusButtonClicked",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.plusButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.agentManagerOpen",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.agentManagerOpen"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.kiloClawOpen",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.kiloClawOpen"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.marketplaceButtonClicked",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.marketplaceButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.historyButtonClicked",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.historyButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.profileButtonClicked",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.profileButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.sidebarTitle.settingsButtonClicked",
-				"title": "Kilo Code: kilo-code.new.sidebarTitle.settingsButtonClicked"
-			},
-			{
-				"command": "kilo-code.new.openInTab",
-				"title": "Kilo Code: kilo-code.new.openInTab"
-			},
-			{
-				"command": "kilo-code.new.showChanges",
-				"title": "Kilo Code: kilo-code.new.showChanges"
-			},
-			{
-				"command": "kilo-code.new.openMigrationWizard",
-				"title": "Kilo Code: kilo-code.new.openMigrationWizard"
-			},
-			{
-				"command": "kilo-code.new.autocomplete.generateSuggestions",
-				"title": "Kilo Code: kilo-code.new.autocomplete.generateSuggestions"
-			},
-			{
-				"command": "kilo-code.new.autocomplete.cancelSuggestions",
-				"title": "Kilo Code: kilo-code.new.autocomplete.cancelSuggestions"
-			},
-			{
-				"command": "kilo-code.new.autocomplete.nextEdit.acceptOrJump",
-				"title": "Kilo Code: kilo-code.new.autocomplete.nextEdit.acceptOrJump"
-			},
-			{
-				"command": "kilo-code.new.autocomplete.nextEdit.dismiss",
-				"title": "Kilo Code: kilo-code.new.autocomplete.nextEdit.dismiss"
-			},
-			{
-				"command": "kilo-code.new.agentManager.previousSession",
-				"title": "Kilo Code: kilo-code.new.agentManager.previousSession"
-			},
-			{
-				"command": "kilo-code.new.agentManager.nextSession",
-				"title": "Kilo Code: kilo-code.new.agentManager.nextSession"
-			},
-			{
-				"command": "kilo-code.new.agentManager.previousTab",
-				"title": "Kilo Code: kilo-code.new.agentManager.previousTab"
-			},
-			{
-				"command": "kilo-code.new.agentManager.nextTab",
-				"title": "Kilo Code: kilo-code.new.agentManager.nextTab"
-			},
-			{
-				"command": "kilo-code.new.agentManager.search",
-				"title": "Kilo Code: kilo-code.new.agentManager.search"
-			},
-			{
-				"command": "kilo-code.new.agentManager.showTerminal",
-				"title": "Kilo Code: kilo-code.new.agentManager.showTerminal"
-			},
-			{
-				"command": "kilo-code.new.agentManager.runScript",
-				"title": "Kilo Code: kilo-code.new.agentManager.runScript"
-			},
-			{
-				"command": "kilo-code.new.agentManager.toggleDiff",
-				"title": "Kilo Code: kilo-code.new.agentManager.toggleDiff"
-			},
-			{
-				"command": "kilo-code.new.agentManager.showShortcuts",
-				"title": "Kilo Code: kilo-code.new.agentManager.showShortcuts"
-			},
-			{
-				"command": "kilo-code.new.agentManager.newTab",
-				"title": "Kilo Code: kilo-code.new.agentManager.newTab"
-			},
-			{
-				"command": "kilo-code.new.agentManager.newTerminal",
-				"title": "Kilo Code: kilo-code.new.agentManager.newTerminal"
-			},
-			{
-				"command": "kilo-code.new.agentManager.closeTab",
-				"title": "Kilo Code: kilo-code.new.agentManager.closeTab"
-			},
-			{
-				"command": "kilo-code.new.agentManager.newWorktree",
-				"title": "Kilo Code: kilo-code.new.agentManager.newWorktree"
-			},
-			{
-				"command": "kilo-code.new.agentManager.openWorktree",
-				"title": "Kilo Code: kilo-code.new.agentManager.openWorktree"
-			},
-			{
-				"command": "kilo-code.new.agentManager.openPR",
-				"title": "Kilo Code: kilo-code.new.agentManager.openPR"
-			},
-			{
-				"command": "kilo-code.new.agentManager.closeWorktree",
-				"title": "Kilo Code: kilo-code.new.agentManager.closeWorktree"
-			},
-			{
-				"command": "kilo-code.new.agentManager.advancedWorktree",
-				"title": "Kilo Code: kilo-code.new.agentManager.advancedWorktree"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo1",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo1"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo2",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo2"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo3",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo3"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo4",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo4"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo5",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo5"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo6",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo6"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo7",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo7"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo8",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo8"
-			},
-			{
-				"command": "kilo-code.new.agentManager.jumpTo9",
-				"title": "Kilo Code: kilo-code.new.agentManager.jumpTo9"
-			},
-			{
-				"command": "kilo-code.new.generateCommitMessage",
-				"title": "Kilo Code: kilo-code.new.generateCommitMessage"
-			},
-			{
-				"command": "kilo-code.new.explainCode",
-				"title": "Kilo Code: kilo-code.new.explainCode"
-			},
-			{
-				"command": "kilo-code.new.fixCode",
-				"title": "Kilo Code: kilo-code.new.fixCode"
-			},
-			{
-				"command": "kilo-code.new.improveCode",
-				"title": "Kilo Code: kilo-code.new.improveCode"
-			},
-			{
-				"command": "kilo-code.new.addToContext",
-				"title": "Kilo Code: kilo-code.new.addToContext"
-			},
-			{
-				"command": "kilo-code.new.terminalAddToContext",
-				"title": "Kilo Code: kilo-code.new.terminalAddToContext"
-			},
-			{
-				"command": "kilo-code.new.terminalFixCommand",
-				"title": "Kilo Code: kilo-code.new.terminalFixCommand"
-			},
-			{
-				"command": "kilo-code.new.terminalExplainCommand",
-				"title": "Kilo Code: kilo-code.new.terminalExplainCommand"
-			},
-			{
-				"command": "kilo-code.new.focusChatInput",
-				"title": "Kilo Code: kilo-code.new.focusChatInput"
-			},
-			{
-				"command": "kilo-code.new.cycleAgentMode",
-				"title": "Kilo Code: kilo-code.new.cycleAgentMode"
-			},
-			{
-				"command": "kilo-code.new.cyclePreviousAgentMode",
-				"title": "Kilo Code: kilo-code.new.cyclePreviousAgentMode"
-			},
-			{
-				"command": "kilo-code.new.toggleAutoApprove",
-				"title": "Kilo Code: kilo-code.new.toggleAutoApprove"
-			},
-			{
-				"command": "kilo-code.new.generateTerminalCommand",
-				"title": "Kilo Code: kilo-code.new.generateTerminalCommand"
-			},
-			{
-				"command": "kilo-code.new.takeHeapSnapshot",
-				"title": "Kilo Code: kilo-code.new.takeHeapSnapshot"
 			}
 		],
 		"menus": {
@@ -452,9 +208,9 @@
 					"when": "view == alicode.SidebarProvider"
 				},
 				{
-					"command": "roo-cline.settingsButtonClicked",
+					"command": "alicode.settingsButtonClicked",
 					"group": "navigation@2",
-					"when": "view == roo-cline.SidebarProvider"
+					"when": "view == alicode.SidebarProvider"
 				},
 				{
 					"command": "alicode.historyButtonClicked",
@@ -462,9 +218,9 @@
 					"when": "view == alicode.SidebarProvider"
 				},
 				{
-					"command": "roo-cline.popoutButtonClicked",
+					"command": "alicode.popoutButtonClicked",
 					"group": "overflow@2",
-					"when": "view == roo-cline.SidebarProvider"
+					"when": "view == alicode.SidebarProvider"
 				}
 			],
 			"editor/title": [
@@ -474,9 +230,9 @@
 					"when": "activeWebviewPanelId == alicode.TabPanelProvider"
 				},
 				{
-					"command": "roo-cline.settingsButtonClicked",
+					"command": "alicode.settingsButtonClicked",
 					"group": "navigation@2",
-					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
+					"when": "activeWebviewPanelId == alicode.TabPanelProvider"
 				},
 				{
 					"command": "alicode.historyButtonClicked",
@@ -484,15 +240,15 @@
 					"when": "activeWebviewPanelId == alicode.TabPanelProvider"
 				},
 				{
-					"command": "roo-cline.popoutButtonClicked",
+					"command": "alicode.popoutButtonClicked",
 					"group": "overflow@2",
-					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
+					"when": "activeWebviewPanelId == alicode.TabPanelProvider"
 				}
 			]
 		},
 		"keybindings": [
 			{
-				"command": "roo-cline.addToContext",
+				"command": "alicode.addToContext",
 				"key": "cmd+k cmd+a",
 				"mac": "cmd+k cmd+a",
 				"win": "ctrl+k ctrl+a",
@@ -500,7 +256,7 @@
 				"when": "editorTextFocus && editorHasSelection"
 			},
 			{
-				"command": "roo-cline.toggleAutoApprove",
+				"command": "alicode.toggleAutoApprove",
 				"key": "cmd+alt+a",
 				"mac": "cmd+alt+a",
 				"win": "ctrl+alt+a",
@@ -589,14 +345,14 @@
 					"default": "",
 					"description": "%settings.autoImportSettingsPath.description%"
 				},
-				"roo-cline.maximumIndexedFilesForFileSearch": {
+				"alicode.maximumIndexedFilesForFileSearch": {
 					"type": "number",
 					"default": 10000,
 					"minimum": 5000,
 					"maximum": 500000,
 					"description": "%settings.maximumIndexedFilesForFileSearch.description%"
 				},
-				"roo-cline.useAgentRules": {
+				"alicode.useAgentRules": {
 					"type": "boolean",
 					"default": true,
 					"description": "%settings.useAgentRules.description%"
@@ -620,24 +376,24 @@
 					"maximum": 200,
 					"description": "%settings.codeIndex.embeddingBatchSize.description%"
 				},
-				"roo-cline.debug": {
+				"alicode.debug": {
 					"type": "boolean",
 					"default": false,
 					"description": "%settings.debug.description%"
 				},
-				"roo-cline.debugProxy.enabled": {
+				"alicode.debugProxy.enabled": {
 					"type": "boolean",
 					"default": false,
 					"description": "%settings.debugProxy.enabled.description%",
 					"markdownDescription": "%settings.debugProxy.enabled.description%"
 				},
-				"roo-cline.debugProxy.serverUrl": {
+				"alicode.debugProxy.serverUrl": {
 					"type": "string",
 					"default": "http://127.0.0.1:8888",
 					"description": "%settings.debugProxy.serverUrl.description%",
 					"markdownDescription": "%settings.debugProxy.serverUrl.description%"
 				},
-				"roo-cline.debugProxy.tlsInsecure": {
+				"alicode.debugProxy.tlsInsecure": {
 					"type": "boolean",
 					"default": false,
 					"description": "%settings.debugProxy.tlsInsecure.description%",
@@ -654,7 +410,7 @@
 		"format": "prettier --write .",
 		"bundle": "node esbuild.mjs",
 		"vscode:prepublish": "pnpm bundle --production",
-		"vsix": "vsce package",
+		"vsix": "vsce package --no-dependencies",
 		"publish:marketplace": "vsce publish --no-dependencies && ovsx publish --no-dependencies",
 		"watch:bundle": "pnpm bundle --watch",
 		"watch:tsc": "cd .. && tsc --noEmit --watch --project src/tsconfig.json",
@@ -678,9 +434,9 @@
 		"@mistralai/mistralai": "^1.9.18",
 		"@modelcontextprotocol/sdk": "1.12.0",
 		"@qdrant/js-client-rest": "^1.14.0",
-		"@roo-code/core": "workspace:^",
-		"@roo-code/ipc": "workspace:^",
-		"@roo-code/types": "workspace:^",
+		"@ali-code/core": "workspace:^",
+		"@ali-code/ipc": "workspace:^",
+		"@ali-code/types": "workspace:^",
 		"@vscode/codicons": "^0.0.36",
 		"ai-sdk-provider-poe": "2.0.18",
 		"async-mutex": "^0.5.0",
@@ -755,8 +511,8 @@
 		"@ai-sdk/openai-compatible": "^2.0.28",
 		"@openrouter/ai-sdk-provider": "^2.1.1",
 		"@ali-code/build": "workspace:^",
-		"@roo-code/config-eslint": "workspace:^",
-		"@roo-code/config-typescript": "workspace:^",
+		"@ali-code/config-eslint": "workspace:^",
+		"@ali-code/config-typescript": "workspace:^",
 		"@types/clone-deep": "^4.0.4",
 		"@types/debug": "^4.1.12",
 		"@types/diff": "^5.2.1",

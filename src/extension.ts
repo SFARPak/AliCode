@@ -17,7 +17,7 @@ if (fs.existsSync(envPath)) {
 	}
 }
 
-import { customToolRegistry } from "@roo-code/core"
+import { customToolRegistry } from "@ali-code/core"
 
 import "./utils/path" // Necessary to have access to String.prototype.toPosix.
 import { initializeNetworkProxy } from "./utils/networkProxy"
@@ -101,7 +101,7 @@ async function checkWorktreeAutoOpen(
 			// Open the AliCode sidebar with a slight delay to ensure UI is ready
 			setTimeout(async () => {
 				try {
-					await vscode.commands.executeCommand("roo-cline.plusButtonClicked")
+					await vscode.commands.executeCommand("alicode.plusButtonClicked")
 				} catch (error) {
 					outputChannel.appendLine(
 						`[Worktree] Error auto-opening sidebar: ${error instanceof Error ? error.message : String(error)}`,
@@ -221,13 +221,13 @@ export async function activate(context: vscode.ExtensionContext) {
 				return Promise.resolve()
 			},
 		}),
-		vscode.window.registerWebviewPanelSerializer("kilo-code.new.settingsPanel", {
+		vscode.window.registerWebviewPanelSerializer("alicode.settingsPanel", {
 			deserializeWebviewPanel(panel) {
 				settingsEditorProvider.deserializePanel(panel)
 				return Promise.resolve()
 			},
 		}),
-		vscode.window.registerWebviewPanelSerializer("kilo-code.new.profilePanel", {
+		vscode.window.registerWebviewPanelSerializer("alicode.profilePanel", {
 			deserializeWebviewPanel(panel) {
 				settingsEditorProvider.deserializePanel(panel)
 				return Promise.resolve()
@@ -239,7 +239,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				return Promise.resolve()
 			},
 		}),
-		vscode.window.registerWebviewPanelSerializer("kilo-code.new.SubAgentViewerPanel", {
+		vscode.window.registerWebviewPanelSerializer("alicode.SubAgentViewerPanel", {
 			deserializeWebviewPanel(panel) {
 				panel.dispose()
 				return Promise.resolve()
