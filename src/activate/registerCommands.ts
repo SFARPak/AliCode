@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 import delay from "delay"
 
-import type { CommandId } from "@ali-code/types"
+import type { CommandId } from "@roo-code/types"
 
 import { Package } from "../shared/package"
 import { getCommand } from "../utils/commands"

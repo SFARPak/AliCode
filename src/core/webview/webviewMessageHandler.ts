@@ -18,8 +18,8 @@ import {
 	ExperimentId,
 	checkoutDiffPayloadSchema,
 	checkoutRestorePayloadSchema,
-} from "@ali-code/types"
-import { customToolRegistry } from "@ali-code/core"
+} from "@roo-code/types"
+import { customToolRegistry } from "@roo-code/core"
 
 import { type ApiMessage } from "../task-persistence/apiMessages"
 import { saveTaskMessages } from "../task-persistence"

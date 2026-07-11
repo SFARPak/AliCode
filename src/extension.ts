@@ -17,7 +17,7 @@ if (fs.existsSync(envPath)) {
 	}
 }
 
-import { customToolRegistry } from "@ali-code/core"
+import { customToolRegistry } from "@roo-code/core"
 
 import "./utils/path" // Necessary to have access to String.prototype.toPosix.
 import { initializeNetworkProxy } from "./utils/networkProxy"

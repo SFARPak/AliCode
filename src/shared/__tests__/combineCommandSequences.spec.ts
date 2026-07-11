@@ -1,6 +1,6 @@
 // npx vitest run src/shared/__tests__/combineCommandSequences.spec.ts
 
-import type { ClineMessage } from "@ali-code/types"
+import type { ClineMessage } from "@roo-code/types"
 
 import { combineCommandSequences } from "../combineCommandSequences"
 

@@ -1,4 +1,4 @@
-// Real implementation for @ali-code/core/browser module
+// Real implementation for @roo-code/core/browser module
 
 // Export constant for command output string
 export const COMMAND_OUTPUT_STRING = "Output:"
@@ -27,7 +27,7 @@ export function safeJsonParse<T>(jsonString: string | null | undefined, defaultV
 }
 
 // Consolidate API request start and finish messages
-import type { ClineMessage } from "@ali-code/types"
+import type { ClineMessage } from "@roo-code/types"
 export function consolidateApiRequests(messages: ClineMessage[]): ClineMessage[] {
 	if (messages.length === 0) {
 		return []
@@ -172,7 +172,7 @@ export function consolidateCommands(messages: ClineMessage[]): ClineMessage[] {
 }
 
 // Consolidate token usage
-import type { TokenUsage, ToolUsage, ToolName } from "@ali-code/types"
+import type { TokenUsage, ToolUsage, ToolName } from "@roo-code/types"
 export function consolidateTokenUsage(messages: ClineMessage[]): TokenUsage {
 	const result: TokenUsage = {
 		totalTokensIn: 0,

@@ -4,7 +4,7 @@ import {
 	type VerbosityLevel,
 	type ReasoningEffortExtended,
 	ANTHROPIC_DEFAULT_MAX_TOKENS,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import {
 	DEFAULT_HYBRID_REASONING_MODEL_MAX_TOKENS,

@@ -20,7 +20,7 @@ import {
 	IpcOrigin,
 	IpcMessageType,
 	openRouterDefaultModelId,
-} from "@ali-code/types"
+} from "@roo-code/types"
 import { IpcServer } from "@ali-code/ipc"
 
 import { Package } from "../shared/package"

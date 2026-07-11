@@ -12,7 +12,7 @@ import {
 	type ProviderName,
 	isProviderName,
 	isRetiredProvider,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { Mode, modes } from "../../shared/modes"
 import { buildApiHandler } from "../../api"

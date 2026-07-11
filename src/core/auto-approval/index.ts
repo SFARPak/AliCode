@@ -5,7 +5,7 @@ import {
 	type FollowUpData,
 	type ExtensionState,
 	isNonBlockingAsk,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { ClineAskResponse } from "../../shared/WebviewMessage"
 

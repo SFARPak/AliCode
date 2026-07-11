@@ -10,7 +10,7 @@ vitest.mock("vscode", () => ({
 
 import { Anthropic } from "@anthropic-ai/sdk"
 
-import { type MinimaxModelId, minimaxDefaultModelId, minimaxModels } from "@ali-code/types"
+import { type MinimaxModelId, minimaxDefaultModelId, minimaxModels } from "@roo-code/types"
 
 import { MiniMaxHandler } from "../minimax"
 

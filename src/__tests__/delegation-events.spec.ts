@@ -1,6 +1,6 @@
 // npx vitest run __tests__/delegation-events.spec.ts
 
-import { AliCodeEventName, rooCodeEventsSchema, taskEventSchema } from "@ali-code/types"
+import { AliCodeEventName, rooCodeEventsSchema, taskEventSchema } from "@roo-code/types"
 
 describe("delegation event schemas", () => {
 	test("rooCodeEventsSchema validates tuples", () => {

@@ -1,6 +1,6 @@
 import * as vscode from "vscode"
 
-import { CodeActionName, CodeActionId } from "@ali-code/types"
+import { CodeActionName, CodeActionId } from "@roo-code/types"
 import { Package } from "../shared/package"
 
 import { getCodeActionCommand } from "../utils/commands"

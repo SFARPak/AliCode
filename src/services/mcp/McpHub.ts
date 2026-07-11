@@ -26,7 +26,7 @@ import type {
 	McpServer,
 	McpTool,
 	McpToolCallResponse,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { t } from "../../i18n"
 

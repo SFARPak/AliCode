@@ -1,7 +1,7 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 
-import { type XAIModelId, xaiDefaultModelId, xaiModels } from "@ali-code/types"
+import { type XAIModelId, xaiDefaultModelId, xaiModels } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 

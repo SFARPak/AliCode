@@ -1,4 +1,4 @@
-import type { McpServerUse, McpServer, McpTool } from "@ali-code/types"
+import type { McpServerUse, McpServer, McpTool } from "@roo-code/types"
 
 export function isMcpToolAlwaysAllowed(mcpServerUse: McpServerUse, mcpServers: McpServer[] | undefined): boolean {
 	if (mcpServerUse.type === "use_mcp_tool" && mcpServerUse.toolName) {

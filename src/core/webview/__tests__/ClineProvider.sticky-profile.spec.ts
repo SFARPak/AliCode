@@ -3,7 +3,7 @@
 import * as vscode from "vscode"
 import { ClineProvider } from "../ClineProvider"
 import { ContextProxy } from "../../config/ContextProxy"
-import type { HistoryItem } from "@ali-code/types"
+import type { HistoryItem } from "@roo-code/types"
 
 vi.mock("vscode", () => ({
 	ExtensionContext: vi.fn(),

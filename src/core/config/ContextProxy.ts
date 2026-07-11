@@ -17,7 +17,7 @@ import {
 	isSecretStateKey,
 	isProviderName,
 	isRetiredProvider,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { logger } from "../../utils/logging"
 import { supportPrompt } from "../../shared/support-prompt"

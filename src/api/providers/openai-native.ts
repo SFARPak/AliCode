@@ -14,7 +14,7 @@ import {
 	type VerbosityLevel,
 	type ReasoningEffortExtended,
 	type ServiceTier,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 

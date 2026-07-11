@@ -10,7 +10,7 @@ import {
 	openAiCodexModels,
 	type ReasoningEffort,
 	type ReasoningEffortExtended,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { Package } from "../../shared/package"
 import type { ApiHandlerOptions } from "../../shared/api"

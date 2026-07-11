@@ -8,7 +8,7 @@ import {
 	getPoeDefaultModelInfo,
 	type ModelInfo,
 	type ReasoningEffortExtended,
-} from "@ali-code/types"
+} from "@roo-code/types"
 
 import { shouldUseReasoningBudget, shouldUseReasoningEffort, type ApiHandlerOptions } from "../../shared/api"
 

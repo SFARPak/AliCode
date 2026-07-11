@@ -1,1 +1,1 @@
-export * from "@ali-code/core/browser"
+export * from "@roo-code/core/browser"
