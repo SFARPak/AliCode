@@ -46,6 +46,7 @@ export const ModeSelector = ({
 	const selectedItemRef = React.useRef<HTMLDivElement>(null)
 	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 	const lastNotifiedInvalidModeRef = React.useRef<string | null>(null)
+	const validationTimeoutRef = React.useRef<number | null>(null)
 	const portalContainer = useRooPortal("roo-portal")
 	const { hasOpenedModeSelector, setHasOpenedModeSelector } = useExtensionState()
 	const { t } = useAppTranslation()
@@ -78,21 +79,42 @@ export const ModeSelector = ({
 		const isValidMode = modes.some((mode) => mode.slug === value)
 
 		if (isValidMode) {
+			// Clear any pending timeout
+			if (validationTimeoutRef.current !== null) {
+				clearTimeout(validationTimeoutRef.current)
+				validationTimeoutRef.current = null
+			}
 			lastNotifiedInvalidModeRef.current = null
 			return
 		}
 
+		// If we have already notified about this value, do nothing
 		if (lastNotifiedInvalidModeRef.current === value) {
 			return
 		}
 
-		const fallbackMode = modes.find((mode) => mode.slug === defaultModeSlug)
-		if (fallbackMode) {
-			lastNotifiedInvalidModeRef.current = value
-			onChange(fallbackMode.slug as Mode)
+		// Set a timeout to notify after a delay
+		if (validationTimeoutRef.current !== null) {
+			clearTimeout(validationTimeoutRef.current)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- onChange omitted to prevent loops when parent doesn't memoize
-	}, [modes, value])
+		validationTimeoutRef.current = setTimeout(() => {
+			// Check again if the mode is still invalid and we haven't notified
+			if (modes.some((mode) => mode.slug === value) === false && lastNotifiedInvalidModeRef.current !== value) {
+				lastNotifiedInvalidModeRef.current = value
+				const fallbackMode = modes.find((mode) => mode.slug === defaultModeSlug)
+				if (fallbackMode) {
+					onChange(fallbackMode.slug as Mode)
+				}
+			}
+			validationTimeoutRef.current = null
+		}, 100)
+
+		return () => {
+			if (validationTimeoutRef.current !== null) {
+				clearTimeout(validationTimeoutRef.current)
+			}
+		}
+	}, [modes, value, defaultModeSlug, onChange])
 
 	// Memoize searchable items for fuzzy search with separate name and
 	// description search.
