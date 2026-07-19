@@ -22,6 +22,7 @@ import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
 import { LucideIconButton } from "./LucideIconButton"
 import { SessionRenameEditor } from "./SessionRenameEditor"
+import TaskTimeline from "./TaskTimeline"
 
 export interface TaskHeaderProps {
 	task: ClineMessage
@@ -57,7 +58,7 @@ const TaskHeader = ({
 	todos,
 }: TaskHeaderProps) => {
 	const { t } = useTranslation()
-	const { apiConfiguration, currentTaskItem } = useExtensionState()
+	const { apiConfiguration, currentTaskItem, clineMessages } = useExtensionState()
 	const { id: modelId, info: model } = useSelectedModel(apiConfiguration)
 	const [isTaskExpanded, setIsTaskExpanded] = useState(false)
 	const [isRenaming, setIsRenaming] = useState(false)
@@ -466,6 +467,11 @@ const TaskHeader = ({
 				{/* Todo list - always shown at bottom when todos exist */}
 				{hasTodos && <TodoListDisplay todos={todos ?? (task as any)?.tool?.todos ?? []} />}
 			</div>
+			{/* Task Timeline - visual session activity bar */}
+			<TaskTimeline
+				messages={clineMessages}
+				isBusy={buttonsDisabled}
+			/>
 		</div>
 	)
 }
