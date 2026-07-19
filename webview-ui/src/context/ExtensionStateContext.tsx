@@ -134,18 +134,25 @@ export interface ExtensionStateContextType extends ExtensionState {
 export const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
 
 export const mergeExtensionState = (prevState: ExtensionState, newState: Partial<ExtensionState>) => {
-	const { customModePrompts: prevCustomModePrompts, experiments: prevExperiments, ...prevRest } = prevState
+	const {
+		customModePrompts: prevCustomModePrompts,
+		experiments: prevExperiments,
+		customModes: prevCustomModes,
+		...prevRest
+	} = prevState
 
 	const {
 		apiConfiguration,
 		customModePrompts: newCustomModePrompts,
 		customSupportPrompts,
 		experiments: newExperiments,
+		customModes: newCustomModes,
 		...newRest
 	} = newState
 
 	const customModePrompts = { ...prevCustomModePrompts, ...(newCustomModePrompts ?? {}) }
 	const experiments = { ...prevExperiments, ...(newExperiments ?? {}) }
+	const customModes = newCustomModes ?? prevCustomModes
 	const rest = { ...prevRest, ...newRest }
 
 	// Protect clineMessages from stale state pushes using sequence numbering.
@@ -171,6 +178,7 @@ export const mergeExtensionState = (prevState: ExtensionState, newState: Partial
 		customModePrompts,
 		customSupportPrompts: customSupportPrompts ?? prevState.customSupportPrompts,
 		experiments,
+		customModes,
 	}
 }
 

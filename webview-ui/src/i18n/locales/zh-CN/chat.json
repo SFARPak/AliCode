@@ -260,7 +260,12 @@
 		"resultContent": "子任务结果",
 		"defaultResult": "请继续下一个任务。",
 		"completionInstructions": "子任务已完成！您可以查看结果并提出修改或下一步建议。如果一切正常，请确认以将结果返回给主任务。",
-		"goToSubtask": "查看任务"
+		"goToSubtask": "查看任务",
+		"taskStarting": "任务启动中...",
+		"childTaskSummary": "子任务摘要",
+		"modeLabel": "模式",
+		"tokensLabel": "Token",
+		"openInTab": "在标签页中打开"
 	},
 	"questions": {
 		"hasQuestion": "Roo有一个问题"

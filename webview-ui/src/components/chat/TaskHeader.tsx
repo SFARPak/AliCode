@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useMemo } from "react"
+import { memo, useRef, useState, useMemo, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { ChevronUp, ChevronDown, HardDriveDownload, HardDriveUpload, FoldVertical, ArrowLeft } from "lucide-react"
 import prettyBytes from "pretty-bytes"
@@ -21,6 +21,7 @@ import { ContextWindowProgress } from "./ContextWindowProgress"
 import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
 import { LucideIconButton } from "./LucideIconButton"
+import { SessionRenameEditor } from "./SessionRenameEditor"
 
 export interface TaskHeaderProps {
 	task: ClineMessage
@@ -59,10 +60,37 @@ const TaskHeader = ({
 	const { apiConfiguration, currentTaskItem } = useExtensionState()
 	const { id: modelId, info: model } = useSelectedModel(apiConfiguration)
 	const [isTaskExpanded, setIsTaskExpanded] = useState(false)
+	const [isRenaming, setIsRenaming] = useState(false)
 
 	const textContainerRef = useRef<HTMLDivElement>(null)
 	const textRef = useRef<HTMLDivElement>(null)
 	const contextWindow = model?.contextWindow || 1
+
+	// The title shown in the header. Prefer the persisted task title from the
+	// history item (which can be renamed) and fall back to the original task text.
+	const sessionTitle = currentTaskItem?.task ?? task.text ?? ""
+
+	const startRename = useCallback(() => {
+		setIsRenaming(true)
+	}, [])
+
+	const commitRename = useCallback(
+		(newTitle: string) => {
+			setIsRenaming(false)
+			const trimmed = newTitle.trim()
+			if (!trimmed || trimmed === sessionTitle) {
+				return
+			}
+			if (currentTaskItem?.id) {
+				vscode.postMessage({ type: "renameTask", taskId: currentTaskItem.id, text: trimmed })
+			}
+		},
+		[currentTaskItem?.id, sessionTitle],
+	)
+
+	const cancelRename = useCallback(() => {
+		setIsRenaming(false)
+	}, [])
 
 	// Calculate maxTokens (reserved for output) once for reuse in percentage and tooltip
 	const maxTokens = useMemo(
@@ -149,24 +177,35 @@ const TaskHeader = ({
 				}}>
 				<div className="flex justify-between items-center gap-0">
 					<div className="flex items-center select-none grow min-w-0">
-						<div className="grow min-w-0">
+						<div
+							className="grow min-w-0"
+							onDoubleClick={(e) => {
+								// Double-click the collapsed title to rename inline.
+								if (!isTaskExpanded) {
+									e.stopPropagation()
+									startRename()
+								}
+							}}>
 							{isTaskExpanded && <span className="font-bold">{t("chat:task.title")}</span>}
-							{!isTaskExpanded && (
-								<div className="flex items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis">
-									<Mention text={task.text} />
-								</div>
-							)}
+							{!isTaskExpanded &&
+								(isRenaming ? (
+									<SessionRenameEditor
+										title={sessionTitle}
+										onSave={commitRename}
+										onCancel={cancelRename}
+									/>
+								) : (
+									<div className="flex items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis">
+										<Mention text={sessionTitle} />
+									</div>
+								))}
 						</div>
 						<div className="flex items-center shrink-0 ml-2" onClick={(e) => e.stopPropagation()}>
 							<StandardTooltip content={isTaskExpanded ? t("chat:task.collapse") : t("chat:task.expand")}>
 								<button
 									onClick={() => setIsTaskExpanded(!isTaskExpanded)}
 									className="shrink-0 min-h-[20px] min-w-[20px] p-[2px] cursor-pointer opacity-85 hover:opacity-100 bg-transparent border-none rounded-md">
-									{isTaskExpanded ? (
-										<ChevronUp size={16} />
-									) : (
-										<ChevronDown size={16} className="opacity-0 group-hover:opacity-100" />
-									)}
+									{isTaskExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
 								</button>
 							</StandardTooltip>
 						</div>
@@ -177,6 +216,8 @@ const TaskHeader = ({
 						className="flex items-center justify-between text-sm text-muted-foreground/70"
 						onClick={(e) => e.stopPropagation()}>
 						<div className="flex items-center gap-2">
+							{/* Always-visible compact (condense) button in the stats row */}
+							{condenseButton}
 							<StandardTooltip
 								content={(() => {
 									const availableSpace = contextWindow - (contextTokens || 0) - reservedForOutput

@@ -42,6 +42,7 @@ vi.mock("@src/context/ExtensionStateContext", () => ({
 		apiConfiguration: {},
 		clineMessages: mockClineMessages,
 		currentTaskItem: mockCurrentTaskItem,
+		taskHistory: [],
 	}),
 }))
 

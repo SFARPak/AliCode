@@ -767,6 +767,11 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 		case "showTaskWithId":
 			provider.showTaskWithId(message.text!)
 			break
+		case "renameTask":
+			if (message.taskId && message.text !== undefined) {
+				await provider.renameTaskWithId(message.taskId, message.text)
+			}
+			break
 		case "condenseTaskContextRequest":
 			provider.condenseTaskContext(message.text!)
 			break

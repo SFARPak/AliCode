@@ -259,7 +259,12 @@
 		"resultContent": "Resultados de la subtarea",
 		"defaultResult": "Por favor, continúa con la siguiente tarea.",
 		"completionInstructions": "¡Subtarea completada! Puedes revisar los resultados y sugerir correcciones o próximos pasos. Si todo se ve bien, confirma para devolver el resultado a la tarea principal.",
-		"goToSubtask": "Ver tarea"
+		"goToSubtask": "Ver tarea",
+		"taskStarting": "Iniciando tarea...",
+		"childTaskSummary": "Resumen de la subtarea",
+		"modeLabel": "Modo",
+		"tokensLabel": "Tokens",
+		"openInTab": "Abrir en pestaña"
 	},
 	"questions": {
 		"hasQuestion": "Roo tiene una pregunta"

@@ -54,6 +54,7 @@ import { McpExecution } from "./McpExecution"
 import { ChatTextArea } from "./ChatTextArea"
 import { MAX_IMAGES_PER_MESSAGE } from "./ChatView"
 import { useSelectedModel } from "../ui/hooks/useSelectedModel"
+import SubtaskToolExpanded from "./SubtaskToolExpanded"
 import {
 	Eye,
 	FileDiff,
@@ -856,33 +857,15 @@ export const ChatRowContent = ({
 				const nextMessage = currentMessageIndex >= 0 ? clineMessages[currentMessageIndex + 1] : undefined
 				const isFollowedBySubtaskResult = nextMessage?.type === "say" && nextMessage?.say === "subtask_result"
 
-				// Collapsible section for newTask sub‑task creation
+				// Use the new rich SubtaskToolExpanded component
 				return (
-					<CollapsibleSection
-						title={
-							<div style={headerStyle}>
-								<Split className="size-4" />
-								<span style={{ fontWeight: "bold" }}>
-									<Trans
-										i18nKey="chat:subtasks.wantsToCreate"
-										components={{ code: <code>{tool.mode}</code> }}
-										values={{ mode: tool.mode }}
-									/>
-								</span>
-							</div>
-						}>
-						<MarkdownBlock markdown={tool.content} />
-						<div>
-							{childTaskId && !isFollowedBySubtaskResult && (
-								<button
-									className="cursor-pointer flex gap-1 items-center mt-2 text-vscode-descriptionForeground hover:text-vscode-descriptionForeground hover:underline font-normal"
-									onClick={() => vscode.postMessage({ type: "showTaskWithId", text: childTaskId })}>
-									{t("chat:subtasks.goToSubtask")}
-									<ArrowRight className="size-3" />
-								</button>
-							)}
-						</div>
-					</CollapsibleSection>
+					<SubtaskToolExpanded
+						tool={tool}
+						childTaskId={childTaskId}
+						clineMessages={clineMessages}
+						currentTaskItem={currentTaskItem}
+						isFollowedBySubtaskResult={isFollowedBySubtaskResult}
+					/>
 				)
 			case "finishTask":
 				return (

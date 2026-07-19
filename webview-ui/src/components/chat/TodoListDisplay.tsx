@@ -54,13 +54,18 @@ export function TodoListDisplay({ todos }: { todos: any[] }) {
 	const allCompleted = completedCount === totalCount && totalCount > 0
 
 	return (
-		<div data-todo-list className="mt-1 -mx-2.5 border-t border-vscode-sideBar-background overflow-hidden">
+		<div
+			data-todo-list
+			data-all-done={allCompleted ? "" : undefined}
+			className="mt-1 -mx-2.5 border-t border-vscode-sideBar-background overflow-hidden">
 			<div
 				className={cn(
 					"flex items-center gap-2 pt-2 px-2.5 cursor-pointer select-none",
-					mostImportantTodo?.status === "in_progress" && isCollapsed
-						? "text-vscode-charts-yellow"
-						: "text-vscode-foreground",
+					allCompleted
+						? "text-vscode-charts-green"
+						: mostImportantTodo?.status === "in_progress" && isCollapsed
+							? "text-vscode-charts-yellow"
+							: "text-vscode-foreground",
 				)}
 				onClick={() => setIsCollapsed((v) => !v)}>
 				<ListChecks className="size-3 shrink-0" />
@@ -88,8 +93,12 @@ export function TodoListDisplay({ todos }: { todos: any[] }) {
 								ref={(el) => (itemRefs.current[idx] = el)}
 								className={cn(
 									"font-light flex flex-row gap-2 items-start min-h-[20px] leading-normal mb-2",
-									todo.status === "in_progress" && "text-vscode-charts-yellow",
-									todo.status !== "in_progress" && todo.status !== "completed" && "opacity-60",
+									allCompleted && "text-vscode-charts-green",
+									!allCompleted && todo.status === "in_progress" && "text-vscode-charts-yellow",
+									!allCompleted &&
+										todo.status !== "in_progress" &&
+										todo.status !== "completed" &&
+										"opacity-60",
 								)}>
 								{icon}
 								<span>{todo.content}</span>

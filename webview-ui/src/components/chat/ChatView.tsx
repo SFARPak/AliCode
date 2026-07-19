@@ -1493,6 +1493,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 	// Mode switching keyboard handler. Scroll-intent keyboard detection
 	// (PageUp, Home, ArrowUp) is handled by useScrollLifecycle.
+	// Escape aborts a running task (mirrors the Cancel/stop button). It only
+	// fires when the task is actively streaming and respects handlers that
+	// have already called preventDefault (e.g. textarea escape for suggestions).
 	const handleKeyDown = useCallback(
 		(event: KeyboardEvent) => {
 			if ((event.metaKey || event.ctrlKey) && event.key === ".") {
@@ -1502,9 +1505,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 				} else {
 					switchToNextMode()
 				}
+				return
+			}
+
+			if (event.key === "Escape" && !event.defaultPrevented && isStreaming) {
+				event.preventDefault()
+				handleStopTask()
 			}
 		},
-		[switchToNextMode, switchToPreviousMode],
+		[switchToNextMode, switchToPreviousMode, isStreaming, handleStopTask],
 	)
 
 	useEffect(() => {
@@ -1641,6 +1650,22 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						/>
 					</div>
 					<FileChangesPanel clineMessages={messages} />
+					{/* Quick session action: start a new task. Subtle icon button that
+					    stays out of the way of the primary/secondary action row. */}
+					{!areButtonsVisible && (
+						<div className="flex h-9 items-center mb-1 px-[15px] opacity-50">
+							<StandardTooltip content={t("chat:newTaskAction.tooltip")}>
+								<Button
+									variant="secondary"
+									className="h-7 px-2"
+									onClick={startNewTask}
+									aria-label={t("chat:newTaskAction.title")}>
+									<span className="codicon codicon-add"></span>
+									<span className="ml-1 text-xs">{t("chat:newTaskAction.title")}</span>
+								</Button>
+							</StandardTooltip>
+						</div>
+					)}
 					{areButtonsVisible && (
 						<div
 							className={`flex h-9 items-center mb-1 px-[15px] ${

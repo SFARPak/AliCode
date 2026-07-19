@@ -521,6 +521,8 @@ export interface WebviewMessage {
 		| "moveSkill"
 		| "updateSkillModes"
 		| "openSkillFile"
+		// Session rename
+		| "renameTask"
 	text?: string
 	taskId?: string
 	editedMessageContent?: string

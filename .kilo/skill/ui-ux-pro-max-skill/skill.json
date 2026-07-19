@@ -1,0 +1,26 @@
+{
+	"name": "ui-ux-pro-max-skill",
+	"version": "1.0.0",
+	"description": "Professional UI/UX design and development skill for Kilo",
+	"author": "nextlevelbuilder",
+	"repository": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+	"entryPoint": "index.js",
+	"capabilities": [
+		"ui-design",
+		"ux-research",
+		"design-systems",
+		"accessibility",
+		"prototyping",
+		"design-tokens",
+		"component-library"
+	],
+	"configuration": {
+		"outputDirectory": "./design-output",
+		"preferredTools": ["figma", "storybook", "chromatic"],
+		"designSystem": {
+			"tokens": true,
+			"components": true,
+			"patterns": true
+		}
+	}
+}

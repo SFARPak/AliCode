@@ -19,7 +19,9 @@
 		"shareSuccessPublic": "Public link copied to clipboard",
 		"openApiHistory": "Open API History",
 		"openUiHistory": "Open UI History",
-		"backToParentTask": "Parent task"
+		"backToParentTask": "Parent task",
+		"rename": "Rename task",
+		"renameHint": "Double-click the title to rename"
 	},
 	"unpin": "Unpin",
 	"pin": "Pin",
@@ -33,6 +35,13 @@
 	"startNewTask": {
 		"title": "Start New Task",
 		"tooltip": "Begin a new task"
+	},
+	"newTaskAction": {
+		"title": "New Task",
+		"tooltip": "Clear the current task and start a new one"
+	},
+	"abortTask": {
+		"tooltip": "Press Escape to abort the running task"
 	},
 	"proceedAnyways": {
 		"title": "Proceed Anyways",
@@ -302,7 +311,12 @@
 		"resultContent": "Subtask completed",
 		"defaultResult": "Please continue to the next task.",
 		"completionInstructions": "You can review the results and suggest any corrections or next steps. If everything looks good, confirm to return the result to the parent task.",
-		"goToSubtask": "View task"
+		"goToSubtask": "View task",
+		"taskStarting": "Task starting...",
+		"childTaskSummary": "Child Task Summary",
+		"modeLabel": "Mode",
+		"tokensLabel": "Tokens",
+		"openInTab": "Open in tab"
 	},
 	"questions": {
 		"hasQuestion": "Roo has a question"

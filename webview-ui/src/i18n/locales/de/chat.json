@@ -259,7 +259,12 @@
 		"resultContent": "Teilaufgabenergebnisse",
 		"defaultResult": "Bitte fahre mit der nächsten Aufgabe fort.",
 		"completionInstructions": "Teilaufgabe abgeschlossen! Du kannst die Ergebnisse überprüfen und Korrekturen oder nächste Schritte vorschlagen. Wenn alles gut aussieht, bestätige, um das Ergebnis an die übergeordnete Aufgabe zurückzugeben.",
-		"goToSubtask": "Aufgabe anzeigen"
+		"goToSubtask": "Aufgabe anzeigen",
+		"taskStarting": "Aufgabe startet...",
+		"childTaskSummary": "Unteraufgaben-Zusammenfassung",
+		"modeLabel": "Modus",
+		"tokensLabel": "Tokens",
+		"openInTab": "In Tab öffnen"
 	},
 	"questions": {
 		"hasQuestion": "Roo hat eine Frage"

@@ -1702,6 +1702,31 @@ export class ClineProvider
 		await this.postMessageToWebview({ type: "action", action: "chatButtonClicked" })
 	}
 
+	/**
+	 * Renames a task in the task history by updating its `task` (title) field.
+	 * Broadcasts the updated history item to the webview so the UI reflects the new title.
+	 *
+	 * @param id The task id to rename.
+	 * @param title The new title for the task.
+	 */
+	async renameTaskWithId(id: string, title: string): Promise<void> {
+		const trimmed = (title ?? "").trim()
+		if (!trimmed) {
+			return
+		}
+
+		const existing =
+			this.taskHistoryStore.get(id) ??
+			(this.getGlobalState("taskHistory") ?? []).find((item: HistoryItem) => item.id === id)
+
+		if (!existing) {
+			this.log(`[renameTaskWithId] task ${id} not found`)
+			return
+		}
+
+		await this.updateTaskHistory({ ...existing, task: trimmed })
+	}
+
 	async exportTaskWithId(id: string) {
 		const { historyItem, apiConversationHistory } = await this.getTaskWithId(id)
 		const fileName = getTaskFileName(historyItem.ts)
