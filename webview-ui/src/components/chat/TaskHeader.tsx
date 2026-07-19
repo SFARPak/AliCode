@@ -23,6 +23,8 @@ import { TodoListDisplay } from "./TodoListDisplay"
 import { LucideIconButton } from "./LucideIconButton"
 import { SessionRenameEditor } from "./SessionRenameEditor"
 import TaskTimeline from "./TaskTimeline"
+import { TaskUsage } from "./TaskUsage"
+import type { SessionModelUsage, ProviderInfo } from "./model-usage"
 
 export interface TaskHeaderProps {
 	task: ClineMessage
@@ -39,6 +41,10 @@ export interface TaskHeaderProps {
 	buttonsDisabled: boolean
 	handleCondenseContext: (taskId: string) => void
 	todos?: any[]
+	/** Optional per-model usage breakdown rendered below the timeline. */
+	usage?: SessionModelUsage
+	/** Optional provider metadata used to resolve human-readable model names. */
+	providers?: Record<string, ProviderInfo>
 }
 
 const TaskHeader = ({
@@ -56,6 +62,8 @@ const TaskHeader = ({
 	buttonsDisabled,
 	handleCondenseContext,
 	todos,
+	usage,
+	providers,
 }: TaskHeaderProps) => {
 	const { t } = useTranslation()
 	const { apiConfiguration, currentTaskItem, clineMessages } = useExtensionState()
@@ -471,6 +479,16 @@ const TaskHeader = ({
 			<TaskTimeline
 				messages={clineMessages}
 				isBusy={buttonsDisabled}
+			/>
+			{/* Per-model token/cost breakdown (renders nothing when no usage data) */}
+			<TaskUsage
+				tokens={{
+					input: tokensIn,
+					output: tokensOut,
+					cached: cacheReads ?? 0,
+				}}
+				usage={usage}
+				providers={providers}
 			/>
 		</div>
 	)

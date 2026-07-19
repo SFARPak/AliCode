@@ -499,5 +499,18 @@
 	"timeline": {
 		"noActivity": "Session activity timeline, no activity",
 		"ariaLabel": "Session activity timeline, bar {{index}} of {{total}}: {{label}}"
+	},
+	"taskUsage": {
+		"tokens": "Tokens",
+		"cache": "cache",
+		"details": "Details",
+		"step": "step",
+		"steps": "steps",
+		"in": "In",
+		"out": "Out",
+		"reason": "Reason",
+		"cacheR": "Cache R",
+		"cacheW": "W",
+		"cacheHitRate": "Hit Rate"
 	}
 }
