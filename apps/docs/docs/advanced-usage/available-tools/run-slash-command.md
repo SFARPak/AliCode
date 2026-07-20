@@ -17,7 +17,7 @@ keywords:
 The `run_slash_command` tool is an experimental feature that must be explicitly enabled in settings. Navigate to Settings > Experimental Settings and enable "Run Slash Command" to use this tool.
 :::
 
-The `run_slash_command` tool executes predefined slash commands to retrieve specific instructions or content templates. These commands act as reusable instruction sets for common tasks, providing detailed guidance that Roo can interpret and execute. Commands can be defined at three levels with a clear priority hierarchy: project > global > built-in.
+The `run_slash_command` tool executes predefined slash commands to retrieve specific instructions or content templates. These commands act as reusable instruction sets for common tasks, providing detailed guidance that Ali can interpret and execute. Commands can be defined at three levels with a clear priority hierarchy: project > global > built-in.
 
 ---
 
@@ -32,7 +32,7 @@ The tool accepts these parameters:
 
 ## What It Does
 
-This tool retrieves and executes instruction templates defined as markdown files in command directories. It enables standardized workflows, reusable task instructions, and team-wide consistency through shared command templates. The tool validates experimental flag status, resolves commands through the priority hierarchy, and returns formatted instructions for Roo to interpret.
+This tool retrieves and executes instruction templates defined as markdown files in command directories. It enables standardized workflows, reusable task instructions, and team-wide consistency through shared command templates. The tool validates experimental flag status, resolves commands through the priority hierarchy, and returns formatted instructions for Ali to interpret.
 
 ---
 
@@ -48,7 +48,7 @@ This tool retrieves and executes instruction templates defined as markdown files
 
 ## Key Features
 
-- **Three-Level Command System**: Built-in, global (~/.roo/commands/), and project-specific (.roo/commands/) commands
+- **Three-Level Command System**: Built-in, global (~/.ali/commands/), and project-specific (.ali/commands/) commands
 - **Priority Hierarchy**: Project commands override global, which override built-in commands
 - **Markdown-Based Templates**: Simple `.md` files with optional YAML frontmatter for metadata
 - **Dynamic Arguments**: Pass context-specific arguments to customize command execution
@@ -100,8 +100,8 @@ When the `run_slash_command` tool is invoked, it follows this process:
 
 3. **Command Resolution**:
 
-    - Searches project directory first (`.roo/commands/`)
-    - Falls back to global directory (`~/.roo/commands/`)
+    - Searches project directory first (`.ali/commands/`)
+    - Falls back to global directory (`~/.ali/commands/`)
     - Finally checks built-in commands
     - Returns undefined if command doesn't exist
 
@@ -159,8 +159,8 @@ This can include:
 ### Directory Locations
 
 1. **Built-in Commands**: Hardcoded in source code
-2. **Global Commands**: `~/.roo/commands/`
-3. **Project Commands**: `<project-root>/.roo/commands/`
+2. **Global Commands**: `~/.ali/commands/`
+3. **Project Commands**: `<project-root>/.ali/commands/`
 
 ---
 
@@ -186,17 +186,17 @@ The only current built-in command analyzes your codebase and creates documentati
 
     ```bash
     # For project-specific commands
-    mkdir -p .roo/commands
+    mkdir -p .ali/commands
 
     # For global commands
-    mkdir -p ~/.roo/commands
+    mkdir -p ~/.ali/commands
     ```
 
 2. **Create Command File**:
 
     ```bash
     # Create a deployment command
-    touch .roo/commands/deploy.md
+    touch .ali/commands/deploy.md
     ```
 
 3. **Add Command Content**:
@@ -228,13 +228,13 @@ When multiple commands with the same name exist:
 
 1. **Project Level** (highest priority)
 
-    - Located in `.roo/commands/`
+    - Located in `.ali/commands/`
     - Allows project-specific overrides
     - Committed to version control for team sharing
 
 2. **Global Level** (medium priority)
 
-    - Located in `~/.roo/commands/`
+    - Located in `~/.ali/commands/`
     - Shared across all projects
     - User-specific customizations
 
@@ -247,11 +247,11 @@ When multiple commands with the same name exist:
 
 ## Examples When Used
 
-- When initializing a new project, Roo executes `/init` to analyze the codebase structure and create comprehensive documentation.
-- When deploying applications, Roo retrieves standardized deployment instructions specific to the project's infrastructure.
-- When implementing features, Roo accesses team-agreed patterns and best practices through custom commands.
-- When setting up development environments, Roo follows project-specific setup instructions consistently.
-- When performing code reviews, Roo uses standardized review checklists defined as commands.
+- When initializing a new project, Ali executes `/init` to analyze the codebase structure and create comprehensive documentation.
+- When deploying applications, Ali retrieves standardized deployment instructions specific to the project's infrastructure.
+- When implementing features, Ali accesses team-agreed patterns and best practices through custom commands.
+- When setting up development environments, Ali follows project-specific setup instructions consistently.
+- When performing code reviews, Ali uses standardized review checklists defined as commands.
 
 ---
 

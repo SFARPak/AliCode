@@ -1,4 +1,4 @@
-// pnpm --filter roo-cline test core/task-persistence/__tests__/TaskHistoryStore.spec.ts
+// pnpm --filter alicode test core/task-persistence/__tests__/TaskHistoryStore.spec.ts
 
 import * as fs from "fs/promises"
 import * as path from "path"

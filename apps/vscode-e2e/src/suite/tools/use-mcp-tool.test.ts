@@ -30,7 +30,7 @@ suite.skip("AliCode use_mcp_tool Tool", function () {
 		testFiles = {
 			simple: path.join(workspaceDir, `mcp-test-${Date.now()}.txt`),
 			testData: path.join(workspaceDir, `mcp-data-${Date.now()}.json`),
-			mcpConfig: path.join(workspaceDir, ".roo", "mcp.json"),
+			mcpConfig: path.join(workspaceDir, ".ali", "mcp.json"),
 		}
 
 		// Create initial test files
@@ -38,8 +38,8 @@ suite.skip("AliCode use_mcp_tool Tool", function () {
 		await fs.writeFile(testFiles.testData, JSON.stringify({ test: "data", value: 42 }, null, 2))
 
 		// Create .roo directory and MCP configuration file
-		const rooDir = path.join(workspaceDir, ".roo")
-		await fs.mkdir(rooDir, { recursive: true })
+		const aliDir = path.join(workspaceDir, ".ali")
+		await fs.mkdir(aliDir, { recursive: true })
 
 		const mcpConfig = {
 			mcpServers: {
@@ -76,9 +76,9 @@ suite.skip("AliCode use_mcp_tool Tool", function () {
 
 		// Clean up .roo directory
 		const workspaceDir = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || tempDir
-		const rooDir = path.join(workspaceDir, ".roo")
+		const aliDir = path.join(workspaceDir, ".ali")
 		try {
-			await fs.rm(rooDir, { recursive: true, force: true })
+			await fs.rm(aliDir, { recursive: true, force: true })
 		} catch {
 			// Directory might not exist
 		}
@@ -515,12 +515,12 @@ suite.skip("AliCode use_mcp_tool Tool", function () {
 				responseText.includes("mcp-test-") || responseText.includes(path.basename(testFiles.simple))
 			const hasDataFile =
 				responseText.includes("mcp-data-") || responseText.includes(path.basename(testFiles.testData))
-			const hasRooDir = responseText.includes(".roo")
+			const hasRooDir = responseText.includes(".ali")
 
 			// At least one of our test files or the .roo directory should be present
 			assert.ok(
 				hasTestFile || hasDataFile || hasRooDir,
-				`MCP server response should contain our test files or .roo directory. Expected to find: '${path.basename(testFiles.simple)}', '${path.basename(testFiles.testData)}', or '.roo'. Got: ${responseText.substring(0, 200)}...`,
+				`MCP server response should contain our test files or .roo directory. Expected to find: '${path.basename(testFiles.simple)}', '${path.basename(testFiles.testData)}', or '.ali'. Got: ${responseText.substring(0, 200)}...`,
 			)
 
 			// Check for typical directory listing indicators
@@ -661,7 +661,7 @@ suite.skip("AliCode use_mcp_tool Tool", function () {
 			const hasTestFiles =
 				responseText.includes("mcp-test-") ||
 				responseText.includes("mcp-data-") ||
-				responseText.includes(".roo") ||
+				responseText.includes(".ali") ||
 				responseText.includes(".txt") ||
 				responseText.includes(".json") ||
 				responseText.length > 10 // At least some content indicating directory structure

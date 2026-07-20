@@ -1,4 +1,4 @@
-// pnpm --filter roo-cline test core/webview/__tests__/ClineProvider.taskHistory.spec.ts
+// pnpm --filter alicode test core/webview/__tests__/ClineProvider.taskHistory.spec.ts
 
 import * as vscode from "vscode"
 import type { HistoryItem, ExtensionMessage } from "@ali-code/types"

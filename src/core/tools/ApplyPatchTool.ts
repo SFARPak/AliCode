@@ -108,7 +108,7 @@ export class ApplyPatchTool extends BaseTool<"apply_patch"> {
 				const absolutePath = path.resolve(task.cwd, relPath)
 
 				// Check access permissions
-				const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+				const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 				if (!accessAllowed) {
 					await task.say("rooignore_error", relPath)
 					pushToolResult(formatResponse.rooIgnoreError(relPath))
@@ -116,7 +116,7 @@ export class ApplyPatchTool extends BaseTool<"apply_patch"> {
 				}
 
 				// Check if file is write-protected
-				const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath) || false
+				const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath) || false
 
 				if (change.type === "add") {
 					// Create new file
@@ -375,7 +375,7 @@ export class ApplyPatchTool extends BaseTool<"apply_patch"> {
 			const moveAbsolutePath = path.resolve(task.cwd, change.movePath)
 
 			// Validate destination path access permissions
-			const moveAccessAllowed = task.rooIgnoreController?.validateAccess(change.movePath)
+			const moveAccessAllowed = task.aliIgnoreController?.validateAccess(change.movePath)
 			if (!moveAccessAllowed) {
 				await task.say("rooignore_error", change.movePath)
 				pushToolResult(formatResponse.rooIgnoreError(change.movePath))
@@ -384,7 +384,7 @@ export class ApplyPatchTool extends BaseTool<"apply_patch"> {
 			}
 
 			// Check if destination path is write-protected
-			const isMovePathWriteProtected = task.rooProtectedController?.isWriteProtected(change.movePath) || false
+			const isMovePathWriteProtected = task.aliProtectedController?.isWriteProtected(change.movePath) || false
 			if (isMovePathWriteProtected) {
 				task.consecutiveMistakeCount++
 				task.recordToolError("apply_patch")

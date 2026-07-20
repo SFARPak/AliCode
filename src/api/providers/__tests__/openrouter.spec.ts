@@ -1,4 +1,4 @@
-// pnpm --filter roo-cline test api/providers/__tests__/openrouter.spec.ts
+// pnpm --filter alicode test api/providers/__tests__/openrouter.spec.ts
 
 vitest.mock("vscode", () => ({}))
 

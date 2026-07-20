@@ -1,5 +1,5 @@
 {
-	"greeting": "Selamat datang di Roo Code",
+	"greeting": "Selamat datang di Ali Code",
 	"task": {
 		"title": "Tugas",
 		"expand": "Perluas tugas",
@@ -120,7 +120,7 @@
 	"enqueueMessage": "Tambahkan pesan ke antrean (akan dikirim setelah tugas saat ini selesai)",
 	"scrollToBottom": "Gulir ke bawah chat",
 	"scrollToLatestCheckpoint": "Gulir ke checkpoint sebelumnya",
-	"about": "Roo Code adalah seluruh tim pengembang AI di editor Anda.",
+	"about": "Ali Code adalah seluruh tim pengembang AI di editor Anda.",
 	"docs": "Lihat <DocsLink>dokumentasi</DocsLink> kami untuk mempelajari lebih lanjut.",
 	"onboarding": "Daftar tugas Anda di ruang kerja ini kosong.",
 	"rooTips": {
@@ -142,7 +142,7 @@
 	"modeSelector": {
 		"title": "Mode",
 		"settings": "Pengaturan Mode",
-		"description": "Persona khusus yang menyesuaikan perilaku Roo.",
+		"description": "Persona khusus yang menyesuaikan perilaku Ali.",
 		"searchPlaceholder": "Cari mode...",
 		"noResults": "Tidak ada hasil yang ditemukan"
 	},
@@ -218,51 +218,51 @@
 		}
 	},
 	"skill": {
-		"wantsToLoad": "Roo ingin memuat keterampilan",
-		"didLoad": "Roo telah memuat keterampilan"
+		"wantsToLoad": "Ali ingin memuat keterampilan",
+		"didLoad": "Ali telah memuat keterampilan"
 	},
 	"instructions": {
-		"wantsToFetch": "Roo ingin mengambil instruksi detail untuk membantu tugas saat ini"
+		"wantsToFetch": "Ali ingin mengambil instruksi detail untuk membantu tugas saat ini"
 	},
 	"fileOperations": {
-		"wantsToRead": "Roo ingin membaca file ini",
-		"wantsToReadMultiple": "Roo ingin membaca beberapa file",
-		"wantsToReadAndXMore": "Roo ingin membaca file ini dan {{count}} lainnya",
-		"wantsToReadOutsideWorkspace": "Roo ingin membaca file ini di luar workspace",
-		"didRead": "Roo membaca file ini",
-		"wantsToEdit": "Roo ingin mengedit file ini",
-		"wantsToEditOutsideWorkspace": "Roo ingin mengedit file ini di luar workspace",
-		"wantsToEditProtected": "Roo ingin mengedit file konfigurasi yang dilindungi",
-		"wantsToApplyBatchChanges": "Roo ingin menerapkan perubahan ke beberapa file",
-		"wantsToGenerateImage": "Roo ingin menghasilkan gambar",
-		"wantsToGenerateImageOutsideWorkspace": "Roo ingin menghasilkan gambar di luar workspace",
-		"wantsToGenerateImageProtected": "Roo ingin menghasilkan gambar di lokasi yang dilindungi",
-		"didGenerateImage": "Roo telah menghasilkan gambar",
-		"wantsToCreate": "Roo ingin membuat file baru",
-		"wantsToSearchReplace": "Roo ingin mencari dan mengganti di file ini",
-		"didSearchReplace": "Roo melakukan pencarian dan penggantian pada file ini",
-		"wantsToInsert": "Roo ingin menyisipkan konten ke file ini",
-		"wantsToInsertWithLineNumber": "Roo ingin menyisipkan konten ke file ini di baris {{lineNumber}}",
-		"wantsToInsertAtEnd": "Roo ingin menambahkan konten ke akhir file ini"
+		"wantsToRead": "Ali ingin membaca file ini",
+		"wantsToReadMultiple": "Ali ingin membaca beberapa file",
+		"wantsToReadAndXMore": "Ali ingin membaca file ini dan {{count}} lainnya",
+		"wantsToReadOutsideWorkspace": "Ali ingin membaca file ini di luar workspace",
+		"didRead": "Ali membaca file ini",
+		"wantsToEdit": "Ali ingin mengedit file ini",
+		"wantsToEditOutsideWorkspace": "Ali ingin mengedit file ini di luar workspace",
+		"wantsToEditProtected": "Ali ingin mengedit file konfigurasi yang dilindungi",
+		"wantsToApplyBatchChanges": "Ali ingin menerapkan perubahan ke beberapa file",
+		"wantsToGenerateImage": "Ali ingin menghasilkan gambar",
+		"wantsToGenerateImageOutsideWorkspace": "Ali ingin menghasilkan gambar di luar workspace",
+		"wantsToGenerateImageProtected": "Ali ingin menghasilkan gambar di lokasi yang dilindungi",
+		"didGenerateImage": "Ali telah menghasilkan gambar",
+		"wantsToCreate": "Ali ingin membuat file baru",
+		"wantsToSearchReplace": "Ali ingin mencari dan mengganti di file ini",
+		"didSearchReplace": "Ali melakukan pencarian dan penggantian pada file ini",
+		"wantsToInsert": "Ali ingin menyisipkan konten ke file ini",
+		"wantsToInsertWithLineNumber": "Ali ingin menyisipkan konten ke file ini di baris {{lineNumber}}",
+		"wantsToInsertAtEnd": "Ali ingin menambahkan konten ke akhir file ini"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Roo ingin melihat file tingkat atas di direktori ini",
-		"didViewTopLevel": "Roo melihat file tingkat atas di direktori ini",
-		"wantsToViewRecursive": "Roo ingin melihat semua file secara rekursif di direktori ini",
-		"didViewRecursive": "Roo melihat semua file secara rekursif di direktori ini",
-		"wantsToSearch": "Roo ingin mencari direktori ini untuk <code>{{regex}}</code>",
-		"didSearch": "Roo mencari direktori ini untuk <code>{{regex}}</code>",
-		"wantsToSearchOutsideWorkspace": "Roo ingin mencari direktori ini (di luar workspace) untuk <code>{{regex}}</code>",
-		"didSearchOutsideWorkspace": "Roo mencari direktori ini (di luar workspace) untuk <code>{{regex}}</code>",
-		"wantsToViewTopLevelOutsideWorkspace": "Roo ingin melihat file tingkat atas di direktori ini (di luar workspace)",
-		"didViewTopLevelOutsideWorkspace": "Roo melihat file tingkat atas di direktori ini (di luar workspace)",
-		"wantsToViewRecursiveOutsideWorkspace": "Roo ingin melihat semua file secara rekursif di direktori ini (di luar workspace)",
-		"didViewRecursiveOutsideWorkspace": "Roo melihat semua file secara rekursif di direktori ini (di luar workspace)",
-		"wantsToViewMultipleDirectories": "Roo ingin melihat beberapa direktori"
+		"wantsToViewTopLevel": "Ali ingin melihat file tingkat atas di direktori ini",
+		"didViewTopLevel": "Ali melihat file tingkat atas di direktori ini",
+		"wantsToViewRecursive": "Ali ingin melihat semua file secara rekursif di direktori ini",
+		"didViewRecursive": "Ali melihat semua file secara rekursif di direktori ini",
+		"wantsToSearch": "Ali ingin mencari direktori ini untuk <code>{{regex}}</code>",
+		"didSearch": "Ali mencari direktori ini untuk <code>{{regex}}</code>",
+		"wantsToSearchOutsideWorkspace": "Ali ingin mencari direktori ini (di luar workspace) untuk <code>{{regex}}</code>",
+		"didSearchOutsideWorkspace": "Ali mencari direktori ini (di luar workspace) untuk <code>{{regex}}</code>",
+		"wantsToViewTopLevelOutsideWorkspace": "Ali ingin melihat file tingkat atas di direktori ini (di luar workspace)",
+		"didViewTopLevelOutsideWorkspace": "Ali melihat file tingkat atas di direktori ini (di luar workspace)",
+		"wantsToViewRecursiveOutsideWorkspace": "Ali ingin melihat semua file secara rekursif di direktori ini (di luar workspace)",
+		"didViewRecursiveOutsideWorkspace": "Ali melihat semua file secara rekursif di direktori ini (di luar workspace)",
+		"wantsToViewMultipleDirectories": "Ali ingin melihat beberapa direktori"
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Roo ingin mencari codebase untuk <code>{{query}}</code>",
-		"wantsToSearchWithPath": "Roo ingin mencari codebase untuk <code>{{query}}</code> di <code>{{path}}</code>",
+		"wantsToSearch": "Ali ingin mencari codebase untuk <code>{{query}}</code>",
+		"wantsToSearchWithPath": "Ali ingin mencari codebase untuk <code>{{query}}</code> di <code>{{path}}</code>",
 		"didSearch_one": "Ditemukan 1 hasil",
 		"didSearch_other": "Ditemukan {{count}} hasil",
 		"resultTooltip": "Skor kemiripan: {{score}} (klik untuk membuka file)"
@@ -287,24 +287,24 @@
 	"response": "Respons",
 	"arguments": "Argumen",
 	"text": {
-		"rooSaid": "Roo berkata"
+		"rooSaid": "Ali berkata"
 	},
 	"feedback": {
 		"youSaid": "Anda bilang"
 	},
 	"mcp": {
-		"wantsToUseTool": "Roo ingin menggunakan tool di server MCP {{serverName}}",
-		"wantsToAccessResource": "Roo ingin mengakses resource di server MCP {{serverName}}"
+		"wantsToUseTool": "Ali ingin menggunakan tool di server MCP {{serverName}}",
+		"wantsToAccessResource": "Ali ingin mengakses resource di server MCP {{serverName}}"
 	},
 	"modes": {
-		"wantsToSwitch": "Roo ingin beralih ke mode {{mode}}",
-		"wantsToSwitchWithReason": "Roo ingin beralih ke mode {{mode}} karena: {{reason}}",
-		"didSwitch": "Roo beralih ke mode {{mode}}",
-		"didSwitchWithReason": "Roo beralih ke mode {{mode}} karena: {{reason}}"
+		"wantsToSwitch": "Ali ingin beralih ke mode {{mode}}",
+		"wantsToSwitchWithReason": "Ali ingin beralih ke mode {{mode}} karena: {{reason}}",
+		"didSwitch": "Ali beralih ke mode {{mode}}",
+		"didSwitchWithReason": "Ali beralih ke mode {{mode}} karena: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Roo ingin membuat subtugas baru dalam mode {{mode}}",
-		"wantsToFinish": "Roo ingin menyelesaikan subtugas ini",
+		"wantsToCreate": "Ali ingin membuat subtugas baru dalam mode {{mode}}",
+		"wantsToFinish": "Ali ingin menyelesaikan subtugas ini",
 		"newTaskContent": "Instruksi Subtugas",
 		"completionContent": "Subtugas Selesai",
 		"resultContent": "Hasil Subtugas",
@@ -313,7 +313,7 @@
 		"goToSubtask": "Lihat tugas"
 	},
 	"questions": {
-		"hasQuestion": "Roo punya pertanyaan"
+		"hasQuestion": "Ali punya pertanyaan"
 	},
 	"taskCompleted": "Tugas Selesai",
 	"error": "Error",
@@ -327,14 +327,14 @@
 	"diffError": {
 		"title": "Edit Tidak Berhasil"
 	},
-	"troubleMessage": "Roo mengalami masalah...",
+	"troubleMessage": "Ali mengalami masalah...",
 	"errorDetails": {
 		"link": "Details",
 		"title": "Detail Kesalahan",
 		"copyToClipboard": "Salin ke Clipboard",
 		"copied": "Disalin!",
 		"diagnostics": "Dapatkan informasi kesalahan terperinci",
-		"proxyProvider": "Tampaknya kamu menggunakan penyedia berbasis proxy. Pastikan untuk memeriksa log-nya dan memastikan tidak menulis ulang permintaan Roo."
+		"proxyProvider": "Tampaknya kamu menggunakan penyedia berbasis proxy. Pastikan untuk memeriksa log-nya dan memastikan tidak menulis ulang permintaan Ali."
 	},
 	"powershell": {
 		"issues": "Sepertinya kamu mengalami masalah Windows PowerShell, silakan lihat ini"
@@ -358,18 +358,18 @@
 		"triggerLabelAll": "BRRR"
 	},
 	"announcement": {
-		"title": "Roo Code {{version}} Dirilis",
-		"support": "Dukung Roo Code dengan memberi kami bintang di <githubLink>GitHub</githubLink>.",
+		"title": "Ali Code {{version}} Dirilis",
+		"support": "Dukung Ali Code dengan memberi kami bintang di <githubLink>GitHub</githubLink>.",
 		"finalRelease": {
-			"title": "Rilis Roo Code terakhir",
-			"intro": "Ini adalah rilis Roo Code terakhir. <announcementLink>Seperti yang kami umumkan beberapa minggu lalu</announcementLink>, kami memutuskan untuk mengalihkan fokus ke <roomoteLink>Roomote</roomoteLink>, platform agen cloud kami, yang kami yakini sebagai masa depan pengembangan perangkat lunak. Terima kasih banyak atas dukunganmu selama kira-kira setahun terakhir.",
+			"title": "Rilis Ali Code terakhir",
+			"intro": "Ini adalah rilis Ali Code terakhir. <announcementLink>Seperti yang kami umumkan beberapa minggu lalu</announcementLink>, kami memutuskan untuk mengalihkan fokus ke <roomoteLink>Roomote</roomoteLink>, platform agen cloud kami, yang kami yakini sebagai masa depan pengembangan perangkat lunak. Terima kasih banyak atas dukunganmu selama kira-kira setahun terakhir.",
 			"continuity": "Ekstensi ini seharusnya tetap berfungsi tanpa batas waktu, tetapi tidak akan menerima perbaikan bug, fitur baru, atau pembaruan model.",
-			"alternatives": "Jika kamu ingin menggunakan ekstensi, kami merekomendasikan <zooCodeLink>ZooCode</zooCodeLink> (fork Roo Code oleh komunitas) dan <clineLink>Cline</clineLink> (tempat Roo Code awalnya bermula).",
+			"alternatives": "Jika kamu ingin menggunakan ekstensi, kami merekomendasikan <zooCodeLink>ZooCode</zooCodeLink> (fork Ali Code oleh komunitas) dan <clineLink>Cline</clineLink> (tempat Ali Code awalnya bermula).",
 			"signoff": "Selamat coding!"
 		},
 		"release": {
 			"heading": "Yang Baru:",
-			"gpt55": "GPT-5.5 via OpenAI Codex: Dukungan GPT-5.5 ditambahkan di provider OpenAI Codex agar kamu bisa menggunakan model terbaru langsung dari Roo Code.",
+			"gpt55": "GPT-5.5 via OpenAI Codex: Dukungan GPT-5.5 ditambahkan di provider OpenAI Codex agar kamu bisa menggunakan model terbaru langsung dari Ali Code.",
 			"claudeOpus47": "Claude Opus 4.7 di Vertex AI: Claude Opus 4.7 ditambahkan ke provider Vertex AI untuk model reasoning andalan terbaru dari Anthropic.",
 			"checkpointNav": "Navigasi Checkpoint Sebelumnya: Menambahkan kontrol di chat untuk melompat kembali ke checkpoint sebelumnya, dengan dukungan i18n penuh."
 		},
@@ -403,18 +403,18 @@
 	"profileViolationWarning": "Profil saat ini tidak kompatibel dengan pengaturan organisasi kamu",
 	"shellIntegration": {
 		"title": "Peringatan Eksekusi Perintah",
-		"description": "Perintah kamu dijalankan tanpa integrasi shell terminal VSCode. Untuk menekan peringatan ini kamu bisa menonaktifkan integrasi shell di bagian <strong>Terminal</strong> dari <settingsLink>pengaturan Roo Code</settingsLink> atau troubleshoot integrasi terminal VSCode menggunakan link di bawah.",
+		"description": "Perintah kamu dijalankan tanpa integrasi shell terminal VSCode. Untuk menekan peringatan ini kamu bisa menonaktifkan integrasi shell di bagian <strong>Terminal</strong> dari <settingsLink>pengaturan Ali Code</settingsLink> atau troubleshoot integrasi terminal VSCode menggunakan link di bawah.",
 		"troubleshooting": "Klik di sini untuk dokumentasi integrasi shell."
 	},
 	"ask": {
 		"autoApprovedRequestLimitReached": {
 			"title": "Batas Permintaan yang Disetujui Otomatis Tercapai",
-			"description": "Roo telah mencapai batas {{count}} permintaan API yang disetujui otomatis. Apakah Anda ingin mengatur ulang hitungan dan melanjutkan tugas?",
+			"description": "Ali telah mencapai batas {{count}} permintaan API yang disetujui otomatis. Apakah Anda ingin mengatur ulang hitungan dan melanjutkan tugas?",
 			"button": "Setel Ulang dan Lanjutkan"
 		},
 		"autoApprovedCostLimitReached": {
 			"title": "Batas Biaya yang Disetujui Otomatis Tercapai",
-			"description": "Roo telah mencapai batas biaya yang disetujui otomatis sebesar ${{count}}. Apakah Anda ingin mengatur ulang biaya dan melanjutkan tugas?",
+			"description": "Ali telah mencapai batas biaya yang disetujui otomatis sebesar ${{count}}. Apakah Anda ingin mengatur ulang biaya dan melanjutkan tugas?",
 			"button": "Setel Ulang dan Lanjutkan"
 		}
 	},
@@ -466,8 +466,8 @@
 		"clickToEdit": "Klik untuk mengedit pesan"
 	},
 	"slashCommand": {
-		"wantsToRun": "Roo ingin menjalankan perintah slash",
-		"didRun": "Roo telah menjalankan perintah slash"
+		"wantsToRun": "Ali ingin menjalankan perintah slash",
+		"didRun": "Ali telah menjalankan perintah slash"
 	},
 	"todo": {
 		"partial": "{{completed}} dari {{total}} to-do selesai",
@@ -486,12 +486,12 @@
 		"openMcpSettings": "Buka Pengaturan MCP"
 	},
 	"readCommandOutput": {
-		"title": "Roo read command output"
+		"title": "Ali read command output"
 	},
 	"retiredProvider": {
 		"title": "Penyedia tidak lagi didukung",
 		"message": "This provider is no longer supported. Please select a different provider in your API profile settings.",
 		"openSettings": "Buka Pengaturan",
-		"rooMessage": "As part of our decision to sunset the Roo Code extension, we also ended the Roo Code Router, which only existed to support the extension. Sorry about the hassle."
+		"rooMessage": "As part of our decision to sunset the Ali Code extension, we also ended the Ali Code Router, which only existed to support the extension. Sorry about the hassle."
 	}
 }

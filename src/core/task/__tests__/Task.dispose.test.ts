@@ -10,8 +10,8 @@ vi.mock("../../../integrations/terminal/TerminalRegistry", () => ({
 		releaseTerminalsForTask: vi.fn(),
 	},
 }))
-vi.mock("../../ignore/RooIgnoreController")
-vi.mock("../../protect/RooProtectedController")
+vi.mock("../../ignore/AliIgnoreController")
+vi.mock("../../protect/AliProtectedController")
 vi.mock("../../context-tracking/FileContextTracker")
 vi.mock("../../../integrations/editor/DiffViewProvider")
 vi.mock("../../tools/ToolRepetitionDetector")

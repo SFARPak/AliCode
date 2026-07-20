@@ -147,7 +147,7 @@ export class ReadFileTool extends BaseTool<"read_file"> {
 				const relPath = fileResult.path
 
 				// RooIgnore validation
-				const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+				const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 				if (!accessAllowed) {
 					await task.say("rooignore_error", relPath)
 					const errorMsg = formatResponse.rooIgnoreError(relPath)
@@ -689,7 +689,7 @@ export class ReadFileTool extends BaseTool<"read_file"> {
 			const fullPath = path.resolve(task.cwd, relPath)
 
 			// RooIgnore validation
-			const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+			const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 			if (!accessAllowed) {
 				await task.say("rooignore_error", relPath)
 				const errorMsg = formatResponse.rooIgnoreError(relPath)

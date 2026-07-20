@@ -99,7 +99,7 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				"@": resolve(__dirname, "./src"),
 				"@src": resolve(__dirname, "./src"),
-				"@roo": resolve(__dirname, "../src/shared"),
+				"@ali": resolve(__dirname, "../src/shared"),
 				"../core/prompts/sections/custom-instructions": resolve(
 					__dirname,
 					"./src/__mocks__/custom-instructions.ts",

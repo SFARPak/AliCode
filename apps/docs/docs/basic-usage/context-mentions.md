@@ -94,7 +94,7 @@ For comprehensive details on how AliCode integrates with VSCode's diagnostics sy
 
 ### Terminal Mention
 
-<img src="/img/context-mentions/context-mentions-4.png" alt="Terminal mention example showing terminal output being included in Roo's context" width="600" />
+<img src="/img/context-mentions/context-mentions-4.png" alt="Terminal mention example showing terminal output being included in Ali's context" width="600" />
 
 _Terminal mentions capture recent command output for debugging and analysis._
 
@@ -108,7 +108,7 @@ _Terminal mentions capture recent command output for debugging and analysis._
 
 ### Git Mentions
 
-<img src="/img/context-mentions/context-mentions-5.png" alt="Git commit mention example showing commit details being analyzed by Roo" width="600" />
+<img src="/img/context-mentions/context-mentions-5.png" alt="Git commit mention example showing commit details being analyzed by Ali" width="600" />
 
 _Git mentions provide commit details and diffs for context-aware version analysis._
 | Type | Format | Provides | Limitations |
@@ -161,7 +161,7 @@ The dropdown automatically suggests:
 - Special keywords (`problems`, `terminal`, `git-changes`)
 - **All currently open files** (regardless of ignore settings or directory filters)
 
-The dropdown respects `.rooignore` by default, hiding ignored files from suggestions. Enable the `showRooIgnoredFiles` setting to include ignored files in the dropdown (they'll appear with a 🔒 indicator). Common directories like `node_modules`, `.git`, `dist`, and `out` are also filtered to reduce noise.
+The dropdown respects `.aliignore` by default, hiding ignored files from suggestions. Enable the `showAliIgnoredFiles` setting to include ignored files in the dropdown (they'll appear with a 🔒 indicator). Common directories like `node_modules`, `.git`, `dist`, and `out` are also filtered to reduce noise.
 
 ---
 
@@ -171,8 +171,8 @@ The dropdown respects `.rooignore` by default, hiding ignored files from suggest
 
 | Behavior                | Description                                                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Dropdown filtering**  | The `@` dropdown hides `.rooignore`-matched files by default. Enable `showRooIgnoredFiles` to see them (marked with 🔒).                                     |
-| **`.rooignore` bypass** | File and folder `@mentions` bypass `.rooignore` checks when fetching content for context. Content from ignored files will be included if directly mentioned. |
+| **Dropdown filtering**  | The `@` dropdown hides `.aliignore`-matched files by default. Enable `showAliIgnoredFiles` to see them (marked with 🔒).                                     |
+| **`.aliignore` bypass** | File and folder `@mentions` bypass `.aliignore` checks when fetching content for context. Content from ignored files will be included if directly mentioned. |
 | **`.gitignore` bypass** | Similarly, file and folder `@mentions` do not respect `.gitignore` rules when fetching content.                                                              |
 | **Git command respect** | Git-related mentions (`@git-changes`, `@commit-hash`) do respect `.gitignore` since they rely on Git commands.                                               |
 

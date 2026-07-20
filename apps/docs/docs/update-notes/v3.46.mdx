@@ -12,15 +12,15 @@ This is a combined view of the 3.46 release series, including 3.46.0, 3.46.1, an
 
 ## Parallel tool calling
 
-Roo can now run multiple tools in one response when the workflow benefits from it. This gives the model more freedom to batch independent steps (reads, searches, edits, etc.) instead of making a separate API call for each tool. This reduces back-and-forth turns on multi-step tasks where Roo needs several independent tool calls before it can propose or apply a change. ([#11031](https://github.com/RooCodeInc/Roo-Code/pull/11031), [#11046](https://github.com/RooCodeInc/Roo-Code/pull/11046))
+Ali can now run multiple tools in one response when the workflow benefits from it. This gives the model more freedom to batch independent steps (reads, searches, edits, etc.) instead of making a separate API call for each tool. This reduces back-and-forth turns on multi-step tasks where Ali needs several independent tool calls before it can propose or apply a change. ([#11031](https://github.com/RooCodeInc/Roo-Code/pull/11031), [#11046](https://github.com/RooCodeInc/Roo-Code/pull/11046))
 
 ## Total read_file tool overhaul
 
-Roo now caps file reads by default (2000 lines) to avoid context overflows, and it can page through larger files as needed. When Roo needs context around a specific line (for example, a stack trace points at line 42), it can also request the *entire* containing function or class instead of an arbitrary “lines 40–60” slice. Under the hood, `read_file` now has two explicit modes: **slice** (`offset`/`limit`) for chunked reads, and **indentation** (anchored on a target line) for semantic extraction. (thanks pwilkin!) ([#10981](https://github.com/RooCodeInc/Roo-Code/pull/10981))
+Ali now caps file reads by default (2000 lines) to avoid context overflows, and it can page through larger files as needed. When Ali needs context around a specific line (for example, a stack trace points at line 42), it can also request the *entire* containing function or class instead of an arbitrary “lines 40–60” slice. Under the hood, `read_file` now has two explicit modes: **slice** (`offset`/`limit`) for chunked reads, and **indentation** (anchored on a target line) for semantic extraction. (thanks pwilkin!) ([#10981](https://github.com/RooCodeInc/Roo-Code/pull/10981))
 
 ## Terminal handling overhaul
 
-When a command produces a lot of output, Roo now caps how much of that output it includes in the model’s context. The omitted portion is saved as an artifact. Roo can then page through the full output or search it on demand, so large builds and test runs stay debuggable without stuffing the entire log into every request. ([#10944](https://github.com/RooCodeInc/Roo-Code/pull/10944), [#11056](https://github.com/RooCodeInc/Roo-Code/pull/11056))
+When a command produces a lot of output, Ali now caps how much of that output it includes in the model’s context. The omitted portion is saved as an artifact. Ali can then page through the full output or search it on demand, so large builds and test runs stay debuggable without stuffing the entire log into every request. ([#10944](https://github.com/RooCodeInc/Roo-Code/pull/10944), [#11056](https://github.com/RooCodeInc/Roo-Code/pull/11056))
 
 ## Skills management in Settings
 

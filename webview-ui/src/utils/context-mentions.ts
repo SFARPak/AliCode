@@ -2,7 +2,7 @@ import { Fzf } from "fzf"
 
 import type { ModeConfig, Command } from "@ali-code/types"
 
-import { mentionRegex } from "@roo/context-mentions"
+import { mentionRegex } from "@ali/context-mentions"
 
 import { escapeSpaces } from "./path-mentions"
 

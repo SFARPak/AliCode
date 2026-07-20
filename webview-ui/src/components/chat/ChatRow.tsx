@@ -13,10 +13,10 @@ import type {
 	ClineSayTool,
 } from "@ali-code/types"
 
-import { Mode } from "@roo/modes"
+import { Mode } from "@ali/modes"
 
-import { COMMAND_OUTPUT_STRING } from "@roo/combineCommandSequences"
-import { safeJsonParse } from "@roo/core"
+import { COMMAND_OUTPUT_STRING } from "@ali/combineCommandSequences"
+import { safeJsonParse } from "@ali/core"
 
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { findMatchingResourceOrTemplate } from "@src/utils/mcp"

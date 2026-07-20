@@ -1,4 +1,4 @@
-// pnpm --filter roo-cline test core/webview/__tests__/ClineProvider.spec.ts
+// pnpm --filter alicode test core/webview/__tests__/ClineProvider.spec.ts
 
 import Anthropic from "@anthropic-ai/sdk"
 import * as vscode from "vscode"
@@ -515,7 +515,7 @@ describe("ClineProvider", () => {
 			experiments: experimentDefault,
 			maxOpenTabsContext: 20,
 			maxWorkspaceFiles: 200,
-			showRooIgnoredFiles: false,
+			showAliIgnoredFiles: false,
 			enableSubfolderRules: false,
 			renderContext: "sidebar",
 			maxImageFileSize: 5,
@@ -940,24 +940,24 @@ describe("ClineProvider", () => {
 		expect(provider.providerSettingsManager.activateProfile).toHaveBeenCalledWith({ id: "config-id-123" })
 	})
 
-	test("handles showRooIgnoredFiles setting", async () => {
+	test("handles showAliIgnoredFiles setting", async () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
 		// Default value should be false
-		expect((await provider.getState()).showRooIgnoredFiles).toBe(false)
+		expect((await provider.getState()).showAliIgnoredFiles).toBe(false)
 
-		// Test showRooIgnoredFiles with true
-		await messageHandler({ type: "updateSettings", updatedSettings: { showRooIgnoredFiles: true } })
-		expect(mockContext.globalState.update).toHaveBeenCalledWith("showRooIgnoredFiles", true)
+		// Test showAliIgnoredFiles with true
+		await messageHandler({ type: "updateSettings", updatedSettings: { showAliIgnoredFiles: true } })
+		expect(mockContext.globalState.update).toHaveBeenCalledWith("showAliIgnoredFiles", true)
 		expect(mockPostMessage).toHaveBeenCalled()
-		expect((await provider.getState()).showRooIgnoredFiles).toBe(true)
+		expect((await provider.getState()).showAliIgnoredFiles).toBe(true)
 
-		// Test showRooIgnoredFiles with false
-		await messageHandler({ type: "updateSettings", updatedSettings: { showRooIgnoredFiles: false } })
-		expect(mockContext.globalState.update).toHaveBeenCalledWith("showRooIgnoredFiles", false)
+		// Test showAliIgnoredFiles with false
+		await messageHandler({ type: "updateSettings", updatedSettings: { showAliIgnoredFiles: false } })
+		expect(mockContext.globalState.update).toHaveBeenCalledWith("showAliIgnoredFiles", false)
 		expect(mockPostMessage).toHaveBeenCalled()
-		expect((await provider.getState()).showRooIgnoredFiles).toBe(false)
+		expect((await provider.getState()).showAliIgnoredFiles).toBe(false)
 	})
 
 	test("handles updatePrompt message correctly", async () => {
@@ -2066,10 +2066,10 @@ describe("Project MCP Settings", () => {
 		expect(mockedFs.mkdir).toHaveBeenCalledWith("/test/workspace/.roo", { recursive: true })
 
 		// Verify file was created with default content
-		expect(safeWriteJson).toHaveBeenCalledWith("/test/workspace/.roo/mcp.json", { mcpServers: {} })
+		expect(safeWriteJson).toHaveBeenCalledWith("/test/workspace/.ali/mcp.json", { mcpServers: {} })
 
 		// Check that openFile was called
-		expect(openFileSpy).toHaveBeenCalledWith("/test/workspace/.roo/mcp.json")
+		expect(openFileSpy).toHaveBeenCalledWith("/test/workspace/.ali/mcp.json")
 	})
 
 	test("handles openProjectMcpSettings when workspace is not open", async () => {
@@ -2104,7 +2104,7 @@ describe("Project MCP Settings", () => {
 
 		// Verify error message was shown
 		expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
-			expect.stringContaining("Failed to create or open .roo/mcp.json"),
+			expect.stringContaining("Failed to create or open .ali/mcp.json"),
 		)
 	})
 })

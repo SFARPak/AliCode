@@ -189,7 +189,7 @@
 		"enter_valid_path": "Veuillez entrer un chemin valide"
 	},
 	"input": {
-		"task_prompt": "Que doit faire Roo ?",
+		"task_prompt": "Que doit faire Ali ?",
 		"task_placeholder": "Écris ta tâche ici"
 	},
 	"settings": {
@@ -197,8 +197,8 @@
 	},
 	"customModes": {
 		"errors": {
-			"yamlParseError": "YAML invalide dans le fichier .roomodes à la ligne {{line}}. Vérifie :\n• L'indentation correcte (utilise des espaces, pas de tabulations)\n• Les guillemets et crochets correspondants\n• La syntaxe YAML valide",
-			"schemaValidationError": "Format invalide des modes personnalisés dans .roomodes :\n{{issues}}",
+			"yamlParseError": "YAML invalide dans le fichier .alimodes à la ligne {{line}}. Vérifie :\n• L'indentation correcte (utilise des espaces, pas de tabulations)\n• Les guillemets et crochets correspondants\n• La syntaxe YAML valide",
+			"schemaValidationError": "Format invalide des modes personnalisés dans .alimodes :\n{{issues}}",
 			"invalidFormat": "Format invalide des modes personnalisés. Assure-toi que tes paramètres suivent le format YAML correct.",
 			"updateFailed": "Échec de la mise à jour du mode personnalisé : {{error}}",
 			"deleteFailed": "Échec de la suppression du mode personnalisé : {{error}}",

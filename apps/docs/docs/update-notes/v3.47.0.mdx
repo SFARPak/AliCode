@@ -42,6 +42,6 @@ Opus 4.6 also leads all frontier models on Terminal-Bench 2.0 (agentic coding), 
 
 ## Misc Improvements
 
-* **CLI dev experience and Roo provider API key support**: The CLI now supports a `--api-key` flag and `ROO_API_KEY` environment variable for Roo provider authentication, eliminating the need for `roo auth login` in CI/scripted workflows. Development uses `tsx` for direct source execution (no build step), and debug logging is gated behind `--debug`. ([#11203](https://github.com/RooCodeInc/Roo-Code/pull/11203))
+* **CLI dev experience and Ali provider API key support**: The CLI now supports a `--api-key` flag and `ROO_API_KEY` environment variable for Ali provider authentication, eliminating the need for `roo auth login` in CI/scripted workflows. Development uses `tsx` for direct source execution (no build step), and debug logging is gated behind `--debug`. ([#11203](https://github.com/RooCodeInc/Roo-Code/pull/11203))
 * **AliCode CLI v0.0.50**: Adds Linux platform support, a `--exit-on-error` flag for immediate exit on API errors, and all the dev-experience improvements from the API key support PR. ([#11204](https://github.com/RooCodeInc/Roo-Code/pull/11204))
 * **CLI mode changes no longer overwrite provider settings**: Fixes a race condition where CLI-provided provider settings (`--provider`, `--api-key`) were overwritten during slash-command-triggered mode switches. The initialization sequence now writes CLI settings before sending the webview launch signal. ([#11205](https://github.com/RooCodeInc/Roo-Code/pull/11205))

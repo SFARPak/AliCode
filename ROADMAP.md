@@ -1,6 +1,6 @@
 # ROADMAP
 
-This roadmap outlines the upcoming milestones for the Roo Code project, including target release versions and primary goals.
+This roadmap outlines the upcoming milestones for the Ali Code project, including target release versions and primary goals.
 
 ## Core Feature Completion (v3.49.0)
 
@@ -19,13 +19,13 @@ This roadmap outlines the upcoming milestones for the Roo Code project, includin
 ## Documentation & Release Preparation (v3.51.0)
 
 - Publish updated developer documentation covering the re‑branding and new CLI.
-- Add migration guides for existing Roo Code users.
+- Add migration guides for existing Ali Code users.
 - Prepare release notes and changelog automation.
 - Conduct a thorough QA cycle with community testing.
 
 ## Public Release (v3.52.0)
 
-- Release the stable version of Roo Code with the new branding.
+- Release the stable version of Ali Code with the new branding.
 - Distribute the VSIX package via the Marketplace.
 - Launch the official website and marketing assets.
 - Provide onboarding tutorials and sample projects.

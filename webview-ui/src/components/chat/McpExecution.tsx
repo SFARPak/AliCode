@@ -10,7 +10,7 @@ import {
 	mcpExecutionStatusSchema,
 } from "@ali-code/types"
 
-import { safeJsonParse } from "@roo/core"
+import { safeJsonParse } from "@ali/core"
 
 import { cn } from "@src/lib/utils"
 import { Button } from "@src/components/ui"

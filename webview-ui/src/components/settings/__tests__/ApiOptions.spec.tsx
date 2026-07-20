@@ -213,9 +213,9 @@ vi.mock("../providers/LiteLLM", () => ({
 	),
 }))
 
-// Mock Roo provider for tests
-vi.mock("../providers/Roo", () => ({
-	Roo: ({ cloudIsAuthenticated }: any) => (
+// Mock Ali provider for tests
+vi.mock("../providers/Ali", () => ({
+	Ali: ({ cloudIsAuthenticated }: any) => (
 		<div data-testid="roo-provider">{cloudIsAuthenticated ? "Authenticated" : "Not Authenticated"}</div>
 	),
 }))
@@ -582,10 +582,10 @@ describe("ApiOptions", () => {
 		expect(screen.queryByTestId("litellm-provider")).not.toBeInTheDocument()
 	})
 
-	it("renders Roo-specific retired provider message for Roo Code Router", () => {
+	it("renders Ali-specific retired provider message for Ali Code Router", () => {
 		renderApiOptions({
 			apiConfiguration: {
-				apiProvider: "roo" as any,
+				apiProvider: "ali" as any,
 			},
 		})
 

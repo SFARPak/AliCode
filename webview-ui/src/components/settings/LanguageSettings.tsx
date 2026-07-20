@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/i18n/TranslationContext"
 
 import type { Language } from "@ali-code/types"
 
-import { LANGUAGES } from "@roo/language"
+import { LANGUAGES } from "@ali/language"
 
 import { cn } from "@src/lib/utils"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui"

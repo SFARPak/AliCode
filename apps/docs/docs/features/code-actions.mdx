@@ -35,7 +35,7 @@ Clicking the lightbulb, right-clicking and selecting "AliCode", or using the key
 AliCode provides 5 code actions, though their availability varies by context:
 
 ### Context Menu Actions (Right-Click)
-*   **Add to Context:** Quickly adds the selected code to your chat with Roo, including the filename and line numbers so Roo knows exactly where the code is from. It's listed first in the menu for easy access.
+*   **Add to Context:** Quickly adds the selected code to your chat with Ali, including the filename and line numbers so Ali knows exactly where the code is from. It's listed first in the menu for easy access.
 *   **Explain Code:** Asks AliCode to explain the selected code.
 *   **Improve Code:** Asks AliCode to suggest improvements to the selected code.
 
@@ -48,12 +48,12 @@ The lightbulb menu intelligently shows different actions based on your code's cu
 
 **For Code with Problems** (when VSCode shows red/yellow squiggles):
 - **Fix Code** - Get step-by-step guidance to resolve the specific error or warning
-- **Add to Context** - Add the problematic code to Roo's context for discussion
+- **Add to Context** - Add the problematic code to Ali's context for discussion
 
 **For Clean Code** (no diagnostics):
 - **Explain Code** - Get detailed explanations of what the code does
 - **Improve Code** - Receive optimization suggestions and best practices
-- **Add to Context** - Add the code to Roo's context for further work
+- **Add to Context** - Add the code to Ali's context for further work
 
 For more details on how diagnostics are integrated with Code Actions, see [Diagnostics Integration](/features/diagnostics-integration).
 
@@ -61,7 +61,7 @@ For more details on how diagnostics are integrated with Code Actions, see [Diagn
 
 The **Add to Context** action is listed first in the Code Actions menu so you can quickly add code snippets to your conversation. When you use it, AliCode includes the filename and line numbers along with the code.
 
-This helps Roo understand the exact context of your code within the project, allowing it to provide more relevant and accurate assistance.
+This helps Ali understand the exact context of your code within the project, allowing it to provide more relevant and accurate assistance.
 
 Tip: Use macOS Cmd+K Cmd+A or Windows/Linux Ctrl+K Ctrl+A to add the selection to context quickly. See [Keyboard Shortcuts](/features/keyboard-shortcuts).
 
@@ -122,7 +122,7 @@ These actions are available when you select text in the terminal and right-click
 You can control Code Actions through VSCode settings:
 
 ### Enable/Disable Code Actions
-- **Setting**: [`roo-cline.enableCodeActions`](vscode://settings/roo-cline.enableCodeActions)
+- **Setting**: [`alicode.enableCodeActions`](vscode://settings/alicode.enableCodeActions)
 - **Default**: Enabled
 - **Description**: Controls whether AliCode quick fix options appear in the editor
 

@@ -78,7 +78,7 @@ Also on **Windows (cmd)** you may need to invoke `npx` through `cmd.exe`:
 
 ### 2. Project-level configuration
 
-If you prefer to commit the configuration to your repository, create a file called `.roo/mcp.json` at the project root and add the same snippet:
+If you prefer to commit the configuration to your repository, create a file called `.ali/mcp.json` at the project root and add the same snippet:
 
 ```json
 {

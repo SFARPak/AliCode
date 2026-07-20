@@ -14,7 +14,7 @@ keywords:
 
 # use_mcp_tool
 
-The `use_mcp_tool` tool enables interaction with external tools provided by connected Model Context Protocol (MCP) servers. It extends Roo's capabilities with domain-specific functionality through a standardized protocol.
+The `use_mcp_tool` tool enables interaction with external tools provided by connected Model Context Protocol (MCP) servers. It extends Ali's capabilities with domain-specific functionality through a standardized protocol.
 
 ---
 
@@ -30,7 +30,7 @@ The tool accepts these parameters:
 
 ## What It Does
 
-This tool allows Roo to access specialized functionality provided by external MCP servers. Each MCP server can offer multiple tools with unique capabilities, extending Roo beyond its built-in functionality. The system validates arguments against schemas, manages server connections, and processes responses of various content types (text, image, resource).
+This tool allows Ali to access specialized functionality provided by external MCP servers. Each MCP server can offer multiple tools with unique capabilities, extending Ali beyond its built-in functionality. The system validates arguments against schemas, manages server connections, and processes responses of various content types (text, image, resource).
 
 ---
 
@@ -75,10 +75,10 @@ This tool allows Roo to access specialized functionality provided by external MC
 MCP servers can be configured globally or at the project level:
 
 - **Global Configuration**: Managed through the AliCode extension settings in VS Code. These apply across all projects unless overridden.
-- **Project-level Configuration**: Defined in a `.roo/mcp.json` file within your project's root directory.
+- **Project-level Configuration**: Defined in a `.ali/mcp.json` file within your project's root directory.
 - This allows project-specific server setups.
 - Project-level servers take precedence over global servers if they share the same name.
-- Since `.roo/mcp.json` can be committed to version control, it simplifies sharing configurations with your team.
+- Since `.ali/mcp.json` can be committed to version control, it simplifies sharing configurations with your team.
 
 ---
 
@@ -111,7 +111,7 @@ When the `use_mcp_tool` tool is invoked, it follows this process:
         - Image content: Binary image data with MIME type information
         - Resource references: URIs to access server resources (works with `access_mcp_resource`)
     - The system checks the `isError` flag to determine if error handling is needed
-    - Results are formatted for display in the Roo interface
+    - Results are formatted for display in the Ali interface
 
 4. **Resource and Error Handling**:
     - The system uses WeakRef patterns to prevent memory leaks

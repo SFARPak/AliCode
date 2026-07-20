@@ -1,5 +1,5 @@
 
-> @roo-code/vscode-webview@ build /Volumes/Farhan/Desktop/AliCode/webview-ui
+> @ali-code/vscode-webview@ build /Volumes/Farhan/Desktop/AliCode/webview-ui
 > vite build
 
 vite v6.3.6 building for production...

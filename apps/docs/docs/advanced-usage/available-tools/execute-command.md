@@ -12,7 +12,7 @@ keywords:
 
 # execute_command
 
-The `execute_command` tool runs CLI commands on the user's system. It allows Roo to perform system operations, install dependencies, build projects, start servers, and execute other terminal-based tasks needed to accomplish user objectives.
+The `execute_command` tool runs CLI commands on the user's system. It allows Ali to perform system operations, install dependencies, build projects, start servers, and execute other terminal-based tasks needed to accomplish user objectives.
 
 ---
 
@@ -141,12 +141,12 @@ The tool uses a sophisticated terminal management system:
 
 ## Examples When Used
 
-- When setting up a new project, Roo runs initialization commands like `npm init -y` followed by installing dependencies.
-- When building a web application, Roo executes build commands like `npm run build` to compile assets.
-- When deploying code, Roo runs git commands to commit and push changes to a repository.
-- When troubleshooting, Roo executes diagnostic commands to gather system information.
-- When starting a development server, Roo launches the appropriate server command (e.g., `npm start`).
-- When running tests, Roo executes the test runner command for the project's testing framework.
+- When setting up a new project, Ali runs initialization commands like `npm init -y` followed by installing dependencies.
+- When building a web application, Ali executes build commands like `npm run build` to compile assets.
+- When deploying code, Ali runs git commands to commit and push changes to a repository.
+- When troubleshooting, Ali executes diagnostic commands to gather system information.
+- When starting a development server, Ali launches the appropriate server command (e.g., `npm start`).
+- When running tests, Ali executes the test runner command for the project's testing framework.
 
 ---
 

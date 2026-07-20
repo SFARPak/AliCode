@@ -10,27 +10,27 @@ describe("AliProtectedController", () => {
 	})
 
 	describe("isWriteProtected", () => {
-		it("should protect .rooignore file", () => {
-			expect(controller.isWriteProtected(".rooignore")).toBe(true)
+		it("should protect .aliignore file", () => {
+			expect(controller.isWriteProtected(".aliignore")).toBe(true)
 		})
 
 		it("should protect files in .roo directory", () => {
-			expect(controller.isWriteProtected(".roo/config.json")).toBe(true)
-			expect(controller.isWriteProtected(".roo/settings/user.json")).toBe(true)
-			expect(controller.isWriteProtected(".roo/modes/custom.json")).toBe(true)
+			expect(controller.isWriteProtected(".ali/config.json")).toBe(true)
+			expect(controller.isWriteProtected(".ali/settings/user.json")).toBe(true)
+			expect(controller.isWriteProtected(".ali/modes/custom.json")).toBe(true)
 		})
 
-		it("should protect .rooprotected file", () => {
-			expect(controller.isWriteProtected(".rooprotected")).toBe(true)
+		it("should protect .aliprotected file", () => {
+			expect(controller.isWriteProtected(".aliprotected")).toBe(true)
 		})
 
-		it("should protect .roomodes files", () => {
-			expect(controller.isWriteProtected(".roomodes")).toBe(true)
+		it("should protect .alimodes files", () => {
+			expect(controller.isWriteProtected(".alimodes")).toBe(true)
 		})
 
-		it("should protect .roorules* files", () => {
-			expect(controller.isWriteProtected(".roorules")).toBe(true)
-			expect(controller.isWriteProtected(".roorules.md")).toBe(true)
+		it("should protect .alirules* files", () => {
+			expect(controller.isWriteProtected(".alirules")).toBe(true)
+			expect(controller.isWriteProtected(".alirules.md")).toBe(true)
 		})
 
 		it("should protect .clinerules* files", () => {
@@ -76,20 +76,20 @@ describe("AliProtectedController", () => {
 		})
 
 		it("should handle nested paths correctly", () => {
-			expect(controller.isWriteProtected(".roo/config.json")).toBe(true) // .roo/** matches at root
-			expect(controller.isWriteProtected("nested/.rooignore")).toBe(true) // .rooignore matches anywhere by default
-			expect(controller.isWriteProtected("nested/.roomodes")).toBe(true) // .roomodes matches anywhere by default
-			expect(controller.isWriteProtected("nested/.roorules.md")).toBe(true) // .roorules* matches anywhere by default
+			expect(controller.isWriteProtected(".ali/config.json")).toBe(true) // .ali/** matches at root
+			expect(controller.isWriteProtected("nested/.aliignore")).toBe(true) // .aliignore matches anywhere by default
+			expect(controller.isWriteProtected("nested/.alimodes")).toBe(true) // .alimodes matches anywhere by default
+			expect(controller.isWriteProtected("nested/.alirules.md")).toBe(true) // .alirules* matches anywhere by default
 		})
 
 		it("should handle absolute paths by converting to relative", () => {
-			const absolutePath = path.join(TEST_CWD, ".rooignore")
+			const absolutePath = path.join(TEST_CWD, ".aliignore")
 			expect(controller.isWriteProtected(absolutePath)).toBe(true)
 		})
 
 		it("should handle paths with different separators", () => {
-			expect(controller.isWriteProtected(".roo\\config.json")).toBe(true)
-			expect(controller.isWriteProtected(".roo/config.json")).toBe(true)
+			expect(controller.isWriteProtected(".ali\\config.json")).toBe(true)
+			expect(controller.isWriteProtected(".ali/config.json")).toBe(true)
 		})
 
 		it("should not throw for absolute paths outside cwd", () => {
@@ -100,11 +100,11 @@ describe("AliProtectedController", () => {
 
 	describe("getProtectedFiles", () => {
 		it("should return set of protected files from a list", () => {
-			const files = ["src/index.ts", ".rooignore", "package.json", ".roo/config.json", "README.md"]
+			const files = ["src/index.ts", ".aliignore", "package.json", ".ali/config.json", "README.md"]
 
 			const protectedFiles = controller.getProtectedFiles(files)
 
-			expect(protectedFiles).toEqual(new Set([".rooignore", ".roo/config.json"]))
+			expect(protectedFiles).toEqual(new Set([".aliignore", ".ali/config.json"]))
 		})
 
 		it("should return empty set when no files are protected", () => {
@@ -118,14 +118,14 @@ describe("AliProtectedController", () => {
 
 	describe("annotatePathsWithProtection", () => {
 		it("should annotate paths with protection status", () => {
-			const files = ["src/index.ts", ".rooignore", ".roo/config.json", "package.json"]
+			const files = ["src/index.ts", ".aliignore", ".ali/config.json", "package.json"]
 
 			const annotated = controller.annotatePathsWithProtection(files)
 
 			expect(annotated).toEqual([
 				{ path: "src/index.ts", isProtected: false },
-				{ path: ".rooignore", isProtected: true },
-				{ path: ".roo/config.json", isProtected: true },
+				{ path: ".aliignore", isProtected: true },
+				{ path: ".ali/config.json", isProtected: true },
 				{ path: "package.json", isProtected: false },
 			])
 		})
@@ -144,8 +144,8 @@ describe("AliProtectedController", () => {
 
 			expect(instructions).toContain("# Protected Files")
 			expect(instructions).toContain("write-protected")
-			expect(instructions).toContain(".rooignore")
-			expect(instructions).toContain(".roo/**")
+			expect(instructions).toContain(".aliignore")
+			expect(instructions).toContain(".ali/**")
 			expect(instructions).toContain("\u{1F6E1}") // Shield symbol
 		})
 	})
@@ -155,14 +155,14 @@ describe("AliProtectedController", () => {
 			const patterns = AliProtectedController.getProtectedPatterns()
 
 			expect(patterns).toEqual([
-				".rooignore",
-				".roomodes",
-				".roorules*",
+				".aliignore",
+				".alimodes",
+				".alirules*",
 				".clinerules*",
-				".roo/**",
+				".ali/**",
 				".vscode/**",
 				"*.code-workspace",
-				".rooprotected",
+				".aliprotected",
 				"AGENTS.md",
 				"AGENT.md",
 			])

@@ -33,8 +33,8 @@ vi.mock("../../common/Tab", () => ({
 	TabContent: ({ children }: any) => <div data-testid="tab-content">{children}</div>,
 }))
 
-vi.mock("../RooHero", () => ({
-	default: () => <div data-testid="roo-hero">Roo Hero</div>,
+vi.mock("../AliHero", () => ({
+	default: () => <div data-testid="ali-hero">Ali Hero</div>,
 }))
 
 vi.mock("lucide-react", () => ({

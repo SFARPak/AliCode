@@ -11,18 +11,18 @@ import {
 import { ExtensionStateContextProvider, useExtensionState, mergeExtensionState } from "../ExtensionStateContext"
 
 const TestComponent = () => {
-	const { allowedCommands, setAllowedCommands, soundEnabled, showRooIgnoredFiles, setShowRooIgnoredFiles } =
+	const { allowedCommands, setAllowedCommands, soundEnabled, showAliIgnoredFiles, setShowRooIgnoredFiles } =
 		useExtensionState()
 
 	return (
 		<div>
 			<div data-testid="allowed-commands">{JSON.stringify(allowedCommands)}</div>
 			<div data-testid="sound-enabled">{JSON.stringify(soundEnabled)}</div>
-			<div data-testid="show-rooignored-files">{JSON.stringify(showRooIgnoredFiles)}</div>
+			<div data-testid="show-rooignored-files">{JSON.stringify(showAliIgnoredFiles)}</div>
 			<button data-testid="update-button" onClick={() => setAllowedCommands(["npm install", "git status"])}>
 				Update Commands
 			</button>
-			<button data-testid="toggle-rooignore-button" onClick={() => setShowRooIgnoredFiles(!showRooIgnoredFiles)}>
+			<button data-testid="toggle-rooignore-button" onClick={() => setShowRooIgnoredFiles(!showAliIgnoredFiles)}>
 				Update Commands
 			</button>
 		</div>
@@ -68,7 +68,7 @@ describe("ExtensionStateContext", () => {
 		expect(JSON.parse(screen.getByTestId("sound-enabled").textContent!)).toBe(false)
 	})
 
-	it("initializes with showRooIgnoredFiles set to true", () => {
+	it("initializes with showAliIgnoredFiles set to true", () => {
 		render(
 			<ExtensionStateContextProvider>
 				<TestComponent />
@@ -78,7 +78,7 @@ describe("ExtensionStateContext", () => {
 		expect(JSON.parse(screen.getByTestId("show-rooignored-files").textContent!)).toBe(true)
 	})
 
-	it("updates showRooIgnoredFiles through setShowRooIgnoredFiles", () => {
+	it("updates showAliIgnoredFiles through setShowRooIgnoredFiles", () => {
 		render(
 			<ExtensionStateContextProvider>
 				<TestComponent />
@@ -199,7 +199,7 @@ describe("mergeExtensionState", () => {
 			maxOpenTabsContext: 20,
 			maxWorkspaceFiles: 100,
 			apiConfiguration: { providerId: "openrouter" } as ProviderSettings,
-			showRooIgnoredFiles: true,
+			showAliIgnoredFiles: true,
 			enableSubfolderRules: false,
 			renderContext: "sidebar",
 			organizationAllowList: { allowAll: true, providers: {} },
@@ -262,7 +262,7 @@ describe("mergeExtensionState", () => {
 			maxOpenTabsContext: 20,
 			maxWorkspaceFiles: 100,
 			apiConfiguration: {},
-			showRooIgnoredFiles: true,
+			showAliIgnoredFiles: true,
 			enableSubfolderRules: false,
 			renderContext: "sidebar",
 			organizationAllowList: { allowAll: true, providers: {} },

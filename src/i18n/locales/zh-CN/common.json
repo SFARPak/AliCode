@@ -194,7 +194,7 @@
 		"enter_valid_path": "请输入有效的路径"
 	},
 	"input": {
-		"task_prompt": "让Roo做什么？",
+		"task_prompt": "让Ali做什么？",
 		"task_placeholder": "在这里输入任务"
 	},
 	"settings": {
@@ -202,8 +202,8 @@
 	},
 	"customModes": {
 		"errors": {
-			"yamlParseError": ".roomodes 文件第 {{line}} 行 YAML 格式无效。请检查：\n• 正确的缩进（使用空格，不要使用制表符）\n• 匹配的引号和括号\n• 有效的 YAML 语法",
-			"schemaValidationError": ".roomodes 中自定义模式格式无效：\n{{issues}}",
+			"yamlParseError": ".alimodes 文件第 {{line}} 行 YAML 格式无效。请检查：\n• 正确的缩进（使用空格，不要使用制表符）\n• 匹配的引号和括号\n• 有效的 YAML 语法",
+			"schemaValidationError": ".alimodes 中自定义模式格式无效：\n{{issues}}",
 			"invalidFormat": "自定义模式格式无效。请确保你的设置遵循正确的 YAML 格式。",
 			"updateFailed": "更新自定义模式失败：{{error}}",
 			"deleteFailed": "删除自定义模式失败：{{error}}",

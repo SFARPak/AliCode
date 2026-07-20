@@ -59,6 +59,6 @@ MCP provides a standardized way for AI systems to interact with external tools a
 Ready to dig deeper? Check out these guides:
 
 - [MCP Overview](/features/mcp/overview) - A quick glance at the MCP documentation structure
-- [Using MCP in AliCode](/features/mcp/using-mcp-in-roo) - Get started with MCP in Roo, including creating simple servers
+- [Using MCP in AliCode](/features/mcp/using-mcp-in-roo) - Get started with MCP in Ali, including creating simple servers
 - [MCP vs API](/features/mcp/mcp-vs-api) - Technical advantages compared to traditional APIs
 - [STDIO & Streamable HTTP & SSE Transports](/features/mcp/server-transports) - Local vs. hosted deployment models

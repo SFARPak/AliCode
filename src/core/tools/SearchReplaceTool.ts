@@ -69,7 +69,7 @@ export class SearchReplaceTool extends BaseTool<"search_replace"> {
 				relPath = file_path
 			}
 
-			const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+			const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 
 			if (!accessAllowed) {
 				await task.say("rooignore_error", relPath)
@@ -78,7 +78,7 @@ export class SearchReplaceTool extends BaseTool<"search_replace"> {
 			}
 
 			// Check if file is write-protected
-			const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath) || false
+			const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath) || false
 
 			const absolutePath = path.resolve(task.cwd, relPath)
 

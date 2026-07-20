@@ -74,8 +74,8 @@ function nullDefaultModule() {
 
 vi.mock("../common/VersionIndicator", nullDefaultModule)
 vi.mock("../history/HistoryPreview", nullDefaultModule)
-vi.mock("@src/components/welcome/RooHero", nullDefaultModule)
-vi.mock("@src/components/welcome/RooTips", nullDefaultModule)
+vi.mock("@src/components/welcome/AliHero", nullDefaultModule)
+vi.mock("@src/components/welcome/AliTips", nullDefaultModule)
 vi.mock("../Announcement", nullDefaultModule)
 vi.mock("./TaskHeader", () => ({ default: () => <div data-testid="task-header" /> }))
 vi.mock("./ProfileViolationWarning", nullDefaultModule)

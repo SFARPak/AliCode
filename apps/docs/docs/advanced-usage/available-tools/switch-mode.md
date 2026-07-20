@@ -15,7 +15,7 @@ keywords:
 
 # switch_mode
 
-The `switch_mode` tool enables Roo to change between different operational modes, each with specialized capabilities for specific types of tasks. This allows seamless transitions between modes like Code, Architect, Ask, or Debug when the current task requires different expertise.
+The `switch_mode` tool enables Ali to change between different operational modes, each with specialized capabilities for specific types of tasks. This allows seamless transitions between modes like Code, Architect, Ask, or Debug when the current task requires different expertise.
 
 ---
 
@@ -30,7 +30,7 @@ The tool accepts these parameters:
 
 ## What It Does
 
-This tool requests a mode change when the current task would be better handled by another mode's capabilities. It maintains context while shifting Roo's focus and available toolsets to match the requirements of the new task phase.
+This tool requests a mode change when the current task would be better handled by another mode's capabilities. It maintains context while shifting Ali's focus and available toolsets to match the requirements of the new task phase.
 
 ---
 
@@ -154,9 +154,9 @@ Different modes may have specific file type restrictions:
 
 ## Examples When Used
 
-- When discussing a new feature, Roo switches from Ask mode to Architect mode to help design the system structure.
-- After completing architecture planning in Architect mode, Roo switches to Code mode to implement the designed features.
-- When encountering bugs during development, Roo switches from Code mode to Debug mode for systematic troubleshooting.
+- When discussing a new feature, Ali switches from Ask mode to Architect mode to help design the system structure.
+- After completing architecture planning in Architect mode, Ali switches to Code mode to implement the designed features.
+- When encountering bugs during development, Ali switches from Code mode to Debug mode for systematic troubleshooting.
 
 ---
 

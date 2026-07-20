@@ -11,10 +11,10 @@ keywords:
 
 # Customizing Modes
 
-AliCode allows you to create **custom modes** to tailor Roo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
+AliCode allows you to create **custom modes** to tailor Ali's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
 
 :::tip Sticky Models for Efficient Workflow
-Each mode—including custom ones—features **Sticky Models**. This means AliCode automatically remembers and selects the last model you used with a particular mode. This lets you assign different preferred models to different tasks without constant reconfiguration, as Roo switches between models when you change modes.
+Each mode—including custom ones—features **Sticky Models**. This means AliCode automatically remembers and selects the last model you used with a particular mode. This lets you assign different preferred models to different tasks without constant reconfiguration, as Ali switches between models when you change modes.
 :::
 
 :::info Discover Modes
@@ -38,17 +38,17 @@ Looking for ready-to-use custom modes? Visit the [AliCode Marketplace](/features
 
 ## What's Included in a Custom Mode?
 
-Custom modes are defined by several key properties. Understanding these concepts will help you tailor Roo's behavior effectively.
+Custom modes are defined by several key properties. Understanding these concepts will help you tailor Ali's behavior effectively.
 
 | UI Field / YAML Property                 | Conceptual Description                                                                                                                                                                                                                                                                                                                                                                                       |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Slug (`slug`)                            | A **unique internal identifier** for the mode. It's used by AliCode to reference the mode, especially for associating [mode-specific instruction files](#mode-specific-instructions-via-filesdirectories).                                                                                                                                                                                                   |
 | Name (`name`)                            | The **display name** for the mode as it appears in the AliCode user interface. This should be human-readable and descriptive.                                                                                                                                                                                                                                                                               |
 | Description (`description`)              | A **short, user-friendly summary** of the mode's purpose displayed in the mode selector UI.<br />- This text appears below the mode's name in the redesigned mode selector, offering users a quick understanding of the mode's function.<br />- Keep this concise and focused on what the mode does for the user.                                                                                              |
-| Role Definition (`roleDefinition`)       | Defines the **core identity and expertise** of the mode. This text is placed at the beginning of the system prompt.<br />- Its primary function is to define Roo's personality and behavior when this mode is active.<br />- With the introduction of the `description` field, the `roleDefinition` should provide a detailed description of the mode's identity, while the `description` field handles the short summary for the UI.<br />- The `whenToUse` property now takes precedence for summarization in automated contexts like task orchestration. |
-| Available Tools (`groups`)               | Defines the **allowed toolsets and file access permissions** for the mode.<br />- In the UI, this corresponds to selecting which general categories of tools (like reading files, editing files, browsing, or executing commands) the mode can use.<br />- The UI shows which files can be edited in the 'Allowed files' section under each mode.<br />- File type restrictions for the "edit" group are typically managed via manual YAML/JSON configuration or by asking Roo to set them up, as detailed in the [Property Details for `groups`](#groups). |
-| When to Use (optional) (`whenToUse`)     | (Optional) Provides **guidance for Roo's automated decision-making**, particularly for mode selection and task orchestration.<br />- This text is used by Roo, particularly the [`🪃 Orchestrator`](/basic-usage/using-modes#orchestrator-mode-aka-boomerang-mode) mode, for [orchestrating tasks](/features/boomerang-tasks) (e.g., via the [`new_task`](/advanced-usage/available-tools/new-task) tool).<br />- It also helps Roo decide which mode is appropriate when [switching modes](/basic-usage/using-modes#switching-between-modes) (e.g., via the [`switch_mode`](/advanced-usage/available-tools/switch-mode) tool).<br />- This field is **not displayed in the mode selector UI** - that's handled by the `description` field. |
-| Custom Instructions (optional) (`customInstructions`) | **Specific behavioral guidelines** or rules for the mode.<br />- These instructions are added near the end of the system prompt to further refine Roo's behavior beyond the `roleDefinition`.<br />- This can be provided directly in the configuration or via separate instruction files.                                                                                                                               |
+| Role Definition (`roleDefinition`)       | Defines the **core identity and expertise** of the mode. This text is placed at the beginning of the system prompt.<br />- Its primary function is to define Ali's personality and behavior when this mode is active.<br />- With the introduction of the `description` field, the `roleDefinition` should provide a detailed description of the mode's identity, while the `description` field handles the short summary for the UI.<br />- The `whenToUse` property now takes precedence for summarization in automated contexts like task orchestration. |
+| Available Tools (`groups`)               | Defines the **allowed toolsets and file access permissions** for the mode.<br />- In the UI, this corresponds to selecting which general categories of tools (like reading files, editing files, browsing, or executing commands) the mode can use.<br />- The UI shows which files can be edited in the 'Allowed files' section under each mode.<br />- File type restrictions for the "edit" group are typically managed via manual YAML/JSON configuration or by asking Ali to set them up, as detailed in the [Property Details for `groups`](#groups). |
+| When to Use (optional) (`whenToUse`)     | (Optional) Provides **guidance for Ali's automated decision-making**, particularly for mode selection and task orchestration.<br />- This text is used by Ali, particularly the [`🪃 Orchestrator`](/basic-usage/using-modes#orchestrator-mode-aka-boomerang-mode) mode, for [orchestrating tasks](/features/boomerang-tasks) (e.g., via the [`new_task`](/advanced-usage/available-tools/new-task) tool).<br />- It also helps Ali decide which mode is appropriate when [switching modes](/basic-usage/using-modes#switching-between-modes) (e.g., via the [`switch_mode`](/advanced-usage/available-tools/switch-mode) tool).<br />- This field is **not displayed in the mode selector UI** - that's handled by the `description` field. |
+| Custom Instructions (optional) (`customInstructions`) | **Specific behavioral guidelines** or rules for the mode.<br />- These instructions are added near the end of the system prompt to further refine Ali's behavior beyond the `roleDefinition`.<br />- This can be provided directly in the configuration or via separate instruction files.                                                                                                                               |
 
 ---
 ## Import/Export Modes
@@ -66,7 +66,7 @@ Easily share, back up, and template your custom modes. This feature lets you exp
 
 ### Use Case
 
-**Before**: Manually recreating custom modes and copying `.roo/rules-{slug}/` folders for each new project or team member. Changing slugs required manual path updates in the YAML file.
+**Before**: Manually recreating custom modes and copying `.ali/rules-{slug}/` folders for each new project or team member. Changing slugs required manual path updates in the YAML file.
 
 **With this feature**: A single click exports a mode and all its rules to a YAML file. Another click imports it, setting everything up automatically. You can now change the slug in the exported file and the import process handles all path updates automatically.
 
@@ -82,15 +82,15 @@ The import/export functionality is managed from the **Modes** view.
 3.  Click the **Export Mode** button (the download icon).
 4.  Choose a location to save the `.yaml` file.
 
-Roo packages the mode's configuration and any rules found in the project's `.roo/rules-{slug}/` directory into the YAML file.
+Ali packages the mode's configuration and any rules found in the project's `.ali/rules-{slug}/` directory into the YAML file.
 
 #### Importing a Mode
 1.  Click the **Import Mode** button (the upload icon) in the **Modes** view.
 2.  Select the mode's YAML file.
 3.  Choose the import level in the dialog that appears:
     ![Import Level Dialog](/img/custom-modes/custom-modes-6.png)
-    -   **Project**: The mode is available only in the current workspace. It's added to the `.roomodes` file, and its rules are saved to the `.roo/rules-{slug}/` directory within the project.
-    -   **Global**: The mode is available in all your projects. It's added to your global settings, and its rules are stored in your system's global Roo configuration directory (e.g., `~/.roo/rules-{slug}/`).
+    -   **Project**: The mode is available only in the current workspace. It's added to the `.alimodes` file, and its rules are saved to the `.ali/rules-{slug}/` directory within the project.
+    -   **Global**: The mode is available in all your projects. It's added to your global settings, and its rules are stored in your system's global Ali configuration directory (e.g., `~/.ali/rules-{slug}/`).
 
 **Note:** When exporting modes with rules, all file paths are normalized to use forward slashes for cross-platform compatibility. This ensures modes can be shared between team members using different operating systems.
 
@@ -129,13 +129,13 @@ Note: The automatic slug change handling during import ensures that rule file pa
 - The existing mode will be overwritten with the configuration from the imported file.
 
 **"What's the main difference between a Global and Project import?"**
-- **Global** modes are available across all your VS Code projects. **Project** modes are specific to the workspace where they are imported and are stored in a `.roomodes` file at the root of your project.
+- **Global** modes are available across all your VS Code projects. **Project** modes are specific to the workspace where they are imported and are stored in a `.alimodes` file at the root of your project.
 
 **"Can I export built-in modes like Code or Architect?"**
 - Yes. If you have customized a built-in mode (e.g., by changing its instructions), you can export it to save your customizations.
 
 **"What if I import a mode with rules at the Global level?"**
-- The rules are still preserved. They are stored in a global `rules-{slug}` folder in your user home directory (e.g., `~/.roo/rules-my-custom-mode/`) instead of the project-specific `.roo` folder.
+- The rules are still preserved. They are stored in a global `rules-{slug}` folder in your user home directory (e.g., `~/.ali/rules-my-custom-mode/`) instead of the project-specific `.ali` folder.
 
 **"How does the slug change feature work?"**
 - When you change the slug in an exported YAML file before importing, the import process updates the rule file paths to match the new slug. This ensures the mode works correctly with its new identity.
@@ -146,15 +146,15 @@ Note: The automatic slug change handling during import ensures that rule file pa
 
 You can create and configure custom modes in several ways:
 
-To configure modes, open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />. From there, use "Edit Global Modes" to open settings/custom_modes.yaml, or "Edit Project Modes (.roomodes)" to open your workspace-level configuration.
+To configure modes, open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />. From there, use "Edit Global Modes" to open settings/custom_modes.yaml, or "Edit Project Modes (.alimodes)" to open your workspace-level configuration.
 
-### 1. Ask Roo! (Recommended)
+### 1. Ask Ali! (Recommended)
 
 You can quickly create a basic custom mode by asking AliCode to do it for you. For example:
 ```
 Create a new mode called "Documentation Writer". It should only be able to read files and write Markdown files.
 ```
-AliCode will guide you through the process, prompting for necessary information for the properties described in the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table. Roo will create the mode using the preferred YAML format. For fine-tuning or making specific adjustments later, you can use the Modes page or manual configuration.
+AliCode will guide you through the process, prompting for necessary information for the properties described in the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table. Ali will create the mode using the preferred YAML format. For fine-tuning or making specific adjustments later, you can use the Modes page or manual configuration.
 
 ### 2. Using the Modes Page
 
@@ -168,18 +168,18 @@ AliCode will guide you through the process, prompting for necessary information 
 
     The interface provides fields for `Name`, `Slug`, `Description`, `Save Location`, `Role Definition`, `When to Use (optional)`, `Available Tools`, and `Custom Instructions`. After filling these, click the "Create Mode" button. AliCode will save the new mode in YAML format.
 
-*Refer to the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table for conceptual explanations of each property. File type restrictions for the "edit" tool group can be added by asking Roo or through manual YAML/JSON configuration.*
+*Refer to the [What's Included in a Custom Mode?](#whats-included-in-a-custom-mode) table for conceptual explanations of each property. File type restrictions for the "edit" tool group can be added by asking Ali or through manual YAML/JSON configuration.*
 
 ### 3. Manual Configuration (YAML & JSON)
 
 You can directly edit the configuration files to create or modify custom modes. This method offers the most control over all properties. AliCode now supports both YAML (preferred) and JSON formats.
 
 *   **Global Modes:** Edit the `custom_modes.yaml` (preferred) or `custom_modes.json` file. From the Modes page, click "Edit Global Modes" to open `settings/custom_modes.yaml`.
-*   **Project Modes:** Edit the `.roomodes` file (which can be YAML or JSON) in your project root. From the Modes page, click "Edit Project Modes (.roomodes)" to open or create the workspace file.
+*   **Project Modes:** Edit the `.alimodes` file (which can be YAML or JSON) in your project root. From the Modes page, click "Edit Project Modes (.alimodes)" to open or create the workspace file.
 
 These files define an array/list of custom modes.
 
-**YAML Example (`custom_modes.yaml` or `.roomodes`):**
+**YAML Example (`custom_modes.yaml` or `.alimodes`):**
 ```yaml
 customModes:
   - slug: docs-writer
@@ -198,7 +198,7 @@ customModes:
     # ... other properties
 ```
 
-**JSON Alternative (`custom_modes.json` or `.roomodes`):**
+**JSON Alternative (`custom_modes.json` or `.alimodes`):**
 ```json
 {
   "customModes": [
@@ -227,7 +227,7 @@ customModes:
 ##### `slug`
 *   **Purpose:** A unique identifier for the mode.
 *   **Format:** Must match the pattern `/^[a-zA-Z0-9-]+$/` (only letters, numbers, and hyphens).
-*   **Usage:** Used internally and in file/directory names for mode-specific rules (e.g., `.roo/rules-{slug}/`).
+*   **Usage:** Used internally and in file/directory names for mode-specific rules (e.g., `.ali/rules-{slug}/`).
 *   **Recommendation:** Keep it short and descriptive.
 *   **Note:** The `source` property is automatically added by the system and shouldn't be manually set.
 *   *YAML Example:* `slug: docs-writer`
@@ -291,9 +291,9 @@ customModes:
     ```
 
 ##### `whenToUse`
-*   **Purpose:** (Optional) Provides guidance for Roo's automated decision-making, particularly for mode selection and task orchestration.
+*   **Purpose:** (Optional) Provides guidance for Ali's automated decision-making, particularly for mode selection and task orchestration.
 *   **Format:** A string describing ideal scenarios or task types for this mode.
-*   **Usage:** This field is used by Roo for automated decisions and is **not displayed in the mode selector UI** - that's handled by the `description` field. If populated, Roo uses this description for orchestration and mode switching; otherwise, the first sentence of `roleDefinition` is used.
+*   **Usage:** This field is used by Ali for automated decisions and is **not displayed in the mode selector UI** - that's handled by the `description` field. If populated, Ali uses this description for orchestration and mode switching; otherwise, the first sentence of `roleDefinition` is used.
 *   *YAML Example:* `whenToUse: This mode is best for refactoring Python code.`
 *   *JSON Example:* `"whenToUse": "This mode is best for refactoring Python code."`
 
@@ -349,7 +349,7 @@ YAML is now the preferred format for defining custom modes due to several advant
 *   **Less Punctuation:** YAML generally requires less punctuation (like commas and braces) compared to JSON, reducing syntax errors.
 *   **Editor Support:** Most modern code editors provide excellent syntax highlighting and validation for YAML files, further enhancing readability and reducing errors.
 
-While JSON is still fully supported and won't be deprecated, new modes created via the UI or by asking Roo will default to YAML. Both `.roomodes` files and global configuration files can be either YAML or JSON format.
+While JSON is still fully supported and won't be deprecated, new modes created via the UI or by asking Ali will default to YAML. Both `.alimodes` files and global configuration files can be either YAML or JSON format.
 
 #### Tips for Working with YAML
 
@@ -368,18 +368,18 @@ When editing YAML manually, keep these points in mind:
     3.  No `custom_modes.yaml` file exists yet.
     The migration process reads the existing JSON file, converts it to YAML format, creates a new `custom_modes.yaml` file, and preserves the original JSON file (e.g., by renaming it) for rollback purposes. If `custom_modes.yaml` already exists, it will be used, and no automatic migration of `custom_modes.json` will occur.
 
-*   **Project Modes (`.roomodes`):**
-    *   **No automatic startup migration:** Unlike global modes, project-specific `.roomodes` files are not automatically converted from JSON to YAML when AliCode starts. Manual conversion is required for existing JSON `.roomodes` files.
-    *   **Format Detection:** AliCode can read `.roomodes` files in either YAML or JSON format. AliCode automatically detects the format of `.roomodes` files by attempting to parse them as YAML first.
-    *   **Conversion on UI Edit:** If you edit a project-specific mode through the AliCode UI (e.g., via the Modes page), and the existing `.roomodes` file is in JSON format, AliCode will save the changes in YAML format. This effectively converts the file to YAML. The original JSON content will be overwritten with YAML.
-    *   **Manual Conversion:** If you want to convert an existing `.roomodes` JSON file to YAML without making UI edits, you'll need to do this manually. You can:
-        1.  Open your existing JSON `.roomodes` file.
-        2.  Convert its content to YAML (you can ask Roo to help with this, or use an online converter).
-        3.  Replace the content of your `.roomodes` file with the new YAML content, or rename the old file (e.g., `.roomodes.json.bak`) and save the new content into a file named `.roomodes`.
+*   **Project Modes (`.alimodes`):**
+    *   **No automatic startup migration:** Unlike global modes, project-specific `.alimodes` files are not automatically converted from JSON to YAML when AliCode starts. Manual conversion is required for existing JSON `.alimodes` files.
+    *   **Format Detection:** AliCode can read `.alimodes` files in either YAML or JSON format. AliCode automatically detects the format of `.alimodes` files by attempting to parse them as YAML first.
+    *   **Conversion on UI Edit:** If you edit a project-specific mode through the AliCode UI (e.g., via the Modes page), and the existing `.alimodes` file is in JSON format, AliCode will save the changes in YAML format. This effectively converts the file to YAML. The original JSON content will be overwritten with YAML.
+    *   **Manual Conversion:** If you want to convert an existing `.alimodes` JSON file to YAML without making UI edits, you'll need to do this manually. You can:
+        1.  Open your existing JSON `.alimodes` file.
+        2.  Convert its content to YAML (you can ask Ali to help with this, or use an online converter).
+        3.  Replace the content of your `.alimodes` file with the new YAML content, or rename the old file (e.g., `.alimodes.json.bak`) and save the new content into a file named `.alimodes`.
         Ensure the resulting YAML is valid.
 
 :::tip
-For manual conversions of `.roomodes` files, you can use online JSON to YAML converters or ask Roo to help reformat a specific mode configuration from JSON to YAML. Always validate your YAML before saving.
+For manual conversions of `.alimodes` files, you can use online JSON to YAML converters or ask Ali to help reformat a specific mode configuration from JSON to YAML. Always validate your YAML before saving.
 :::
 ---
 
@@ -388,20 +388,20 @@ For manual conversions of `.roomodes` files, you can use online JSON to YAML con
 :::info Mode-Specific Instruction File Locations
 You can provide instructions for custom modes using dedicated files or directories within your workspace. This allows for better organization and version control compared to only using the `customInstructions` property.
 
-**Preferred Method: Directory (`.roo/rules-{mode-slug}/`)**
+**Preferred Method: Directory (`.ali/rules-{mode-slug}/`)**
 ```
 .
-├── .roo/
+├── .ali/
 │   └── rules-docs-writer/  # Example for mode slug "docs-writer"
 │       ├── 01-style-guide.md
 │       └── 02-formatting.txt
 └── ... (other project files)
 ```
 
-**Fallback Method: Single File (`.roorules-{mode-slug}`)**
+**Fallback Method: Single File (`.alirules-{mode-slug}`)**
 ```
 .
-├── .roorules-docs-writer  # Example for mode slug "docs-writer"
+├── .alirules-docs-writer  # Example for mode slug "docs-writer"
 └── ... (other project files)
 ```
 
@@ -411,8 +411,8 @@ For backward compatibility, the system also checks for `.clinerules-{mode-slug}`
 The directory method takes precedence if it exists and contains files.
 
 **Rules Directory Scope:**
-- **Global modes:** Rules are stored in `~/.roo/rules-{slug}/` (note the trailing slash)
-- **Project modes:** Rules are stored in `{workspace}/.roo/rules-{slug}/` (note the trailing slash)
+- **Global modes:** Rules are stored in `~/.ali/rules-{slug}/` (note the trailing slash)
+- **Project modes:** Rules are stored in `{workspace}/.ali/rules-{slug}/` (note the trailing slash)
 :::
 
 In addition to the `customInstructions` property, you can provide mode-specific instructions via files in your workspace. This is particularly useful for:
@@ -423,21 +423,21 @@ In addition to the `customInstructions` property, you can provide mode-specific 
 
 There are two ways AliCode loads these instructions, with a clear preference for the newer directory-based method:
 
-**1. Preferred Method: Directory-Based Instructions (`.roo/rules-{mode-slug}/`)**
+**1. Preferred Method: Directory-Based Instructions (`.ali/rules-{mode-slug}/`)**
 
-*   **Structure:** Create a directory named `.roo/rules-{mode-slug}/` in your workspace root. Replace `{mode-slug}` with your mode's slug (e.g., `.roo/rules-docs-writer/`).
-*   **Content:** Place one or more files (e.g., `.md`, `.txt`) containing your instructions inside this directory. You can organize instructions further using subdirectories. Files within the `.roo/rules-{mode-slug}/` directory are read recursively and appended in alphabetical order based on filename (case-insensitive).
+*   **Structure:** Create a directory named `.ali/rules-{mode-slug}/` in your workspace root. Replace `{mode-slug}` with your mode's slug (e.g., `.ali/rules-docs-writer/`).
+*   **Content:** Place one or more files (e.g., `.md`, `.txt`) containing your instructions inside this directory. You can organize instructions further using subdirectories. Files within the `.ali/rules-{mode-slug}/` directory are read recursively and appended in alphabetical order based on filename (case-insensitive).
 *   **Loading:** All instruction files found within this directory structure will be loaded and applied to the specified mode. System files (`.DS_Store`, `.swp`, etc.) and cache files are automatically excluded.
 *   **Advanced Features:** The system supports symbolic links with cycle detection for advanced file organization.
 
-**2. Fallback (Backward Compatibility): File-Based Instructions (`.roorules-{mode-slug}`)**
+**2. Fallback (Backward Compatibility): File-Based Instructions (`.alirules-{mode-slug}`)**
 
-*   **Structure:** If the `.roo/rules-{mode-slug}/` directory **does not exist or is empty**, AliCode will look for a single file named `.roorules-{mode-slug}` in your workspace root (e.g., `.roorules-docs-writer`).
+*   **Structure:** If the `.ali/rules-{mode-slug}/` directory **does not exist or is empty**, AliCode will look for a single file named `.alirules-{mode-slug}` in your workspace root (e.g., `.alirules-docs-writer`).
 *   **Loading:** If found, the content of this single file will be loaded as instructions for the mode.
 
 **Precedence:**
 
-*   The **directory-based method (`.roo/rules-{mode-slug}/`) takes precedence**. If this directory exists and contains files, any corresponding root-level `.roorules-{mode-slug}` file will be **ignored** for that mode.
+*   The **directory-based method (`.ali/rules-{mode-slug}/`) takes precedence**. If this directory exists and contains files, any corresponding root-level `.alirules-{mode-slug}` file will be **ignored** for that mode.
 *   This ensures that projects migrated to the new directory structure behave predictably, while older projects using the single-file method remain compatible.
 
 **Combining with `customInstructions`:**
@@ -451,15 +451,15 @@ There are two ways AliCode loads these instructions, with a clear preference for
 
 Mode configurations are applied in this order:
 
-1. Project-level mode configurations (from `.roomodes` - YAML or JSON)
+1. Project-level mode configurations (from `.alimodes` - YAML or JSON)
 2. Global mode configurations (from `custom_modes.yaml`, then `custom_modes.json` if YAML not found)
 3. Default mode configurations
 
-**Important:** When modes with the same slug exist in both `.roomodes` and global settings, the `.roomodes` version completely overrides the global one. This applies to ALL properties, not just some. For instance, if you have a global 'code' mode and a project-specific 'code' mode in `.roomodes`, the project version will be used when working in that project, and all properties from the global version are ignored.
+**Important:** When modes with the same slug exist in both `.alimodes` and global settings, the `.alimodes` version completely overrides the global one. This applies to ALL properties, not just some. For instance, if you have a global 'code' mode and a project-specific 'code' mode in `.alimodes`, the project version will be used when working in that project, and all properties from the global version are ignored.
 
 You can override any default mode by including a mode with the same slug in your global or project-specific configuration.
 
-*   **Note on Instruction Files:** Within the loading of mode-specific instructions from the filesystem, the directory `.roo/rules-{mode-slug}/` takes precedence over the single file `.roorules-{mode-slug}` found in the workspace root.
+*   **Note on Instruction Files:** Within the loading of mode-specific instructions from the filesystem, the directory `.ali/rules-{mode-slug}/` takes precedence over the single file `.alirules-{mode-slug}` found in the workspace root.
 
 ---
 
@@ -513,7 +513,7 @@ This example replaces the default `💻 Code` mode with a version restricted to 
 To override a default mode for just one project:
 
 1. **Open the Modes page:** Open the AliCode panel, click the Mode menu under the chatbox, then click the <Codicon name="settings-gear" />.
-2. **Edit Project Modes (.roomodes):** Click "Edit Project Modes (.roomodes)" to open or create the workspace file.
+2. **Edit Project Modes (.alimodes):** Click "Edit Project Modes (.alimodes)" to open or create the workspace file.
 3. **Add Your Override:**
 
 **YAML Example:**
@@ -568,13 +568,13 @@ When overriding default modes, test carefully. Consider backing up configuration
 Regular expressions (`fileRegex`) offer fine-grained control over file editing permissions.
 
 :::tip
-**Let Roo Build Your Regex Patterns**
+**Let Ali Build Your Regex Patterns**
 
-Instead of writing complex regex manually, ask Roo:
+Instead of writing complex regex manually, ask Ali:
 ```
 Create a regex pattern that matches JavaScript files but excludes test files
 ```
-Roo will generate the pattern. Remember to adapt it for YAML (usually single backslashes) or JSON (double backslashes).
+Ali will generate the pattern. Remember to adapt it for YAML (usually single backslashes) or JSON (double backslashes).
 :::
 
 When you specify `fileRegex`, you're creating a pattern that file paths must match.
@@ -632,7 +632,7 @@ When exporting built-in modes (like Code, Architect, Ask, Debug), any customizat
 When deleting a mode through the UI, AliCode will prompt you about deleting the associated rules folder, showing the exact path before deletion. This helps prevent accidental loss of custom instructions.
 
 ### Global Rules Directory
-In addition to mode-specific rules directories, there's also a generic `.roo/rules/` directory (without mode suffix) that can be used for shared rules across all modes.
+In addition to mode-specific rules directories, there's also a generic `.ali/rules/` directory (without mode suffix) that can be used for shared rules across all modes.
 
 ### Troubleshooting
 

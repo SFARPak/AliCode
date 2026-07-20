@@ -49,7 +49,7 @@ describe("CustomModesManager", () => {
 	const mockStoragePath = `${path.sep}mock${path.sep}settings`
 	const mockSettingsPath = path.join(mockStoragePath, "settings", GlobalFileNames.customModes)
 	const mockWorkspacePath = path.resolve("/mock/workspace")
-	const mockRoomodes = path.join(mockWorkspacePath, ".roomodes")
+	const mockRoomodes = path.join(mockWorkspacePath, ".alimodes")
 
 	beforeEach(() => {
 		mockOnUpdate = vi.fn()
@@ -94,7 +94,7 @@ describe("CustomModesManager", () => {
 	})
 
 	describe("getCustomModes", () => {
-		it("should handle valid YAML in .roomodes file and JSON for global customModes", async () => {
+		it("should handle valid YAML in .alimodes file and JSON for global customModes", async () => {
 			const settingsModes = [{ slug: "mode1", name: "Mode 1", roleDefinition: "Role 1", groups: ["read"] }]
 
 			const roomodesModes = [{ slug: "mode2", name: "Mode 2", roleDefinition: "Role 2", groups: ["read"] }]
@@ -114,7 +114,7 @@ describe("CustomModesManager", () => {
 			expect(modes).toHaveLength(2)
 		})
 
-		it("should merge modes with .roomodes taking precedence", async () => {
+		it("should merge modes with .alimodes taking precedence", async () => {
 			const settingsModes = [
 				{ slug: "mode1", name: "Mode 1", roleDefinition: "Role 1", groups: ["read"] },
 				{ slug: "mode2", name: "Mode 2", roleDefinition: "Role 2", groups: ["read"] },
@@ -141,13 +141,13 @@ describe("CustomModesManager", () => {
 			expect(modes).toHaveLength(3)
 			expect(modes.map((m) => m.slug)).toEqual(["mode2", "mode3", "mode1"])
 
-			// mode2 should come from .roomodes since it takes precedence
+			// mode2 should come from .alimodes since it takes precedence
 			const mode2 = modes.find((m) => m.slug === "mode2")
 			expect(mode2?.name).toBe("Mode 2 Override")
 			expect(mode2?.roleDefinition).toBe("Role 2 Override")
 		})
 
-		it("should handle missing .roomodes file", async () => {
+		it("should handle missing .alimodes file", async () => {
 			const settingsModes = [{ slug: "mode1", name: "Mode 1", roleDefinition: "Role 1", groups: ["read"] }]
 
 			;(fileExistsAtPath as Mock).mockImplementation(async (path: string) => {
@@ -166,7 +166,7 @@ describe("CustomModesManager", () => {
 			expect(modes[0].slug).toBe("mode1")
 		})
 
-		it("should handle invalid YAML in .roomodes", async () => {
+		it("should handle invalid YAML in .alimodes", async () => {
 			const settingsModes = [{ slug: "mode1", name: "Mode 1", roleDefinition: "Role 1", groups: ["read"] }]
 
 			;(fs.readFile as Mock).mockImplementation(async (path: string) => {
@@ -181,7 +181,7 @@ describe("CustomModesManager", () => {
 
 			const modes = await manager.getCustomModes()
 
-			// Should fall back to settings modes when .roomodes is invalid
+			// Should fall back to settings modes when .alimodes is invalid
 			expect(modes).toHaveLength(1)
 			expect(modes[0].slug).toBe("mode1")
 		})
@@ -439,7 +439,7 @@ describe("CustomModesManager", () => {
 	})
 
 	describe("updateCustomMode", () => {
-		it("should update mode in settings file while preserving .roomodes precedence", async () => {
+		it("should update mode in settings file while preserving .alimodes precedence", async () => {
 			const newMode: ModeConfig = {
 				slug: "mode1",
 				name: "Updated Mode 1",
@@ -501,13 +501,13 @@ describe("CustomModesManager", () => {
 				}),
 			)
 
-			// Should update global state with merged modes where .roomodes takes precedence
+			// Should update global state with merged modes where .alimodes takes precedence
 			expect(mockContext.globalState.update).toHaveBeenCalledWith(
 				"customModes",
 				expect.arrayContaining([
 					expect.objectContaining({
 						slug: "mode1",
-						name: "Roomodes Mode 1", // .roomodes version should take precedence
+						name: "Roomodes Mode 1", // .alimodes version should take precedence
 						source: "project",
 					}),
 				]),
@@ -517,7 +517,7 @@ describe("CustomModesManager", () => {
 			expect(mockOnUpdate).toHaveBeenCalled()
 		})
 
-		it("creates .roomodes file when adding project-specific mode", async () => {
+		it("creates .alimodes file when adding project-specific mode", async () => {
 			const projectMode: ModeConfig = {
 				slug: "project-mode",
 				name: "Project Mode",
@@ -526,7 +526,7 @@ describe("CustomModesManager", () => {
 				source: "project",
 			}
 
-			// Mock .roomodes to not exist initially
+			// Mock .alimodes to not exist initially
 			let roomodesContent: any = null
 			;(fileExistsAtPath as Mock).mockImplementation(async (path: string) => {
 				return path === mockSettingsPath
@@ -552,7 +552,7 @@ describe("CustomModesManager", () => {
 
 			await manager.updateCustomMode("project-mode", projectMode)
 
-			// Verify .roomodes was created with the project mode
+			// Verify .alimodes was created with the project mode
 			expect(fs.writeFile).toHaveBeenCalledWith(
 				expect.any(String), // Don't check exact path as it may have different separators on different platforms
 				expect.stringContaining("project-mode"),
@@ -563,7 +563,7 @@ describe("CustomModesManager", () => {
 			const writeCall = (fs.writeFile as Mock).mock.calls[0]
 			expect(path.normalize(writeCall[0])).toBe(path.normalize(mockRoomodes))
 
-			// Verify the content written to .roomodes
+			// Verify the content written to .alimodes
 			expect(roomodesContent).toEqual({
 				customModes: [
 					expect.objectContaining({
@@ -871,7 +871,7 @@ describe("CustomModesManager", () => {
 
 				expect(result.success).toBe(true)
 				expect(fs.writeFile).toHaveBeenCalledWith(
-					expect.stringContaining(".roomodes"),
+					expect.stringContaining(".alimodes"),
 					expect.stringContaining("imported-mode"),
 					"utf-8",
 				)
@@ -926,7 +926,7 @@ describe("CustomModesManager", () => {
 
 				// Verify mode was imported
 				expect(fs.writeFile).toHaveBeenCalledWith(
-					expect.stringContaining(".roomodes"),
+					expect.stringContaining(".alimodes"),
 					expect.stringContaining("imported-mode"),
 					"utf-8",
 				)
@@ -1028,7 +1028,7 @@ describe("CustomModesManager", () => {
 				// Mock fs.mkdir to fail when creating rules directory
 				;(fs.mkdir as Mock).mockRejectedValue(new Error("Permission denied"))
 
-				// Mock fs.writeFile to work normally for .roomodes but we won't get there
+				// Mock fs.writeFile to work normally for .alimodes but we won't get there
 				;(fs.writeFile as Mock).mockResolvedValue(undefined)
 
 				const result = await manager.importModeWithRules(importYaml)
@@ -1082,10 +1082,10 @@ describe("CustomModesManager", () => {
 
 				// Verify that no files were written outside the .roo directory
 				const mockWorkspacePath = path.resolve("/mock/workspace")
-				const writtenRuleFiles = writtenFiles.filter((p) => !p.includes(".roomodes"))
+				const writtenRuleFiles = writtenFiles.filter((p) => !p.includes(".alimodes"))
 				writtenRuleFiles.forEach((filePath) => {
 					const normalizedPath = path.normalize(filePath)
-					const expectedBasePath = path.normalize(path.join(mockWorkspacePath, ".roo"))
+					const expectedBasePath = path.normalize(path.join(mockWorkspacePath, ".ali"))
 					expect(normalizedPath.startsWith(expectedBasePath)).toBe(true)
 				})
 
@@ -1165,14 +1165,14 @@ describe("CustomModesManager", () => {
 				expect(result.success).toBe(true)
 
 				// Verify that fs.rm was called to remove the existing rules folder
-				expect(fs.rm).toHaveBeenCalledWith(expect.stringContaining(path.join(".roo", "rules-test-mode")), {
+				expect(fs.rm).toHaveBeenCalledWith(expect.stringContaining(path.join(".ali", "rules-test-mode")), {
 					recursive: true,
 					force: true,
 				})
 
 				// Verify mode was imported
 				expect(fs.writeFile).toHaveBeenCalledWith(
-					expect.stringContaining(".roomodes"),
+					expect.stringContaining(".alimodes"),
 					expect.stringContaining("test-mode"),
 					"utf-8",
 				)
@@ -1223,7 +1223,7 @@ describe("CustomModesManager", () => {
 				expect(result.success).toBe(true)
 
 				// Verify that fs.rm was called to remove the existing rules folder
-				expect(fs.rm).toHaveBeenCalledWith(expect.stringContaining(path.join(".roo", "rules-test-mode")), {
+				expect(fs.rm).toHaveBeenCalledWith(expect.stringContaining(path.join(".ali", "rules-test-mode")), {
 					recursive: true,
 					force: true,
 				})
@@ -1247,7 +1247,7 @@ describe("CustomModesManager", () => {
 			expect(result).toBe(false)
 		})
 
-		it("should return false when mode is not in .roomodes file", async () => {
+		it("should return false when mode is not in .alimodes file", async () => {
 			const roomodesContent = { customModes: [{ slug: "other-mode", name: "Other Mode" }] }
 			;(fileExistsAtPath as Mock).mockImplementation(async (path: string) => {
 				return path === mockRoomodes
@@ -1264,7 +1264,7 @@ describe("CustomModesManager", () => {
 			expect(result).toBe(false)
 		})
 
-		it("should return false when .roomodes doesn't exist and mode is not a custom mode", async () => {
+		it("should return false when .alimodes doesn't exist and mode is not a custom mode", async () => {
 			;(fileExistsAtPath as Mock).mockImplementation(async (path: string) => {
 				return path === mockSettingsPath
 			})
@@ -1333,7 +1333,7 @@ describe("CustomModesManager", () => {
 			})
 			;(fs.stat as Mock).mockResolvedValue({ isDirectory: () => true })
 			;(fs.readdir as Mock).mockResolvedValue([
-				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-test-mode" },
+				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.ali/rules-test-mode" },
 			])
 
 			const result = await manager.checkRulesDirectoryHasContent("test-mode")
@@ -1341,7 +1341,7 @@ describe("CustomModesManager", () => {
 			expect(result).toBe(true)
 		})
 
-		it("should work with global custom modes when .roomodes doesn't exist", async () => {
+		it("should work with global custom modes when .alimodes doesn't exist", async () => {
 			const settingsContent = {
 				customModes: [{ slug: "test-mode", name: "Test Mode", groups: ["read"], roleDefinition: "Test Role" }],
 			}
@@ -1350,7 +1350,7 @@ describe("CustomModesManager", () => {
 			const freshManager = new CustomModesManager(mockContext, mockOnUpdate)
 
 			;(fileExistsAtPath as Mock).mockImplementation(async (path: string) => {
-				return path === mockSettingsPath // .roomodes doesn't exist
+				return path === mockSettingsPath // .alimodes doesn't exist
 			})
 			;(fs.readFile as Mock).mockImplementation(async (path: string) => {
 				if (path === mockSettingsPath) {
@@ -1363,7 +1363,7 @@ describe("CustomModesManager", () => {
 			})
 			;(fs.stat as Mock).mockResolvedValue({ isDirectory: () => true })
 			;(fs.readdir as Mock).mockResolvedValue([
-				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-test-mode" },
+				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.ali/rules-test-mode" },
 			])
 
 			const result = await freshManager.checkRulesDirectoryHasContent("test-mode")
@@ -1455,7 +1455,7 @@ describe("CustomModesManager", () => {
 			expect(result.yaml).toContain("test-mode")
 		})
 
-		it("should successfully export mode with rules for a custom mode in .roomodes", async () => {
+		it("should successfully export mode with rules for a custom mode in .alimodes", async () => {
 			const roomodesContent = {
 				customModes: [
 					{
@@ -1482,7 +1482,7 @@ describe("CustomModesManager", () => {
 			})
 			;(fs.stat as Mock).mockResolvedValue({ isDirectory: () => true })
 			;(fs.readdir as Mock).mockResolvedValue([
-				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-test-mode" },
+				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.ali/rules-test-mode" },
 			])
 
 			const result = await manager.exportModeWithRules("test-mode")
@@ -1495,7 +1495,7 @@ describe("CustomModesManager", () => {
 			expect(fs.rm).not.toHaveBeenCalled()
 		})
 
-		it("should successfully export mode with rules for a built-in mode customized in .roomodes", async () => {
+		it("should successfully export mode with rules for a built-in mode customized in .alimodes", async () => {
 			const roomodesContent = {
 				customModes: [
 					{
@@ -1524,7 +1524,7 @@ describe("CustomModesManager", () => {
 			})
 			;(fs.stat as Mock).mockResolvedValue({ isDirectory: () => true })
 			;(fs.readdir as Mock).mockResolvedValue([
-				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-code" },
+				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.ali/rules-code" },
 			])
 
 			const result = await manager.exportModeWithRules("code")
@@ -1562,7 +1562,7 @@ describe("CustomModesManager", () => {
 			})
 			;(fs.stat as Mock).mockResolvedValue({ isDirectory: () => true })
 			;(fs.readdir as Mock).mockResolvedValue([
-				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-test-mode" },
+				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.ali/rules-test-mode" },
 			])
 
 			const result = await manager.exportModeWithRules("test-mode")

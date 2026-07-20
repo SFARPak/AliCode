@@ -218,7 +218,7 @@ describe("webviewMessageHandler - image mentions", () => {
 		const mockHandleWebviewAskResponse = vi.fn()
 		vi.mocked(mockClineProvider.getCurrentTask).mockReturnValue({
 			cwd: "/mock/workspace",
-			rooIgnoreController: undefined,
+			aliIgnoreController: undefined,
 			handleWebviewAskResponse: mockHandleWebviewAskResponse,
 		} as any)
 
@@ -602,7 +602,7 @@ describe("webviewMessageHandler - deleteCustomMode", () => {
 
 	it("should delete a project mode and its rules folder", async () => {
 		const slug = "test-project-mode"
-		const rulesFolderPath = path.join("/mock/workspace", ".roo", `rules-${slug}`)
+		const rulesFolderPath = path.join("/mock/workspace", ".ali", `rules-${slug}`)
 
 		vi.mocked(mockClineProvider.customModesManager.getCustomModes).mockResolvedValue([
 			{
@@ -627,7 +627,7 @@ describe("webviewMessageHandler - deleteCustomMode", () => {
 	it("should delete a global mode and its rules folder", async () => {
 		const slug = "test-global-mode"
 		const homeDir = os.homedir()
-		const rulesFolderPath = path.join(homeDir, ".roo", `rules-${slug}`)
+		const rulesFolderPath = path.join(homeDir, ".ali", `rules-${slug}`)
 
 		vi.mocked(mockClineProvider.customModesManager.getCustomModes).mockResolvedValue([
 			{
@@ -673,7 +673,7 @@ describe("webviewMessageHandler - deleteCustomMode", () => {
 
 	it("should handle errors when deleting rules folder", async () => {
 		const slug = "test-mode-error"
-		const rulesFolderPath = path.join("/mock/workspace", ".roo", `rules-${slug}`)
+		const rulesFolderPath = path.join("/mock/workspace", ".ali", `rules-${slug}`)
 		const error = new Error("Permission denied")
 
 		vi.mocked(mockClineProvider.customModesManager.getCustomModes).mockResolvedValue([
@@ -832,21 +832,21 @@ describe("webviewMessageHandler - requestCommands", () => {
 			{
 				name: "skill-slug-entry",
 				description: "Primary skill slug",
-				path: "/mock/.roo/skills/skill-slug-entry/SKILL.md",
+				path: "/mock/.ali/skills/skill-slug-entry/SKILL.md",
 				source: "project",
 				modeSlugs: ["code"],
 			},
 			{
 				name: "skill-slug-entry",
 				description: "Duplicate skill slug",
-				path: "/mock/.roo/skills/duplicate-skill/SKILL.md",
+				path: "/mock/.ali/skills/duplicate-skill/SKILL.md",
 				source: "global",
 				modeSlugs: ["code"],
 			},
 			{
 				name: "another-skill-slug",
 				description: "Another skill-generated command",
-				path: "/mock/.roo/skills/another-skill-slug/SKILL.md",
+				path: "/mock/.ali/skills/another-skill-slug/SKILL.md",
 				source: "global",
 				modeSlugs: ["code"],
 			},
@@ -869,13 +869,13 @@ describe("webviewMessageHandler - requestCommands", () => {
 				{
 					name: "skill-slug-entry",
 					source: "project",
-					filePath: "/mock/.roo/skills/skill-slug-entry/SKILL.md",
+					filePath: "/mock/.ali/skills/skill-slug-entry/SKILL.md",
 					description: "Primary skill slug",
 				},
 				{
 					name: "another-skill-slug",
 					source: "global",
-					filePath: "/mock/.roo/skills/another-skill-slug/SKILL.md",
+					filePath: "/mock/.ali/skills/another-skill-slug/SKILL.md",
 					description: "Another skill-generated command",
 				},
 			]),
@@ -890,7 +890,7 @@ describe("webviewMessageHandler - requestCommands", () => {
 				name: "deploy",
 				content: "existing command",
 				source: "project",
-				filePath: "/mock/workspace/.roo/commands/deploy.md",
+				filePath: "/mock/workspace/.ali/commands/deploy.md",
 				description: "Deploy command",
 				argumentHint: "staging | production",
 			},
@@ -906,14 +906,14 @@ describe("webviewMessageHandler - requestCommands", () => {
 			{
 				name: "deploy",
 				description: "Deploy skill",
-				path: "/mock/.roo/skills/deploy/SKILL.md",
+				path: "/mock/.ali/skills/deploy/SKILL.md",
 				source: "global",
 				modeSlugs: ["code"],
 			},
 			{
 				name: "skill-only",
 				description: "Skill-generated command",
-				path: "/mock/.roo/skills/skill-only/SKILL.md",
+				path: "/mock/.ali/skills/skill-only/SKILL.md",
 				source: "project",
 				modeSlugs: ["code"],
 			},
@@ -933,14 +933,14 @@ describe("webviewMessageHandler - requestCommands", () => {
 				{
 					name: "deploy",
 					source: "project",
-					filePath: "/mock/workspace/.roo/commands/deploy.md",
+					filePath: "/mock/workspace/.ali/commands/deploy.md",
 					description: "Deploy command",
 					argumentHint: "staging | production",
 				},
 				{
 					name: "skill-only",
 					source: "project",
-					filePath: "/mock/.roo/skills/skill-only/SKILL.md",
+					filePath: "/mock/.ali/skills/skill-only/SKILL.md",
 					description: "Skill-generated command",
 				},
 			]),

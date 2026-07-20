@@ -3,3 +3,17 @@ packages:
     - "webview-ui" # Should be apps/vscode-webview
     - "apps/*"
     - "packages/*"
+
+catalog:
+    solid-js: "^1.9.3"
+    "@opentui/core": "^0.1.0"
+    "@opentui/solid": "^0.1.0"
+    "@tsconfig/node22": "^22.0.0"
+    "@types/node": "^24.1.0"
+    "@typescript/native-preview": "7.0.0-dev.20260316.1"
+    "ai": "^6.0.75"
+    "effect": "^3.0.0"
+    "hono": "^4.0.0"
+    "hono-openapi": "^0.1.0"
+    "typescript": "5.8.3"
+    "zod": "3.25.76"

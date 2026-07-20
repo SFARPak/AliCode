@@ -131,7 +131,7 @@ Yes, you can customize AliCode in several ways:
 
 - **Custom Instructions:** Provide general instructions that apply to all modes, or mode-specific instructions.
 - **Custom Modes:** Create your own modes with tailored prompts and some tool permissions.
-- **`.roorules` Files:** Create `.roorules` files in your project to provide additional guidelines.
+- **`.alirules` Files:** Create `.alirules` files in your project to provide additional guidelines.
 - **Settings:** Adjust various settings, such as auto-approval, diff editing, and more.
 
 ### Does AliCode have any auto approval settings?
@@ -142,7 +142,7 @@ Yes, AliCode has a few settings that when enabled will automatically approve act
 
 ## Advanced Features
 
-### Can I use Roo offline?
+### Can I use Ali offline?
 
 Yes, if you use a [local model](/advanced-usage/local-models).
 
@@ -177,7 +177,7 @@ Codebase Indexing requires an OpenAI API key for generating embeddings and a Qdr
 
 ### AliCode made changes I didn't want. How do I undo them?
 
-AliCode uses VS Code's built-in file editing capabilities. You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Roo can revert changes made to a file.
+AliCode uses VS Code's built-in file editing capabilities. You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Ali can revert changes made to a file.
 
 ### AliCode can't write to markdown files. What's wrong?
 

@@ -23,11 +23,11 @@ const config: Config = {
 	url: "https://roocodeinc.github.io",
 	// Set the /<baseUrl>/ pathname under which your site is served
 	// For GitHub pages deployment, it is often '/<projectName>/'
-	baseUrl: "/Roo-Code/",
+	baseUrl: "/Ali-Code/",
 
 	// GitHub pages deployment config (if needed)
 	organizationName: "RooCodeInc",
-	projectName: "Roo-Code",
+	projectName: "Ali-Code",
 
 	onBrokenLinks: "warn",
 	markdown: {
@@ -357,8 +357,8 @@ const config: Config = {
 					"AliCode, AI coding assistant, VS Code extension, autonomous coding agent, AI pair programmer, code generation, documentation",
 			},
 			{ name: "twitter:card", content: "summary_large_image" },
-			{ name: "twitter:site", content: "@roocode" },
-			{ name: "twitter:creator", content: "@roocode" },
+			{ name: "twitter:site", content: "@alicode" },
+			{ name: "twitter:creator", content: "@alicode" },
 			{ property: "og:type", content: "website" },
 			{ property: "og:locale", content: "en_US" },
 		],

@@ -36,8 +36,8 @@ This tool writes content to a specified file, either creating a new file if it d
 
 ## When is it used?
 
-- When Roo needs to create a new file from scratch
-- When Roo needs to completely rewrite an existing file
+- When Ali needs to create a new file from scratch
+- When Ali needs to completely rewrite an existing file
 - When creating multiple files for a new project
 - When generating configuration files, documentation, or source code
 - When you need to review changes before they're applied
@@ -51,7 +51,7 @@ This tool writes content to a specified file, either creating a new file if it d
 - Safety Measures: Detects code omission, validates paths, and prevents truncated content
 - Editor Integration: Opens a diff view that scrolls to the first difference automatically
 - Content Preprocessing: Handles artifacts from different AI models to ensure clean content
-- Access Control: Validates against `.rooignore` restrictions before making changes
+- Access Control: Validates against `.aliignore` restrictions before making changes
 - Parent Directories: May handle directory creation through system dependencies
 - Complete Replacement: Provides a fully transformed file in a single operation
 
@@ -76,7 +76,7 @@ When the `write_to_file` tool is invoked, it follows this process:
 
     - Checks that `path`, `content`, and `line_count` are provided
     - If `line_count` is missing/invalid, reverts any diff view changes and returns an error suggesting alternative tools (`apply_diff`, etc.) if modifying an existing file.
-    - Validates the file is allowed (not restricted by `.rooignore`)
+    - Validates the file is allowed (not restricted by `.aliignore`)
     - Ensures the path is within the workspace boundaries
     - Tracks consecutive mistake counts for missing parameters
     - Shows specific error messages for each validation failure
@@ -119,10 +119,10 @@ When the `write_to_file` tool is invoked, it follows this process:
 
 ## Examples When Used
 
-- When creating a new project, Roo generates multiple files but lets you review each before committing changes.
-- When setting up configuration files, Roo shows the proposed configuration in a diff view for approval.
-- When generating documentation, Roo creates markdown files but lets you make final adjustments in the diff view.
-- When developing a prototype, Roo shows complete source files in a diff view where you can fine-tune before saving.
+- When creating a new project, Ali generates multiple files but lets you review each before committing changes.
+- When setting up configuration files, Ali shows the proposed configuration in a diff view for approval.
+- When generating documentation, Ali creates markdown files but lets you make final adjustments in the diff view.
+- When developing a prototype, Ali shows complete source files in a diff view where you can fine-tune before saving.
 
 ---
 

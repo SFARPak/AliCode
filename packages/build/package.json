@@ -1,6 +1,6 @@
 {
 	"name": "@ali-code/build",
-	"description": "ESBuild utilities for Roo Code.",
+	"description": "ESBuild utilities for Ali Code.",
 	"private": true,
 	"type": "module",
 	"main": "./dist/index.js",

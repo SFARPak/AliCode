@@ -3,7 +3,7 @@ description: Master keyboard navigation in AliCode with customizable shortcuts, 
 keywords:
     - keyboard shortcuts
     - keyboard navigation
-    - roo-cline.acceptInput
+    - alicode.acceptInput
     - prompt history
     - accessibility
     - vim compatibility
@@ -18,15 +18,15 @@ The AliCode interface supports keyboard navigation and shortcuts to streamline y
 
 ## Available Keyboard Commands
 
-AliCode offers keyboard commands to enhance your workflow. This page focuses on the `roo-cline.acceptInput` command, but here's a quick reference to all keyboard commands:
+AliCode offers keyboard commands to enhance your workflow. This page focuses on the `alicode.acceptInput` command, but here's a quick reference to all keyboard commands:
 
-| Command                  | Description                                  | Default Shortcut                                 |
-| ------------------------ | -------------------------------------------- | ------------------------------------------------ |
-| `roo-cline.acceptInput`  | Submit text or accept the primary suggestion | None (configurable)                              |
-| `roo-cline.focusInput`   | Focus the Roo input box                      | None (configurable)                              |
-| `roo-cline.openInNewTab` | Open AliCode in a new editor tab             | None (via Command Palette)                       |
-| Add to Context           | Add selected code to Roo's context           | macOS: Cmd+K Cmd+A; Windows/Linux: Ctrl+K Ctrl+A |
-| Arrow Up/Down            | Navigate through prompt history              | Built-in                                         |
+| Command                | Description                                  | Default Shortcut                                 |
+| ---------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `alicode.acceptInput`  | Submit text or accept the primary suggestion | None (configurable)                              |
+| `alicode.focusInput`   | Focus the Ali input box                      | None (configurable)                              |
+| `alicode.openInNewTab` | Open AliCode in a new editor tab             | None (via Command Palette)                       |
+| Add to Context         | Add selected code to Ali's context           | macOS: Cmd+K Cmd+A; Windows/Linux: Ctrl+K Ctrl+A |
+| Arrow Up/Down          | Navigate through prompt history              | Built-in                                         |
 
 ### Key Benefits of Keyboard Commands
 
@@ -37,13 +37,13 @@ AliCode offers keyboard commands to enhance your workflow. This page focuses on 
 
 ---
 
-## roo-cline.acceptInput Command
+## alicode.acceptInput Command
 
-The `roo-cline.acceptInput` command lets you submit text or accept suggestions with keyboard shortcuts instead of clicking buttons or pressing Enter in the input area.
+The `alicode.acceptInput` command lets you submit text or accept suggestions with keyboard shortcuts instead of clicking buttons or pressing Enter in the input area.
 
 ### What It Does
 
-The `roo-cline.acceptInput` command is a general-purpose input submission command. When triggered, it:
+The `alicode.acceptInput` command is a general-purpose input submission command. When triggered, it:
 
 - Submits your current text or image input when in the text input area (equivalent to pressing Enter)
 - Clicks the primary (first) button when action buttons are visible (such as confirm/cancel buttons or any other action buttons)
@@ -54,8 +54,8 @@ The `roo-cline.acceptInput` command is a general-purpose input submission comman
 
 1. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac)
 2. Type "Preferences: Open Keyboard Shortcuts"
-3. In the search box, type "roo-cline.acceptInput"
-4. Locate "Roo: Accept Input/Suggestion" in the results
+3. In the search box, type "alicode.acceptInput"
+4. Locate "Ali: Accept Input/Suggestion" in the results
 5. Click the + icon to the left of the command
 6. Press your desired key combination (e.g., `Ctrl+Enter` or `Alt+Enter`)
 7. Press Enter to confirm
@@ -69,30 +69,30 @@ The `roo-cline.acceptInput` command is a general-purpose input submission comman
 ```json
 {
 	"key": "ctrl+enter", // or your preferred key combination
-	"command": "roo-cline.acceptInput",
-	"when": "view == roo-cline.SidebarProvider || activeWebviewPanelId == roo-cline.TabPanelProvider"
+	"command": "alicode.acceptInput",
+	"when": "view == alicode.SidebarProvider || activeWebviewPanelId == alicode.TabPanelProvider"
 }
 ```
 
 Scoped examples:
 
-- Sidebar Roo view only:
+- Sidebar Ali view only:
 
 ```json
 {
 	"key": "ctrl+enter",
-	"command": "roo-cline.acceptInput",
-	"when": "view == roo-cline.SidebarProvider"
+	"command": "alicode.acceptInput",
+	"when": "view == alicode.SidebarProvider"
 }
 ```
 
-- Editor Roo tab only:
+- Editor Ali tab only:
 
 ```json
 {
 	"key": "ctrl+enter",
-	"command": "roo-cline.acceptInput",
-	"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
+	"command": "alicode.acceptInput",
+	"when": "activeWebviewPanelId == alicode.TabPanelProvider"
 }
 ```
 
@@ -109,7 +109,7 @@ Choose a key combination that doesn't conflict with existing VS Code shortcuts:
 
 - Default: macOS: Cmd+K Cmd+A; Windows/Linux: Ctrl+K Ctrl+A
 - Requires: when condition `editorTextFocus && editorHasSelection`
-- Focus does not change automatically. To continue typing immediately, use "Roo: Focus Input" (`roo-cline.focusInput`) or click into the Roo panel.
+- Focus does not change automatically. To continue typing immediately, use "Ali: Focus Input" (`alicode.focusInput`) or click into the Ali panel.
 
 :::note Redo Shortcut Restored
 The standard Redo shortcut (macOS: Cmd+Y; Windows/Linux: Ctrl+Y) remains unchanged and is available for its usual function in VS Code.
@@ -119,7 +119,7 @@ The standard Redo shortcut (macOS: Cmd+Y; Windows/Linux: Ctrl+Y) remains unchang
 
 #### Quick Development Workflows
 
-- **Text Submission**: Send messages to Roo without moving your hands from the keyboard
+- **Text Submission**: Send messages to Ali without moving your hands from the keyboard
 - **Action Confirmations**: Accept operations like saving files, running commands, or applying diffs
 - **Multi-Step Processes**: Move quickly through steps that require confirmation or input
 - **Consecutive Tasks**: Chain multiple tasks together with minimal interruption
@@ -128,7 +128,7 @@ The standard Redo shortcut (macOS: Cmd+Y; Windows/Linux: Ctrl+Y) remains unchang
 
 - **Vim/Neovim Workflows**: If you're coming from a Vim/Neovim background, maintain your keyboard-focused workflow
 - **IDE Integration**: Use alongside other VS Code keyboard shortcuts for a seamless experience
-- **Code Reviews**: Quickly accept suggestions when reviewing code with Roo
+- **Code Reviews**: Quickly accept suggestions when reviewing code with Ali
 - **Documentation Writing**: Submit text and accept formatting suggestions when generating documentation
 
 #### Accessibility Use Cases
@@ -140,7 +140,7 @@ The standard Redo shortcut (macOS: Cmd+Y; Windows/Linux: Ctrl+Y) remains unchang
 
 ### Accessibility Benefits
 
-The `roo-cline.acceptInput` command was designed with accessibility in mind:
+The `alicode.acceptInput` command was designed with accessibility in mind:
 
 - **Reduced Mouse Dependence**: Complete entire workflows without reaching for the mouse
 - **Reduced Physical Strain**: Helps users who experience discomfort or pain from mouse usage
@@ -149,41 +149,41 @@ The `roo-cline.acceptInput` command was designed with accessibility in mind:
 
 ### Keyboard-Centric Workflows
 
-Here are some complete workflow examples showing how to effectively use keyboard shortcuts with Roo:
+Here are some complete workflow examples showing how to effectively use keyboard shortcuts with Ali:
 
 #### Development Workflow Example
 
 1. Open VS Code and navigate to your project
-2. Open Roo via the sidebar
+2. Open Ali via the sidebar
 3. Type your request: "Create a REST API endpoint for user registration"
-4. When Roo asks for framework preferences, use your `roo-cline.acceptInput` shortcut to select the first suggestion
+4. When Ali asks for framework preferences, use your `alicode.acceptInput` shortcut to select the first suggestion
 5. Continue using the shortcut to accept code generation suggestions
-6. When Roo offers to save the file, use the shortcut again to confirm
+6. When Ali offers to save the file, use the shortcut again to confirm
 7. Use VS Code's built-in shortcuts to navigate through the created files
 
 #### Code Review Workflow
 
 1. Select code you want to review and use VS Code's "Copy" command
-2. Ask Roo to review it: "Review this code for security issues"
-3. As Roo asks clarifying questions about the code context, use your shortcut to accept suggestions
-4. When Roo provides improvement recommendations, use the shortcut again to accept implementation suggestions
+2. Ask Ali to review it: "Review this code for security issues"
+3. As Ali asks clarifying questions about the code context, use your shortcut to accept suggestions
+4. When Ali provides improvement recommendations, use the shortcut again to accept implementation suggestions
 
 ### Troubleshooting
 
-| Issue                             | Solution                                                                                                                                             |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Shortcut doesn't work             | Ensure Roo is focused (click in the Roo panel first)                                                                                                 |
-| Wrong suggestion selected         | The command always selects the first (primary) button; use mouse if you need a different option                                                      |
-| Conflicts with existing shortcuts | Try a different key combination in VS Code keyboard settings                                                                                         |
-| No visual feedback when used      | This is normal - the command silently activates the function without visual confirmation                                                             |
-| Shortcut works inconsistently     | Make sure the `when` clause is properly configured (use `view == roo-cline.SidebarProvider` or `activeWebviewPanelId == roo-cline.TabPanelProvider`) |
+| Issue                             | Solution                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Shortcut doesn't work             | Ensure Ali is focused (click in the Ali panel first)                                                                                             |
+| Wrong suggestion selected         | The command always selects the first (primary) button; use mouse if you need a different option                                                  |
+| Conflicts with existing shortcuts | Try a different key combination in VS Code keyboard settings                                                                                     |
+| No visual feedback when used      | This is normal - the command silently activates the function without visual confirmation                                                         |
+| Shortcut works inconsistently     | Make sure the `when` clause is properly configured (use `view == alicode.SidebarProvider` or `activeWebviewPanelId == alicode.TabPanelProvider`) |
 
 ### Technical Implementation
 
-The `roo-cline.acceptInput` command is implemented as follows:
+The `alicode.acceptInput` command is implemented as follows:
 
-- Command registered as `roo-cline.acceptInput` with display title "Roo: Accept Input/Suggestion" in the command palette
-- When triggered, it sends an "acceptInput" message to the active Roo webview
+- Command registered as `alicode.acceptInput` with display title "Ali: Accept Input/Suggestion" in the command palette
+- When triggered, it sends an "acceptInput" message to the active Ali webview
 - The webview determines the appropriate action based on the current UI state:
     - Clicks the primary action button if action buttons are visible and enabled
     - Sends the message if the text area is enabled and contains text/images
@@ -191,7 +191,7 @@ The `roo-cline.acceptInput` command is implemented as follows:
 
 ### Limitations
 
-- Works only when the Roo interface is active
+- Works only when the Ali interface is active
 - Has no effect if no inputs or suggestions are currently available
 - Prioritizes the primary (first) button when multiple options are shown
 

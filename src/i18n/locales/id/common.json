@@ -189,7 +189,7 @@
 		"enter_valid_path": "Silakan masukkan path yang valid"
 	},
 	"input": {
-		"task_prompt": "Apa yang harus Roo lakukan?",
+		"task_prompt": "Apa yang harus Ali lakukan?",
 		"task_placeholder": "Ketik tugas kamu di sini"
 	},
 	"settings": {
@@ -197,8 +197,8 @@
 	},
 	"customModes": {
 		"errors": {
-			"yamlParseError": "YAML tidak valid dalam file .roomodes pada baris {{line}}. Silakan periksa:\n• Indentasi yang benar (gunakan spasi, bukan tab)\n• Tanda kutip dan kurung yang cocok\n• Sintaks YAML yang valid",
-			"schemaValidationError": "Format mode kustom tidak valid dalam .roomodes:\n{{issues}}",
+			"yamlParseError": "YAML tidak valid dalam file .alimodes pada baris {{line}}. Silakan periksa:\n• Indentasi yang benar (gunakan spasi, bukan tab)\n• Tanda kutip dan kurung yang cocok\n• Sintaks YAML yang valid",
+			"schemaValidationError": "Format mode kustom tidak valid dalam .alimodes:\n{{issues}}",
 			"invalidFormat": "Format mode kustom tidak valid. Pastikan pengaturan kamu mengikuti format YAML yang benar.",
 			"updateFailed": "Gagal memperbarui mode kustom: {{error}}",
 			"deleteFailed": "Gagal menghapus mode kustom: {{error}}",

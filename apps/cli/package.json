@@ -6,7 +6,7 @@
 	"type": "module",
 	"main": "dist/index.js",
 	"bin": {
-		"roo": "dist/index.js"
+		"ali": "dist/index.js"
 	},
 	"scripts": {
 		"format": "prettier --write 'src/**/*.ts'",
@@ -15,7 +15,7 @@
 		"test": "vitest run",
 		"test:integration": "tsx scripts/integration/run.ts",
 		"build": "tsup",
-		"build:extension": "pnpm --filter roo-cline bundle",
+		"build:extension": "pnpm --filter alicode bundle",
 		"dev": "tsx src/index.ts",
 		"dev:local": "tsx src/index.ts",
 		"clean": "rimraf dist .turbo"

@@ -44,7 +44,7 @@ Discover the powerful features that make AliCode your ultimate AI-powered coding
 - [**Custom Instructions**](/features/custom-instructions) - Personalize AI behavior
 - [**Skills**](/features/skills) - Create reusable task-specific instruction packages
 - [**Settings Management**](/features/settings-management) - Fine-tune AliCode to your preferences
-- [**.rooignore**](/features/rooignore) - Control file access and visibility
+- [**.aliignore**](/features/rooignore) - Control file access and visibility
 
 ### Integration Features
 
@@ -62,7 +62,7 @@ Discover the powerful features that make AliCode your ultimate AI-powered coding
 
 Push the boundaries with cutting-edge capabilities:
 
-- [**Custom Tools**](/features/experimental/custom-tools) - Define TypeScript/JavaScript tools that Roo can call
+- [**Custom Tools**](/features/experimental/custom-tools) - Define TypeScript/JavaScript tools that Ali can call
 - [**Concurrent File Edits**](/features/experimental/concurrent-file-edits) - Edit multiple files in a single operation
 - [**More Experimental Features**](/features/experimental/experimental-features) - Explore features under development
 

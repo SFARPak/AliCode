@@ -10,10 +10,20 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
-		environment: "jsdom",
+		environment: "node",
 		watch: false,
 		testTimeout: 120_000, // 2m for integration tests.
 		include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+		setupFiles: ["src/setupTests.ts"],
+		pool: "forks",
+		poolOptions: {
+			forks: {
+				singleFork: true,
+			},
+		},
+		env: {
+			NODE_ENV: "development",
+		},
 	},
 	server: {},
 })

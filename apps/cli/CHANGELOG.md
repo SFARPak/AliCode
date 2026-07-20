@@ -151,7 +151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Cancel Recovery**: Wait for resumable state after cancel before processing follow-up messages to prevent race conditions in stdin-stream.
 - **Custom Tool Schema**: Provide valid empty JSON Schema for custom tools without parameters to fix strict-mode API validation.
-- **Path Handling**: Skip paths outside cwd in RooProtectedController to avoid RangeError.
+- **Path Handling**: Skip paths outside cwd in AliProtectedController to avoid RangeError.
 - **Retry Handling**: Silently handle abort during exponential backoff retry countdown.
 - Fixed spelling/grammar and casing inconsistencies.
 
@@ -163,7 +163,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Roo Model Warmup**: When configured with the Roo provider, the CLI now proactively fetches and warms the model list during activation so that model information is available before the first prompt is sent. The warmup has a 10s timeout and failures are logged only in debug mode.
+- **Ali Model Warmup**: When configured with the Ali provider, the CLI now proactively fetches and warms the model list during activation so that model information is available before the first prompt is sent. The warmup has a 10s timeout and failures are logged only in debug mode.
 - **Unbound Provider**: Added Unbound as an available provider option.
 
 ## [0.1.0] - 2026-02-19
@@ -227,14 +227,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Linux Support**: The CLI now supports Linux platforms in addition to macOS
-- **Roo Provider API Key Support**: Allow `--api-key` flag and `ROO_API_KEY` environment variable for the roo provider instead of requiring cloud auth token
+- **Ali Provider API Key Support**: Allow `--api-key` flag and `ROO_API_KEY` environment variable for the roo provider instead of requiring cloud auth token
 - **Exit on Error**: New `--exit-on-error` flag to exit immediately on API request errors instead of retrying, useful for CI/CD pipelines
 
 ### Changed
 
 - **Improved Dev Experience**: Dev scripts now use `tsx` for running directly from source without building first
 - **Path Resolution Fixes**: Fixed path resolution in [`version.ts`](src/lib/utils/version.ts), [`extension.ts`](src/lib/utils/extension.ts), and [`extension-host.ts`](src/agent/extension-host.ts) to work from both source and bundled locations
-- **Debug Logging**: Debug log file (`~/.roo/cli-debug.log`) is now disabled by default unless `--debug` flag is passed
+- **Debug Logging**: Debug log file (`~/.ali/cli-debug.log`) is now disabled by default unless `--debug` flag is passed
 - Updated README with complete environment variable table and dev workflow documentation
 
 ### Fixed

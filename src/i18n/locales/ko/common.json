@@ -189,7 +189,7 @@
 		"enter_valid_path": "유효한 경로를 입력하세요"
 	},
 	"input": {
-		"task_prompt": "Roo에게 무엇을 시킬까요?",
+		"task_prompt": "Ali에게 무엇을 시킬까요?",
 		"task_placeholder": "여기에 작업을 입력하세요"
 	},
 	"settings": {
@@ -197,8 +197,8 @@
 	},
 	"customModes": {
 		"errors": {
-			"yamlParseError": ".roomodes 파일의 {{line}}번째 줄에서 유효하지 않은 YAML입니다. 다음을 확인하세요:\n• 올바른 들여쓰기 (탭이 아닌 공백 사용)\n• 일치하는 따옴표와 괄호\n• 유효한 YAML 구문",
-			"schemaValidationError": ".roomodes의 사용자 정의 모드 형식이 유효하지 않습니다:\n{{issues}}",
+			"yamlParseError": ".alimodes 파일의 {{line}}번째 줄에서 유효하지 않은 YAML입니다. 다음을 확인하세요:\n• 올바른 들여쓰기 (탭이 아닌 공백 사용)\n• 일치하는 따옴표와 괄호\n• 유효한 YAML 구문",
+			"schemaValidationError": ".alimodes의 사용자 정의 모드 형식이 유효하지 않습니다:\n{{issues}}",
 			"invalidFormat": "사용자 정의 모드 형식이 유효하지 않습니다. 설정이 올바른 YAML 형식을 따르는지 확인하세요.",
 			"updateFailed": "사용자 정의 모드 업데이트 실패: {{error}}",
 			"deleteFailed": "사용자 정의 모드 삭제 실패: {{error}}",

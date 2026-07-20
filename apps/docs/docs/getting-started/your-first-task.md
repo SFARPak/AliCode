@@ -23,7 +23,7 @@ Click the AliCode icon (<KangarooIcon />) in the VS Code Activity Bar (vertical 
 
 <figure>
   <img src="/img/your-first-task/your-first-task.png" alt="AliCode icon in VS Code Activity Bar" width="600" />
-  <figcaption>The AliCode icon in the Activity Bar opens the chat interface. You can drag it to position Roo elsewhere.</figcaption>
+  <figcaption>The AliCode icon in the Activity Bar opens the chat interface. You can drag it to position Ali elsewhere.</figcaption>
 </figure>
 
 ## Step 2: Type Your Task
@@ -32,7 +32,7 @@ Type a clear, concise description of what you want AliCode to do in the chat box
 
 - "Create a file named `hello.txt` containing 'Hello, world!'."
 - "Write a Python function that adds two numbers."
-- "Create an HTML file for a simple website with the title 'Roo test'"
+- "Create an HTML file for a simple website with the title 'Ali test'"
 
 No special commands or syntax needed—just use plain English.
 

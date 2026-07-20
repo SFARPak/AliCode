@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/i18n/TranslationContext"
 import { Download, Upload, TriangleAlert, Bug, Shield } from "lucide-react"
 import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 
-import { Package } from "@roo/package"
+import { Package } from "@ali/package"
 
 import { vscode } from "@/utils/vscode"
 import { cn } from "@/lib/utils"

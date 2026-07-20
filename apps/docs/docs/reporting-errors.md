@@ -54,7 +54,7 @@ The Error Details modal offers two buttons, each serving different needs:
 
 After copying error information:
 
-- **Email**: Send to [support@roocode.com](mailto:support@roocode.com)
+- **Email**: Send to [support@alicode.com](mailto:support@alicode.com)
 - **GitHub Issues**: File at [github.com/RooCodeInc/Roo-Code/issues](https://github.com/RooCodeInc/Roo-Code/issues)
 
 Include a brief description of what you were trying to do when the error occurred. The exported diagnostics handle the technical details.

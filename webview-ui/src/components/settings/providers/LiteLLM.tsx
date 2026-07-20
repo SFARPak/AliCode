@@ -8,7 +8,7 @@ import {
 	litellmDefaultModelId,
 } from "@ali-code/types"
 
-import { RouterName } from "@roo/api"
+import { RouterName } from "@ali/api"
 
 import { vscode } from "@src/utils/vscode"
 import { useExtensionState } from "@src/context/ExtensionStateContext"

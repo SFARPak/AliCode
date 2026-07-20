@@ -11,7 +11,7 @@ keywords:
 
 # Skills
 
-Skills package task-specific instructions that Roo loads on-demand when your request matches the skill's purpose. Unlike custom instructions that apply to everything, skills activate only when needed—making Roo more effective at specialized tasks without cluttering the base prompt.
+Skills package task-specific instructions that Ali loads on-demand when your request matches the skill's purpose. Unlike custom instructions that apply to everything, skills activate only when needed—making Ali more effective at specialized tasks without cluttering the base prompt.
 
 ---
 
@@ -19,7 +19,7 @@ Skills package task-specific instructions that Roo loads on-demand when your req
 
 **Custom Instructions apply broadly** across all your work. They're great for general coding standards or style preferences, but not ideal for specific workflows like "process PDF files" or "generate API documentation."
 
-**Skills solve this**: Create a skill for PDF processing, and Roo only loads those instructions when you actually ask to work with PDFs. This keeps the system prompt focused and gives Roo deep expertise in specific domains without affecting unrelated tasks.
+**Skills solve this**: Create a skill for PDF processing, and Ali only loads those instructions when you actually ask to work with PDFs. This keeps the system prompt focused and gives Ali deep expertise in specific domains without affecting unrelated tasks.
 
 You can't package bundled assets (scripts, templates, references) with custom instructions. Skills let you store related files alongside the instructions, creating self-contained workflow packages.
 
@@ -28,21 +28,21 @@ You can't package bundled assets (scripts, templates, references) with custom in
 - **Task-Specific Expertise**: Package detailed instructions for specialized workflows (data processing, documentation generation, code migration patterns)
 - **Bundled Resources**: Include helper scripts, templates, or reference files alongside instructions
 - **Mode Targeting**: Create skills that only activate in specific modes (e.g., code refactoring skills only in Code mode)
-- **Team Sharing**: Version-control project skills in `.roo/skills/` for consistent team workflows
-- **Personal Library**: Build a global skills library in `~/.roo/skills/` that works across all projects
+- **Team Sharing**: Version-control project skills in `.ali/skills/` for consistent team workflows
+- **Personal Library**: Build a global skills library in `~/.ali/skills/` that works across all projects
 - **Override Control**: Project skills override global skills, mode-specific override generic
 
 ## How Skills Work
 
 Skills use **progressive disclosure** to efficiently load content only when needed:
 
-**Level 1: Discovery** - Roo reads each `SKILL.md` file and parses its frontmatter to extract `name` and `description`. Only this metadata is stored for matching—the full content isn't held in memory until needed.
+**Level 1: Discovery** - Ali reads each `SKILL.md` file and parses its frontmatter to extract `name` and `description`. Only this metadata is stored for matching—the full content isn't held in memory until needed.
 
-**Level 2: Instructions** - When your request matches a skill's description, Roo uses [`read_file`](/advanced-usage/available-tools/read-file) to load the full SKILL.md instructions into context.
+**Level 2: Instructions** - When your request matches a skill's description, Ali uses [`read_file`](/advanced-usage/available-tools/read-file) to load the full SKILL.md instructions into context.
 
-**Level 3: Resources** - The prompt tells Roo it may access bundled files (scripts, templates, references) alongside the skill. There's no separate resource manifest—Roo discovers these files on-demand when the instructions reference them.
+**Level 3: Resources** - The prompt tells Ali it may access bundled files (scripts, templates, references) alongside the skill. There's no separate resource manifest—Ali discovers these files on-demand when the instructions reference them.
 
-This architecture means skills remain dormant until activated—they don't bloat your base prompt. You can install many skills, and Roo loads only what's relevant for each task.
+This architecture means skills remain dormant until activated—they don't bloat your base prompt. You can install many skills, and Ali loads only what's relevant for each task.
 
 ---
 
@@ -52,8 +52,8 @@ This architecture means skills remain dormant until activated—they don't bloat
 
 **Global skills** (available in all projects):
 ```bash
-# Linux/macOS — Roo-specific (higher priority)
-~/.roo/skills/{skill-name}/SKILL.md
+# Linux/macOS — Ali-specific (higher priority)
+~/.ali/skills/{skill-name}/SKILL.md
 
 # Linux/macOS — cross-agent (shared with other agent tools)
 ~/.agents/skills/{skill-name}/SKILL.md
@@ -65,8 +65,8 @@ This architecture means skills remain dormant until activated—they don't bloat
 
 **Project skills** (specific to current workspace):
 ```bash
-# Roo-specific (higher priority)
-<project-root>/.roo/skills/{skill-name}/SKILL.md
+# Ali-specific (higher priority)
+<project-root>/.ali/skills/{skill-name}/SKILL.md
 
 # Cross-agent (shared with other agent tools)
 <project-root>/.agents/skills/{skill-name}/SKILL.md
@@ -76,8 +76,8 @@ This architecture means skills remain dormant until activated—they don't bloat
 
 ```bash
 # Example: PDF processing skill
-mkdir -p ~/.roo/skills/pdf-processing
-touch ~/.roo/skills/pdf-processing/SKILL.md
+mkdir -p ~/.ali/skills/pdf-processing
+touch ~/.ali/skills/pdf-processing/SKILL.md
 ```
 
 #### 3. Write the SKILL.md file
@@ -117,16 +117,16 @@ When the user requests PDF processing:
 - No leading/trailing hyphens, no consecutive hyphens (e.g., `my--skill` is invalid)
 - Both `name` and `description` are required
 - Descriptions must be 1–1024 characters (trimmed)
-- The description tells Roo when to use this skill—be specific
+- The description tells Ali when to use this skill—be specific
 
 #### 4. Test the skill
 
-Ask Roo something matching the description:
+Ask Ali something matching the description:
 ```
 "Can you help me extract tables from this PDF file?"
 ```
 
-Roo should recognize the request matches your skill description, load the SKILL.md file, and follow its instructions.
+Ali should recognize the request matches your skill description, load the SKILL.md file, and follow its instructions.
 
 ---
 
@@ -135,7 +135,7 @@ Roo should recognize the request matches your skill description, load the SKILL.
 #### Basic structure
 
 ```
-~/.roo/skills/                    # Global Roo-specific skills (high priority)
+~/.ali/skills/                    # Global Ali-specific skills (high priority)
 ├── pdf-processing/
 │   ├── SKILL.md                 # Required
 │   ├── extract.py               # Optional: bundled scripts
@@ -148,7 +148,7 @@ Roo should recognize the request matches your skill description, load the SKILL.
 └── shared-workflow/
     └── SKILL.md
 
-.roo/skills/                      # Project Roo-specific skills (override global)
+.ali/skills/                      # Project Ali-specific skills (override global)
 └── custom-pdf-workflow/
     └── SKILL.md
 
@@ -162,11 +162,11 @@ Roo should recognize the request matches your skill description, load the SKILL.
 Create skills that only activate in specific modes:
 
 ```
-~/.roo/skills-code/              # Only in Code mode (Roo-specific, global)
+~/.ali/skills-code/              # Only in Code mode (Ali-specific, global)
 └── refactoring-patterns/
     └── SKILL.md
 
-.roo/skills-architect/           # Only in Architect mode (Roo-specific, project)
+.ali/skills-architect/           # Only in Architect mode (Ali-specific, project)
 └── system-design-templates/
     └── SKILL.md
 
@@ -186,18 +186,18 @@ Create skills that only activate in specific modes:
 
 ## Override Priority
 
-When skills with the same name exist in multiple locations, this priority applies (highest to lowest). `.roo/` paths always take precedence over `.agents/` paths at the same project level:
+When skills with the same name exist in multiple locations, this priority applies (highest to lowest). `.ali/` paths always take precedence over `.agents/` paths at the same project level:
 
-1. **Project `.roo` mode-specific** (`.roo/skills-code/my-skill/`) — highest priority
-2. **Project `.roo` generic** (`.roo/skills/my-skill/`)
+1. **Project `.ali` mode-specific** (`.ali/skills-code/my-skill/`) — highest priority
+2. **Project `.ali` generic** (`.ali/skills/my-skill/`)
 3. **Project `.agents` mode-specific** (`.agents/skills-code/my-skill/`)
 4. **Project `.agents` generic** (`.agents/skills/my-skill/`)
-5. **Global `.roo` mode-specific** (`~/.roo/skills-code/my-skill/`)
-6. **Global `.roo` generic** (`~/.roo/skills/my-skill/`)
+5. **Global `.ali` mode-specific** (`~/.ali/skills-code/my-skill/`)
+6. **Global `.ali` generic** (`~/.ali/skills/my-skill/`)
 7. **Global `.agents` mode-specific** (`~/.agents/skills-code/my-skill/`)
 8. **Global `.agents` generic** (`~/.agents/skills/my-skill/`) — lowest priority
 
-A **project** skill always overrides a **global** skill of the same name. Within the same project level, `.roo/` overrides `.agents/`.
+A **project** skill always overrides a **global** skill of the same name. Within the same project level, `.ali/` overrides `.agents/`.
 
 This lets you:
 - Set global standards that work everywhere
@@ -208,7 +208,7 @@ This lets you:
 
 ## Skill Discovery
 
-Roo automatically discovers skills:
+Ali automatically discovers skills:
 - **At startup**: All skills are indexed by reading and parsing each SKILL.md
 - **During development**: File watchers detect changes to SKILL.md files
 - **Mode filtering**: Only skills relevant to the current mode are available
@@ -221,7 +221,7 @@ Skills support symbolic links for sharing skill libraries across projects:
 
 ```bash
 # Share a skill library across projects
-ln -s /shared/company-skills ~/.roo/skills/company-standards
+ln -s /shared/company-skills ~/.ali/skills/company-standards
 ```
 
 The skill name comes from the symlink name (or directory name if not symlinked). The frontmatter `name` field must match this name exactly—you can't create aliases with different names pointing to the same skill.
@@ -232,7 +232,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 #### Skill isn't loading
 
-**Symptom**: Roo doesn't use your skill even when you request something matching the description.
+**Symptom**: Ali doesn't use your skill even when you request something matching the description.
 
 **Causes & fixes**:
 1. **Name mismatch**: The frontmatter `name` field must exactly match the directory name
@@ -252,7 +252,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 3. **Wrong mode**: If the skill is in `skills-code/` but you're in Architect mode, it won't load. Move to `skills/` for all modes or create mode-specific variants.
 
-4. **Description too vague**: Make descriptions specific so Roo can match them to requests
+4. **Description too vague**: Make descriptions specific so Ali can match them to requests
    ```markdown
    # ✗ Vague
    description: Handle files
@@ -263,7 +263,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 #### Skill loads but doesn't help
 
-**Symptom**: Roo reads the skill but doesn't follow instructions.
+**Symptom**: Ali reads the skill but doesn't follow instructions.
 
 **Cause**: Instructions may be too general or missing critical details.
 
@@ -275,7 +275,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 #### Multiple skills conflict
 
-**Symptom**: Unclear which skill Roo will use when multiple might match.
+**Symptom**: Unclear which skill Ali will use when multiple might match.
 
 **Cause**: Overlapping descriptions or mode configurations.
 
@@ -288,7 +288,7 @@ The skill name comes from the symlink name (or directory name if not symlinked).
 
 **Symptom**: Want team members to use the same skills.
 
-**Solution**: Place skills in `.roo/skills/` within your project and commit to version control. Each team member gets the same skills automatically.
+**Solution**: Place skills in `.ali/skills/` within your project and commit to version control. Each team member gets the same skills automatically.
 
 ---
 
@@ -321,13 +321,13 @@ AliCode skills follow the [Agent Skills](https://agentskills.io/) format for ski
 - Names: 1–64 chars, lowercase alphanumeric + hyphens, no leading/trailing/consecutive hyphens
 - Descriptions: 1–1024 chars (trimmed)
 
-#### Roo-specific enhancements
+#### Ali-specific enhancements
 
 AliCode adds mode-specific targeting and cross-agent compatibility beyond the base format:
 
-- **Roo-specific locations**: `.roo/skills/`, `~/.roo/skills/` (higher priority)
+- **Ali-specific locations**: `.ali/skills/`, `~/.ali/skills/` (higher priority)
 - **Cross-agent locations**: `.agents/skills/`, `~/.agents/skills/` (shared with other agent tools)
-- **Mode-specific directories**: `skills-{mode}/` (e.g., `skills-code/`, `skills-architect/`) in both `.roo/` and `.agents/` paths enable mode targeting
+- **Mode-specific directories**: `skills-{mode}/` (e.g., `skills-code/`, `skills-architect/`) in both `.ali/` and `.agents/` paths enable mode targeting
 
 ---
 

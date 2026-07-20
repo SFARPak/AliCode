@@ -40,7 +40,7 @@ OpenRouter models that support native tools now automatically use native tool ca
 * **API Timeout Handling**: Fixed disabled API timeout (set to 0) causing immediate request failures (thanks dcbartlett!) ([#9960](https://github.com/RooCodeInc/Roo-Code/pull/9960))
 * **Reasoning Effort Dropdown**: Respect explicit supportsReasoningEffort array values and fix disable handling ([#9970](https://github.com/RooCodeInc/Roo-Code/pull/9970), [#9930](https://github.com/RooCodeInc/Roo-Code/pull/9930))
 * **Actual Error Messages**: Display actual API error messages instead of generic text on retry ([#9954](https://github.com/RooCodeInc/Roo-Code/pull/9954))
-* **Stream Hanging Fix**: Process finish_reason to emit tool_call_end events for OpenRouter, Roo, and xAI providers ([#9927](https://github.com/RooCodeInc/Roo-Code/pull/9927), [#9929](https://github.com/RooCodeInc/Roo-Code/pull/9929))
+* **Stream Hanging Fix**: Process finish_reason to emit tool_call_end events for OpenRouter, Ali, and xAI providers ([#9927](https://github.com/RooCodeInc/Roo-Code/pull/9927), [#9929](https://github.com/RooCodeInc/Roo-Code/pull/9929))
 * **tool_result ID Validation**: Validate and fix tool_result IDs before API requests to prevent Anthropic rejections ([#9952](https://github.com/RooCodeInc/Roo-Code/pull/9952))
 * **Suppressed Internal Error**: Fixed 'ask promise was ignored' error leaking to LLM conversations ([#9914](https://github.com/RooCodeInc/Roo-Code/pull/9914))
 * **Provider Sanitization**: Fixed infinite loop when using removed/invalid API providers ([#9869](https://github.com/RooCodeInc/Roo-Code/pull/9869))

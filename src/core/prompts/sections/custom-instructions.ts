@@ -9,11 +9,11 @@ import type { SystemPromptSettings } from "../types"
 
 import { LANGUAGES } from "../../../shared/language"
 import {
-	getRooDirectoriesForCwd,
-	getAllRooDirectoriesForCwd,
+	getAliDirectoriesForCwd,
+	getAllAliDirectoriesForCwd,
 	getAgentsDirectoriesForCwd,
-	getGlobalRooDirectory,
-} from "../../../services/roo-config"
+	getGlobalAliDirectory,
+} from "../../../services/ali-config"
 
 /**
  * Safely read a file and return its trimmed content
@@ -206,11 +206,11 @@ function formatDirectoryContent(files: Array<{ filename: string; content: string
 export async function loadRuleFiles(cwd: string, enableSubfolderRules: boolean = false): Promise<string> {
 	const rules: string[] = []
 	// Use recursive discovery only if enableSubfolderRules is true
-	const rooDirectories = enableSubfolderRules ? await getAllRooDirectoriesForCwd(cwd) : getRooDirectoriesForCwd(cwd)
+	const rooDirectories = enableSubfolderRules ? await getAllAliDirectoriesForCwd(cwd) : getAliDirectoriesForCwd(cwd)
 
-	// Check for .roo/rules/ directories in order (global, project-local, and optionally subfolders)
-	for (const rooDir of rooDirectories) {
-		const rulesDir = path.join(rooDir, "rules")
+	// Check for .ali/rules/ directories in order (global, project-local, and optionally subfolders)
+	for (const aliDir of rooDirectories) {
+		const rulesDir = path.join(aliDir, "rules")
 		if (await directoryExists(rulesDir)) {
 			const files = await readTextFilesFromDirectory(rulesDir)
 			if (files.length > 0) {
@@ -220,13 +220,13 @@ export async function loadRuleFiles(cwd: string, enableSubfolderRules: boolean =
 		}
 	}
 
-	// If we found rules in .roo/rules/ directories, return them
+	// If we found rules in .ali/rules/ directories, return them
 	if (rules.length > 0) {
 		return "\n# Rules from .roo directories:\n\n" + rules.join("\n\n")
 	}
 
-	// Fall back to existing behavior for legacy .roorules/.clinerules files
-	const ruleFiles = [".roorules", ".clinerules"]
+	// Fall back to existing behavior for legacy .alirules/.clinerules files
+	const ruleFiles = [".alirules", ".clinerules"]
 
 	for (const file of ruleFiles) {
 		const content = await safeReadFile(path.join(cwd, file))
@@ -403,12 +403,12 @@ export async function addCustomInstructions(
 		const modeRules: string[] = []
 		// Use recursive discovery only if enableSubfolderRules is true
 		const rooDirectories = enableSubfolderRules
-			? await getAllRooDirectoriesForCwd(cwd)
-			: getRooDirectoriesForCwd(cwd)
+			? await getAllAliDirectoriesForCwd(cwd)
+			: getAliDirectoriesForCwd(cwd)
 
-		// Check for .roo/rules-${mode}/ directories in order (global, project-local, and optionally subfolders)
-		for (const rooDir of rooDirectories) {
-			const modeRulesDir = path.join(rooDir, `rules-${mode}`)
+		// Check for .ali/rules-${mode}/ directories in order (global, project-local, and optionally subfolders)
+		for (const aliDir of rooDirectories) {
+			const modeRulesDir = path.join(aliDir, `rules-${mode}`)
 			if (await directoryExists(modeRulesDir)) {
 				const files = await readTextFilesFromDirectory(modeRulesDir)
 				if (files.length > 0) {
@@ -418,13 +418,13 @@ export async function addCustomInstructions(
 			}
 		}
 
-		// If we found mode-specific rules in .roo/rules-${mode}/ directories, use them
+		// If we found mode-specific rules in .ali/rules-${mode}/ directories, use them
 		if (modeRules.length > 0) {
 			modeRuleContent = "\n" + modeRules.join("\n\n")
 			usedRuleFile = `rules-${mode} directories`
 		} else {
 			// Fall back to existing behavior for legacy files
-			const rooModeRuleFile = `.roorules-${mode}`
+			const rooModeRuleFile = `.alirules-${mode}`
 			modeRuleContent = await safeReadFile(path.join(cwd, rooModeRuleFile))
 			if (modeRuleContent) {
 				usedRuleFile = rooModeRuleFile
@@ -461,7 +461,7 @@ export async function addCustomInstructions(
 
 	// Add mode-specific rules first if they exist
 	if (modeRuleContent && modeRuleContent.trim()) {
-		if (usedRuleFile.includes(path.join(".roo", `rules-${mode}`))) {
+		if (usedRuleFile.includes(path.join(".ali", `rules-${mode}`))) {
 			rules.push(modeRuleContent.trim())
 		} else {
 			rules.push(`# Rules from ${usedRuleFile}:\n${modeRuleContent}`)

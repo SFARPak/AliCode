@@ -77,7 +77,7 @@ import { RepoPerTaskCheckpointService } from "../../services/checkpoints"
 // integrations
 import { DiffViewProvider } from "../../integrations/editor/DiffViewProvider"
 import { findToolName } from "../../integrations/misc/export-markdown"
-import { RooTerminalProcess } from "../../integrations/terminal/types"
+import { AliTerminalProcess } from "../../integrations/terminal/types"
 import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 import { OutputInterceptor } from "../../integrations/terminal/OutputInterceptor"
 
@@ -96,8 +96,8 @@ import { buildNativeToolsArrayWithRestrictions } from "./build-tools"
 import { ToolRepetitionDetector } from "../tools/ToolRepetitionDetector"
 import { restoreTodoListForTask } from "../tools/UpdateTodoListTool"
 import { FileContextTracker } from "../context-tracking/FileContextTracker"
-import { RooIgnoreController } from "../ignore/RooIgnoreController"
-import { RooProtectedController } from "../protect/RooProtectedController"
+import { AliIgnoreController } from "../ignore/AliIgnoreController"
+import { AliProtectedController } from "../protect/AliProtectedController"
 import { type AssistantMessageContent, presentAssistantMessage } from "../assistant-message"
 import { NativeToolCallParser } from "../assistant-message/NativeToolCallParser"
 import { manageContext, willManageContext } from "../context-management"
@@ -291,10 +291,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 	}
 
 	toolRepetitionDetector: ToolRepetitionDetector
-	rooIgnoreController?: RooIgnoreController
-	rooProtectedController?: RooProtectedController
+	aliIgnoreController?: AliIgnoreController
+	aliProtectedController?: AliProtectedController
 	fileContextTracker: FileContextTracker
-	terminalProcess?: RooTerminalProcess
+	terminalProcess?: AliTerminalProcess
 
 	// Editing
 	diffViewProvider: DiffViewProvider
@@ -469,12 +469,12 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		this.instanceId = crypto.randomUUID().slice(0, 8)
 		this.taskNumber = -1
 
-		this.rooIgnoreController = new RooIgnoreController(this.cwd)
-		this.rooProtectedController = new RooProtectedController(this.cwd)
+		this.aliIgnoreController = new AliIgnoreController(this.cwd)
+		this.aliProtectedController = new AliProtectedController(this.cwd)
 		this.fileContextTracker = new FileContextTracker(provider, this.taskId)
 
-		this.rooIgnoreController.initialize().catch((error) => {
-			console.error("Failed to initialize RooIgnoreController:", error)
+		this.aliIgnoreController.initialize().catch((error) => {
+			console.error("Failed to initialize AliIgnoreController:", error)
 		})
 
 		this.apiConfiguration = apiConfiguration
@@ -1198,7 +1198,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			await this.providerRef.deref()?.updateTaskHistory(historyItem)
 			return true
 		} catch (error) {
-			console.error("Failed to save Roo messages:", error)
+			console.error("Failed to save Ali messages:", error)
 			return false
 		}
 	}
@@ -1591,11 +1591,11 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		}
 	}
 
-	private async getFilesReadByRooSafely(context: string): Promise<string[] | undefined> {
+	private async getFilesReadByAliSafely(context: string): Promise<string[] | undefined> {
 		try {
-			return await this.fileContextTracker.getFilesReadByRoo()
+			return await this.fileContextTracker.getFilesReadByAli()
 		} catch (error) {
-			console.error(`[Task#${context}] Failed to get files read by Roo:`, error)
+			console.error(`[Task#${context}] Failed to get files read by Ali:`, error)
 			return undefined
 		}
 	}
@@ -1648,7 +1648,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		// Generate environment details to include in the condensed summary
 		const environmentDetails = await getEnvironmentDetails(this, true)
 
-		const filesReadByRoo = await this.getFilesReadByRooSafely("condenseContext")
+		const filesReadByAli = await this.getFilesReadByAliSafely("condenseContext")
 
 		const {
 			messages,
@@ -1667,9 +1667,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			customCondensingPrompt,
 			metadata,
 			environmentDetails,
-			filesReadByRoo,
+			filesReadByAli,
 			cwd: this.cwd,
-			rooIgnoreController: this.rooIgnoreController,
+			aliIgnoreController: this.aliIgnoreController,
 		})
 		if (error) {
 			await this.say(
@@ -1824,7 +1824,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 	async sayAndCreateMissingParamError(toolName: ToolName, paramName: string, relPath?: string) {
 		await this.say(
 			"error",
-			`Roo tried to use ${toolName}${
+			`Ali tried to use ${toolName}${
 				relPath ? ` for '${relPath.toPosix()}'` : ""
 			} without value for required parameter '${paramName}'. Retrying...`,
 		)
@@ -2304,12 +2304,12 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			})
 
 		try {
-			if (this.rooIgnoreController) {
-				this.rooIgnoreController.dispose()
-				this.rooIgnoreController = undefined
+			if (this.aliIgnoreController) {
+				this.aliIgnoreController.dispose()
+				this.aliIgnoreController = undefined
 			}
 		} catch (error) {
-			console.error("Error disposing RooIgnoreController:", error)
+			console.error("Error disposing AliIgnoreController:", error)
 			// This is the critical one for the leak fix.
 		}
 
@@ -2477,7 +2477,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			const currentIncludeFileDetails = currentItem.includeFileDetails
 
 			if (this.abort) {
-				throw new Error(`[AliCode#recursivelyMakeRooRequests] task ${this.taskId}.${this.instanceId} aborted`)
+				throw new Error(`[AliCode#recursivelyMakeAliRequests] task ${this.taskId}.${this.instanceId} aborted`)
 			}
 
 			if (this.consecutiveMistakeLimit > 0 && this.consecutiveMistakeCount >= this.consecutiveMistakeLimit) {
@@ -2534,7 +2534,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			const provider = this.providerRef.deref()
 			const state = provider ? await provider.getState() : undefined
 
-			const showRooIgnoredFiles = state?.showRooIgnoredFiles ?? false
+			const showAliIgnoredFiles = state?.showAliIgnoredFiles ?? false
 			const includeDiagnosticMessages = state?.includeDiagnosticMessages ?? true
 			const maxDiagnosticMessages = state?.maxDiagnosticMessages ?? 50
 			const currentMode = state?.mode ?? defaultModeSlug
@@ -2543,8 +2543,8 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				userContent: currentUserContent,
 				cwd: this.cwd,
 				fileContextTracker: this.fileContextTracker,
-				rooIgnoreController: this.rooIgnoreController,
-				showRooIgnoredFiles,
+				aliIgnoreController: this.aliIgnoreController,
+				showAliIgnoredFiles,
 				includeDiagnosticMessages,
 				maxDiagnosticMessages,
 				skillsManager: provider?.getSkillsManager(),
@@ -3206,7 +3206,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				// Need to call here in case the stream was aborted.
 				if (this.abort || this.abandoned) {
 					throw new Error(
-						`[AliCode#recursivelyMakeRooRequests] task ${this.taskId}.${this.instanceId} aborted`,
+						`[AliCode#recursivelyMakeAliRequests] task ${this.taskId}.${this.instanceId} aborted`,
 					)
 				}
 
@@ -3653,7 +3653,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			})
 		}
 
-		const rooIgnoreInstructions = this.rooIgnoreController?.getInstructions()
+		const rooIgnoreInstructions = this.aliIgnoreController?.getInstructions()
 
 		const state = await this.providerRef.deref()?.getState()
 
@@ -3994,10 +3994,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				? await getEnvironmentDetails(this, true)
 				: undefined
 
-			// Get files read by Roo for code folding - only when context management will run
-			const contextMgmtFilesReadByRoo =
+			// Get files read by Ali for code folding - only when context management will run
+			const contextMgmtFilesReadByAli =
 				contextManagementWillRun && autoCondenseContext
-					? await this.getFilesReadByRooSafely("attemptApiRequest")
+					? await this.getFilesReadByAliSafely("attemptApiRequest")
 					: undefined
 
 			try {
@@ -4016,9 +4016,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					currentProfileId,
 					metadata: contextMgmtMetadata,
 					environmentDetails: contextMgmtEnvironmentDetails,
-					filesReadByRoo: contextMgmtFilesReadByRoo,
+					filesReadByAli: contextMgmtFilesReadByAli,
 					cwd: this.cwd,
-					rooIgnoreController: this.rooIgnoreController,
+					aliIgnoreController: this.aliIgnoreController,
 				})
 				if (truncateResult.messages !== this.apiConversationHistory) {
 					await this.overwriteApiConversationHistory(truncateResult.messages)

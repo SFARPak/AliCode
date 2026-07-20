@@ -1,6 +1,6 @@
 {
 	"name": "@ali-code/ipc",
-	"description": "IPC server and client for remote Roo Code access.",
+	"description": "IPC server and client for remote Ali Code access.",
 	"version": "0.0.1",
 	"type": "module",
 	"exports": "./src/index.ts",

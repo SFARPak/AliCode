@@ -31,5 +31,5 @@ keywords:
 
 ## What you can't do (and why)
 
-- **You can't use arbitrary OpenAI API models.** This provider only exposes the models listed in Roo's Codex model catalog.
-- **You can't export/migrate your sign-in state with settings export.** OAuth tokens are stored in VS Code SecretStorage, which isn't included in Roo's settings export.
+- **You can't use arbitrary OpenAI API models.** This provider only exposes the models listed in Ali's Codex model catalog.
+- **You can't export/migrate your sign-in state with settings export.** OAuth tokens are stored in VS Code SecretStorage, which isn't included in Ali's settings export.

@@ -82,7 +82,7 @@ describe("skillsMessageHandler", () => {
 		{
 			name: "project-skill",
 			description: "Project skill description",
-			path: "/project/.roo/skills/project-skill/SKILL.md",
+			path: "/project/.ali/skills/project-skill/SKILL.md",
 			source: "project",
 			mode: "code",
 		},
@@ -361,7 +361,7 @@ describe("skillsMessageHandler", () => {
 			} as WebviewMessage)
 
 			expect(mockFindSkillByNameAndSource).toHaveBeenCalledWith("project-skill", "project")
-			expect(openFile).toHaveBeenCalledWith("/project/.roo/skills/project-skill/SKILL.md")
+			expect(openFile).toHaveBeenCalledWith("/project/.ali/skills/project-skill/SKILL.md")
 		})
 
 		it("shows error when required fields are missing", async () => {

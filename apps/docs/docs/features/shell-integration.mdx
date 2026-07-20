@@ -17,7 +17,7 @@ Terminal Shell Integration is a key feature that enables AliCode to execute comm
 
 ## What is Shell Integration?
 
-Shell integration is automatically enabled in AliCode and connects directly to your terminal's command execution lifecycle without requiring any setup from you. This built-in feature allows Roo to:
+Shell integration is automatically enabled in AliCode and connects directly to your terminal's command execution lifecycle without requiring any setup from you. This built-in feature allows Ali to:
 
 - Execute commands on your behalf through the [`execute_command`](/advanced-usage/available-tools/execute-command) tool
 - Read command output in real-time without manual copy-pasting
@@ -29,7 +29,7 @@ Shell integration is automatically enabled in AliCode and connects directly to y
 
 <img src="/img/v3.15/v3.15.png" alt="Stop Command Button in Chat UI" width="600" />
 
-When you ask Roo to perform tasks like installing dependencies, starting a development server, or analyzing build errors, shell integration works behind the scenes to make these interactions smooth and effective.
+When you ask Ali to perform tasks like installing dependencies, starting a development server, or analyzing build errors, shell integration works behind the scenes to make these interactions smooth and effective.
 
 ---
  
@@ -44,7 +44,7 @@ AliCode provides settings to fine-tune how it interacts with terminals. To acces
 
 You can configure command execution timeouts through VS Code settings. These settings are accessible in your `settings.json` file (`Ctrl/Cmd + Shift + P` → "Preferences: Open User Settings (JSON)").
 
-#### `roo-cline.commandExecutionTimeout`
+#### `alicode.commandExecutionTimeout`
 - **Type**: Number (seconds)
 - **Default**: `0`
 - **Range**: 0-600
@@ -53,13 +53,13 @@ You can configure command execution timeouts through VS Code settings. These set
 **Example configuration**:
 ```json
 {
-  "roo-cline.commandExecutionTimeout": 300
+  "alicode.commandExecutionTimeout": 300
 }
 ```
 
 This example sets a 5-minute timeout for all commands.
 
-#### `roo-cline.commandTimeoutAllowlist`
+#### `alicode.commandTimeoutAllowlist`
 - **Type**: Array of strings
 - **Default**: `[]`
 - **Description**: Commands exempt from execution timeout. Commands matching entries in this list will not be subject to the `commandExecutionTimeout` limit, allowing them to run without time restrictions. Useful for known long-running operations like build processes or deployment scripts.
@@ -67,8 +67,8 @@ This example sets a 5-minute timeout for all commands.
 **Example configuration**:
 ```json
 {
-  "roo-cline.commandExecutionTimeout": 300,
-  "roo-cline.commandTimeoutAllowlist": ["npm run build", "docker build", "npm test"]
+  "alicode.commandExecutionTimeout": 300,
+  "alicode.commandTimeoutAllowlist": ["npm run build", "docker build", "npm test"]
 }
 ```
 
@@ -78,11 +78,11 @@ This example sets a 5-minute timeout but exempts build and test commands from th
 
 #### Terminal Output Limit
 <img src="/img/shell-integration/shell-integration-13.png" alt="Terminal output limit slider set to 500" width="600" />
-Truncates by lines. Roo keeps the beginning and end and drops the middle with an "[...N lines omitted...]" marker to stay under the limit. Mechanism: keeps approximately 20% of the head and 80% of the tail of the allowed line budget and inserts an omission marker, preserving a blank line before the tail for readability. Use when commands print many lines (e.g., long logs) and you mostly care about headers and final results. Avoid when important details are in the middle. Default: 500 lines.
+Truncates by lines. Ali keeps the beginning and end and drops the middle with an "[...N lines omitted...]" marker to stay under the limit. Mechanism: keeps approximately 20% of the head and 80% of the tail of the allowed line budget and inserts an omission marker, preserving a blank line before the tail for readability. Use when commands print many lines (e.g., long logs) and you mostly care about headers and final results. Avoid when important details are in the middle. Default: 500 lines.
 
 #### Terminal Character Limit
 <img src="/img/shell-integration/shell-integration-15.png" alt="Terminal character limit setting" width="600" />
-Hard cap on total output size (characters). Roo keeps the beginning and end and omits the middle with an "[...N characters omitted...]" marker. Mechanism: takes precedence over the line limit; keeps ~20% of the head and ~80% of the tail of the character budget, overriding the line limit to prevent memory issues from very long lines. Use when commands print extremely long lines or massive blobs. Avoid when you need the exact full content.
+Hard cap on total output size (characters). Ali keeps the beginning and end and omits the middle with an "[...N characters omitted...]" marker. Mechanism: takes precedence over the line limit; keeps ~20% of the head and ~80% of the tail of the character budget, overriding the line limit to prevent memory issues from very long lines. Use when commands print extremely long lines or massive blobs. Avoid when you need the exact full content.
 
 #### Compress progress bar output
 <img src="/img/shell-integration/shell-integration-14.png" alt="Compress progress bar output checkbox" width="600" />
@@ -139,7 +139,7 @@ VS Code terminal only. Controls whether VS Code integrated terminals inherit env
 
 #### Terminal shell integration timeout
 <img src="/img/shell-integration/shell-integration-18.png" alt="Terminal shell integration timeout slider set to 15s" width="600" />
-How long Roo waits for VS Code shell integration to initialize and for the integration stream to start. If not ready within the timeout, a “no shell integration” event is emitted and execution will fall back to the Inline Terminal when retried. Use when your shell/profile has long startup times or you see “Shell Integration Unavailable” errors. Avoid increasing if you’re using the Inline Terminal (not applicable there). Default: 15s. Applies only when using the VS Code terminal.
+How long Ali waits for VS Code shell integration to initialize and for the integration stream to start. If not ready within the timeout, a “no shell integration” event is emitted and execution will fall back to the Inline Terminal when retried. Use when your shell/profile has long startup times or you see “Shell Integration Unavailable” errors. Avoid increasing if you’re using the Inline Terminal (not applicable there). Default: 15s. Applies only when using the VS Code terminal.
 
 #### Terminal command delay
 <img src="/img/shell-integration/shell-integration-19.png" alt="Terminal command delay slider set to 0ms" width="600" />
@@ -147,7 +147,7 @@ Adds a small delay after each command to help VS Code terminals flush all output
 
 #### Enable PowerShell counter workaround
 <img src="/img/shell-integration/shell-integration-20.png" alt="Enable PowerShell counter workaround checkbox" width="600" />
-ON: Appends `; "(Roo/PS Workaround: N)" > $null` to each command to force a reliable post-execution signal and avoid missing or duplicated output on some setups. Use when using Windows PowerShell and output is incomplete or repeats, or when running the same command twice in a row fails. OFF: Runs PowerShell commands unchanged.
+ON: Appends `; "(Ali/PS Workaround: N)" > $null` to each command to force a reliable post-execution signal and avoid missing or duplicated output on some setups. Use when using Windows PowerShell and output is incomplete or repeats, or when running the same command twice in a row fails. OFF: Runs PowerShell commands unchanged.
 
 #### Clear ZSH EOL mark
 <img src="/img/shell-integration/shell-integration-21.png" alt="Clear ZSH EOL mark checkbox" width="600" />
@@ -169,7 +169,7 @@ ON: Uses a temporary ZDOTDIR so VS Code shell integration works with zsh while p
 
 ## How Shell Integration Works
 
-Shell integration connects Roo to your terminal's command execution process in real-time:
+Shell integration connects Ali to your terminal's command execution process in real-time:
 
 1. **Connection**: When you open a terminal, VS Code establishes a special connection with your shell.
 
@@ -180,9 +180,9 @@ Shell integration connects Roo to your terminal's command execution process in r
    - When the command finishes (and whether it succeeded or failed)
    - What directory you're currently in
 
-3. **Different Shells, Same Result**: Each shell type (Bash, Zsh, PowerShell, Fish) implements this slightly differently behind the scenes, but they all provide the same functionality to Roo.
+3. **Different Shells, Same Result**: Each shell type (Bash, Zsh, PowerShell, Fish) implements this slightly differently behind the scenes, but they all provide the same functionality to Ali.
 
-4. **Information Gathering**: Roo can see what commands are running, where they're running, how long they take, whether they succeed, and their complete output - all without you having to copy and paste anything.
+4. **Information Gathering**: Ali can see what commands are running, where they're running, how long they take, whether they succeed, and their complete output - all without you having to copy and paste anything.
 
 ---
 
@@ -429,19 +429,19 @@ This setup works reliably on Windows systems using Cygwin, Fish, and the Starshi
 
 #### Ctrl+C Behavior
 
-**Issue**: If text is already typed in the terminal when Roo tries to run a command, Roo will press Ctrl+C first to clear the line, which can interrupt running processes.
+**Issue**: If text is already typed in the terminal when Ali tries to run a command, Ali will press Ctrl+C first to clear the line, which can interrupt running processes.
 
-**Workaround**: Make sure your terminal prompt is empty (no partial commands typed) before asking Roo to execute terminal commands.
+**Workaround**: Make sure your terminal prompt is empty (no partial commands typed) before asking Ali to execute terminal commands.
 
 #### Multi-line Command Issues
 
-**Issue**: Commands that span multiple lines can confuse Roo and may show output from previous commands mixed in with current output.
+**Issue**: Commands that span multiple lines can confuse Ali and may show output from previous commands mixed in with current output.
 
 **Workaround**: Instead of multi-line commands, use command chaining with `&amp;&amp;` to keep everything on one line (e.g., `echo a &amp;&amp; echo b` instead of typing each command on a separate line).
 
 #### PowerShell-Specific Issues
 
-1. **Premature Completion**: PowerShell sometimes tells Roo a command is finished before all the output has been shown.
+1. **Premature Completion**: PowerShell sometimes tells Ali a command is finished before all the output has been shown.
 2. **Repeated Commands**: PowerShell may refuse to run the same command twice in a row.
 
 **Workaround**: Enable the "PowerShell counter workaround" setting and set a terminal command delay of 150ms in the settings to give commands more time to complete.
@@ -454,7 +454,7 @@ This setup works reliably on Windows systems using Cygwin, Fish, and the Starshi
 
 #### Python Virtual Environment (venv) Issues
 
-**Issue**: Disabling shell integration will disable venv; venv is VS Code–managed, Roo does not know anything about it because disabling shell integration uses a completely different mechanism for running commands (execa).
+**Issue**: Disabling shell integration will disable venv; venv is VS Code–managed, Ali does not know anything about it because disabling shell integration uses a completely different mechanism for running commands (execa).
 
 **Workaround**: If you need to use Python virtual environments with AliCode, you might be able to:
 
@@ -464,7 +464,7 @@ killall code # closes all VS Code windows!
 code
 ```
 
-This way the environment is configured before code launches so Roo should inherit it.
+This way the environment is configured before code launches so Ali should inherit it.
 
 #### Checking Debug Logs
 When shell integration issues occur, check the debug logs:
@@ -502,18 +502,18 @@ The [VS Code Terminal Integration Test Extension](https://github.com/KJ7LNW/vsce
 
 ## FAQ
 
-- Why does Roo press Ctrl+C first?
+- Why does Ali press Ctrl+C first?
   - To clear any partially typed command so it can run reliably without interrupting your process.
 
 - Can I run multi-line commands?
   - Prefer chaining with && to avoid mixed output (e.g., `echo a && echo b`).
 
 - How do I use Python venv with Inline Terminal?
-  - Close VS Code, activate the venv in a shell, then launch VS Code so Roo inherits it.
+  - Close VS Code, activate the venv in a shell, then launch VS Code so Ali inherits it.
 
 <a id="command-execution-fallback"></a>
 - What does “Command Execution Fallback” mean?
-  - Roo ran the command without full shell integration. How it works: if VS Code terminal integration can’t connect, Roo runs the command in a background process.
+  - Ali ran the command without full shell integration. How it works: if VS Code terminal integration can’t connect, Ali runs the command in a background process.
   - What you’ll see: a chat notice that real-time streaming and exit‑code detection may be limited.
   - Fix: turn ON [Use Inline Terminal (recommended)](#use-inline-terminal-recommended) or follow the Troubleshooting steps above to restore VS Code shell integration.
   <img src="/img/v3.15.0/v3.15.0.png" alt="Command execution fallback notification example" width="600" />

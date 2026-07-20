@@ -35,6 +35,6 @@ This gives teams a higher-capacity OpenAI option without extra configuration.[#8
 
 ## Bug Fixes
 
-* **Bare-metal evals stay signed in**: Roo provider tokens refresh automatically and the local evals app binds to port 3446 for predictable scripts (via [#8224](https://github.com/RooCodeInc/Roo-Code/pull/8224))
+* **Bare-metal evals stay signed in**: Ali provider tokens refresh automatically and the local evals app binds to port 3446 for predictable scripts (via [#8224](https://github.com/RooCodeInc/Roo-Code/pull/8224))
 * **Checkpoint text stays on one line**: Prevented multi-line wrapping in languages such as Chinese, Korean, Japanese, and Russian so the checkpoint UI stays compact (via [#8207](https://github.com/RooCodeInc/Roo-Code/pull/8207); reported in [#8206](https://github.com/RooCodeInc/Roo-Code/issues/8206))
-* **Ollama respects Modelfile num_ctx**: Roo now defers to your Modelfile’s context window to avoid GPU OOMs while still allowing explicit overrides when needed (via [#7798](https://github.com/RooCodeInc/Roo-Code/pull/7798); reported in [#7797](https://github.com/RooCodeInc/Roo-Code/issues/7797))
+* **Ollama respects Modelfile num_ctx**: Ali now defers to your Modelfile’s context window to avoid GPU OOMs while still allowing explicit overrides when needed (via [#7798](https://github.com/RooCodeInc/Roo-Code/pull/7798); reported in [#7797](https://github.com/RooCodeInc/Roo-Code/issues/7797))

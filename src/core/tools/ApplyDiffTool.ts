@@ -46,7 +46,7 @@ export class ApplyDiffTool extends BaseTool<"apply_diff"> {
 				return
 			}
 
-			const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+			const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 
 			if (!accessAllowed) {
 				await task.say("rooignore_error", relPath)
@@ -134,7 +134,7 @@ export class ApplyDiffTool extends BaseTool<"apply_diff"> {
 			)
 
 			// Check if file is write-protected
-			const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath) || false
+			const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath) || false
 
 			const sharedMessageProps: ClineSayTool = {
 				tool: "appliedDiff",

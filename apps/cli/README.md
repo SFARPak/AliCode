@@ -50,7 +50,7 @@ roo upgrade
 ### Uninstalling
 
 ```bash
-rm -rf ~/.roo/cli ~/.local/bin/roo
+rm -rf ~/.ali/cli ~/.local/bin/roo
 ```
 
 ## Usage

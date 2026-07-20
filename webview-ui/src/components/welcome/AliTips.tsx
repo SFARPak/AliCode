@@ -20,7 +20,7 @@ const tips = [
 	},
 ]
 
-const RooTips = () => {
+const AliTips = () => {
 	const { t } = useTranslation("chat")
 
 	return (
@@ -58,4 +58,4 @@ const RooTips = () => {
 	)
 }
 
-export default RooTips
+export default AliTips

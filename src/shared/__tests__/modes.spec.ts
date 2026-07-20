@@ -612,7 +612,7 @@ describe("FileRestrictionError", () => {
 				slug: "debug",
 				name: "🪲 Debug",
 				roleDefinition:
-					"You are Roo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
+					"You are Ali, an expert software debugger specializing in systematic problem diagnosis and resolution.",
 				groups: ["read", "edit", "command", "mcp"],
 			})
 			expect(debugMode?.customInstructions).toContain(
@@ -633,7 +633,7 @@ describe("FileRestrictionError", () => {
 				slug: "debug",
 				name: "🪲 Debug",
 				roleDefinition:
-					"You are Roo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
+					"You are Ali, an expert software debugger specializing in systematic problem diagnosis and resolution.",
 			})
 		})
 

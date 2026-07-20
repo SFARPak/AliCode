@@ -1,8 +1,8 @@
 import { EventEmitter } from "events"
 
-import type { RooTerminalProcess, RooTerminalProcessEvents, ExitCodeDetails } from "./types"
+import type { AliTerminalProcess, AliTerminalProcessEvents, ExitCodeDetails } from "./types"
 
-export abstract class BaseTerminalProcess extends EventEmitter<RooTerminalProcessEvents> implements RooTerminalProcess {
+export abstract class BaseTerminalProcess extends EventEmitter<AliTerminalProcessEvents> implements AliTerminalProcess {
 	public command: string = ""
 
 	public isHot: boolean = false

@@ -57,8 +57,8 @@ When you install an item from the marketplace, you can choose to install it at t
 ### Project Installation
 - **Scope**: The item is only available within the current VS Code workspace (your project).
 - **Configuration File**:
-    - **MCPs**: [`.roo/mcp.json`](/features/mcp/using-mcp-in-roo#configuring-mcp-servers) in the root of your project.
-    - **Modes**: [`.roomodes`](/features/custom-modes#3-manual-configuration-yaml--json) in the root of your project.
+    - **MCPs**: [`.ali/mcp.json`](/features/mcp/using-mcp-in-roo#configuring-mcp-servers) in the root of your project.
+    - **Modes**: [`.alimodes`](/features/custom-modes#3-manual-configuration-yaml--json) in the root of your project.
 - **Use Case**: This is useful when an item is specific to a particular project's needs or when you want to share a project-specific configuration with your team.
 
 ### Global Installation
@@ -132,7 +132,7 @@ This keeps sensitive information secure and makes configuration more flexible.
 ## Troubleshooting
 
 ### Installation Errors
-- **Invalid YAML/JSON**: The configuration file (`.roomodes`, `.roo/mcp.json`, etc.) has a syntax error. To prevent data loss, AliCode will not modify a corrupted configuration file. Please fix the syntax error before installing or removing items.
+- **Invalid YAML/JSON**: The configuration file (`.alimodes`, `.ali/mcp.json`, etc.) has a syntax error. To prevent data loss, AliCode will not modify a corrupted configuration file. Please fix the syntax error before installing or removing items.
 - **File Not Found**: Rare error - AliCode automatically creates necessary configuration files.
 
 ### Item Not Working

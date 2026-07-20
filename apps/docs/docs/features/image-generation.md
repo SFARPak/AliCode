@@ -42,19 +42,19 @@ Image Generation is an experimental feature that requires enabling in settings a
 
 **Before:** You had to copy prompts to an external site, download the result, then move it into your workspace.
 
-**With this feature:** Ask Roo to generate an image, approve, pick a save location, and continue editing with the image already in your project.
+**With this feature:** Ask Ali to generate an image, approve, pick a save location, and continue editing with the image already in your project.
 
 ### Image Editing
 
 **Before:** Export image, upload to external editor, make changes, download, import back to project.
 
-**With this feature:** Ask Roo to transform your existing image directly - it reads the file, applies your edits, and saves the result in your project.
+**With this feature:** Ask Ali to transform your existing image directly - it reads the file, applies your edits, and saves the result in your project.
 
 ---
 
 ## How It Works
 
-When enabled, Roo sends your prompt (and optionally an existing image) to an image-capable model through OpenRouter. The generated or edited image returned by OpenRouter is saved to the path you specify inside your current workspace. Roo shows a preview in the chat and the file appears in your file explorer.
+When enabled, Ali sends your prompt (and optionally an existing image) to an image-capable model through OpenRouter. The generated or edited image returned by OpenRouter is saved to the path you specify inside your current workspace. Ali shows a preview in the chat and the file appears in your file explorer.
 
 ---
 
@@ -70,7 +70,7 @@ When enabled, Roo sends your prompt (and optionally an existing image) to an ima
 
 ### 1. Enable Image Generation (Experimental)
 
-- **Purpose:** Turns the feature on so Roo can create images on request
+- **Purpose:** Turns the feature on so Ali can create images on request
 - **Default:** Off
 - **Location:** Settings > Experimental
 
@@ -90,20 +90,20 @@ When enabled, Roo sends your prompt (and optionally an existing image) to an ima
 
 ## Using Image Generation
 
-1. In chat, ask Roo to generate an image and describe what you want (subject, style, lighting, composition).
-2. Confirm the action when prompted. Roo may ask you to choose a save path (for example: `images/sunset.png`).
-3. Roo generates the image and saves it. If you don't include an extension, the appropriate extension (.png or .jpg) is added based on the output format.
+1. In chat, ask Ali to generate an image and describe what you want (subject, style, lighting, composition).
+2. Confirm the action when prompted. Ali may ask you to choose a save path (for example: `images/sunset.png`).
+3. Ali generates the image and saves it. If you don't include an extension, the appropriate extension (.png or .jpg) is added based on the output format.
 4. See the image preview in the chat and locate the file in your workspace.
 
 ---
 
 ## Editing Existing Images
 
-Roo can also transform and edit existing images in your workspace:
+Ali can also transform and edit existing images in your workspace:
 
-1. Ask Roo to edit an image, describing the transformation you want
+1. Ask Ali to edit an image, describing the transformation you want
 2. Specify both the input image path and where to save the result
-3. Roo will apply your requested edits to the existing image
+3. Ali will apply your requested edits to the existing image
 
 **Supported Input Formats**: PNG, JPG, JPEG, GIF, WEBP
 
@@ -113,7 +113,7 @@ Roo can also transform and edit existing images in your workspace:
 - "Upscale and enhance `images/logo.png` to higher resolution"
 - "Apply a vintage filter to `screenshots/app.png`"
 
-**Note**: Both the input image path and output path must be accessible (not blocked by `.rooignore`)
+**Note**: Both the input image path and output path must be accessible (not blocked by `.aliignore`)
 
 ---
 
@@ -138,7 +138,7 @@ Include these elements in your prompts:
 - One image is produced per request
 - Output formats supported: PNG or JPG
 - Supported input formats for editing: PNG, JPG, JPEG, GIF, WEBP only
-- Image paths must be accessible (not blocked by `.rooignore` restrictions)
+- Image paths must be accessible (not blocked by `.aliignore` restrictions)
 - Usage may be subject to your OpenRouter plan limits and costs
 
 ---

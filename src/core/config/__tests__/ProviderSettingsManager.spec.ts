@@ -563,7 +563,7 @@ describe("ProviderSettingsManager", () => {
 				currentApiConfigName: "default",
 				apiConfigs: {
 					default: {
-						apiProvider: "roo",
+						apiProvider: "ali",
 						apiModelId: "xai/grok-code-fast-1",
 						rooApiKey: "legacy-key",
 						id: "default-id",

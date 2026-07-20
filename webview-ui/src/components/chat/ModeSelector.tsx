@@ -4,13 +4,13 @@ import { Check, X } from "lucide-react"
 
 import { type ModeConfig, type CustomModePrompts } from "@ali-code/types"
 
-import { type Mode, getAllModes, defaultModeSlug } from "@roo/modes"
+import { type Mode, getAllModes, defaultModeSlug } from "@ali/modes"
 
 import { vscode } from "@/utils/vscode"
 import { cn } from "@/lib/utils"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useAppTranslation } from "@/i18n/TranslationContext"
-import { useRooPortal } from "@/components/ui/hooks/useRooPortal"
+import { useAliPortal } from "@/components/ui/hooks/useAliPortal"
 import { Popover, PopoverContent, PopoverTrigger, StandardTooltip } from "@/components/ui"
 
 import { IconButton } from "./IconButton"
@@ -47,7 +47,7 @@ export const ModeSelector = ({
 	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 	const lastNotifiedInvalidModeRef = React.useRef<string | null>(null)
 	const validationTimeoutRef = React.useRef<number | null>(null)
-	const portalContainer = useRooPortal("roo-portal")
+	const portalContainer = useAliPortal("ali-portal")
 	const { hasOpenedModeSelector, setHasOpenedModeSelector } = useExtensionState()
 	const { t } = useAppTranslation()
 

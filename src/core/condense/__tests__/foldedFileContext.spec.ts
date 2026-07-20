@@ -290,7 +290,7 @@ describe("foldedFileContext", () => {
 				characterCount: mockFoldedSections.join("\n").length,
 			})
 
-			const filesReadByRoo = ["src/user.ts", "src/api.ts"]
+			const filesReadByAli = ["src/user.ts", "src/api.ts"]
 			const cwd = "/test/project"
 
 			const result = await summarizeConversation({
@@ -299,14 +299,14 @@ describe("foldedFileContext", () => {
 				systemPrompt: "System prompt",
 				taskId,
 				isAutomaticTrigger: false,
-				filesReadByRoo,
+				filesReadByAli,
 				cwd,
 			})
 
 			// Verify generateFoldedFileContext was called with the right arguments
-			expect(mockedGenerateFoldedFileContext).toHaveBeenCalledWith(filesReadByRoo, {
+			expect(mockedGenerateFoldedFileContext).toHaveBeenCalledWith(filesReadByAli, {
 				cwd,
-				rooIgnoreController: undefined,
+				aliIgnoreController: undefined,
 			})
 
 			// Verify the summary was created
@@ -339,7 +339,7 @@ describe("foldedFileContext", () => {
 			expect(apiFileBlock.text).toContain("fetchData")
 		})
 
-		it("should not include file context section when filesReadByRoo is empty", async () => {
+		it("should not include file context section when filesReadByAli is empty", async () => {
 			const { summarizeConversation } = await import("../index")
 
 			const mockApiHandler = new MockApiHandler()
@@ -364,11 +364,11 @@ describe("foldedFileContext", () => {
 				systemPrompt: "System prompt",
 				taskId,
 				isAutomaticTrigger: false,
-				filesReadByRoo: [],
+				filesReadByAli: [],
 				cwd: "/test/project",
 			})
 
-			// generateFoldedFileContext should NOT be called when filesReadByRoo is empty
+			// generateFoldedFileContext should NOT be called when filesReadByAli is empty
 			expect(mockedGenerateFoldedFileContext).not.toHaveBeenCalled()
 
 			// Find the summary message

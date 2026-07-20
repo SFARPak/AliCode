@@ -11,7 +11,7 @@ import { Task } from "../task/Task"
 import { ToolUse, ToolResponse } from "../../shared/tools"
 import { formatResponse } from "../prompts/responses"
 import { unescapeHtmlEntities } from "../../utils/text-normalization"
-import { ExitCodeDetails, RooTerminalCallbacks, RooTerminalProcess } from "../../integrations/terminal/types"
+import { ExitCodeDetails, AliTerminalCallbacks, AliTerminalProcess } from "../../integrations/terminal/types"
 import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 import { Terminal } from "../../integrations/terminal/Terminal"
 import { OutputInterceptor } from "../../integrations/terminal/OutputInterceptor"
@@ -54,7 +54,7 @@ export class ExecuteCommandTool extends BaseTool<"execute_command"> {
 
 			const canonicalCommand = unescapeHtmlEntities(command)
 
-			const ignoredFileAttemptedToAccess = task.rooIgnoreController?.validateCommand(canonicalCommand)
+			const ignoredFileAttemptedToAccess = task.aliIgnoreController?.validateCommand(canonicalCommand)
 
 			if (ignoredFileAttemptedToAccess) {
 				await task.say("rooignore_error", ignoredFileAttemptedToAccess)
@@ -283,8 +283,8 @@ export async function executeCommandInTerminal(
 		resolveOnCompleted = resolve
 	})
 
-	const callbacks: RooTerminalCallbacks = {
-		onLine: async (lines: string, process: RooTerminalProcess) => {
+	const callbacks: AliTerminalCallbacks = {
+		onLine: async (lines: string, process: AliTerminalProcess) => {
 			accumulatedOutput += lines
 
 			// Trim accumulated output to prevent unbounded memory growth

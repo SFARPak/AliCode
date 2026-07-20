@@ -18,8 +18,8 @@ vi.mock("@/i18n/TranslationContext", () => ({
 	}),
 }))
 
-vi.mock("@/components/ui/hooks/useRooPortal", () => ({
-	useRooPortal: () => document.body,
+vi.mock("@/components/ui/hooks/useAliPortal", () => ({
+	useAliPortal: () => document.body,
 }))
 
 const mockWorktrees: Worktree[] = [

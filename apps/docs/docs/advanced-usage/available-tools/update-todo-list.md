@@ -35,7 +35,7 @@ This tool creates and manages an interactive todo list that appears as a UI comp
 ## When is it used?
 
 - When managing complex, multi-step tasks that benefit from structured tracking
-- When Roo needs to show progress through a series of related activities
+- When Ali needs to show progress through a series of related activities
 - When tasks require step-by-step completion verification before proceeding
 - When new actionable items are discovered during long or complex workflows
 - When providing clear checkpoints and progress visibility to users
@@ -139,11 +139,11 @@ The tool uses a specific markdown format for todo items:
 
 ## Examples When Used
 
-- When developing a web application, Roo creates a todo list tracking design, implementation, testing, and deployment phases.
-- When setting up a development environment, Roo tracks installation of dependencies, configuration steps, and verification tasks.
-- When debugging complex issues, Roo maintains a list of investigation steps, potential causes, and testing procedures.
-- When refactoring code, Roo tracks which files need updates, what tests need modification, and documentation changes required.
-- When implementing new features, Roo manages tasks for planning, coding, testing, and integration steps.
+- When developing a web application, Ali creates a todo list tracking design, implementation, testing, and deployment phases.
+- When setting up a development environment, Ali tracks installation of dependencies, configuration steps, and verification tasks.
+- When debugging complex issues, Ali maintains a list of investigation steps, potential causes, and testing procedures.
+- When refactoring code, Ali tracks which files need updates, what tests need modification, and documentation changes required.
+- When implementing new features, Ali manages tasks for planning, coding, testing, and integration steps.
 
 ---
 

@@ -161,7 +161,7 @@ export const globalSettingsSchema = z.object({
 
 	maxOpenTabsContext: z.number().optional(),
 	maxWorkspaceFiles: z.number().optional(),
-	showRooIgnoredFiles: z.boolean().optional(),
+	showAliIgnoredFiles: z.boolean().optional(),
 	enableSubfolderRules: z.boolean().optional(),
 	maxImageFileSize: z.number().optional(),
 	maxTotalImageSize: z.number().optional(),
@@ -215,7 +215,7 @@ export const globalSettingsSchema = z.object({
 
 	/**
 	 * Path to worktree to auto-open after switching workspaces.
-	 * Used by the worktree feature to open the Roo Code sidebar in a new window.
+	 * Used by the worktree feature to open the Ali Code sidebar in a new window.
 	 */
 	worktreeAutoOpenPath: z.string().optional(),
 	/**

@@ -47,7 +47,7 @@ Clicking the **Import** button allows you to load settings from a previously exp
 - **Merging:** Importing settings **merges** the configurations. It adds new API profiles and updates existing ones and global settings based on the file content. It does **not** delete configurations present in your current setup but missing from the imported file.
 - **Validation:** Import validates the file, but it can still succeed with warnings.
 
-    - If **some** API profiles reference a provider that no longer exists (or is otherwise invalid), Roo imports the rest and reports warnings.
+    - If **some** API profiles reference a provider that no longer exists (or is otherwise invalid), Ali imports the rest and reports warnings.
     - Import fails only if **all** profiles are invalid.
 
 ---
@@ -76,7 +76,7 @@ Automatically import your AliCode settings from a file every time you start VS C
 
 ### How it Works
 
-When VS Code starts, AliCode checks for a specific setting: `roo-cline.autoImportSettingsPath`. If this setting contains a path to a valid AliCode configuration file (`.json`), AliCode will load it automatically.
+When VS Code starts, AliCode checks for a specific setting: `alicode.autoImportSettingsPath`. If this setting contains a path to a valid AliCode configuration file (`.json`), AliCode will load it automatically.
 
 - Upon successful import, you will see a notification: `Successfully imported settings from [your-file-name.json]`.
 - If the file is invalid or can't be found, you'll get a non-intrusive warning, and the extension will start with your last known settings. The `autoImportSettings` function is designed to never block the extension from activating.
@@ -90,7 +90,7 @@ To use this feature, add the following to your VS Code `settings.json` file:
     - Use the Command Palette (`Ctrl/Cmd + Shift + P`) and search for "Preferences: Open User Settings (JSON)".
 
 2.  **Add the setting**:
-    - Add the `roo-cline.autoImportSettingsPath` key with the path to your configuration file.
+    - Add the `alicode.autoImportSettingsPath` key with the path to your configuration file.
 
 **Examples**:
 
@@ -98,7 +98,7 @@ To use this feature, add the following to your VS Code `settings.json` file:
 
     ```json
     {
-    	"roo-cline.autoImportSettingsPath": "/Users/your-username/Documents/dev-configs/roo-code.json"
+    	"alicode.autoImportSettingsPath": "/Users/your-username/Documents/dev-configs/roo-code.json"
     }
     ```
 
@@ -106,14 +106,14 @@ To use this feature, add the following to your VS Code `settings.json` file:
 
     ```json
     {
-    	"roo-cline.autoImportSettingsPath": "~/roo-code-settings.json"
+    	"alicode.autoImportSettingsPath": "~/roo-code-settings.json"
     }
     ```
 
 - **To disable**, simply leave the path empty or remove the line entirely:
     ```json
     {
-    	"roo-cline.autoImportSettingsPath": ""
+    	"alicode.autoImportSettingsPath": ""
     }
     ```
 
@@ -165,7 +165,7 @@ AliCode provides several useful commands accessible via the VS Code Command Pale
 
 ### Set Custom Storage Path
 
-**Command:** `roo-cline.setCustomStoragePath`
+**Command:** `alicode.setCustomStoragePath`
 
 Opens a dialog to set a custom storage directory for AliCode data. By default, AliCode stores task history, settings, and other data in the standard VS Code extension storage location. This command allows you to choose an alternative location.
 
@@ -179,23 +179,23 @@ Opens a dialog to set a custom storage directory for AliCode data. By default, A
 **To use:**
 
 1. Open the Command Palette (`Ctrl/Cmd + Shift + P`)
-2. Type "Set Custom Storage Path" or search for `roo-cline.setCustomStoragePath`
+2. Type "Set Custom Storage Path" or search for `alicode.setCustomStoragePath`
 3. Select the command
 4. Choose a directory in the file picker dialog
 5. Restart VS Code for the change to take effect
 
-**Note:** This setting can also be configured in VS Code settings as `roo-cline.customStoragePath`. See the [VS Code Settings Reference](#vs-code-settings-reference) section below for details.
+**Note:** This setting can also be configured in VS Code settings as `alicode.customStoragePath`. See the [VS Code Settings Reference](#vs-code-settings-reference) section below for details.
 
 ### Import Settings from File
 
-**Command:** `roo-cline.importSettings`
+**Command:** `alicode.importSettings`
 
 Imports AliCode settings from a JSON file via the Command Palette. This is an alternative to using the Import button in the settings UI.
 
 **To use:**
 
 1. Open the Command Palette (`Ctrl/Cmd + Shift + P`)
-2. Type "Import Settings" or search for `roo-cline.importSettings`
+2. Type "Import Settings" or search for `alicode.importSettings`
 3. Select the command
 4. Choose your settings JSON file in the file picker dialog
 5. Settings will be imported and merged with your current configuration
@@ -253,30 +253,30 @@ With both disabled, these sections are omitted, reducing token usage when you do
 
 AliCode provides VS Code settings that can be configured through your VS Code `settings.json` file. These settings offer fine-grained control over command execution, task management, API behavior, storage, indexing, and debugging.
 
-To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and search for "roo-cline", or edit your `settings.json` file directly (`Ctrl/Cmd + Shift + P` → "Preferences: Open User Settings (JSON)").
+To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and search for "alicode", or edit your `settings.json` file directly (`Ctrl/Cmd + Shift + P` → "Preferences: Open User Settings (JSON)").
 
 ### Command & Execution
 
-#### `roo-cline.allowedCommands`
+#### `alicode.allowedCommands`
 
 - **Type**: Array of strings
 - **Default**: `["git log", "git diff", "git show"]`
 - **Description**: Commands that can be auto-executed without approval. When AliCode requests to execute a command that matches an entry in this list, it will execute automatically without prompting for approval. This is useful for safe, read-only commands.
 
-#### `roo-cline.deniedCommands`
+#### `alicode.deniedCommands`
 
 - **Type**: Array of strings
 - **Default**: `[]`
 - **Description**: Commands that are always blocked from execution. AliCode will refuse to execute any command that matches an entry in this list, providing a safety mechanism to prevent potentially dangerous operations.
 
-#### `roo-cline.commandExecutionTimeout`
+#### `alicode.commandExecutionTimeout`
 
 - **Type**: Number (seconds)
 - **Default**: `0`
 - **Range**: 0-600
 - **Description**: Timeout in seconds for command execution. When set to a value greater than 0, commands running longer than this duration will be terminated. A value of 0 means no timeout (commands can run indefinitely). See also `commandTimeoutAllowlist` for exempting specific commands.
 
-#### `roo-cline.commandTimeoutAllowlist`
+#### `alicode.commandTimeoutAllowlist`
 
 - **Type**: Array of strings
 - **Default**: `[]`
@@ -284,13 +284,13 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Task Management
 
-#### `roo-cline.newTaskRequireTodos`
+#### `alicode.newTaskRequireTodos`
 
 - **Type**: Boolean
 - **Default**: `false`
 - **Description**: When enabled, requires a todo list when creating new tasks via boomerang/subtasks. This ensures structured planning for complex work by mandating that new tasks include a checklist of steps to complete.
 
-#### `roo-cline.preventCompletionWithOpenTodos`
+#### `alicode.preventCompletionWithOpenTodos`
 
 - **Type**: Boolean
 - **Default**: `false`
@@ -298,7 +298,7 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### API & Network
 
-#### `roo-cline.apiRequestTimeout`
+#### `alicode.apiRequestTimeout`
 
 - **Type**: Number (seconds)
 - **Default**: `600`
@@ -307,13 +307,13 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Storage & Import
 
-#### `roo-cline.customStoragePath`
+#### `alicode.customStoragePath`
 
 - **Type**: String
 - **Default**: `""` (empty)
 - **Description**: Custom file path for AliCode's storage directory. By default, AliCode stores its data in the standard extension storage location. Use this setting to specify an alternative directory for storing task history, settings, and other data.
 
-#### `roo-cline.autoImportSettingsPath`
+#### `alicode.autoImportSettingsPath`
 
 - **Type**: String
 - **Default**: `""` (empty)
@@ -321,14 +321,14 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Code Index
 
-#### `roo-cline.maximumIndexedFilesForFileSearch`
+#### `alicode.maximumIndexedFilesForFileSearch`
 
 - **Type**: Number
 - **Default**: `10000`
 - **Range**: 5000-500000
 - **Description**: Maximum number of files indexed for file search. Controls the upper limit of files that AliCode will index for semantic search functionality. Higher values increase search coverage but may impact performance.
 
-#### `roo-cline.codeIndex.embeddingBatchSize`
+#### `alicode.codeIndex.embeddingBatchSize`
 
 - **Type**: Number
 - **Default**: `60`
@@ -337,13 +337,13 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Editor Integration
 
-#### `roo-cline.enableCodeActions`
+#### `alicode.enableCodeActions`
 
 - **Type**: Boolean
 - **Default**: `true`
 - **Description**: Controls whether AliCode actions appear in the editor context menu and lightbulb. When enabled, you can right-click in the editor or use the lightbulb menu to quickly send code selections to AliCode with contextual prompts.
 
-#### `roo-cline.vsCodeLmModelSelector`
+#### `alicode.vsCodeLmModelSelector`
 
 - **Type**: Object
 - **Default**: `{}`
@@ -351,7 +351,7 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Rules & Instructions
 
-#### `roo-cline.useAgentRules`
+#### `alicode.useAgentRules`
 
 - **Type**: Boolean
 - **Default**: `true`
@@ -359,25 +359,25 @@ To configure these settings, open your VS Code settings (`Ctrl/Cmd + ,`) and sea
 
 ### Debug
 
-#### `roo-cline.debug`
+#### `alicode.debug`
 
 - **Type**: Boolean
 - **Default**: `false`
 - **Description**: Enable debug mode for additional logging. When enabled, AliCode will output detailed debug information to the console, useful for troubleshooting issues or understanding internal behavior.
 
-#### `roo-cline.debugProxy.enabled`
+#### `alicode.debugProxy.enabled`
 
 - **Type**: Boolean
 - **Default**: `false`
 - **Description**: Enable debug proxy for intercepting API requests. When enabled, all API requests will be routed through a debug proxy server, allowing you to inspect and debug API communications.
 
-#### `roo-cline.debugProxy.serverUrl`
+#### `alicode.debugProxy.serverUrl`
 
 - **Type**: String
 - **Default**: `"http://127.0.0.1:8888"`
 - **Description**: URL of the debug proxy server. Specifies the proxy server address used when `debugProxy.enabled` is true. Common debug proxy tools like mitmproxy or Charles Proxy typically run on this default address.
 
-#### `roo-cline.debugProxy.tlsInsecure`
+#### `alicode.debugProxy.tlsInsecure`
 
 - **Type**: Boolean
 - **Default**: `false`

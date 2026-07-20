@@ -77,7 +77,7 @@ When using Gemini models through Vertex AI, additional grounding features become
 
 #### URL Context
 
-Enable URL context to allow Gemini models to access and analyze web content directly. This feature allows Roo to:
+Enable URL context to allow Gemini models to access and analyze web content directly. This feature allows Ali to:
 
 - Read and understand web pages in real-time
 - Analyze documentation from URLs

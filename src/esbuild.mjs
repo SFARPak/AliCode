@@ -49,7 +49,7 @@ async function main() {
 		// Stamp the published extension name so that runtime command/config
 		// IDs (built via `${Package.name}.${id}`) match the `alicode.*` IDs
 		// declared in package.json. Without this, Package.name falls back to the
-		// legacy "roo-cline" default and commands register under the wrong prefix.
+		// legacy "alicode" default and commands register under the wrong prefix.
 		define: {
 			"process.env.PKG_NAME": '"alicode"',
 		},

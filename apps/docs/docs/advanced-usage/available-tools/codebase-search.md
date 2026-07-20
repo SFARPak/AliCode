@@ -37,7 +37,7 @@ This tool searches through your indexed codebase using semantic similarity rathe
 
 ## When is it used?
 
-- When Roo needs to find code related to specific functionality across your project
+- When Ali needs to find code related to specific functionality across your project
 - When looking for implementation patterns or similar code structures
 - When searching for error handling, authentication, or other conceptual code patterns
 - When exploring unfamiliar codebases to understand how features are implemented
@@ -222,10 +222,10 @@ Each search result includes:
 
 ## Examples When Used
 
-- When implementing a new feature, Roo searches for "authentication middleware" to understand existing patterns before writing new code.
-- When debugging an issue, Roo searches for "error handling in API calls" to find related error patterns across the codebase.
-- When refactoring code, Roo searches for "database transaction patterns" to ensure consistency across all database operations.
-- When onboarding to a new codebase, Roo searches for "configuration loading" to understand how the application bootstraps.
+- When implementing a new feature, Ali searches for "authentication middleware" to understand existing patterns before writing new code.
+- When debugging an issue, Ali searches for "error handling in API calls" to find related error patterns across the codebase.
+- When refactoring code, Ali searches for "database transaction patterns" to ensure consistency across all database operations.
+- When onboarding to a new codebase, Ali searches for "configuration loading" to understand how the application bootstraps.
 
 ---
 

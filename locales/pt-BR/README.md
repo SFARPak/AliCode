@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
-  <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=AliVeterinaryInc.alicode"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
+  <a href="https://x.com/alicode"><img src="https://img.shields.io/badge/alicode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
 </p>
-# Roo Code
+# Ali Code
 
 > Seu time de desenvolvimento com IA, direto no seu editor
 
@@ -28,11 +28,11 @@
 - [简体中文](../zh-CN/README.md)
 - [繁體中文](../zh-TW/README.md)
 - ...
-    </details>
+      </details>
 
 ---
 
-## O que o Roo Code pode fazer por VOCÊ?
+## O que o Ali Code pode fazer por VOCÊ?
 
 - Gerar código a partir de descrições em linguagem natural
 - Adapte-se com os Modos: Código, Arquiteto, Pergunta, Depuração e Modos Personalizados
@@ -44,7 +44,7 @@
 
 ## Modos
 
-O Roo Code se adapta à sua maneira de trabalhar, e não o contrário:
+O Ali Code se adapta à sua maneira de trabalhar, e não o contrário:
 
 - Modo Código: codificação diária, edições e operações de arquivo
 - Modo Arquiteto: planeje sistemas, especificações e migrações
@@ -52,21 +52,21 @@ O Roo Code se adapta à sua maneira de trabalhar, e não o contrário:
 - Modo Depuração: rastreie problemas, adicione logs, isole as causas raiz
 - Modos Personalizados: crie modos especializados para sua equipe ou fluxo de trabalho
 
-Saiba mais: [Usar Modos](https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes) • [Modos personalizados](https://roocodeinc.github.io/Roo-Code/advanced-usage/custom-modes)
+Saiba mais: [Usar Modos](https://alicodeinc.github.io/Ali-Code/basic-usage/using-modes) • [Modos personalizados](https://alicodeinc.github.io/Ali-Code/advanced-usage/custom-modes)
 
 ## Recursos
 
-- **[Documentação](https://roocodeinc.github.io/Roo-Code/):** O guia oficial para instalar, configurar e dominar o Roo Code.
-- **[Issues do GitHub](https://github.com/RooCodeInc/Roo-Code/issues):** Relate bugs e acompanhe o desenvolvimento.
+- **[Documentação](https://alicodeinc.github.io/Ali-Code/):** O guia oficial para instalar, configurar e dominar o Ali Code.
+- **[Issues do GitHub](https://github.com/AliCodeInc/Ali-Code/issues):** Relate bugs e acompanhe o desenvolvimento.
 
 ---
 
 ## Isenção de responsabilidade
 
-**Observe** que a Roo Code, Inc. **não** faz representações ou garantias em relação a qualquer código, modelos ou outras ferramentas fornecidas ou disponibilizadas em conexão com o Roo Code, quaisquer ferramentas de terceiros associadas ou quaisquer saídas resultantes. Você assume **todos os riscos** associados ao uso de tais ferramentas ou saídas; tais ferramentas são fornecidas **"COMO ESTÃO"** e **"CONFORME DISPONÍVEIS"**. Tais riscos podem incluir, sem limitação, violação de propriedade intelectual, vulnerabilidades ou ataques cibernéticos, viés, imprecisões, erros, defeitos, vírus, tempo de inatividade, perda ou dano de propriedade e/ou lesões pessoais. Você é o único responsável pelo uso de tais ferramentas ou saídas (incluindo, sem limitação, a legalidade, adequação e resultados das mesmas).
+**Observe** que a Ali Code, Inc. **não** faz representações ou garantias em relação a qualquer código, modelos ou outras ferramentas fornecidas ou disponibilizadas em conexão com o Ali Code, quaisquer ferramentas de terceiros associadas ou quaisquer saídas resultantes. Você assume **todos os riscos** associados ao uso de tais ferramentas ou saídas; tais ferramentas são fornecidas **"COMO ESTÃO"** e **"CONFORME DISPONÍVEIS"**. Tais riscos podem incluir, sem limitação, violação de propriedade intelectual, vulnerabilidades ou ataques cibernéticos, viés, imprecisões, erros, defeitos, vírus, tempo de inatividade, perda ou dano de propriedade e/ou lesões pessoais. Você é o único responsável pelo uso de tais ferramentas ou saídas (incluindo, sem limitação, a legalidade, adequação e resultados das mesmas).
 
 ---
 
 ## Licença
 
-[Apache 2.0 © 2025 Roo Code, Inc.](../../LICENSE)
+[Apache 2.0 © 2025 Ali Code, Inc.](../../LICENSE)

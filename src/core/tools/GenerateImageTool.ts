@@ -55,7 +55,7 @@ export class GenerateImageTool extends BaseTool<"generate_image"> {
 			return
 		}
 
-		const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+		const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 		if (!accessAllowed) {
 			await task.say("rooignore_error", relPath)
 			pushToolResult(formatResponse.rooIgnoreError(relPath))
@@ -76,7 +76,7 @@ export class GenerateImageTool extends BaseTool<"generate_image"> {
 				return
 			}
 
-			const inputImageAccessAllowed = task.rooIgnoreController?.validateAccess(inputImagePath)
+			const inputImageAccessAllowed = task.aliIgnoreController?.validateAccess(inputImagePath)
 			if (!inputImageAccessAllowed) {
 				await task.say("rooignore_error", inputImagePath)
 				pushToolResult(formatResponse.rooIgnoreError(inputImagePath))
@@ -119,7 +119,7 @@ export class GenerateImageTool extends BaseTool<"generate_image"> {
 			}
 		}
 
-		const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath) || false
+		const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath) || false
 
 		// Use shared utility for backwards compatibility logic
 		const imageProvider = getImageGenerationProvider(

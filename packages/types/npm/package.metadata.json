@@ -1,13 +1,13 @@
 {
 	"name": "@ali-code/types",
 	"version": "1.115.0",
-	"description": "TypeScript type definitions for Roo Code.",
+	"description": "TypeScript type definitions for Ali Code.",
 	"publishConfig": {
 		"access": "public",
 		"name": "@ali-code/types",
 		"registry": "https://registry.npmjs.org/"
 	},
-	"author": "Roo Code Team",
+	"author": "Ali Code Team",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -17,6 +17,6 @@
 		"url": "https://github.com/RooCodeInc/Roo-Code/issues"
 	},
 	"homepage": "https://roocode.com",
-	"keywords": ["roo", "roo-code", "ai"],
+	"keywords": ["ali", "ali-code", "ai"],
 	"files": ["dist"]
 }

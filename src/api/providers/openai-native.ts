@@ -303,7 +303,7 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 		}
 
 		// Build a request body for the OpenAI Responses API.
-		// Ensure we explicitly pass max_output_tokens based on Roo's reserved model response calculation
+		// Ensure we explicitly pass max_output_tokens based on Ali's reserved model response calculation
 		// so requests do not default to very large limits (e.g., 120k).
 		interface ResponsesRequestBody {
 			model: string
@@ -362,7 +362,7 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 				temperature: this.options.modelTemperature ?? OPENAI_NATIVE_DEFAULT_TEMPERATURE,
 			}),
 			// Explicitly include the calculated max output tokens.
-			// Use the per-request reserved output computed by Roo (params.maxTokens from getModelParams).
+			// Use the per-request reserved output computed by Ali (params.maxTokens from getModelParams).
 			...(model.maxTokens ? { max_output_tokens: model.maxTokens } : {}),
 			// Include tier when selected and supported by the model, or when explicitly "default"
 			...(requestedTier &&

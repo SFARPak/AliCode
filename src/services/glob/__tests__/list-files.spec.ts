@@ -362,14 +362,14 @@ describe("hidden directory exclusion", () => {
 	})
 
 	it("should include top-level files when recursively listing a hidden directory that's also in DIRS_TO_IGNORE", async () => {
-		// This test specifically addresses the bug where files at the root level of .roo/temp
+		// This test specifically addresses the bug where files at the root level of .ali/temp
 		// were being excluded when using recursive listing
 		const mockSpawn = vi.mocked(childProcess.spawn)
 		const mockProcess = {
 			stdout: {
 				on: vi.fn((event, callback) => {
 					if (event === "data") {
-						// Simulate files that should be found in .roo/temp
+						// Simulate files that should be found in .ali/temp
 						// Note: ripgrep returns relative paths
 						setTimeout(() => {
 							callback("teste1.md\n")
@@ -391,13 +391,13 @@ describe("hidden directory exclusion", () => {
 
 		mockSpawn.mockReturnValue(mockProcess as any)
 
-		// Mock directory listing for .roo/temp
+		// Mock directory listing for .ali/temp
 		const mockReaddir = vi.fn()
 		vi.mocked(fs.promises).readdir = mockReaddir
 		mockReaddir.mockResolvedValueOnce([{ name: "22", isDirectory: () => true, isSymbolicLink: () => false }])
 
-		// Call listFiles targeting .roo/temp (which is both hidden and in DIRS_TO_IGNORE)
-		const [files] = await listFiles("/test/.roo/temp", true, 100)
+		// Call listFiles targeting .ali/temp (which is both hidden and in DIRS_TO_IGNORE)
+		const [files] = await listFiles("/test/.ali/temp", true, 100)
 
 		// Verify ripgrep was called with correct arguments
 		const [rgPath, args] = mockSpawn.mock.calls[0]

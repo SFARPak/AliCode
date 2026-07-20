@@ -44,7 +44,7 @@ export interface SingleCompletionHandler {
 export interface ApiHandlerCreateMessageMetadata {
 	/**
 	 * Task ID used for tracking and provider-specific features:
-	 * - Roo: Sent as X-Roo-Task-ID header
+	 * - Ali: Sent as X-Ali-Task-ID header
 	 * - Requesty: Sent as trace_id
 	 */
 	taskId: string
@@ -114,7 +114,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 
 	if (apiProvider && isRetiredProvider(apiProvider)) {
 		const retiredProviderMessage =
-			apiProvider === "roo"
+			apiProvider === "ali"
 				? "As part of our decision to sunset the AliCode extension, we also ended the AliCode Router, which only existed to support the extension. Sorry about the hassle."
 				: "This provider is no longer supported."
 

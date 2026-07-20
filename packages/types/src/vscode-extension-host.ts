@@ -304,7 +304,7 @@ export type ExtensionState = Pick<
 	checkpointTimeout: number // Timeout for checkpoint initialization in seconds (default: 15)
 	maxOpenTabsContext: number // Maximum number of VSCode open tabs to include in context (0-500)
 	maxWorkspaceFiles: number // Maximum number of files to include in current working directory details (0-500)
-	showRooIgnoredFiles: boolean // Whether to show .rooignore'd files in listings
+	showAliIgnoredFiles: boolean // Whether to show .aliignore'd files in listings
 	enableSubfolderRules: boolean // Whether to load rules from subdirectories
 	maxReadFileLine?: number // Maximum line limit for read_file tool (-1 for default)
 	maxImageFileSize: number // Maximum size of image files to process in MB

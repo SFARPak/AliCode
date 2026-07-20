@@ -29,12 +29,12 @@ MiniMax M2.1 is now available directly through the MiniMax provider in AliCode, 
 
 ## Experimental custom tools
 
-You can now define and use **custom tools** so Roo can call your project- or team-specific actions like built-in tools. This makes it easier to standardize workflows across a team by shipping tool schemas alongside your project, instead of repeatedly re-prompting the same steps ([#10083](https://github.com/RooCodeInc/Roo-Code/pull/10083)).
+You can now define and use **custom tools** so Ali can call your project- or team-specific actions like built-in tools. This makes it easier to standardize workflows across a team by shipping tool schemas alongside your project, instead of repeatedly re-prompting the same steps ([#10083](https://github.com/RooCodeInc/Roo-Code/pull/10083)).
 
 ## Bug Fixes
 
-* Fixes an issue where Roo could appear stuck after a tool call with some OpenAI-compatible providers when streaming ended at the tool-calls boundary (thanks torxeon!) ([#10280](https://github.com/RooCodeInc/Roo-Code/pull/10280))
-* Fixes an issue where Roo could appear stuck after a tool call with some OpenAI-compatible providers by ensuring final tool-call completion events are emitted ([#10293](https://github.com/RooCodeInc/Roo-Code/pull/10293))
+* Fixes an issue where Ali could appear stuck after a tool call with some OpenAI-compatible providers when streaming ended at the tool-calls boundary (thanks torxeon!) ([#10280](https://github.com/RooCodeInc/Roo-Code/pull/10280))
+* Fixes an issue where Ali could appear stuck after a tool call with some OpenAI-compatible providers by ensuring final tool-call completion events are emitted ([#10293](https://github.com/RooCodeInc/Roo-Code/pull/10293))
 * Fixes an issue where MCP tools could break under strict schema mode when optional parameters were treated as required ([#10220](https://github.com/RooCodeInc/Roo-Code/pull/10220))
 * Fixes an issue where the built-in `read_file` tool could fail on some models due to invalid schema normalization for optional array parameters ([#10276](https://github.com/RooCodeInc/Roo-Code/pull/10276))
 * Fixes an issue where `search_replace` / `search_and_replace` could miss matches on CRLF files, improving cross-platform search-and-replace reliability ([#10288](https://github.com/RooCodeInc/Roo-Code/pull/10288))

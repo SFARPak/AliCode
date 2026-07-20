@@ -40,7 +40,7 @@ import {
 	StandardTooltip,
 	Button,
 } from "@src/components/ui"
-import { useRooPortal } from "@src/components/ui/hooks/useRooPortal"
+import { useAliPortal } from "@src/components/ui/hooks/useAliPortal"
 import { useEscapeKey } from "@src/hooks/useEscapeKey"
 import {
 	useOpenRouterModelProviders,
@@ -594,7 +594,7 @@ export const CodeIndexPopover: React.FC<CodeIndexPopoverProps> = ({
 		},
 	)
 
-	const portalContainer = useRooPortal("roo-portal")
+	const portalContainer = useAliPortal("ali-portal")
 
 	return (
 		<>

@@ -24,7 +24,7 @@ Edit multiple files in a single operation, dramatically speeding up refactoring 
 
 <img src="/img/concurrent-file-edits/concurrent-file-edits-1.png" alt="Batch diff approval interface showing multiple file changes" width="800" />
 
-Concurrent File Edits allows Roo to modify multiple files in your workspace within a single request. Instead of approving each file edit individually, you review and approve all changes at once through a unified batch approval interface.
+Concurrent File Edits allows Ali to modify multiple files in your workspace within a single request. Instead of approving each file edit individually, you review and approve all changes at once through a unified batch approval interface.
 
 ---
 
@@ -58,7 +58,7 @@ Multi-file edits are now available by default in AliCode. The feature has gradua
 
 ## Using the Feature
 
-When enabled, Roo automatically uses concurrent edits when appropriate. You'll see a "Batch Diff Approval" interface showing:
+When enabled, Ali automatically uses concurrent edits when appropriate. You'll see a "Batch Diff Approval" interface showing:
 
 - All files to be modified
 - Proposed changes for each file
@@ -66,8 +66,8 @@ When enabled, Roo automatically uses concurrent edits when appropriate. You'll s
 
 ### Example Workflow
 
-1. Ask Roo to "Update all API endpoints to use the new authentication method"
-2. Roo analyzes your codebase and identifies all affected files
+1. Ask Ali to "Update all API endpoints to use the new authentication method"
+2. Ali analyzes your codebase and identifies all affected files
 3. You receive a single batch approval request showing changes across:
     - `src/api/users.js`
     - `src/api/products.js`
@@ -105,7 +105,7 @@ This feature leverages the [`apply_diff`](/advanced-usage/available-tools/apply-
 ### Changes Not Batching
 
 - Check that your model supports multi-file operations
-- Ensure files aren't restricted by `.rooignore`
+- Ensure files aren't restricted by `.aliignore`
 
 ### Approval UI Not Appearing
 
@@ -124,4 +124,4 @@ This feature leverages the [`apply_diff`](/advanced-usage/available-tools/apply-
 
 - [`apply_diff` Tool Documentation](/advanced-usage/available-tools/apply-diff) - Detailed technical information
 - [Experimental Features](/features/experimental/experimental-features) - Other experimental capabilities
-- [`.rooignore` Configuration](/features/rooignore) - File access restrictions
+- [`.aliignore` Configuration](/features/rooignore) - File access restrictions

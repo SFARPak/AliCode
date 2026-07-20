@@ -71,7 +71,7 @@ greet('World');
 
 ## Tool Safety and Approval
 
-Every tool use requires your explicit approval. When Roo proposes a tool, you'll see:
+Every tool use requires your explicit approval. When Ali proposes a tool, you'll see:
 
 - A "Save" button to approve and execute the tool
 - A "Reject" button to decline the proposed tool

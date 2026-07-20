@@ -34,7 +34,7 @@ Local AI providers running large models can now configure custom timeout setting
 Configure in your VSCode settings:
 ```json
 {
-  "roo-cline.apiRequestTimeout": 1200  // 20 minutes for very large models
+  "alicode.apiRequestTimeout": 1200  // 20 minutes for very large models
 }
 ```
 
@@ -56,7 +56,7 @@ This addition provides more granular control over model reasoning, allowing you 
 
 ## Bug Fixes
 
-* **File Indexing**: JSON files now properly respect .rooignore settings during indexing ([#6691](https://github.com/RooCodeInc/Roo-Code/pull/6691))
+* **File Indexing**: JSON files now properly respect .aliignore settings during indexing ([#6691](https://github.com/RooCodeInc/Roo-Code/pull/6691))
 * **Tool Usage**: Fixed tool repetition detector to allow first tool call when limit is 1 ([#6836](https://github.com/RooCodeInc/Roo-Code/pull/6836))
 * **Service Initialization**: Improved checkpoint service initialization handling (thanks NaccOll!) ([#6860](https://github.com/RooCodeInc/Roo-Code/pull/6860))
 * **Browser Compatibility**: Added --no-sandbox flag to browser launch options for better compatibility (thanks QuinsZouls!) ([#6686](https://github.com/RooCodeInc/Roo-Code/pull/6686))

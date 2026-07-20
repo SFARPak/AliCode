@@ -68,7 +68,7 @@ When the `apply_patch` tool is invoked, it follows this process:
 1. **Patch Parsing**: Parses the patch string to identify custom headers (`*** Add File:`, `*** Delete File:`, `*** Update File:`) and unified diff blocks.
 2. **Operation Identification**: Groups changes by file path and operation type (add, delete, update).
 3. **Validation**: Validates that target files exist (for updates/deletes) or can be created (for adds).
-4. **RooIgnore Check**: Ensures target files are not restricted by `.rooignore` rules.
+4. **RooIgnore Check**: Ensures target files are not restricted by `.aliignore` rules.
 5. **User Review**: Presents the patch operations for user review and approval.
 6. **Application**: Applies approved changes to each file sequentially.
 7. **Feedback**: Reports success or failure for each file operation.

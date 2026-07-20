@@ -14,7 +14,7 @@ export class AliProtectedController {
 	// Predefined list of protected Ali configuration patterns
 	private static readonly PROTECTED_PATTERNS = [
 		".aliignore",
-		".roomodes",
+		".alimodes",
 		".alirules*",
 		".clinerules*",
 		".ali/**",

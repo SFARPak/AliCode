@@ -21,11 +21,11 @@ This release refreshes the signup flow, improves tool-calling reliability for Op
 
 ## Bug Fixes
 
-* Fixes an issue where Roo could show errors when a provider returned an empty assistant message by retrying once and only showing an error if the problem repeats ([#10297](https://github.com/RooCodeInc/Roo-Code/pull/10297))
+* Fixes an issue where Ali could show errors when a provider returned an empty assistant message by retrying once and only showing an error if the problem repeats ([#10297](https://github.com/RooCodeInc/Roo-Code/pull/10297))
 * Fixes an issue where OpenAI/OpenAI-compatible chats could fail to use native tools when custom model info didn’t explicitly set tool support, by sending native tool definitions by default ([#10314](https://github.com/RooCodeInc/Roo-Code/pull/10314))
-* Fixes an issue where Roo could send malformed `reasoning_details` data after transforming conversation history, preventing provider-side errors and improving compatibility with OpenAI Responses-style reasoning blocks ([#10313](https://github.com/RooCodeInc/Roo-Code/pull/10313))
+* Fixes an issue where Ali could send malformed `reasoning_details` data after transforming conversation history, preventing provider-side errors and improving compatibility with OpenAI Responses-style reasoning blocks ([#10313](https://github.com/RooCodeInc/Roo-Code/pull/10313))
 * Fixes an issue where “ask” flows could hang if your reply was queued instead of being delivered as an ask response, so conversations continue reliably ([#10315](https://github.com/RooCodeInc/Roo-Code/pull/10315))
 
 ## Misc Improvements
 
-* **Provider-centric signup**: Makes Roo easier to get started with by defaulting the welcome/sign-up flow to the Roo provider (while keeping other providers available), so you can reach a working setup faster with fewer choices up front ([#10306](https://github.com/RooCodeInc/Roo-Code/pull/10306))
+* **Provider-centric signup**: Makes Ali easier to get started with by defaulting the welcome/sign-up flow to the Ali provider (while keeping other providers available), so you can reach a working setup faster with fewer choices up front ([#10306](https://github.com/RooCodeInc/Roo-Code/pull/10306))

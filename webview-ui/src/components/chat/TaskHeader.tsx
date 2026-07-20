@@ -5,7 +5,7 @@ import prettyBytes from "pretty-bytes"
 
 import type { ClineMessage } from "@ali-code/types"
 
-import { getModelMaxOutputTokens } from "@roo/api"
+import { getModelMaxOutputTokens } from "@ali/api"
 
 import { formatLargeNumber } from "@src/utils/format"
 import { cn } from "@src/lib/utils"
@@ -476,10 +476,7 @@ const TaskHeader = ({
 				{hasTodos && <TodoListDisplay todos={todos ?? (task as any)?.tool?.todos ?? []} />}
 			</div>
 			{/* Task Timeline - visual session activity bar */}
-			<TaskTimeline
-				messages={clineMessages}
-				isBusy={buttonsDisabled}
-			/>
+			<TaskTimeline messages={clineMessages} isBusy={buttonsDisabled} />
 			{/* Per-model token/cost breakdown (renders nothing when no usage data) */}
 			<TaskUsage
 				tokens={{

@@ -53,7 +53,7 @@ By default, AliCode selects a stable Pro model with a temperature of **1.0** whe
 
 ### URL Context
 
-Gemini models can now access and analyze web content directly through URL context. This feature allows Roo to:
+Gemini models can now access and analyze web content directly through URL context. This feature allows Ali to:
 
 - Read and understand web pages in real-time
 - Analyze documentation from URLs

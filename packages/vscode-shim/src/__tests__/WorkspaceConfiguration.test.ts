@@ -195,7 +195,7 @@ describe("MockWorkspaceConfiguration", () => {
 		})
 
 		it("should return runtime config value over disk-based values", async () => {
-			const config = new MockWorkspaceConfiguration("roo-cline", context)
+			const config = new MockWorkspaceConfiguration("alicode", context)
 
 			// Set a value in disk-based storage
 			await config.update("commandExecutionTimeout", 10)
@@ -204,52 +204,52 @@ describe("MockWorkspaceConfiguration", () => {
 			expect(config.get("commandExecutionTimeout")).toBe(10)
 
 			// Set runtime config (should take precedence)
-			setRuntimeConfig("roo-cline", "commandExecutionTimeout", 20)
+			setRuntimeConfig("alicode", "commandExecutionTimeout", 20)
 
 			// Now runtime value should be returned
 			expect(config.get("commandExecutionTimeout")).toBe(20)
 		})
 
 		it("should set and get runtime config values", () => {
-			setRuntimeConfig("roo-cline", "testSetting", "testValue")
+			setRuntimeConfig("alicode", "testSetting", "testValue")
 
-			expect(getRuntimeConfig("roo-cline.testSetting")).toBe("testValue")
+			expect(getRuntimeConfig("alicode.testSetting")).toBe("testValue")
 		})
 
 		it("should set multiple runtime config values at once", () => {
-			setRuntimeConfigValues("roo-cline", {
+			setRuntimeConfigValues("alicode", {
 				setting1: "value1",
 				setting2: 42,
 				setting3: true,
 			})
 
-			expect(getRuntimeConfig("roo-cline.setting1")).toBe("value1")
-			expect(getRuntimeConfig("roo-cline.setting2")).toBe(42)
-			expect(getRuntimeConfig("roo-cline.setting3")).toBe(true)
+			expect(getRuntimeConfig("alicode.setting1")).toBe("value1")
+			expect(getRuntimeConfig("alicode.setting2")).toBe(42)
+			expect(getRuntimeConfig("alicode.setting3")).toBe(true)
 		})
 
 		it("should ignore undefined values in setRuntimeConfigValues", () => {
-			setRuntimeConfigValues("roo-cline", {
+			setRuntimeConfigValues("alicode", {
 				defined: "value",
 				notDefined: undefined,
 			})
 
-			expect(getRuntimeConfig("roo-cline.defined")).toBe("value")
-			expect(getRuntimeConfig("roo-cline.notDefined")).toBeUndefined()
+			expect(getRuntimeConfig("alicode.defined")).toBe("value")
+			expect(getRuntimeConfig("alicode.notDefined")).toBeUndefined()
 		})
 
 		it("should clear all runtime config values", () => {
-			setRuntimeConfig("roo-cline", "setting1", "value1")
-			setRuntimeConfig("roo-cline", "setting2", "value2")
+			setRuntimeConfig("alicode", "setting1", "value1")
+			setRuntimeConfig("alicode", "setting2", "value2")
 
 			clearRuntimeConfig()
 
-			expect(getRuntimeConfig("roo-cline.setting1")).toBeUndefined()
-			expect(getRuntimeConfig("roo-cline.setting2")).toBeUndefined()
+			expect(getRuntimeConfig("alicode.setting1")).toBeUndefined()
+			expect(getRuntimeConfig("alicode.setting2")).toBeUndefined()
 		})
 
 		it("should return default value when no runtime config is set", () => {
-			const config = new MockWorkspaceConfiguration("roo-cline", context)
+			const config = new MockWorkspaceConfiguration("alicode", context)
 
 			expect(config.get("nonexistent", 0)).toBe(0)
 			expect(config.get("nonexistent", "default")).toBe("default")
@@ -257,12 +257,12 @@ describe("MockWorkspaceConfiguration", () => {
 
 		it("should work with MockWorkspaceConfiguration.get() for CLI settings", () => {
 			// Simulate CLI setting commandExecutionTimeout
-			setRuntimeConfigValues("roo-cline", {
+			setRuntimeConfigValues("alicode", {
 				commandExecutionTimeout: 20,
 				commandTimeoutAllowlist: ["npm", "yarn"],
 			})
 
-			const config = new MockWorkspaceConfiguration("roo-cline", context)
+			const config = new MockWorkspaceConfiguration("alicode", context)
 
 			// These should return the runtime config values
 			expect(config.get<number>("commandExecutionTimeout", 0)).toBe(20)

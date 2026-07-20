@@ -35,7 +35,7 @@ async function main() {
 		define: {
 			"process.env.PKG_NAME": '"roo-code-nightly"',
 			"process.env.PKG_VERSION": `"${overrideJson.version}"`,
-			"process.env.PKG_OUTPUT_CHANNEL": '"Roo-Code-Nightly"',
+			"process.env.PKG_OUTPUT_CHANNEL": '"Ali-Code-Nightly"',
 			...(gitSha ? { "process.env.PKG_SHA": `"${gitSha}"` } : {}),
 		},
 	}
@@ -88,7 +88,7 @@ async function main() {
 					const generatedPackageJson = generatePackageJson({
 						packageJson,
 						overrideJson,
-						substitution: ["roo-cline", "roo-code-nightly"],
+						substitution: ["alicode", "roo-code-nightly"],
 					})
 
 					fs.writeFileSync(path.join(buildDir, "package.json"), JSON.stringify(generatedPackageJson, null, 2))

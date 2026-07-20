@@ -27,7 +27,7 @@ export const generateSystemPrompt = async (provider: ClineProvider, message: Web
 	const mode = message.mode ?? defaultModeSlug
 	const customModes = await provider.customModesManager.getCustomModes()
 
-	const rooIgnoreInstructions = provider.getCurrentTask()?.rooIgnoreController?.getInstructions()
+	const rooIgnoreInstructions = provider.getCurrentTask()?.aliIgnoreController?.getInstructions()
 
 	// Create a temporary API handler to check model info for stealth mode.
 	// This avoids relying on an active Cline instance which might not exist during preview.

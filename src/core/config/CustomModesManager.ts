@@ -10,13 +10,13 @@ import { type ModeConfig, type PromptComponent, customModesSettingsSchema, modeC
 
 import { fileExistsAtPath } from "../../utils/fs"
 import { getWorkspacePath } from "../../utils/path"
-import { getGlobalRooDirectory } from "../../services/roo-config"
+import { getGlobalAliDirectory } from "../../services/ali-config"
 import { logger } from "../../utils/logging"
 import { GlobalFileNames } from "../../shared/globalFileNames"
 import { ensureSettingsDirectoryExists } from "../../utils/globalContext"
 import { t } from "../../i18n"
 
-const ROOMODES_FILENAME = ".roomodes"
+const ROOMODES_FILENAME = ".alimodes"
 
 // Type definitions for import/export functionality
 interface RuleFile {
@@ -154,7 +154,7 @@ export class CustomModesManager {
 			// Ensure we never return null or undefined
 			return parsed ?? {}
 		} catch (yamlError) {
-			// For .roomodes files, try JSON as fallback
+			// For .alimodes files, try JSON as fallback
 			if (filePath.endsWith(ROOMODES_FILENAME)) {
 				try {
 					// Try parsing the original content as JSON (not the cleaned content)
@@ -173,7 +173,7 @@ export class CustomModesManager {
 				}
 			}
 
-			// For non-.roomodes files, just log and return empty object
+			// For non-.alimodes files, just log and return empty object
 			const errorMsg = yamlError instanceof Error ? yamlError.message : String(yamlError)
 			console.error(`[CustomModesManager] Failed to parse YAML from ${filePath}:`, errorMsg)
 			return {}
@@ -195,7 +195,7 @@ export class CustomModesManager {
 			if (!result.success) {
 				console.error(`[CustomModesManager] Schema validation failed for ${filePath}:`, result.error)
 
-				// Show user-friendly error for .roomodes files
+				// Show user-friendly error for .alimodes files
 				if (filePath.endsWith(ROOMODES_FILENAME)) {
 					const issues = result.error.issues
 						.map((issue) => `• ${issue.path.join(".")}: ${issue.message}`)
@@ -294,11 +294,11 @@ export class CustomModesManager {
 					return
 				}
 
-				// Get modes from .roomodes if it exists (takes precedence)
+				// Get modes from .alimodes if it exists (takes precedence)
 				const roomodesPath = await this.getWorkspaceRoomodes()
 				const roomodesModes = roomodesPath ? await this.loadModesFromFile(roomodesPath) : []
 
-				// Merge modes from both sources (.roomodes takes precedence)
+				// Merge modes from both sources (.alimodes takes precedence)
 				const mergedModes = await this.mergeCustomModes(roomodesModes, result.data.customModes)
 				await this.context.globalState.update("customModes", mergedModes)
 				this.clearCache()
@@ -313,7 +313,7 @@ export class CustomModesManager {
 		this.disposables.push(settingsWatcher.onDidDelete(handleSettingsChange))
 		this.disposables.push(settingsWatcher)
 
-		// Watch .roomodes file - watch the path even if it doesn't exist yet
+		// Watch .alimodes file - watch the path even if it doesn't exist yet
 		const workspaceFolders = vscode.workspace.workspaceFolders
 		if (workspaceFolders && workspaceFolders.length > 0) {
 			const workspaceRoot = getWorkspacePath()
@@ -324,13 +324,13 @@ export class CustomModesManager {
 				try {
 					const settingsModes = await this.loadModesFromFile(settingsPath)
 					const roomodesModes = await this.loadModesFromFile(roomodesPath)
-					// .roomodes takes precedence
+					// .alimodes takes precedence
 					const mergedModes = await this.mergeCustomModes(roomodesModes, settingsModes)
 					await this.context.globalState.update("customModes", mergedModes)
 					this.clearCache()
 					await this.onUpdate()
 				} catch (error) {
-					console.error(`[CustomModesManager] Error handling .roomodes file change:`, error)
+					console.error(`[CustomModesManager] Error handling .alimodes file change:`, error)
 				}
 			}
 
@@ -338,14 +338,14 @@ export class CustomModesManager {
 			this.disposables.push(roomodesWatcher.onDidCreate(handleRoomodesChange))
 			this.disposables.push(
 				roomodesWatcher.onDidDelete(async () => {
-					// When .roomodes is deleted, refresh with only settings modes
+					// When .alimodes is deleted, refresh with only settings modes
 					try {
 						const settingsModes = await this.loadModesFromFile(settingsPath)
 						await this.context.globalState.update("customModes", settingsModes)
 						this.clearCache()
 						await this.onUpdate()
 					} catch (error) {
-						console.error(`[CustomModesManager] Error handling .roomodes file deletion:`, error)
+						console.error(`[CustomModesManager] Error handling .alimodes file deletion:`, error)
 					}
 				}),
 			)
@@ -365,7 +365,7 @@ export class CustomModesManager {
 		const settingsPath = await this.getCustomModesFilePath()
 		const settingsModes = await this.loadModesFromFile(settingsPath)
 
-		// Get modes from .roomodes if it exists.
+		// Get modes from .alimodes if it exists.
 		const roomodesPath = await this.getWorkspaceRoomodes()
 		const roomodesModes = roomodesPath ? await this.loadModesFromFile(roomodesPath) : []
 
@@ -568,14 +568,14 @@ export class CustomModesManager {
 			if (scope === "project") {
 				const workspacePath = getWorkspacePath()
 				if (workspacePath) {
-					rulesFolderPath = path.join(workspacePath, ".roo", `rules-${slug}`)
+					rulesFolderPath = path.join(workspacePath, ".ali", `rules-${slug}`)
 				} else {
 					return // No workspace, can't delete project rules
 				}
 			} else {
 				// Global scope - use OS home directory
 				const homeDir = os.homedir()
-				rulesFolderPath = path.join(homeDir, ".roo", `rules-${slug}`)
+				rulesFolderPath = path.join(homeDir, ".ali", `rules-${slug}`)
 			}
 
 			// Check if the rules folder exists and delete it
@@ -614,7 +614,7 @@ export class CustomModesManager {
 	}
 
 	/**
-	 * Checks if a mode has associated rules files in the .roo/rules-{slug}/ directory
+	 * Checks if a mode has associated rules files in the .ali/rules-{slug}/ directory
 	 * @param slug - The mode identifier to check
 	 * @returns True if the mode has rules files with content, false otherwise
 	 */
@@ -625,7 +625,7 @@ export class CustomModesManager {
 			const mode = allModes.find((m) => m.slug === slug)
 
 			if (!mode) {
-				// If not in custom modes, check if it's in .roomodes (project-specific)
+				// If not in custom modes, check if it's in .alimodes (project-specific)
 				const workspacePath = getWorkspacePath()
 				if (!workspacePath) {
 					return false
@@ -639,16 +639,16 @@ export class CustomModesManager {
 						const roomodesData = yaml.parse(roomodesContent)
 						const roomodesModes = roomodesData?.customModes || []
 
-						// Check if this specific mode exists in .roomodes
+						// Check if this specific mode exists in .alimodes
 						const modeInRoomodes = roomodesModes.find((m: any) => m.slug === slug)
 						if (!modeInRoomodes) {
 							return false // Mode not found anywhere
 						}
 					} else {
-						return false // No .roomodes file and not in custom modes
+						return false // No .alimodes file and not in custom modes
 					}
 				} catch (error) {
-					return false // Cannot read .roomodes and not in custom modes
+					return false // Cannot read .alimodes and not in custom modes
 				}
 			}
 
@@ -658,15 +658,15 @@ export class CustomModesManager {
 
 			if (isGlobalMode) {
 				// For global modes, check in global .roo directory
-				const globalRooDir = getGlobalRooDirectory()
-				modeRulesDir = path.join(globalRooDir, `rules-${slug}`)
+				const globalAliDir = getGlobalAliDirectory()
+				modeRulesDir = path.join(globalAliDir, `rules-${slug}`)
 			} else {
 				// For project modes, check in workspace .roo directory
 				const workspacePath = getWorkspacePath()
 				if (!workspacePath) {
 					return false
 				}
-				modeRulesDir = path.join(workspacePath, ".roo", `rules-${slug}`)
+				modeRulesDir = path.join(workspacePath, ".ali", `rules-${slug}`)
 			}
 
 			try {
@@ -734,7 +734,7 @@ export class CustomModesManager {
 							const roomodesData = yaml.parse(roomodesContent)
 							const roomodesModes = roomodesData?.customModes || []
 
-							// Find the mode in .roomodes
+							// Find the mode in .alimodes
 							mode = roomodesModes.find((m: any) => m.slug === slug)
 						}
 					} catch (error) {
@@ -759,7 +759,7 @@ export class CustomModesManager {
 			let baseDir: string
 			if (isGlobalMode) {
 				// For global modes, use the global .roo directory
-				baseDir = getGlobalRooDirectory()
+				baseDir = getGlobalAliDirectory()
 			} else {
 				// For project modes, use the workspace directory
 				const workspacePath = getWorkspacePath()
@@ -769,10 +769,10 @@ export class CustomModesManager {
 				baseDir = workspacePath
 			}
 
-			// Check for .roo/rules-{slug}/ directory (or rules-{slug}/ for global)
+			// Check for .ali/rules-{slug}/ directory (or rules-{slug}/ for global)
 			const modeRulesDir = isGlobalMode
 				? path.join(baseDir, `rules-${slug}`)
-				: path.join(baseDir, ".roo", `rules-${slug}`)
+				: path.join(baseDir, ".ali", `rules-${slug}`)
 
 			let rulesFiles: RuleFile[] = []
 			try {
@@ -852,11 +852,11 @@ export class CustomModesManager {
 		let rulesFolderPath: string
 
 		if (source === "global") {
-			baseDir = getGlobalRooDirectory()
+			baseDir = getGlobalAliDirectory()
 			rulesFolderPath = path.join(baseDir, `rules-${importMode.slug}`)
 		} else {
 			const workspacePath = getWorkspacePath()
-			baseDir = path.join(workspacePath, ".roo")
+			baseDir = path.join(workspacePath, ".ali")
 			rulesFolderPath = path.join(baseDir, `rules-${importMode.slug}`)
 		}
 

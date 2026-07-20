@@ -665,7 +665,7 @@ describe("convertToOpenAiMessages", () => {
 		})
 
 		it("should pass through all reasoning_details without extracting to top-level reasoning", () => {
-			// This simulates the stored format after receiving from xAI/Roo API
+			// This simulates the stored format after receiving from xAI/Ali API
 			// The provider (roo.ts) now consolidates all reasoning into reasoning_details
 			const anthropicMessages = [
 				{

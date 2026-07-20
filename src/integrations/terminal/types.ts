@@ -1,34 +1,34 @@
 import EventEmitter from "events"
 
-export type RooTerminalProvider = "vscode" | "execa"
+export type AliTerminalProvider = "vscode" | "execa"
 
-export interface RooTerminal {
-	provider: RooTerminalProvider
+export interface AliTerminal {
+	provider: AliTerminalProvider
 	id: number
 	busy: boolean
 	running: boolean
 	taskId?: string
-	process?: RooTerminalProcess
+	process?: AliTerminalProcess
 	getCurrentWorkingDirectory(): string
 	isClosed: () => boolean
-	runCommand: (command: string, callbacks: RooTerminalCallbacks) => RooTerminalProcessResultPromise
+	runCommand: (command: string, callbacks: AliTerminalCallbacks) => AliTerminalProcessResultPromise
 	setActiveStream(stream: AsyncIterable<string> | undefined, pid?: number): void
 	shellExecutionComplete(exitDetails: ExitCodeDetails): void
-	getProcessesWithOutput(): RooTerminalProcess[]
+	getProcessesWithOutput(): AliTerminalProcess[]
 	getUnretrievedOutput(): string
 	getLastCommand(): string
 	cleanCompletedProcessQueue(): void
 }
 
-export interface RooTerminalCallbacks {
-	onLine: (line: string, process: RooTerminalProcess) => void
-	onCompleted: (output: string | undefined, process: RooTerminalProcess) => void | Promise<void>
-	onShellExecutionStarted: (pid: number | undefined, process: RooTerminalProcess) => void
-	onShellExecutionComplete: (details: ExitCodeDetails, process: RooTerminalProcess) => void
-	onNoShellIntegration?: (message: string, process: RooTerminalProcess) => void
+export interface AliTerminalCallbacks {
+	onLine: (line: string, process: AliTerminalProcess) => void
+	onCompleted: (output: string | undefined, process: AliTerminalProcess) => void | Promise<void>
+	onShellExecutionStarted: (pid: number | undefined, process: AliTerminalProcess) => void
+	onShellExecutionComplete: (details: ExitCodeDetails, process: AliTerminalProcess) => void
+	onNoShellIntegration?: (message: string, process: AliTerminalProcess) => void
 }
 
-export interface RooTerminalProcess extends EventEmitter<RooTerminalProcessEvents> {
+export interface AliTerminalProcess extends EventEmitter<AliTerminalProcessEvents> {
 	command: string
 	isHot: boolean
 	run: (command: string) => Promise<void>
@@ -39,9 +39,9 @@ export interface RooTerminalProcess extends EventEmitter<RooTerminalProcessEvent
 	trimRetrievedOutput: () => void
 }
 
-export type RooTerminalProcessResultPromise = RooTerminalProcess & Promise<void>
+export type AliTerminalProcessResultPromise = AliTerminalProcess & Promise<void>
 
-export interface RooTerminalProcessEvents {
+export interface AliTerminalProcessEvents {
 	line: [line: string]
 	continue: []
 	completed: [output?: string]

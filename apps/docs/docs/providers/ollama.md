@@ -97,7 +97,7 @@ AliCode supports running models locally using Ollama. This provides privacy, off
     If you need to override the model's default context window:
 
     - **Permanently:** Save a new model version with your desired `num_ctx` using either method above
-    - **AliCode behavior:** Roo automatically uses whatever `num_ctx` is configured in your Ollama model
+    - **AliCode behavior:** Ali automatically uses whatever `num_ctx` is configured in your Ollama model
     - **Memory considerations:** Reducing `num_ctx` helps prevent out-of-memory errors on limited hardware
       :::
 
@@ -108,7 +108,7 @@ AliCode supports running models locally using Ollama. This provides privacy, off
     - Enter the model tag or saved name from the previous step (e.g., `your_model_name`).
     - (Optional) Configure the base URL if you're running Ollama on a different machine. The default is `http://localhost:11434`.
     - (Optional) Enter an API Key if your Ollama server requires authentication.
-    - (Advanced) Roo uses Ollama's native API by default for the "ollama" provider. An OpenAI-compatible `/v1` handler also exists but isn't required for typical setups.
+    - (Advanced) Ali uses Ollama's native API by default for the "ollama" provider. An OpenAI-compatible `/v1` handler also exists but isn't required for typical setups.
 
 ---
 
@@ -128,7 +128,7 @@ AliCode supports running models locally using Ollama. This provides privacy, off
 
 **Symptoms**
 
-- First request from Roo fails with an out-of-memory error
+- First request from Ali fails with an out-of-memory error
 - GPU/CPU memory usage spikes when the model first loads
 - Works after you manually start the model in Ollama
 
@@ -143,7 +143,7 @@ If no model instance is running, Ollama spins one up on demand. During that cold
     ollama run &lt;model-name&gt;
     ```
 
-    Keep it running, then issue the request from Roo.
+    Keep it running, then issue the request from Ali.
 
 2. **Pin the context window (`num_ctx`)**
 
@@ -181,8 +181,8 @@ If no model instance is running, Ollama spins one up on demand. During that cold
 
 **Quick checklist**
 
-- Model is running before Roo request
+- Model is running before Ali request
 - `num_ctx` pinned (Modelfile or `/set` + `/save`)
-- Model saved with appropriate `num_ctx` (Roo uses this automatically)
+- Model saved with appropriate `num_ctx` (Ali uses this automatically)
 - Model fits available VRAM/RAM
 - No leftover Ollama processes

@@ -13,21 +13,21 @@ import { batchConsecutive } from "@src/utils/batchConsecutive"
 import type { ClineAsk, ClineSayTool, ClineMessage, ExtensionMessage, AudioType } from "@ali-code/types"
 import { isRetiredProvider } from "@ali-code/types"
 
-import { findLast } from "@roo/array"
+import { findLast } from "@ali/array"
 import { SuggestionItem } from "@ali-code/types"
-import { combineApiRequests } from "@roo/combineApiRequests"
-import { combineCommandSequences } from "@roo/combineCommandSequences"
-import { getApiMetrics } from "@roo/getApiMetrics"
-import { getAllModes } from "@roo/modes"
-import { ProfileValidator } from "@roo/ProfileValidator"
-import { getLatestTodo } from "@roo/todo"
+import { combineApiRequests } from "@ali/combineApiRequests"
+import { combineCommandSequences } from "@ali/combineCommandSequences"
+import { getApiMetrics } from "@ali/getApiMetrics"
+import { getAllModes } from "@ali/modes"
+import { ProfileValidator } from "@ali/ProfileValidator"
+import { getLatestTodo } from "@ali/todo"
 
 import { vscode } from "@src/utils/vscode"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
-import RooHero from "@src/components/welcome/RooHero"
-import RooTips from "@src/components/welcome/RooTips"
+import AliHero from "@src/components/welcome/AliHero"
+import AliTips from "@src/components/welcome/AliTips"
 import { StandardTooltip, Button } from "@src/components/ui"
 import VersionIndicator from "../common/VersionIndicator"
 import HistoryPreview from "../history/HistoryPreview"
@@ -1622,9 +1622,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							className="absolute top-2 right-3 z-10"
 						/>
 						<div className="flex flex-col gap-4 w-full">
-							<RooHero />
-							{/* Show RooTips when authenticated or when user is new */}
-							{taskHistory.length < 6 && <RooTips />}
+							<AliHero />
+							{/* Show AliTips when authenticated or when user is new */}
+							{taskHistory.length < 6 && <AliTips />}
 							{/* Everyone should see their task history if any */}
 							{taskHistory.length > 0 && <HistoryPreview />}
 						</div>
@@ -1777,7 +1777,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 					<WarningRow
 						title={t("chat:retiredProvider.title")}
 						message={t(
-							apiConfiguration?.apiProvider === "roo"
+							apiConfiguration?.apiProvider === "ali"
 								? "chat:retiredProvider.rooMessage"
 								: "chat:retiredProvider.message",
 						)}
@@ -1817,7 +1817,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 				</div>
 			)}
 
-			<div id="roo-portal" />
+			<div id="ali-portal" />
 		</div>
 	)
 }

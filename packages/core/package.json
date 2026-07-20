@@ -1,6 +1,6 @@
 {
 	"name": "@ali-code/core",
-	"description": "Platform agnostic core functionality for Roo Code.",
+	"description": "Platform agnostic core functionality for Ali Code.",
 	"version": "0.0.1",
 	"type": "module",
 	"exports": {

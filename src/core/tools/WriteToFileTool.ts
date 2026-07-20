@@ -47,7 +47,7 @@ export class WriteToFileTool extends BaseTool<"write_to_file"> {
 			return
 		}
 
-		const accessAllowed = task.rooIgnoreController?.validateAccess(relPath)
+		const accessAllowed = task.aliIgnoreController?.validateAccess(relPath)
 
 		if (!accessAllowed) {
 			await task.say("rooignore_error", relPath)
@@ -55,7 +55,7 @@ export class WriteToFileTool extends BaseTool<"write_to_file"> {
 			return
 		}
 
-		const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath) || false
+		const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath) || false
 
 		let fileExists: boolean
 		const absolutePath = path.resolve(task.cwd, relPath)
@@ -230,7 +230,7 @@ export class WriteToFileTool extends BaseTool<"write_to_file"> {
 			await createDirectoriesForFile(absolutePath)
 		}
 
-		const isWriteProtected = task.rooProtectedController?.isWriteProtected(relPath!) || false
+		const isWriteProtected = task.aliProtectedController?.isWriteProtected(relPath!) || false
 		const isOutsideWorkspace = isPathOutsideWorkspace(absolutePath)
 
 		const sharedMessageProps: ClineSayTool = {

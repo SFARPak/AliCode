@@ -190,13 +190,13 @@ The checkpoint system respects `.gitignore` patterns in your workspace:
 
 Patterns defined in your workspace's `.gitattributes` for Git LFS are read and added to checkpoint exclusions. This helps avoid tracking large LFS-managed assets in the shadow repository.
 
-#### .rooignore Behavior
+#### .aliignore Behavior
 
-The `.rooignore` file (which controls AI access to files) is separate from checkpoint tracking:
-- Files excluded by `.rooignore` but not by `.gitignore` will still be checkpointed
+The `.aliignore` file (which controls AI access to files) is separate from checkpoint tracking:
+- Files excluded by `.aliignore` but not by `.gitignore` will still be checkpointed
 - Changes to AI-inaccessible files can still be restored through checkpoints
 
-This separation is intentional, as `.rooignore` limits which files the AI can access, not which files should be tracked for version history.
+This separation is intentional, as `.aliignore` limits which files the AI can access, not which files should be tracked for version history.
 
 #### Nested Git Repositories
 

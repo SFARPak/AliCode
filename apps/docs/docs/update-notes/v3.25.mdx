@@ -47,7 +47,7 @@ This feature works out of the box, and you can optionally configure VS Code sett
 
 Create your own slash commands to automate repetitive workflows ([#6263](https://github.com/RooCodeInc/Roo-Code/pull/6263), [#6286](https://github.com/RooCodeInc/Roo-Code/pull/6286), [#6333](https://github.com/RooCodeInc/Roo-Code/pull/6333), [#6336](https://github.com/RooCodeInc/Roo-Code/pull/6336), [#6327](https://github.com/RooCodeInc/Roo-Code/pull/6327)):
 
-- **File-Based Commands**: Place markdown files in `.roo/commands/` to create custom commands instantly
+- **File-Based Commands**: Place markdown files in `.ali/commands/` to create custom commands instantly
 - **Management UI**: New interface for creating, editing, and deleting commands with built-in fuzzy search
 - **Argument Hints**: Commands display helpful hints about required arguments as you type
 - **Rich Descriptions**: Add metadata and descriptions to make commands self-documenting
@@ -60,9 +60,9 @@ Turn complex workflows into simple commands like `/deploy` or `/review` for fast
 
 ### Message Queueing
 
-Continue typing while Roo processes your requests with the new message queueing system ([#6167](https://github.com/RooCodeInc/Roo-Code/pull/6167)):
+Continue typing while Ali processes your requests with the new message queueing system ([#6167](https://github.com/RooCodeInc/Roo-Code/pull/6167)):
 
-- **Non-Blocking Input**: Type and send messages even while Roo is processing previous requests
+- **Non-Blocking Input**: Type and send messages even while Ali is processing previous requests
 - **Sequential Processing**: Messages are queued and processed in the order they were sent
 - **Visual Feedback**: See queued messages clearly displayed in the interface
 - **Maintained Context**: Each message maintains proper context from the conversation
@@ -279,7 +279,7 @@ Critical fixes that improve stability and compatibility:
 
 * **MDM Authentication**: Clear feedback when authentication is required by your organization's MDM policy ([#7291](https://github.com/RooCodeInc/Roo-Code/pull/7291))
 * **Security Updates**: Updated mermaid dependency to v11.10.0 ([#7231](https://github.com/RooCodeInc/Roo-Code/pull/7231)) and tmp dependency to v0.2.4 ([#6762](https://github.com/RooCodeInc/Roo-Code/pull/6762))
-* **Task Tracking**: Pass task ID in Roo provider request headers ([#7303](https://github.com/RooCodeInc/Roo-Code/pull/7303))
+* **Task Tracking**: Pass task ID in Ali provider request headers ([#7303](https://github.com/RooCodeInc/Roo-Code/pull/7303))
 * **Error Handling**: Removed exceptions from RooHandler constructor ([#7302](https://github.com/RooCodeInc/Roo-Code/pull/7302))
 * **Cloud Services**: Various internal improvements for cloud services ([#7299](https://github.com/RooCodeInc/Roo-Code/pull/7299), [#7258](https://github.com/RooCodeInc/Roo-Code/pull/7258))
 * **Build Optimization**: Marked non-English package files as linguist-generated ([#7271](https://github.com/RooCodeInc/Roo-Code/pull/7271))
@@ -288,13 +288,13 @@ Critical fixes that improve stability and compatibility:
 * **Linter Coverage**: Applied to locale README files (thanks liwilliam2021!) ([#6477](https://github.com/RooCodeInc/Roo-Code/pull/6477))
 * **Cloud Service Events**: Migrated from callbacks to event-based architecture ([#6519](https://github.com/RooCodeInc/Roo-Code/pull/6519))
 * **Website Updates**: Phase 1 improvements (thanks thill2323!) ([#6085](https://github.com/RooCodeInc/Roo-Code/pull/6085))
-* **Background Editing (Experimental)**: Work uninterrupted while Roo edits files in the background—no more losing focus from automatic diff views ([#6214](https://github.com/RooCodeInc/Roo-Code/pull/6214)). Files change silently while you keep coding, with diagnostics and error checking still active. See [Background Editing](/features/experimental/background-editing) for details.
+* **Background Editing (Experimental)**: Work uninterrupted while Ali edits files in the background—no more losing focus from automatic diff views ([#6214](https://github.com/RooCodeInc/Roo-Code/pull/6214)). Files change silently while you keep coding, with diagnostics and error checking still active. See [Background Editing](/features/experimental/background-editing) for details.
 * **Security Update**: Updated form-data dependency to address security vulnerability ([#6332](https://github.com/RooCodeInc/Roo-Code/pull/6332))
 * **Contributor Updates**: Refreshed contributor acknowledgments across all localizations ([#6302](https://github.com/RooCodeInc/Roo-Code/pull/6302))
 * **Release Engineering**: Converted release engineer role to slash command for easier releases ([#6333](https://github.com/RooCodeInc/Roo-Code/pull/6333))
 * **PR Reviewer Improvements**: Made PR reviewer mode generic for any GitHub repository ([#6357](https://github.com/RooCodeInc/Roo-Code/pull/6357), [#6328](https://github.com/RooCodeInc/Roo-Code/pull/6328), [#6324](https://github.com/RooCodeInc/Roo-Code/pull/6324))
 * **Organization MCP Controls**: Added support for managing MCP servers at the organization level, allowing centralized configuration across teams ([#6378](https://github.com/RooCodeInc/Roo-Code/pull/6378))
-* **Extension Title Update**: Removed "(prev Roo Cline)" from the extension title across all languages ([#6426](https://github.com/RooCodeInc/Roo-Code/pull/6426))
+* **Extension Title Update**: Removed "(prev Ali Cline)" from the extension title across all languages ([#6426](https://github.com/RooCodeInc/Roo-Code/pull/6426))
 * **Translation Improvements**: Updated auto-translate prompt and added translation check action ([#6430](https://github.com/RooCodeInc/Roo-Code/pull/6430), [#6393](https://github.com/RooCodeInc/Roo-Code/pull/6393))
 * **Mode Configuration**: Updated PR reviewer rules and mode configuration ([#6391](https://github.com/RooCodeInc/Roo-Code/pull/6391), [#6428](https://github.com/RooCodeInc/Roo-Code/pull/6428))
 * **Navigator Global Error**: Resolved errors by updating mammoth and bluebird dependencies ([#6363](https://github.com/RooCodeInc/Roo-Code/pull/6363))

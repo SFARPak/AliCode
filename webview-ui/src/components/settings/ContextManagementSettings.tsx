@@ -4,7 +4,7 @@ import { useAppTranslation } from "@/i18n/TranslationContext"
 import { VSCodeCheckbox, VSCodeTextArea } from "@vscode/webview-ui-toolkit/react"
 import { FoldVertical } from "lucide-react"
 
-import { supportPrompt } from "@roo/support-prompt"
+import { supportPrompt } from "@ali/support-prompt"
 
 import { cn } from "@/lib/utils"
 import {
@@ -31,7 +31,7 @@ type ContextManagementSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	listApiConfigMeta: any[]
 	maxOpenTabsContext: number
 	maxWorkspaceFiles: number
-	showRooIgnoredFiles?: boolean
+	showAliIgnoredFiles?: boolean
 	enableSubfolderRules?: boolean
 	maxImageFileSize?: number
 	maxTotalImageSize?: number
@@ -49,7 +49,7 @@ type ContextManagementSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "autoCondenseContextPercent"
 		| "maxOpenTabsContext"
 		| "maxWorkspaceFiles"
-		| "showRooIgnoredFiles"
+		| "showAliIgnoredFiles"
 		| "enableSubfolderRules"
 		| "maxImageFileSize"
 		| "maxTotalImageSize"
@@ -69,7 +69,7 @@ export const ContextManagementSettings = ({
 	listApiConfigMeta,
 	maxOpenTabsContext,
 	maxWorkspaceFiles,
-	showRooIgnoredFiles,
+	showAliIgnoredFiles,
 	enableSubfolderRules,
 	setCachedStateField,
 	maxImageFileSize,
@@ -215,17 +215,17 @@ export const ContextManagementSettings = ({
 				<SearchableSetting
 					settingId="context-show-rooignored-files"
 					section="contextManagement"
-					label={t("settings:contextManagement.rooignore.label")}>
+					label={t("settings:contextManagement.aliignore.label")}>
 					<VSCodeCheckbox
-						checked={showRooIgnoredFiles}
-						onChange={(e: any) => setCachedStateField("showRooIgnoredFiles", e.target.checked)}
+						checked={showAliIgnoredFiles}
+						onChange={(e: any) => setCachedStateField("showAliIgnoredFiles", e.target.checked)}
 						data-testid="show-rooignored-files-checkbox">
 						<label className="block font-medium mb-1">
-							{t("settings:contextManagement.rooignore.label")}
+							{t("settings:contextManagement.aliignore.label")}
 						</label>
 					</VSCodeCheckbox>
 					<div className="text-vscode-descriptionForeground text-sm mt-1 mb-3">
-						{t("settings:contextManagement.rooignore.description")}
+						{t("settings:contextManagement.aliignore.description")}
 					</div>
 				</SearchableSetting>
 

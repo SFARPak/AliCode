@@ -117,10 +117,10 @@ describe("editFileTool", () => {
 				}),
 			}),
 		}
-		mockTask.rooIgnoreController = {
+		mockTask.aliIgnoreController = {
 			validateAccess: vi.fn().mockReturnValue(true),
 		}
-		mockTask.rooProtectedController = {
+		mockTask.aliProtectedController = {
 			isWriteProtected: vi.fn().mockReturnValue(false),
 		}
 		mockTask.diffViewProvider = {
@@ -175,7 +175,7 @@ describe("editFileTool", () => {
 
 		mockedFileExistsAtPath.mockResolvedValue(fileExists)
 		mockedFsReadFile.mockResolvedValue(fileContent)
-		mockTask.rooIgnoreController.validateAccess.mockReturnValue(accessAllowed)
+		mockTask.aliIgnoreController.validateAccess.mockReturnValue(accessAllowed)
 
 		const nativeArgs: Record<string, unknown> = {
 			file_path: testFilePath,
@@ -269,7 +269,7 @@ describe("editFileTool", () => {
 
 				mockedFileExistsAtPath.mockResolvedValue(fileExists)
 				mockedFsReadFile.mockResolvedValue(fileContent)
-				mockTask.rooIgnoreController.validateAccess.mockReturnValue(true)
+				mockTask.aliIgnoreController.validateAccess.mockReturnValue(true)
 
 				const toolUse: ToolUse = {
 					type: "tool_use",

@@ -133,17 +133,17 @@ vi.mock("../QueuedMessages", () => ({
 	},
 }))
 
-// Mock RooTips component
-vi.mock("@src/components/welcome/RooTips", () => ({
-	default: function MockRooTips() {
-		return <div data-testid="roo-tips">Tips content</div>
+// Mock AliTips component
+vi.mock("@src/components/welcome/AliTips", () => ({
+	default: function MockAliTips() {
+		return <div data-testid="ali-tips">Tips content</div>
 	},
 }))
 
-// Mock RooHero component
-vi.mock("@src/components/welcome/RooHero", () => ({
-	default: function MockRooHero() {
-		return <div data-testid="roo-hero">Hero content</div>
+// Mock AliHero component
+vi.mock("@src/components/welcome/AliHero", () => ({
+	default: function MockAliHero() {
+		return <div data-testid="ali-hero">Hero content</div>
 	},
 }))
 
@@ -681,7 +681,7 @@ describe("ChatView - Welcome Content Display Tests", () => {
 		expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
 	})
 
-	it("shows RooTips when user has only run 3 tasks in their history", () => {
+	it("shows AliTips when user has only run 3 tasks in their history", () => {
 		const { queryByTestId } = renderChatView()
 
 		mockPostMessage({
@@ -694,7 +694,7 @@ describe("ChatView - Welcome Content Display Tests", () => {
 		})
 
 		expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
-		expect(queryByTestId("roo-tips")).toBeInTheDocument()
+		expect(queryByTestId("ali-tips")).toBeInTheDocument()
 	})
 
 	it("does not show removed cloud upsell when user has run 6 or more tasks", async () => {
@@ -715,8 +715,8 @@ describe("ChatView - Welcome Content Display Tests", () => {
 
 		await waitFor(() => {
 			expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
-			expect(queryByTestId("roo-tips")).not.toBeInTheDocument()
-			expect(queryByTestId("roo-hero")).toBeInTheDocument()
+			expect(queryByTestId("ali-tips")).not.toBeInTheDocument()
+			expect(queryByTestId("ali-hero")).toBeInTheDocument()
 		})
 	})
 
@@ -742,12 +742,12 @@ describe("ChatView - Welcome Content Display Tests", () => {
 
 		await waitFor(() => {
 			expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
-			expect(queryByTestId("roo-tips")).not.toBeInTheDocument()
-			expect(queryByTestId("roo-hero")).not.toBeInTheDocument()
+			expect(queryByTestId("ali-tips")).not.toBeInTheDocument()
+			expect(queryByTestId("ali-hero")).not.toBeInTheDocument()
 		})
 	})
 
-	it("shows RooTips for newer users", () => {
+	it("shows AliTips for newer users", () => {
 		const { queryByTestId, getByTestId } = renderChatView()
 
 		mockPostMessage({
@@ -761,10 +761,10 @@ describe("ChatView - Welcome Content Display Tests", () => {
 		})
 
 		expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
-		expect(getByTestId("roo-tips")).toBeInTheDocument()
+		expect(getByTestId("ali-tips")).toBeInTheDocument()
 	})
 
-	it("shows RooTips when user has fewer than 6 tasks", () => {
+	it("shows AliTips when user has fewer than 6 tasks", () => {
 		const { queryByTestId, getByTestId } = renderChatView()
 
 		mockPostMessage({
@@ -777,7 +777,7 @@ describe("ChatView - Welcome Content Display Tests", () => {
 		})
 
 		expect(queryByTestId("dismissible-upsell")).not.toBeInTheDocument()
-		expect(getByTestId("roo-tips")).toBeInTheDocument()
+		expect(getByTestId("ali-tips")).toBeInTheDocument()
 	})
 })
 

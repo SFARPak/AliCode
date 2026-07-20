@@ -1,5 +1,5 @@
 ---
-description: Define TypeScript/JavaScript tools that extend Roo's capabilities beyond built-in tools, with npm dependency support and per-tool environment variables.
+description: Define TypeScript/JavaScript tools that extend Ali's capabilities beyond built-in tools, with npm dependency support and per-tool environment variables.
 keywords:
     - experimental features
     - custom tools
@@ -14,23 +14,23 @@ keywords:
 
 # Custom Tools
 
-Define TypeScript or JavaScript tools that Roo can call like built-in tools—standardize team workflows instead of re-prompting the same steps every task.
+Define TypeScript or JavaScript tools that Ali can call like built-in tools—standardize team workflows instead of re-prompting the same steps every task.
 
 :::warning Experimental Feature
-Custom tools is an experimental feature. Custom tools are **automatically approved** when enabled—Roo won't ask for permission before running them. Only enable this feature if you trust your tool code.
+Custom tools is an experimental feature. Custom tools are **automatically approved** when enabled—Ali won't ask for permission before running them. Only enable this feature if you trust your tool code.
 :::
 
 ---
 
 ## What it does
 
-Custom tools let you codify project-specific actions into TypeScript/JavaScript files that Roo calls like [`read_file()`](/basic-usage/how-tools-work) or [`execute_command()`](/basic-usage/how-tools-work). Ship tool schemas alongside your repo so teammates don't need to keep re-explaining the same workflow steps. Tools are validated with Zod and automatically transpiled from TypeScript.
+Custom tools let you codify project-specific actions into TypeScript/JavaScript files that Ali calls like [`read_file()`](/basic-usage/how-tools-work) or [`execute_command()`](/basic-usage/how-tools-work). Ship tool schemas alongside your repo so teammates don't need to keep re-explaining the same workflow steps. Tools are validated with Zod and automatically transpiled from TypeScript.
 
 ---
 
 ## How to create a tool
 
-Tools live in `.roo/tools/` (project-specific) or `~/.roo/tools/` (global) as `.ts` or `.js` files. Tools from later directories can override earlier ones.
+Tools live in `.ali/tools/` (project-specific) or `~/.ali/tools/` (global) as `.ts` or `.js` files. Tools from later directories can override earlier ones.
 
 #### Basic structure
 
@@ -54,10 +54,10 @@ export default defineCustomTool({
 
 #### What you define
 
-- **`name`**: Tool name Roo sees in its available tools list
+- **`name`**: Tool name Ali sees in its available tools list
 - **`description`**: Shown to the AI so it knows when to call the tool
 - **`parameters`**: Zod schema converted to JSON Schema for validation
-- **`execute`**: Async function returning a string result to Roo
+- **`execute`**: Async function returning a string result to Ali
 
 Tools are dynamically loaded and transpiled with esbuild. Automatic reload on file changes isn't reliable—use the **Refresh Custom Tools** command to pick up changes immediately.
 
@@ -71,16 +71,16 @@ Tools are dynamically loaded and transpiled with esbuild. Automatic reload on fi
 
 <img src="/img/custom-tools/custom-tools.png" alt="Enable custom tools toggle in experimental settings" width="400" />
 
-**Critical:** When enabled, custom tools are **auto-approved**—Roo runs them without asking. Disable if you don't trust the tool code.
+**Critical:** When enabled, custom tools are **auto-approved**—Ali runs them without asking. Disable if you don't trust the tool code.
 
 ---
 
 ## Tool directories
 
-- **`.roo/tools/`** in your workspace: project-specific tools shared with your team
-- **`~/.roo/tools/`** in your home folder: personal tools across all projects
+- **`.ali/tools/`** in your workspace: project-specific tools shared with your team
+- **`~/.ali/tools/`** in your home folder: personal tools across all projects
 
-Tools from both directories are loaded. Tools with the same name in `.roo/tools/` override those in `~/.roo/tools/`.
+Tools from both directories are loaded. Tools with the same name in `.ali/tools/` override those in `~/.ali/tools/`.
 
 ---
 
@@ -90,7 +90,7 @@ Custom tools can use npm packages. Install dependencies in the same folder as yo
 
 ```bash
 # From your tool directory
-cd .roo/tools/
+cd .ali/tools/
 npm init -y
 npm install axios lodash
 ```
@@ -118,14 +118,14 @@ export default defineCustomTool({
 
 ## Per-Tool Environment Variables
 
-Roo copies `.env` and `.env.*` files from your tool directory into the tool's cache folder so your tool can load them at runtime. **Roo does not automatically inject these variables into `process.env`**—your tool must load them itself.
+Ali copies `.env` and `.env.*` files from your tool directory into the tool's cache folder so your tool can load them at runtime. **Ali does not automatically inject these variables into `process.env`**—your tool must load them itself.
 
 **Setup:**
 
 1. Create a `.env` file next to your tool:
 
     ```
-    .roo/tools/
+    .ali/tools/
     ├── my-tool.ts
     ├── .env          # Copied to cache dir at load time
     └── package.json
@@ -134,7 +134,7 @@ Roo copies `.env` and `.env.*` files from your tool directory into the tool's ca
 2. Add your secrets:
 
     ```bash
-    # .roo/tools/.env
+    # .ali/tools/.env
     SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXX
     API_SECRET=your-secret-key
     ```
@@ -172,7 +172,7 @@ Roo copies `.env` and `.env.*` files from your tool directory into the tool's ca
     })
     ```
 
-**Why `__dirname`?** Roo copies your `.env` files into a cache directory alongside the transpiled tool. Using `__dirname` ensures your tool finds the `.env` in the correct location regardless of where the tool was originally defined.
+**Why `__dirname`?** Ali copies your `.env` files into a cache directory alongside the transpiled tool. Using `__dirname` ensures your tool finds the `.env` in the correct location regardless of where the tool was originally defined.
 
 **Security:** Ensure your `.env` file is ignored by version control to keep secrets safe.
 
@@ -181,7 +181,7 @@ Roo copies `.env` and `.env.*` files from your tool directory into the tool's ca
 ## Limits
 
 - **No approval prompts**: Tools are auto-approved when the feature is enabled—security trade-off for convenience
-- **String-only results**: Tools must return strings (Roo's protocol constraint)
+- **String-only results**: Tools must return strings (Ali's protocol constraint)
 - **No interactive input**: Tools can't prompt the user mid-execution
 - **Cache invalidation**: Tool updates may require reloading the window
 

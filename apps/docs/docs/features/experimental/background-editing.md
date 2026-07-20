@@ -21,11 +21,11 @@ This is an experimental feature that changes how file edits are displayed. While
 
 ## Overview
 
-The "Background Editing" setting is an experimental feature that disables automatic diff view displays when AliCode edits files. Instead of switching your editor focus to show diffs, Roo works silently in the background, allowing you to continue coding without interruption. This feature affects all file editing operations including write, apply diff, search/replace, insert content, and multi-file apply diff tools.
+The "Background Editing" setting is an experimental feature that disables automatic diff view displays when AliCode edits files. Instead of switching your editor focus to show diffs, Ali works silently in the background, allowing you to continue coding without interruption. This feature affects all file editing operations including write, apply diff, search/replace, insert content, and multi-file apply diff tools.
 
 ### Key Benefits
 
-- **Uninterrupted Focus**: Stay in your current file while Roo makes changes
+- **Uninterrupted Focus**: Stay in your current file while Ali makes changes
 - **Smoother Workflow**: No context switching between files
 - **Background Processing**: File edits happen silently
 - **Reduced Distractions**: Maintain your coding flow
@@ -38,7 +38,7 @@ The "Background Editing" setting is an experimental feature that disables automa
 - **Manual Review Required**: Check changes through Git or file history
 - **Less Immediate Feedback**: Changes aren't immediately visible
 - **Silent Changes**: Files change without visual notification - check Git status regularly
-- **Limited Environment Context**: Roo won't see recently edited files as open tabs in its environment details since they're not visually opened
+- **Limited Environment Context**: Ali won't see recently edited files as open tabs in its environment details since they're not visually opened
 
 ---
 
@@ -59,7 +59,7 @@ To enable Background Editing:
 
 ### Default Behavior (Feature Disabled)
 
-Without this feature, when Roo edits a file:
+Without this feature, when Ali edits a file:
 
 1. The file opens in your editor
 2. A diff view appears showing changes
@@ -68,7 +68,7 @@ Without this feature, when Roo edits a file:
 
 ### With Feature Enabled
 
-When enabled, Roo's file edits:
+When enabled, Ali's file edits:
 
 1. Happen silently in the background
 2. Don't open new editor tabs
@@ -83,7 +83,7 @@ Even with the feature enabled:
 - Files are still modified on disk
 - Changes appear in source control
 - File watchers and build tools detect changes
-- Roo's chat shows what files were edited
+- Ali's chat shows what files were edited
 - Error detection and diagnostics continue to work normally
 - Files are opened in memory for diagnostic purposes (not visible in editor)
 - Write delays for diagnostic detection are still respected
@@ -94,7 +94,7 @@ Even with the feature enabled:
 
 This feature is particularly beneficial for:
 
-- **Large Refactoring Operations**: When Roo needs to update many files
+- **Large Refactoring Operations**: When Ali needs to update many files
 - **Batch File Updates**: Making similar changes across multiple files
 - **Performance-Sensitive Tasks**: When UI updates would slow down operations
 - **Focused Coding Sessions**: When you want to avoid context switches
@@ -109,21 +109,21 @@ When using this feature:
 1. **Use Version Control**: Regularly check Git status to track changes
 2. **Review Periodically**: Don't let too many changes accumulate without review
 3. **Enable Selectively**: Consider enabling for specific task types
-4. **Monitor Chat**: Pay attention to Roo's messages about file modifications
+4. **Monitor Chat**: Pay attention to Ali's messages about file modifications
 5. **Check Diagnostics**: Ensure your editor's problems panel stays visible
 
 ---
 
 ## FAQ
 
-**Q: Can I still see what files Roo edited?**
-A: Yes, Roo's chat messages list all modified files, and changes appear in source control.
+**Q: Can I still see what files Ali edited?**
+A: Yes, Ali's chat messages list all modified files, and changes appear in source control.
 
 **Q: What if I need to see a specific change immediately?**
 A: You can manually open the file and use source control to view the diff.
 
-**Q: Does this affect Roo's ability to edit files?**
-A: No, Roo can still make all the same edits; only the display behavior changes. All file editing tools (write, apply diff, search/replace, insert content, and multi-file apply diff) respect this setting.
+**Q: Does this affect Ali's ability to edit files?**
+A: No, Ali can still make all the same edits; only the display behavior changes. All file editing tools (write, apply diff, search/replace, insert content, and multi-file apply diff) respect this setting.
 
 **Q: Can I enable this for specific projects only?**
 A: Currently, this is a global setting that affects all projects.

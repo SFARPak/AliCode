@@ -1,9 +1,9 @@
-import type { RooTerminalProcess, RooTerminalProcessResultPromise } from "./types"
+import type { AliTerminalProcess, AliTerminalProcessResultPromise } from "./types"
 
 // Similar to execa's ResultPromise, this lets us create a mixin of both a
 // TerminalProcess and a Promise:
 // https://github.com/sindresorhus/execa/blob/main/lib/methods/promise.js
-export function mergePromise(process: RooTerminalProcess, promise: Promise<void>): RooTerminalProcessResultPromise {
+export function mergePromise(process: AliTerminalProcess, promise: Promise<void>): AliTerminalProcessResultPromise {
 	const nativePromisePrototype = (async () => {})().constructor.prototype
 
 	const descriptors = ["then", "catch", "finally"].map(
@@ -17,5 +17,5 @@ export function mergePromise(process: RooTerminalProcess, promise: Promise<void>
 		}
 	}
 
-	return process as RooTerminalProcessResultPromise
+	return process as AliTerminalProcessResultPromise
 }

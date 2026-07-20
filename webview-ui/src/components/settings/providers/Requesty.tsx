@@ -16,7 +16,7 @@ import { inputEventTransform } from "../transforms"
 import { ModelPicker } from "../ModelPicker"
 import { RequestyBalanceDisplay } from "./RequestyBalanceDisplay"
 import { getCallbackUrl } from "@/oauth/urls"
-import { toRequestyServiceUrl } from "@roo/utils/requesty"
+import { toRequestyServiceUrl } from "@ali/utils/requesty"
 
 type RequestyProps = {
 	apiConfiguration: ProviderSettings

@@ -29,12 +29,12 @@ MiniMax M2.1 is now available directly through the MiniMax provider in AliCode, 
 
 ## Experimental custom tools
 
-You can now define and use **custom tools** so Roo can call your project- or team-specific actions like built-in tools. This makes it easier to standardize workflows across a team by shipping tool schemas alongside your project, instead of repeatedly re-prompting the same steps ([#10083](https://github.com/RooCodeInc/Roo-Code/pull/10083)).
+You can now define and use **custom tools** so Ali can call your project- or team-specific actions like built-in tools. This makes it easier to standardize workflows across a team by shipping tool schemas alongside your project, instead of repeatedly re-prompting the same steps ([#10083](https://github.com/RooCodeInc/Roo-Code/pull/10083)).
 
 ## Bug Fixes
 
-* Fixes an issue where Roo could appear stuck after a tool call with some OpenAI-compatible providers when streaming ended at the tool-calls boundary (thanks torxeon!) ([#10280](https://github.com/RooCodeInc/Roo-Code/pull/10280))
-* Fixes an issue where Roo could appear stuck after a tool call with some OpenAI-compatible providers by ensuring final tool-call completion events are emitted ([#10293](https://github.com/RooCodeInc/Roo-Code/pull/10293))
+* Fixes an issue where Ali could appear stuck after a tool call with some OpenAI-compatible providers when streaming ended at the tool-calls boundary (thanks torxeon!) ([#10280](https://github.com/RooCodeInc/Roo-Code/pull/10280))
+* Fixes an issue where Ali could appear stuck after a tool call with some OpenAI-compatible providers by ensuring final tool-call completion events are emitted ([#10293](https://github.com/RooCodeInc/Roo-Code/pull/10293))
 * Fixes an issue where MCP tools could break under strict schema mode when optional parameters were treated as required ([#10220](https://github.com/RooCodeInc/Roo-Code/pull/10220))
 * Fixes an issue where the built-in `read_file` tool could fail on some models due to invalid schema normalization for optional array parameters ([#10276](https://github.com/RooCodeInc/Roo-Code/pull/10276))
 * Fixes an issue where `search_replace` / `search_and_replace` could miss matches on CRLF files, improving cross-platform search-and-replace reliability ([#10288](https://github.com/RooCodeInc/Roo-Code/pull/10288))
@@ -42,15 +42,15 @@ You can now define and use **custom tools** so Roo can call your project- or tea
 * Fixes an issue where Chutes model loading could fail if the provider returned malformed model entries ([#10279](https://github.com/RooCodeInc/Roo-Code/pull/10279))
 * Fixes an issue where `reasoning_details` could be merged/ordered incorrectly during streaming, improving reliability for providers that depend on strict reasoning serialization ([#10285](https://github.com/RooCodeInc/Roo-Code/pull/10285))
 * Fixes an issue where DeepSeek-reasoner could error after condensation if the condensed summary lacked required reasoning fields ([#10292](https://github.com/RooCodeInc/Roo-Code/pull/10292))
-* Fixes an issue where Roo could show errors when a provider returned an empty assistant message by retrying once and only showing an error if the problem repeats ([#10297](https://github.com/RooCodeInc/Roo-Code/pull/10297))
+* Fixes an issue where Ali could show errors when a provider returned an empty assistant message by retrying once and only showing an error if the problem repeats ([#10297](https://github.com/RooCodeInc/Roo-Code/pull/10297))
 * Fixes an issue where OpenAI/OpenAI-compatible chats could fail to use native tools when custom model info didn’t explicitly set tool support, by sending native tool definitions by default ([#10314](https://github.com/RooCodeInc/Roo-Code/pull/10314))
-* Fixes an issue where Roo could send malformed `reasoning_details` data after transforming conversation history, preventing provider-side errors and improving compatibility with OpenAI Responses-style reasoning blocks ([#10313](https://github.com/RooCodeInc/Roo-Code/pull/10313))
+* Fixes an issue where Ali could send malformed `reasoning_details` data after transforming conversation history, preventing provider-side errors and improving compatibility with OpenAI Responses-style reasoning blocks ([#10313](https://github.com/RooCodeInc/Roo-Code/pull/10313))
 * Fixes an issue where “ask” flows could hang if your reply was queued instead of being delivered as an ask response, so conversations continue reliably ([#10315](https://github.com/RooCodeInc/Roo-Code/pull/10315))
 
 ## Misc Improvements
 
 * **Cleaner eval logs**: Deduplicates repetitive message log entries so eval traces are easier to read ([#10286](https://github.com/RooCodeInc/Roo-Code/pull/10286))
-* **Provider-centric signup**: Makes Roo easier to get started with by defaulting the welcome/sign-up flow to the Roo provider (while keeping other providers available), so you can reach a working setup faster with fewer choices up front ([#10306](https://github.com/RooCodeInc/Roo-Code/pull/10306))
+* **Provider-centric signup**: Makes Ali easier to get started with by defaulting the welcome/sign-up flow to the Ali provider (while keeping other providers available), so you can reach a working setup faster with fewer choices up front ([#10306](https://github.com/RooCodeInc/Roo-Code/pull/10306))
 
 ## QOL Improvements
 

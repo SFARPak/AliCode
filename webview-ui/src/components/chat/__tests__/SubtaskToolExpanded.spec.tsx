@@ -18,7 +18,7 @@ vi.mock("react-i18next", () => ({
 	useTranslation: () => ({
 		t: (key: string, options?: { mode?: string }) => {
 			const map: Record<string, string> = {
-				"chat:subtasks.wantsToCreate": "Roo wants to create a new subtask",
+				"chat:subtasks.wantsToCreate": "Ali wants to create a new subtask",
 				"chat:subtasks.resultContent": "Task result",
 				"chat:subtasks.goToSubtask": "Go to subtask",
 				"chat:subtasks.openInTab": "Open in tab",
@@ -300,7 +300,7 @@ describe("SubtaskToolExpanded", () => {
 			renderSubtaskToolExpanded({ childTaskId: "child-task-123" })
 
 			// The Loader icon from lucide-react renders an SVG. Check for the animate-spin class.
-			const headerDiv = screen.getByText("Roo wants to create a new subtask").closest("div")
+			const headerDiv = screen.getByText("Ali wants to create a new subtask").closest("div")
 			expect(headerDiv?.querySelector(".animate-spin")).toBeInTheDocument()
 		})
 

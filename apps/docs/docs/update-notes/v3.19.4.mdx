@@ -18,7 +18,7 @@ We've resolved multiple memory leaks across the extension, resulting in improved
 - **ChatView**: Fixed leaks from unmanaged async operations and setTimeouts (thanks kiwina!)
 - **WorkspaceTracker**: FileSystemWatcher and other disposables are now properly cleaned up (thanks kiwina!)
 - **RooTips**: setTimeout is now cleared to prevent state updates on unmounted components (thanks kiwina!)
-- **RooIgnoreController**: FileSystemWatcher leak resolved by ensuring Task.dispose() is always called (thanks kiwina!)
+- **AliIgnoreController**: FileSystemWatcher leak resolved by ensuring Task.dispose() is always called (thanks kiwina!)
 - **Clipboard**: useCopyToClipboard now clears setTimeout to avoid memory leaks (thanks kiwina!)
 - **ClineProvider**: Instance cleanup improved to prevent lingering resources (thanks xyOz-dev!)
 
