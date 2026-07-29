@@ -129,10 +129,20 @@ export async function checkAutoApproval({
 		}
 	}
 
-	// Prevent auto‑approval in autonomous mode for commands and tools
-	if (state.mode === "autonomous") {
-		if (ask === "command" || ask === "tool") {
-			return { decision: "ask" }
+	// Autonomous mode: auto-approve everything except file deletions
+	if (state.mode === "autonomous" || state.mode === "autocode") {
+		// For tools, check if it's a file deletion
+		if (ask === "tool") {
+			const toolName = text?.match(/Tool: (\w+)/)?.[1]
+			// File deletion tools still require approval
+			if (toolName === "delete_files" || toolName === "delete" || toolName === "remove_file") {
+				return { decision: "ask" }
+			}
+			return { decision: "approve" }
+		}
+		// For commands, auto-approve all
+		if (ask === "command") {
+			return { decision: "approve" }
 		}
 	}
 	if (ask === "tool") {
