@@ -502,13 +502,16 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	}, [])
 
 	const isStreaming = useMemo(() => {
-		// Checking clineAsk isn't enough since messages effect may be called
-		// again for a tool for example, set clineAsk to its value, and if the
-		// next message is not an ask then it doesn't reset. This is likely due
-		// to how much more often we're updating messages as compared to before,
-		// and should be resolved with optimizations as it's likely a rendering
-		// bug. But as a final guard for now, the cancel button will show if the
-		// last message is not an ask.
+		// If the task is busy (e.g. API request in-flight, tool execution, rate-limit
+		// wait), keep the stop/send control visible even if we don't currently have a
+		// partial message or an in-flight api_req_started. This covers gaps between
+		// API requests (tool processing, follow-up requests) where the UI would
+		// otherwise hide the stop button because the previous request already had
+		// its cost resolved.
+		if (sendingDisabled) {
+			return true
+		}
+
 		const isLastAsk = !!modifiedMessages.at(-1)?.ask
 
 		const isToolCurrentlyAsking =
@@ -543,7 +546,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		}
 
 		return false
-	}, [modifiedMessages, clineAsk, enableButtons, primaryButtonText])
+	}, [modifiedMessages, clineAsk, enableButtons, primaryButtonText, sendingDisabled])
 
 	const markFollowUpAsAnswered = useCallback(() => {
 		const lastFollowUpMessage = messagesRef.current.findLast((msg: ClineMessage) => msg.ask === "followup")
