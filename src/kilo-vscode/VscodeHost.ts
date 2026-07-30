@@ -1,6 +1,11 @@
-// Wrapper for VscodeHost from kilo-vscode source
-// Re-exports the original implementation for use in the AliCode extension.
+import * as vscode from "vscode"
 
-import { VscodeHost as OriginalVscodeHost } from "../../kilocode_tmp/packages/kilo-vscode/src/agent-manager/vscode-host"
-
-export class VscodeHost extends OriginalVscodeHost {}
+export class VscodeHost implements vscode.Disposable {
+	constructor(
+		private extensionUri: vscode.Uri,
+		private connectionService: any,
+		private context: vscode.ExtensionContext,
+		private remoteService: any,
+	) {}
+	dispose() {}
+}

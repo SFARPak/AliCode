@@ -1,6 +1,10 @@
-// Wrapper for SubAgentViewerProvider from kilo-vscode source
-// Re-exports the original implementation for use in the AliCode extension.
+import * as vscode from "vscode"
 
-import { SubAgentViewerProvider as OriginalSubAgentViewerProvider } from "../../kilocode_tmp/packages/kilo-vscode/src/SubAgentViewerProvider"
-
-export class SubAgentViewerProvider extends OriginalSubAgentViewerProvider {}
+export class SubAgentViewerProvider implements vscode.Disposable {
+	constructor(
+		private extensionUri: vscode.Uri,
+		private connectionService: any,
+		private context: vscode.ExtensionContext,
+	) {}
+	dispose() {}
+}

@@ -1,6 +1,6 @@
-// Wrapper for KiloConnectionService from kilo-vscode source
-// Re-exports the original implementation for use in the AliCode extension.
+import * as vscode from "vscode"
 
-import { KiloConnectionService as OriginalKiloConnectionService } from "../../kilocode_tmp/packages/kilo-vscode/src/services/cli-backend/connection-service"
-
-export class KiloConnectionService extends OriginalKiloConnectionService {}
+export class KiloConnectionService implements vscode.Disposable {
+	constructor(private context: vscode.ExtensionContext) {}
+	dispose() {}
+}

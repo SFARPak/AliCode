@@ -1,6 +1,10 @@
-// Wrapper for SettingsEditorProvider from kilo-vscode source
-// Re-exports the original implementation for use in the AliCode extension.
+import * as vscode from "vscode"
 
-import { SettingsEditorProvider as OriginalSettingsEditorProvider } from "../../kilocode_tmp/packages/kilo-vscode/src/SettingsEditorProvider"
-
-export class SettingsEditorProvider extends OriginalSettingsEditorProvider {}
+export class SettingsEditorProvider implements vscode.Disposable {
+	constructor(
+		private extensionUri: vscode.Uri,
+		private connectionService: any,
+		private context: vscode.ExtensionContext,
+	) {}
+	dispose() {}
+}

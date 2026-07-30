@@ -1,6 +1,5 @@
-// Wrapper for RemoteStatusService from kilo-vscode source
-// Re-exports the original implementation for use in the AliCode extension.
+import * as vscode from "vscode"
 
-import { RemoteStatusService as OriginalRemoteStatusService } from "../../kilocode_tmp/packages/kilo-vscode/src/services/RemoteStatusService"
-
-export class RemoteStatusService extends OriginalRemoteStatusService {}
+export class RemoteStatusService implements vscode.Disposable {
+	dispose() {}
+}
