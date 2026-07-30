@@ -2481,6 +2481,13 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			}
 
 			if (this.consecutiveMistakeLimit > 0 && this.consecutiveMistakeCount >= this.consecutiveMistakeLimit) {
+				if (this.taskMode === "autonomous" || this.taskMode === "autocode") {
+					// Auto-retry for autonomous modes with exponential backoff
+					await this.backoffAndAnnounce(0, "Mistake limit reached, retrying...")
+					this.consecutiveMistakeCount = 0
+					continue
+				}
+
 				const { response, text, images } = await this.ask(
 					"mistake_limit_reached",
 					t("common:errors.mistake_limit_guidance"),
