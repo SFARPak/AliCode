@@ -1,0 +1,1 @@
+{"version":3,"file":"vertex.d.ts","sourceRoot":"","sources":["vertex.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,kBAAkB,CAAA;AAIzD,OAAO,EAAE,aAAa,EAAE,MAAM,UAAU,CAAA;AACxC,OAAO,EAAE,uBAAuB,EAAE,MAAM,UAAU,CAAA;AAElD,qBAAa,aAAc,SAAQ,aAAc,YAAW,uBAAuB;gBACtE,OAAO,EAAE,iBAAiB;IAI7B,QAAQ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAyBjB"}

@@ -1,0 +1,179 @@
+"use strict"
+// pnpm --filter alicode test core/task-persistence/__tests__/TaskHistoryStore.crossInstance.spec.ts
+var __createBinding =
+	(this && this.__createBinding) ||
+	(Object.create
+		? function (o, m, k, k2) {
+				if (k2 === undefined) k2 = k
+				var desc = Object.getOwnPropertyDescriptor(m, k)
+				if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+					desc = {
+						enumerable: true,
+						get: function () {
+							return m[k]
+						},
+					}
+				}
+				Object.defineProperty(o, k2, desc)
+			}
+		: function (o, m, k, k2) {
+				if (k2 === undefined) k2 = k
+				o[k2] = m[k]
+			})
+var __setModuleDefault =
+	(this && this.__setModuleDefault) ||
+	(Object.create
+		? function (o, v) {
+				Object.defineProperty(o, "default", { enumerable: true, value: v })
+			}
+		: function (o, v) {
+				o["default"] = v
+			})
+var __importStar =
+	(this && this.__importStar) ||
+	(function () {
+		var ownKeys = function (o) {
+			ownKeys =
+				Object.getOwnPropertyNames ||
+				function (o) {
+					var ar = []
+					for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k
+					return ar
+				}
+			return ownKeys(o)
+		}
+		return function (mod) {
+			if (mod && mod.__esModule) return mod
+			var result = {}
+			if (mod != null)
+				for (var k = ownKeys(mod), i = 0; i < k.length; i++)
+					if (k[i] !== "default") __createBinding(result, mod, k[i])
+			__setModuleDefault(result, mod)
+			return result
+		}
+	})()
+Object.defineProperty(exports, "__esModule", { value: true })
+const fs = __importStar(require("fs/promises"))
+const path = __importStar(require("path"))
+const os = __importStar(require("os"))
+const TaskHistoryStore_1 = require("../TaskHistoryStore")
+vi.mock("../../../utils/storage", () => ({
+	getStorageBasePath: vi.fn().mockImplementation((defaultPath) => defaultPath),
+}))
+// Mock safeWriteJson to use plain fs writes in tests (avoids proper-lockfile issues)
+vi.mock("../../../utils/safeWriteJson", () => ({
+	safeWriteJson: vi.fn().mockImplementation(async (filePath, data) => {
+		await fs.mkdir(path.dirname(filePath), { recursive: true })
+		await fs.writeFile(filePath, JSON.stringify(data, null, "\t"), "utf8")
+	}),
+}))
+function makeHistoryItem(overrides = {}) {
+	return {
+		id: `task-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+		number: 1,
+		ts: Date.now(),
+		task: "Test task",
+		tokensIn: 100,
+		tokensOut: 50,
+		totalCost: 0.01,
+		workspace: "/test/workspace",
+		...overrides,
+	}
+}
+describe("TaskHistoryStore cross-instance safety", () => {
+	let tmpDir
+	let storeA
+	let storeB
+	beforeEach(async () => {
+		tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-history-cross-"))
+		// Two stores pointing at the same globalStoragePath (simulating two VS Code windows)
+		storeA = new TaskHistoryStore_1.TaskHistoryStore(tmpDir)
+		storeB = new TaskHistoryStore_1.TaskHistoryStore(tmpDir)
+	})
+	afterEach(async () => {
+		storeA.dispose()
+		storeB.dispose()
+		await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {})
+	})
+	it("two instances can write different tasks without conflict", async () => {
+		await storeA.initialize()
+		await storeB.initialize()
+		// Instance A writes task-a
+		await storeA.upsert(makeHistoryItem({ id: "task-a", task: "Task from instance A" }))
+		// Instance B writes task-b
+		await storeB.upsert(makeHistoryItem({ id: "task-b", task: "Task from instance B" }))
+		// Each instance sees its own task
+		expect(storeA.get("task-a")).toBeDefined()
+		expect(storeB.get("task-b")).toBeDefined()
+		// After reconciliation, instance A should see task-b and vice versa
+		await storeA.reconcile()
+		await storeB.reconcile()
+		expect(storeA.get("task-b")).toBeDefined()
+		expect(storeB.get("task-a")).toBeDefined()
+		expect(storeA.getAll()).toHaveLength(2)
+		expect(storeB.getAll()).toHaveLength(2)
+	})
+	it("reconciliation in instance B detects a task created by instance A", async () => {
+		await storeA.initialize()
+		await storeB.initialize()
+		// Instance A creates a task
+		const item = makeHistoryItem({ id: "cross-task", task: "Created by A" })
+		await storeA.upsert(item)
+		// Instance B doesn't know about it yet
+		expect(storeB.get("cross-task")).toBeUndefined()
+		// Reconciliation picks it up
+		await storeB.reconcile()
+		expect(storeB.get("cross-task")).toBeDefined()
+		expect(storeB.get("cross-task").task).toBe("Created by A")
+	})
+	it("delete by instance A is detected by instance B reconciliation", async () => {
+		await storeA.initialize()
+		await storeB.initialize()
+		// Both instances have a task
+		const item = makeHistoryItem({ id: "shared-task" })
+		await storeA.upsert(item)
+		await storeB.reconcile() // B picks it up
+		expect(storeB.get("shared-task")).toBeDefined()
+		// Instance A deletes the task (per-task file + directory would be removed)
+		await storeA.delete("shared-task")
+		// Remove the task directory to simulate full deletion (deleteTaskWithId removes the dir)
+		const taskDir = path.join(tmpDir, "tasks", "shared-task")
+		await fs.rm(taskDir, { recursive: true, force: true })
+		// Instance B still has it in cache
+		expect(storeB.get("shared-task")).toBeDefined()
+		// After reconciliation, instance B sees it's gone
+		await storeB.reconcile()
+		expect(storeB.get("shared-task")).toBeUndefined()
+	})
+	it("per-task file updates by one instance are visible to another after invalidation", async () => {
+		await storeA.initialize()
+		await storeB.initialize()
+		// Instance A creates a task
+		const item = makeHistoryItem({ id: "update-task", tokensIn: 100 })
+		await storeA.upsert(item)
+		// Instance B picks it up via reconciliation
+		await storeB.reconcile()
+		expect(storeB.get("update-task").tokensIn).toBe(100)
+		// Instance A updates the task
+		await storeA.upsert({ ...item, tokensIn: 500 })
+		// Instance B invalidates and re-reads
+		await storeB.invalidate("update-task")
+		expect(storeB.get("update-task").tokensIn).toBe(500)
+	})
+	it("concurrent writes to different tasks from two instances produce correct final state", async () => {
+		await storeA.initialize()
+		await storeB.initialize()
+		// Write alternating tasks from each instance
+		const promises = []
+		for (let i = 0; i < 5; i++) {
+			promises.push(storeA.upsert(makeHistoryItem({ id: `a-task-${i}`, ts: 1000 + i })))
+			promises.push(storeB.upsert(makeHistoryItem({ id: `b-task-${i}`, ts: 2000 + i })))
+		}
+		await Promise.all(promises)
+		// After reconciliation, both should see all 10 tasks
+		await storeA.reconcile()
+		await storeB.reconcile()
+		expect(storeA.getAll().length).toBe(10)
+		expect(storeB.getAll().length).toBe(10)
+	})
+})

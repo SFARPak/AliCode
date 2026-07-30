@@ -1,0 +1,1 @@
+{"version":3,"file":"mergeConsecutiveApiMessages.d.ts","sourceRoot":"","sources":["mergeConsecutiveApiMessages.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,qBAAqB,CAAA;AAErD,KAAK,IAAI,GAAG,UAAU,CAAC,MAAM,CAAC,CAAA;AAY9B;;;;;GAKG;AACH,wBAAgB,2BAA2B,CAAC,QAAQ,EAAE,UAAU,EAAE,EAAE,OAAO,CAAC,EAAE;IAAE,KAAK,CAAC,EAAE,IAAI,EAAE,CAAA;CAAE,GAAG,UAAU,EAAE,CAoC9G"}

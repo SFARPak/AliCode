@@ -1,0 +1,3 @@
+declare const _default: "\n; Component declarations\n(component_named_def\n  type: (component_type)\n  id: (id) @name.definition.component) @definition.component\n\n; Field declarations\n(component_anon_def\n  type: (component_type (component_primary_type))\n  body: (component_body\n    (component_body_elem\n      (property_assignment)))) @definition.field\n\n; Property declarations\n(property_definition\n  (id) @name.definition.property) @definition.property\n\n; Parameter declarations\n(component_inst\n  id: (id) @name.definition.parameter) @definition.parameter\n\n; Enum declarations\n(enum_def\n  (id) @name.definition.enum) @definition.enum\n"
+export default _default
+//# sourceMappingURL=systemrdl.d.ts.map

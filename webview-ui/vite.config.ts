@@ -105,6 +105,9 @@ export default defineConfig(({ mode }) => {
 					"./src/__mocks__/custom-instructions.ts",
 				),
 			},
+			// Prefer .ts over .js so that @ali/* imports resolve to TypeScript source
+			// files instead of pre-compiled CommonJS .js files in src/shared/
+			extensions: [".ts", ".tsx", ".mjs", ".js", ".jsx", ".json"],
 		},
 		build: {
 			outDir,

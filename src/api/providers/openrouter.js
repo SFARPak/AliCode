@@ -1,0 +1,465 @@
+"use strict"
+var __importDefault =
+	(this && this.__importDefault) ||
+	function (mod) {
+		return mod && mod.__esModule ? mod : { default: mod }
+	}
+Object.defineProperty(exports, "__esModule", { value: true })
+exports.OpenRouterHandler = void 0
+const openai_1 = __importDefault(require("openai"))
+const zod_1 = require("zod")
+const types_1 = require("@ali-code/types")
+const NativeToolCallParser_1 = require("../../core/assistant-message/NativeToolCallParser")
+const openai_format_1 = require("../transform/openai-format")
+const mistral_format_1 = require("../transform/mistral-format")
+const r1_format_1 = require("../transform/r1-format")
+const anthropic_1 = require("../transform/caching/anthropic")
+const gemini_1 = require("../transform/caching/gemini")
+const model_params_1 = require("../transform/model-params")
+const modelCache_1 = require("./fetchers/modelCache")
+const modelEndpointCache_1 = require("./fetchers/modelEndpointCache")
+const constants_1 = require("./constants")
+const base_provider_1 = require("./base-provider")
+const openai_error_handler_1 = require("./utils/openai-error-handler")
+const image_generation_1 = require("./utils/image-generation")
+const router_tool_preferences_1 = require("./utils/router-tool-preferences")
+// Zod schema for OpenRouter error response structure (for caught exceptions)
+const OpenRouterErrorResponseSchema = zod_1.z.object({
+	error: zod_1.z
+		.object({
+			message: zod_1.z.string().optional(),
+			code: zod_1.z.number().optional(),
+			metadata: zod_1.z
+				.object({
+					raw: zod_1.z.string().optional(),
+				})
+				.optional(),
+		})
+		.optional(),
+})
+/**
+ * Helper function to parse and extract error message from metadata.raw
+ * metadata.raw is often a JSON encoded string that may contain .message or .error fields
+ * Example structures:
+ * - {"message": "Error text"}
+ * - {"error": "Error text"}
+ * - {"error": {"message": "Error text"}}
+ * - {"type":"error","error":{"type":"invalid_request_error","message":"tools: Tool names must be unique."}}
+ */
+function extractErrorFromMetadataRaw(raw) {
+	if (!raw) {
+		return undefined
+	}
+	try {
+		const parsed = JSON.parse(raw)
+		// Check for common error message fields
+		if (typeof parsed === "object" && parsed !== null) {
+			// Check for direct message field
+			if (typeof parsed.message === "string") {
+				return parsed.message
+			}
+			// Check for nested error.message field (e.g., Anthropic error format)
+			if (typeof parsed.error === "object" && parsed.error !== null && typeof parsed.error.message === "string") {
+				return parsed.error.message
+			}
+			// Check for error as a string
+			if (typeof parsed.error === "string") {
+				return parsed.error
+			}
+		}
+		// If we can't extract a specific field, return the raw string
+		return raw
+	} catch {
+		// If it's not valid JSON, return as-is
+		return raw
+	}
+}
+class OpenRouterHandler extends base_provider_1.BaseProvider {
+	options
+	client
+	models = {}
+	endpoints = {}
+	providerName = "OpenRouter"
+	currentReasoningDetails = []
+	constructor(options) {
+		super()
+		this.options = options
+		const baseURL = this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1"
+		const apiKey = this.options.openRouterApiKey ?? "not-provided"
+		this.client = new openai_1.default({ baseURL, apiKey, defaultHeaders: constants_1.DEFAULT_HEADERS })
+		// Load models asynchronously to populate cache before getModel() is called
+		this.loadDynamicModels().catch((error) => {
+			console.error("[OpenRouterHandler] Failed to load dynamic models:", error)
+		})
+	}
+	async loadDynamicModels() {
+		try {
+			const [models, endpoints] = await Promise.all([
+				(0, modelCache_1.getModels)({ provider: "openrouter" }),
+				(0, modelEndpointCache_1.getModelEndpoints)({
+					router: "openrouter",
+					modelId: this.options.openRouterModelId,
+					endpoint: this.options.openRouterSpecificProvider,
+				}),
+			])
+			this.models = models
+			this.endpoints = endpoints
+		} catch (error) {
+			console.error("[OpenRouterHandler] Error loading dynamic models:", {
+				error: error instanceof Error ? error.message : String(error),
+				stack: error instanceof Error ? error.stack : undefined,
+			})
+		}
+	}
+	getReasoningDetails() {
+		return this.currentReasoningDetails.length > 0 ? this.currentReasoningDetails : undefined
+	}
+	/**
+	 * Handle OpenRouter streaming error response.
+	 * OpenRouter may include metadata.raw with the actual upstream provider error.
+	 * @param error The error object (not wrapped - receives the error directly)
+	 */
+	handleStreamingError(error, modelId, operation) {
+		const rawString = error?.metadata?.raw
+		const parsedError = extractErrorFromMetadataRaw(rawString)
+		const rawErrorMessage = parsedError || error?.message || "Unknown error"
+		throw new Error(`OpenRouter API Error ${error?.code}: ${rawErrorMessage}`)
+	}
+	async *createMessage(systemPrompt, messages, metadata) {
+		const model = await this.fetchModel()
+		let { id: modelId, maxTokens, temperature, topP, reasoning } = model
+		// Reset reasoning_details accumulator for this request
+		this.currentReasoningDetails = []
+		// OpenRouter sends reasoning tokens by default for Gemini 2.5 Pro models
+		// even if you don't request them. This is not the default for
+		// other providers (including Gemini), so we need to explicitly disable
+		// them unless the user has explicitly configured reasoning.
+		// Note: Gemini 3 models use reasoning_details format with thought signatures,
+		// but we handle this via skip_thought_signature_validator injection below.
+		if (
+			(modelId === "google/gemini-2.5-pro-preview" || modelId === "google/gemini-2.5-pro") &&
+			typeof reasoning === "undefined"
+		) {
+			reasoning = { exclude: true }
+		}
+		// Convert Anthropic messages to OpenAI format.
+		// Pass normalization function for Mistral compatibility (requires 9-char alphanumeric IDs)
+		const isMistral = modelId.toLowerCase().includes("mistral")
+		let openAiMessages = [
+			{ role: "system", content: systemPrompt },
+			...(0, openai_format_1.convertToOpenAiMessages)(
+				messages,
+				isMistral ? { normalizeToolCallId: mistral_format_1.normalizeMistralToolCallId } : undefined,
+			),
+		]
+		// DeepSeek highly recommends using user instead of system role.
+		if (modelId.startsWith("deepseek/deepseek-r1") || modelId === "perplexity/sonar-reasoning") {
+			openAiMessages = (0, r1_format_1.convertToR1Format)([{ role: "user", content: systemPrompt }, ...messages])
+		}
+		// Process reasoning_details when switching models to Gemini.
+		const isGemini = modelId.startsWith("google/gemini")
+		// For Gemini models with native protocol:
+		// 1. Sanitize messages to handle thought signature validation issues.
+		//    This must happen BEFORE fake encrypted block injection to avoid injecting for
+		//    tool calls that will be dropped due to missing/mismatched reasoning_details.
+		// 2. Inject fake reasoning.encrypted block for tool calls without existing encrypted reasoning.
+		//    This is required when switching from other models to Gemini to satisfy API validation.
+		//    Per OpenRouter documentation (conversation with Toven, Nov 2025):
+		//    - Create ONE reasoning_details entry per assistant message with tool calls
+		//    - Set `id` to the FIRST tool call's ID from the tool_calls array
+		//    - Set `data` to "skip_thought_signature_validator" to bypass signature validation
+		//    - Set `index` to 0
+		// See: https://github.com/cline/cline/issues/8214
+		if (isGemini) {
+			// Step 1: Sanitize messages - filter out tool calls with missing/mismatched reasoning_details
+			openAiMessages = (0, openai_format_1.sanitizeGeminiMessages)(openAiMessages, modelId)
+			// Step 2: Inject fake reasoning.encrypted block for tool calls that survived sanitization
+			openAiMessages = openAiMessages.map((msg) => {
+				if (msg.role === "assistant") {
+					const toolCalls = msg.tool_calls
+					const existingDetails = msg.reasoning_details
+					// Only inject if there are tool calls and no existing encrypted reasoning
+					if (toolCalls && toolCalls.length > 0) {
+						const hasEncrypted = existingDetails?.some((d) => d.type === "reasoning.encrypted") ?? false
+						if (!hasEncrypted) {
+							// Create ONE fake encrypted block with the FIRST tool call's ID
+							// This is the documented format from OpenRouter for skipping thought signature validation
+							const fakeEncrypted = {
+								type: "reasoning.encrypted",
+								data: "skip_thought_signature_validator",
+								id: toolCalls[0].id,
+								format: "google-gemini-v1",
+								index: 0,
+							}
+							return {
+								...msg,
+								reasoning_details: [...(existingDetails ?? []), fakeEncrypted],
+							}
+						}
+					}
+				}
+				return msg
+			})
+		}
+		// https://openrouter.ai/docs/features/prompt-caching
+		// TODO: Add a `promptCacheStratey` field to `ModelInfo`.
+		if (types_1.OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
+			if (modelId.startsWith("google")) {
+				;(0, gemini_1.addCacheBreakpoints)(systemPrompt, openAiMessages)
+			} else {
+				;(0, anthropic_1.addCacheBreakpoints)(systemPrompt, openAiMessages)
+			}
+		}
+		// https://openrouter.ai/docs/transforms
+		const completionParams = {
+			model: modelId,
+			...(maxTokens && maxTokens > 0 && { max_tokens: maxTokens }),
+			temperature,
+			top_p: topP,
+			messages: openAiMessages,
+			stream: true,
+			stream_options: { include_usage: true },
+			// Only include provider if openRouterSpecificProvider is not "[default]".
+			...(this.options.openRouterSpecificProvider &&
+				this.options.openRouterSpecificProvider !== types_1.OPENROUTER_DEFAULT_PROVIDER_NAME && {
+					provider: {
+						order: [this.options.openRouterSpecificProvider],
+						only: [this.options.openRouterSpecificProvider],
+						allow_fallbacks: false,
+					},
+				}),
+			...(reasoning && { reasoning }),
+			tools: this.convertToolsForOpenAI(metadata?.tools),
+			tool_choice: metadata?.tool_choice,
+		}
+		// Add Anthropic beta header for fine-grained tool streaming when using Anthropic models
+		const requestOptions = modelId.startsWith("anthropic/")
+			? { headers: { "x-anthropic-beta": "fine-grained-tool-streaming-2025-05-14" } }
+			: undefined
+		let stream
+		try {
+			stream = await this.client.chat.completions.create(completionParams, requestOptions)
+		} catch (error) {
+			// Try to parse as OpenRouter error structure using Zod
+			const parseResult = OpenRouterErrorResponseSchema.safeParse(error)
+			void parseResult
+			throw (0, openai_error_handler_1.handleOpenAIError)(error, this.providerName)
+		}
+		let lastUsage = undefined
+		// Accumulator for reasoning_details FROM the API.
+		// We preserve the original shape of reasoning_details to prevent malformed responses.
+		const reasoningDetailsAccumulator = new Map()
+		// Track whether we've yielded displayable text from reasoning_details.
+		// When reasoning_details has displayable content (reasoning.text or reasoning.summary),
+		// we skip yielding the top-level reasoning field to avoid duplicate display.
+		let hasYieldedReasoningFromDetails = false
+		for await (const chunk of stream) {
+			// OpenRouter returns an error object instead of the OpenAI SDK throwing an error.
+			if ("error" in chunk) {
+				this.handleStreamingError(chunk.error, modelId, "createMessage")
+			}
+			const delta = chunk.choices[0]?.delta
+			const finishReason = chunk.choices[0]?.finish_reason
+			if (delta) {
+				// Handle reasoning_details array format (used by Gemini 3, Claude, OpenAI o-series, etc.)
+				// See: https://openrouter.ai/docs/use-cases/reasoning-tokens#preserving-reasoning-blocks
+				// Priority: Check for reasoning_details first, as it's the newer format
+				const deltaWithReasoning = delta
+				if (deltaWithReasoning.reasoning_details && Array.isArray(deltaWithReasoning.reasoning_details)) {
+					for (const detail of deltaWithReasoning.reasoning_details) {
+						const index = detail.index ?? 0
+						const key = `${detail.type}-${index}`
+						const existing = reasoningDetailsAccumulator.get(key)
+						if (existing) {
+							// Accumulate text/summary/data for existing reasoning detail
+							if (detail.text !== undefined) {
+								existing.text = (existing.text || "") + detail.text
+							}
+							if (detail.summary !== undefined) {
+								existing.summary = (existing.summary || "") + detail.summary
+							}
+							if (detail.data !== undefined) {
+								existing.data = (existing.data || "") + detail.data
+							}
+							// Update other fields if provided
+							if (detail.id !== undefined) existing.id = detail.id
+							if (detail.format !== undefined) existing.format = detail.format
+							if (detail.signature !== undefined) existing.signature = detail.signature
+						} else {
+							// Start new reasoning detail accumulation
+							reasoningDetailsAccumulator.set(key, {
+								type: detail.type,
+								text: detail.text,
+								summary: detail.summary,
+								data: detail.data,
+								id: detail.id,
+								format: detail.format,
+								signature: detail.signature,
+								index,
+							})
+						}
+						// Yield text for display (still fragmented for live streaming)
+						// Only reasoning.text and reasoning.summary have displayable content
+						// reasoning.encrypted is intentionally skipped as it contains redacted content
+						let reasoningText
+						if (detail.type === "reasoning.text" && typeof detail.text === "string") {
+							reasoningText = detail.text
+						} else if (detail.type === "reasoning.summary" && typeof detail.summary === "string") {
+							reasoningText = detail.summary
+						}
+						if (reasoningText) {
+							hasYieldedReasoningFromDetails = true
+							yield { type: "reasoning", text: reasoningText }
+						}
+					}
+				}
+				// Handle top-level reasoning field for UI display.
+				// Skip if we've already yielded from reasoning_details to avoid duplicate display.
+				if ("reasoning" in delta && delta.reasoning && typeof delta.reasoning === "string") {
+					if (!hasYieldedReasoningFromDetails) {
+						yield { type: "reasoning", text: delta.reasoning }
+					}
+				}
+				// Emit raw tool call chunks - NativeToolCallParser handles state management
+				if ("tool_calls" in delta && Array.isArray(delta.tool_calls)) {
+					for (const toolCall of delta.tool_calls) {
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
+						}
+					}
+				}
+				if (delta.content) {
+					yield { type: "text", text: delta.content }
+				}
+			}
+			// Process finish_reason to emit tool_call_end events
+			// This ensures tool calls are finalized even if the stream doesn't properly close
+			if (finishReason) {
+				const endEvents = NativeToolCallParser_1.NativeToolCallParser.processFinishReason(finishReason)
+				for (const event of endEvents) {
+					yield event
+				}
+			}
+			if (chunk.usage) {
+				lastUsage = chunk.usage
+			}
+		}
+		// After streaming completes, consolidate and store reasoning_details from the API.
+		// This filters out corrupted encrypted blocks (missing `data`) and consolidates by index.
+		if (reasoningDetailsAccumulator.size > 0) {
+			const rawDetails = Array.from(reasoningDetailsAccumulator.values())
+			this.currentReasoningDetails = (0, openai_format_1.consolidateReasoningDetails)(rawDetails)
+		}
+		if (lastUsage) {
+			yield {
+				type: "usage",
+				inputTokens: lastUsage.prompt_tokens || 0,
+				outputTokens: lastUsage.completion_tokens || 0,
+				cacheReadTokens: lastUsage.prompt_tokens_details?.cached_tokens,
+				reasoningTokens: lastUsage.completion_tokens_details?.reasoning_tokens,
+				totalCost: (lastUsage.cost_details?.upstream_inference_cost || 0) + (lastUsage.cost || 0),
+			}
+		}
+	}
+	async fetchModel() {
+		const [models, endpoints] = await Promise.all([
+			(0, modelCache_1.getModels)({ provider: "openrouter" }),
+			(0, modelEndpointCache_1.getModelEndpoints)({
+				router: "openrouter",
+				modelId: this.options.openRouterModelId,
+				endpoint: this.options.openRouterSpecificProvider,
+			}),
+		])
+		this.models = models
+		this.endpoints = endpoints
+		return this.getModel()
+	}
+	getModel() {
+		const id = this.options.openRouterModelId ?? types_1.openRouterDefaultModelId
+		let info = this.models[id] ?? types_1.openRouterDefaultModelInfo
+		// If a specific provider is requested, use the endpoint for that provider.
+		if (this.options.openRouterSpecificProvider && this.endpoints[this.options.openRouterSpecificProvider]) {
+			info = this.endpoints[this.options.openRouterSpecificProvider]
+		}
+		// Apply tool preferences for models accessed through routers (OpenAI, Gemini)
+		info = (0, router_tool_preferences_1.applyRouterToolPreferences)(id, info)
+		const isDeepSeekR1 = id.startsWith("deepseek/deepseek-r1") || id === "perplexity/sonar-reasoning"
+		const params = (0, model_params_1.getModelParams)({
+			format: "openrouter",
+			modelId: id,
+			model: info,
+			settings: this.options,
+			defaultTemperature: isDeepSeekR1 ? types_1.DEEP_SEEK_DEFAULT_TEMPERATURE : 0,
+		})
+		return { id, info, topP: isDeepSeekR1 ? 0.95 : undefined, ...params }
+	}
+	async completePrompt(prompt) {
+		let { id: modelId, maxTokens, temperature, reasoning } = await this.fetchModel()
+		const completionParams = {
+			model: modelId,
+			max_tokens: maxTokens,
+			temperature,
+			messages: [{ role: "user", content: prompt }],
+			stream: false,
+			// Only include provider if openRouterSpecificProvider is not "[default]".
+			...(this.options.openRouterSpecificProvider &&
+				this.options.openRouterSpecificProvider !== types_1.OPENROUTER_DEFAULT_PROVIDER_NAME && {
+					provider: {
+						order: [this.options.openRouterSpecificProvider],
+						only: [this.options.openRouterSpecificProvider],
+						allow_fallbacks: false,
+					},
+				}),
+			...(reasoning && { reasoning }),
+		}
+		// Add Anthropic beta header for fine-grained tool streaming when using Anthropic models
+		const requestOptions = modelId.startsWith("anthropic/")
+			? { headers: { "x-anthropic-beta": "fine-grained-tool-streaming-2025-05-14" } }
+			: undefined
+		let response
+		try {
+			response = await this.client.chat.completions.create(completionParams, requestOptions)
+		} catch (error) {
+			// Try to parse as OpenRouter error structure using Zod
+			const parseResult = OpenRouterErrorResponseSchema.safeParse(error)
+			void parseResult
+			throw (0, openai_error_handler_1.handleOpenAIError)(error, this.providerName)
+		}
+		if ("error" in response) {
+			this.handleStreamingError(response.error, modelId, "completePrompt")
+		}
+		const completion = response
+		return completion.choices[0]?.message?.content || ""
+	}
+	/**
+	 * Generate an image using OpenRouter's image generation API (chat completions with modalities)
+	 * Note: OpenRouter only supports the chat completions approach, not the /images/generations endpoint
+	 * @param prompt The text prompt for image generation
+	 * @param model The model to use for generation
+	 * @param apiKey The OpenRouter API key (must be explicitly provided)
+	 * @param inputImage Optional base64 encoded input image data URL
+	 * @returns The generated image data and format, or an error
+	 */
+	async generateImage(prompt, model, apiKey, inputImage) {
+		if (!apiKey) {
+			return {
+				success: false,
+				error: "OpenRouter API key is required for image generation",
+			}
+		}
+		const baseURL = this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1"
+		// OpenRouter only supports chat completions approach for image generation
+		return (0, image_generation_1.generateImageWithProvider)({
+			baseURL,
+			authToken: apiKey,
+			model,
+			prompt,
+			inputImage,
+		})
+	}
+}
+exports.OpenRouterHandler = OpenRouterHandler

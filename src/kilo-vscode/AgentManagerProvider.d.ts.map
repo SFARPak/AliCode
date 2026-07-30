@@ -1,0 +1,1 @@
+{"version":3,"file":"AgentManagerProvider.d.ts","sourceRoot":"","sources":["AgentManagerProvider.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,MAAM,MAAM,QAAQ,CAAA;AAChC,OAAO,EAAE,oBAAoB,IAAI,4BAA4B,EAAE,MAAM,gFAAgF,CAAA;AAwBrJ,qBAAa,oBAAqB,SAAQ,4BAA4B;gBACzD,YAAY,EAAE,MAAM,CAAC,GAAG,EAAE,iBAAiB,EAAE,GAAG;CAK5D"}

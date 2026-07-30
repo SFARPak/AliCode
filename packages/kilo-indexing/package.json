@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@ali-code/kilo-gateway": "workspace:*",
+		"@ali-code/plugin": "workspace:*",
 		"@lancedb/lancedb": "0.26.2",
 		"@qdrant/js-client-rest": "1.17.0",
 		"async-mutex": "0.5.0",

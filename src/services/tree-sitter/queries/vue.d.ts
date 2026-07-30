@@ -1,0 +1,3 @@
+export declare const vueQuery =
+	"\n; Top-level structure\n(component) @component.definition\n\n; Template section\n(template_element) @template.definition\n(template_element\n  (element\n    (start_tag\n      (tag_name) @element.name.definition))\n  (element\n    (start_tag\n      (attribute\n        (attribute_name) @attribute.name.definition)))\n  (element\n    (start_tag\n      (directive_attribute\n        (directive_name) @directive.name.definition))))\n\n; Script section\n(script_element) @script.definition\n(script_element\n  (raw_text) @script.content.definition)\n\n; Style section\n(style_element) @style.definition\n(style_element\n  (raw_text) @style.content.definition)\n"
+//# sourceMappingURL=vue.d.ts.map

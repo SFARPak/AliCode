@@ -1,0 +1,1 @@
+{"version":3,"file":"setupTerminalTests.d.ts","sourceRoot":"","sources":["setupTerminalTests.ts"],"names":[],"mappings":"AAyBA,OAAO,CAAC,MAAM,CAAC;IAEd,UAAU,MAAM,CAAC;QAChB,UAAU,MAAM;YACf,YAAY,EAAE;gBACb,QAAQ,EAAE,MAAM,CAAA;gBAChB,qBAAqB,EAAE,OAAO,CAAA;aAC9B,CAAA;SACD;KACD;CACD"}

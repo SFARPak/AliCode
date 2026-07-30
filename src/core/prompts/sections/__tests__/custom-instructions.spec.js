@@ -1,0 +1,1501 @@
+"use strict"
+// npx vitest core/prompts/sections/__tests__/custom-instructions.spec.ts
+var __importDefault =
+	(this && this.__importDefault) ||
+	function (mod) {
+		return mod && mod.__esModule ? mod : { default: mod }
+	}
+Object.defineProperty(exports, "__esModule", { value: true })
+// Mock fs/promises
+vi.mock("fs/promises")
+// Mock path.resolve and path.join to be predictable in tests
+vi.mock("path", async () => ({
+	...(await vi.importActual("path")),
+	resolve: vi.fn().mockImplementation((...args) => {
+		// On Windows, use backslashes; on Unix, use forward slashes
+		const separator = process.platform === "win32" ? "\\" : "/"
+		// Filter out empty strings and normalize separators
+		const cleanArgs = args
+			.filter((arg) => arg && arg.trim() !== "")
+			.map((arg) => arg.toString().replace(/[/\\]+/g, separator))
+		// If first arg is absolute, use it as base, otherwise join all
+		if (cleanArgs.length === 0) return ""
+		if (cleanArgs[0].match(/^([a-zA-Z]:)?[/\\]/)) {
+			// First arg is absolute path
+			let result = cleanArgs[0]
+			for (let i = 1; i < cleanArgs.length; i++) {
+				if (!result.endsWith(separator)) result += separator
+				result += cleanArgs[i]
+			}
+			return result
+		} else {
+			// Relative path resolution
+			return cleanArgs.join(separator)
+		}
+	}),
+	join: vi.fn().mockImplementation((...args) => {
+		const separator = process.platform === "win32" ? "\\" : "/"
+		// Filter out empty strings and normalize separators
+		const cleanArgs = args
+			.filter((arg) => arg && arg.trim() !== "")
+			.map((arg) => arg.toString().replace(/[/\\]+/g, separator))
+		return cleanArgs.join(separator)
+	}),
+	relative: vi.fn().mockImplementation((from, to) => {
+		// Simple relative path computation for test scenarios
+		const separator = process.platform === "win32" ? "\\" : "/"
+		const normalizedFrom = from.replace(/[/\\]+$/, "") // Remove trailing slashes
+		const normalizedTo = to.replace(/[/\\]+/g, separator)
+		if (normalizedTo.startsWith(normalizedFrom + separator)) {
+			return normalizedTo.slice(normalizedFrom.length + 1)
+		}
+		return to
+	}),
+	dirname: vi.fn().mockImplementation((path) => {
+		const separator = process.platform === "win32" ? "\\" : "/"
+		const parts = path.split(/[/\\]/)
+		return parts.slice(0, -1).join(separator)
+	}),
+}))
+const promises_1 = __importDefault(require("fs/promises"))
+const custom_instructions_1 = require("../custom-instructions")
+// Create mock functions
+const readFileMock = vi.fn()
+const statMock = vi.fn()
+const readdirMock = vi.fn()
+const readlinkMock = vi.fn()
+const lstatMock = vi.fn()
+// Replace fs functions with our mocks
+promises_1.default.readFile = readFileMock
+promises_1.default.stat = statMock
+promises_1.default.readdir = readdirMock
+promises_1.default.readlink = readlinkMock
+promises_1.default.lstat = lstatMock
+// Mock process.cwd
+const originalCwd = process.cwd
+beforeAll(() => {
+	process.cwd = vi.fn().mockReturnValue("/fake/cwd")
+})
+afterAll(() => {
+	process.cwd = originalCwd
+})
+describe("loadRuleFiles", () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+	it("should read and trim file content", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockResolvedValue("  content with spaces  ")
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(readFileMock).toHaveBeenCalled()
+		expect(result).toBe("\n# Rules from .alirules:\ncontent with spaces\n")
+	})
+	it("should handle ENOENT error", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("")
+	})
+	it("should handle EISDIR error", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "EISDIR" })
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("")
+	})
+	it("should throw on unexpected errors", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		const error = new Error("Permission denied")
+		error.code = "EPERM"
+		readFileMock.mockRejectedValue(error)
+		await expect(async () => {
+			await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		}).rejects.toThrow()
+	})
+	it("should not combine content from multiple rule files when they exist", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().endsWith(".alirules")) {
+				return Promise.resolve("roo rules content")
+			}
+			if (filePath.toString().endsWith(".clinerules")) {
+				return Promise.resolve("cline rules content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("\n# Rules from .alirules:\nroo rules content\n")
+	})
+	it("should handle when no rule files exist", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("")
+	})
+	it("should skip directories with same name as rule files", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().endsWith(".alirules")) {
+				return Promise.reject({ code: "EISDIR" })
+			}
+			if (filePath.toString().endsWith(".clinerules")) {
+				return Promise.reject({ code: "EISDIR" })
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("")
+	})
+	it("should use .ali/rules/ directory when it exists and has files", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files
+		readdirMock.mockResolvedValueOnce([
+			{ name: "file1.txt", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{ name: "file2.txt", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+		])
+		statMock.mockImplementation((path) => {
+			// Handle both Unix and Windows path separators
+			const normalizedPath = path.toString().replace(/\\/g, "/")
+			if (
+				normalizedPath.includes("/fake/path/.ali/rules/file1.txt") ||
+				normalizedPath.includes("/fake/path/.ali/rules/file2.txt")
+			) {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+				})
+			}
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(false),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules/file1.txt") {
+				return Promise.resolve("content of file1")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/file2.txt") {
+				return Promise.resolve("content of file2")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Paths in output should be relative to cwd
+		const expectedRelativePath1 = process.platform === "win32" ? ".roo\\rules\\file1.txt" : ".ali/rules/file1.txt"
+		const expectedRelativePath2 = process.platform === "win32" ? ".roo\\rules\\file2.txt" : ".ali/rules/file2.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativePath1}:`)
+		expect(result).toContain("content of file1")
+		expect(result).toContain(`# Rules from ${expectedRelativePath2}:`)
+		expect(result).toContain("content of file2")
+		// We expect both checks because our new implementation checks the files again for validation
+		// These are the absolute paths used internally
+		const expectedRulesDir = process.platform === "win32" ? "\\fake\\path\\.roo\\rules" : "/fake/path/.ali/rules"
+		const expectedFile1Path =
+			process.platform === "win32" ? "\\fake\\path\\.roo\\rules\\file1.txt" : "/fake/path/.ali/rules/file1.txt"
+		const expectedFile2Path =
+			process.platform === "win32" ? "\\fake\\path\\.roo\\rules\\file2.txt" : "/fake/path/.ali/rules/file2.txt"
+		expect(statMock).toHaveBeenCalledWith(expectedRulesDir)
+		expect(statMock).toHaveBeenCalledWith(expectedFile1Path)
+		expect(statMock).toHaveBeenCalledWith(expectedFile2Path)
+		expect(readFileMock).toHaveBeenCalledWith(expectedFile1Path, "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith(expectedFile2Path, "utf-8")
+	})
+	it("should filter out cache files from .ali/rules/ directory", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files including cache files
+		readdirMock.mockResolvedValueOnce([
+			{ name: "rule1.txt", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{ name: ".DS_Store", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{ name: "Thumbs.db", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{ name: "rule2.md", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{ name: "cache.log", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{
+				name: "backup.bak",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				parentPath: "/fake/path/.ali/rules",
+			},
+			{ name: "temp.tmp", isFile: () => true, isSymbolicLink: () => false, parentPath: "/fake/path/.ali/rules" },
+			{
+				name: "script.pyc",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				parentPath: "/fake/path/.ali/rules",
+			},
+		])
+		statMock.mockImplementation((path) => {
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(true),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			// Only rule files should be read - cache files should be skipped
+			if (normalizedPath === "/fake/path/.ali/rules/rule1.txt") {
+				return Promise.resolve("rule 1 content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/rule2.md") {
+				return Promise.resolve("rule 2 content")
+			}
+			// Cache files should not be read due to filtering
+			// If they somehow are read, return recognizable content
+			if (normalizedPath === "/fake/path/.ali/rules/.DS_Store") {
+				return Promise.resolve("DS_STORE_BINARY_CONTENT")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/Thumbs.db") {
+				return Promise.resolve("THUMBS_DB_CONTENT")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/backup.bak") {
+				return Promise.resolve("BACKUP_CONTENT")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/cache.log") {
+				return Promise.resolve("LOG_CONTENT")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/temp.tmp") {
+				return Promise.resolve("TEMP_CONTENT")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/script.pyc") {
+				return Promise.resolve("PYTHON_BYTECODE")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Should contain rule files
+		expect(result).toContain("rule 1 content")
+		expect(result).toContain("rule 2 content")
+		// Should NOT contain cache file content - they should be filtered out
+		expect(result).not.toContain("DS_STORE_BINARY_CONTENT")
+		expect(result).not.toContain("THUMBS_DB_CONTENT")
+		expect(result).not.toContain("BACKUP_CONTENT")
+		expect(result).not.toContain("LOG_CONTENT")
+		expect(result).not.toContain("TEMP_CONTENT")
+		expect(result).not.toContain("PYTHON_BYTECODE")
+		// Verify cache files are not read at all
+		const expectedCacheFiles = [
+			"/fake/path/.ali/rules/.DS_Store",
+			"/fake/path/.ali/rules/Thumbs.db",
+			"/fake/path/.ali/rules/backup.bak",
+			"/fake/path/.ali/rules/cache.log",
+			"/fake/path/.ali/rules/temp.tmp",
+			"/fake/path/.ali/rules/script.pyc",
+		]
+		for (const cacheFile of expectedCacheFiles) {
+			const expectedPath = process.platform === "win32" ? cacheFile.replace(/\//g, "\\") : cacheFile
+			expect(readFileMock).not.toHaveBeenCalledWith(expectedPath, "utf-8")
+		}
+	})
+	it("should fall back to .alirules when .ali/rules/ is empty", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate empty directory
+		readdirMock.mockResolvedValueOnce([])
+		// Simulate .alirules exists
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().endsWith(".alirules")) {
+				return Promise.resolve("roo rules content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("\n# Rules from .alirules:\nroo rules content\n")
+	})
+	it("should handle errors when reading directory", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate error reading directory
+		readdirMock.mockRejectedValueOnce(new Error("Failed to read directory"))
+		// Simulate .alirules exists
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().endsWith(".alirules")) {
+				return Promise.resolve("roo rules content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("\n# Rules from .alirules:\nroo rules content\n")
+	})
+	it("should read files from nested subdirectories in .ali/rules/", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files including subdirectories
+		readdirMock.mockResolvedValueOnce([
+			{
+				name: "subdir",
+				isFile: () => false,
+				isSymbolicLink: () => false,
+				isDirectory: () => true,
+				parentPath: "/fake/path/.ali/rules",
+			},
+			{
+				name: "root.txt",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				isDirectory: () => false,
+				parentPath: "/fake/path/.ali/rules",
+			},
+			{
+				name: "nested1.txt",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				isDirectory: () => false,
+				parentPath: "/fake/path/.ali/rules/subdir",
+			},
+			{
+				name: "nested2.txt",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				isDirectory: () => false,
+				parentPath: "/fake/path/.ali/rules/subdir/subdir2",
+			},
+		])
+		statMock.mockImplementation((path) => {
+			// Handle both Unix and Windows path separators
+			const normalizedPath = path.toString().replace(/\\/g, "/")
+			if (normalizedPath.endsWith("txt")) {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+					isDirectory: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(false),
+				isDirectory: vi.fn().mockReturnValue(true),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules/root.txt") {
+				return Promise.resolve("root file content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/subdir/nested1.txt") {
+				return Promise.resolve("nested file 1 content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/subdir/subdir2/nested2.txt") {
+				return Promise.resolve("nested file 2 content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Check root file content - paths in output should be relative
+		const expectedRelativeRootPath = process.platform === "win32" ? ".roo\\rules\\root.txt" : ".ali/rules/root.txt"
+		const expectedRelativeNested1Path =
+			process.platform === "win32" ? ".roo\\rules\\subdir\\nested1.txt" : ".ali/rules/subdir/nested1.txt"
+		const expectedRelativeNested2Path =
+			process.platform === "win32"
+				? ".roo\\rules\\subdir\\subdir2\\nested2.txt"
+				: ".ali/rules/subdir/subdir2/nested2.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeRootPath}:`)
+		expect(result).toContain("root file content")
+		// Check nested files content
+		expect(result).toContain(`# Rules from ${expectedRelativeNested1Path}:`)
+		expect(result).toContain("nested file 1 content")
+		expect(result).toContain(`# Rules from ${expectedRelativeNested2Path}:`)
+		expect(result).toContain("nested file 2 content")
+		// Verify correct absolute paths were checked internally
+		const expectedRootPath2 =
+			process.platform === "win32" ? "\\fake\\path\\.roo\\rules\\root.txt" : "/fake/path/.ali/rules/root.txt"
+		const expectedNested1Path2 =
+			process.platform === "win32"
+				? "\\fake\\path\\.roo\\rules\\subdir\\nested1.txt"
+				: "/fake/path/.ali/rules/subdir/nested1.txt"
+		const expectedNested2Path2 =
+			process.platform === "win32"
+				? "\\fake\\path\\.roo\\rules\\subdir\\subdir2\\nested2.txt"
+				: "/fake/path/.ali/rules/subdir/subdir2/nested2.txt"
+		expect(statMock).toHaveBeenCalledWith(expectedRootPath2)
+		expect(statMock).toHaveBeenCalledWith(expectedNested1Path2)
+		expect(statMock).toHaveBeenCalledWith(expectedNested2Path2)
+		// Verify files were read with correct paths
+		expect(readFileMock).toHaveBeenCalledWith(expectedRootPath2, "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith(expectedNested1Path2, "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith(expectedNested2Path2, "utf-8")
+	})
+})
+describe("addCustomInstructions", () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+	it("should combine all instruction types when provided", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockResolvedValue("mode specific rules")
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{ language: "es" },
+		)
+		expect(result).toContain("Language Preference:")
+		expect(result).toContain("Español") // Check for language name
+		expect(result).toContain("(es)") // Check for language code in parentheses
+		expect(result).toContain("Global Instructions:\nglobal instructions")
+		expect(result).toContain("Mode-specific Instructions:\nmode instructions")
+		expect(result).toContain("Rules from .alirules-test-mode:\nmode specific rules")
+	})
+	it("should load AGENTS.md when settings.useAgentRules is true", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md is NOT a symlink
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules from AGENTS.md file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules from AGENTS.md file")
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"), "utf-8")
+	})
+	it("should not load AGENTS.md when settings.useAgentRules is false", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules from AGENTS.md file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: false,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).not.toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).not.toContain("Agent rules from AGENTS.md file")
+	})
+	it("should load AGENTS.md by default when settings.useAgentRules is undefined", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md is NOT a symlink
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules from AGENTS.md file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{},
+		)
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules from AGENTS.md file")
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"), "utf-8")
+	})
+	it("should handle missing AGENTS.md gracefully", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).toContain("Global Instructions:\nglobal instructions")
+		expect(result).toContain("Mode-specific Instructions:\nmode instructions")
+		expect(result).not.toContain("# Agent Rules Standard (AGENTS.md):")
+	})
+	it("should include AGENTS.md content along with other rules", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md is NOT a symlink
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules content")
+			}
+			if (pathStr.endsWith(".alirules")) {
+				return Promise.resolve("Ali rules content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		// Should contain both AGENTS.md and .alirules content
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules content")
+		expect(result).toContain("# Rules from .alirules:")
+		expect(result).toContain("Ali rules content")
+	})
+	it("should follow symlinks when loading AGENTS.md", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md is a symlink
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(true),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		// Mock readlink to return the symlink target
+		readlinkMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("../actual-agents-file.md")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		// Mock stat to indicate the resolved target is a file
+		statMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath.endsWith("actual-agents-file.md")) {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		// Mock readFile to return content from the resolved path
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath.endsWith("actual-agents-file.md")) {
+				return Promise.resolve("Agent rules from symlinked file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules from symlinked file")
+		// Verify lstat was called to check if it's a symlink
+		expect(lstatMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"))
+		// Verify readlink was called to resolve the symlink
+		expect(readlinkMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"))
+		// Verify the resolved path was read
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("actual-agents-file.md"), "utf-8")
+	})
+	it("should handle AGENTS.md as a regular file when not a symlink", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md is NOT a symlink
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		// Mock readFile to return content directly from AGENTS.md
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules from regular file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules from regular file")
+		// Verify lstat was called
+		expect(lstatMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"))
+		// Verify readlink was NOT called since it's not a symlink
+		expect(readlinkMock).not.toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"))
+		// Verify the file was read directly
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"), "utf-8")
+	})
+	it("should load AGENT.md (singular) when AGENTS.md is not found", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate AGENTS.md doesn't exist but AGENT.md does
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.reject({ code: "ENOENT" })
+			}
+			if (pathStr.endsWith("AGENT.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENT.md")) {
+				return Promise.resolve("Agent rules from AGENT.md file (singular)")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		expect(result).toContain("# Agent Rules Standard (AGENT.md):")
+		expect(result).toContain("Agent rules from AGENT.md file (singular)")
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("AGENT.md"), "utf-8")
+	})
+	it("should prefer AGENTS.md over AGENT.md when both exist", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate both files exist
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md") || pathStr.endsWith("AGENT.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Agent rules from AGENTS.md file (plural)")
+			}
+			if (pathStr.endsWith("AGENT.md")) {
+				return Promise.resolve("Agent rules from AGENT.md file (singular)")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		// Should contain AGENTS.md content (preferred) and not AGENT.md
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Agent rules from AGENTS.md file (plural)")
+		expect(result).not.toContain("Agent rules from AGENT.md file (singular)")
+		expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining("AGENTS.md"), "utf-8")
+	})
+	it("should return empty string when no instructions provided", async () => {
+		// Simulate no .ali/rules directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.addCustomInstructions)("", "", "/fake/path", "", {})
+		expect(result).toBe("")
+	})
+	it("should handle missing mode-specific rules file", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+		)
+		expect(result).toContain("Global Instructions:")
+		expect(result).toContain("Mode-specific Instructions:")
+		expect(result).not.toContain("Rules from .clinerules-test-mode")
+	})
+	it("should handle unknown language codes properly", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockRejectedValue({ code: "ENOENT" })
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{ language: "xyz" },
+		)
+		expect(result).toContain("Language Preference:")
+		expect(result).toContain('"xyz" (xyz) language') // For unknown codes, the code is used as the name too
+		expect(result).toContain("Global Instructions:\nglobal instructions")
+	})
+	it("should throw on unexpected errors", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		const error = new Error("Permission denied")
+		error.code = "EPERM"
+		readFileMock.mockRejectedValue(error)
+		await expect(async () => {
+			await (0, custom_instructions_1.addCustomInstructions)("", "", "/fake/path", "test-mode")
+		}).rejects.toThrow()
+	})
+	it("should skip mode-specific rule files that are directories", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().includes(".clinerules-test-mode")) {
+				return Promise.reject({ code: "EISDIR" })
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+		)
+		expect(result).toContain("Global Instructions:\nglobal instructions")
+		expect(result).toContain("Mode-specific Instructions:\nmode instructions")
+		expect(result).not.toContain("Rules from .clinerules-test-mode")
+	})
+	it("should use .ali/rules-test-mode/ directory when it exists and has files", async () => {
+		// Simulate .ali/rules-test-mode directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files
+		readdirMock.mockResolvedValueOnce([
+			{
+				name: "rule1.txt",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				parentPath: "/fake/path/.ali/rules-test-mode",
+			},
+			{
+				name: "rule2.txt",
+				isFile: () => true,
+				isSymbolicLink: () => false,
+				parentPath: "/fake/path/.ali/rules-test-mode",
+			},
+		])
+		statMock.mockImplementation((path) => {
+			// Handle both Unix and Windows path separators
+			const normalizedPath = path.toString().replace(/\\/g, "/")
+			if (
+				normalizedPath.includes("/fake/path/.ali/rules-test-mode/rule1.txt") ||
+				normalizedPath.includes("/fake/path/.ali/rules-test-mode/rule2.txt")
+			) {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+				})
+			}
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(false),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules-test-mode/rule1.txt") {
+				return Promise.resolve("mode specific rule 1")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules-test-mode/rule2.txt") {
+				return Promise.resolve("mode specific rule 2")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{ language: "es" },
+		)
+		// Paths in output should be relative
+		const expectedRelativeRule1Path =
+			process.platform === "win32" ? ".roo\\rules-test-mode\\rule1.txt" : ".ali/rules-test-mode/rule1.txt"
+		const expectedRelativeRule2Path =
+			process.platform === "win32" ? ".roo\\rules-test-mode\\rule2.txt" : ".ali/rules-test-mode/rule2.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeRule1Path}:`)
+		expect(result).toContain("mode specific rule 1")
+		expect(result).toContain(`# Rules from ${expectedRelativeRule2Path}:`)
+		expect(result).toContain("mode specific rule 2")
+		// Verify absolute paths were used internally
+		const expectedAbsTestModeDir =
+			process.platform === "win32" ? "\\fake\\path\\.roo\\rules-test-mode" : "/fake/path/.ali/rules-test-mode"
+		const expectedAbsRule1Path =
+			process.platform === "win32"
+				? "\\fake\\path\\.roo\\rules-test-mode\\rule1.txt"
+				: "/fake/path/.ali/rules-test-mode/rule1.txt"
+		const expectedAbsRule2Path =
+			process.platform === "win32"
+				? "\\fake\\path\\.roo\\rules-test-mode\\rule2.txt"
+				: "/fake/path/.ali/rules-test-mode/rule2.txt"
+		expect(statMock).toHaveBeenCalledWith(expectedAbsTestModeDir)
+		expect(statMock).toHaveBeenCalledWith(expectedAbsRule1Path)
+		expect(statMock).toHaveBeenCalledWith(expectedAbsRule2Path)
+		expect(readFileMock).toHaveBeenCalledWith(expectedAbsRule1Path, "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith(expectedAbsRule2Path, "utf-8")
+	})
+	it("should fall back to .alirules-test-mode when .ali/rules-test-mode/ does not exist", async () => {
+		// Simulate .ali/rules-test-mode directory does not exist
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Simulate .alirules-test-mode exists
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().includes(".alirules-test-mode")) {
+				return Promise.resolve("mode specific rules from file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+		)
+		expect(result).toContain("Rules from .alirules-test-mode:\nmode specific rules from file")
+	})
+	it("should fall back to .clinerules-test-mode when .ali/rules-test-mode/ and .alirules-test-mode do not exist", async () => {
+		// Simulate .ali/rules-test-mode directory does not exist
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Simulate file reading
+		readFileMock.mockImplementation((filePath) => {
+			if (filePath.toString().includes(".alirules-test-mode")) {
+				return Promise.reject({ code: "ENOENT" })
+			}
+			if (filePath.toString().includes(".clinerules-test-mode")) {
+				return Promise.resolve("mode specific rules from cline file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+		)
+		expect(result).toContain("Rules from .clinerules-test-mode:\nmode specific rules from cline file")
+	})
+	it("should correctly format content from directories when using .ali/rules-test-mode/", async () => {
+		// Need to reset mockImplementation first to avoid interference from previous tests
+		statMock.mockReset()
+		readFileMock.mockReset()
+		// Simulate .ali/rules-test-mode directory exists
+		statMock.mockImplementationOnce(() =>
+			Promise.resolve({
+				isDirectory: vi.fn().mockReturnValue(true),
+			}),
+		)
+		// Simulate directory has files
+		readdirMock.mockResolvedValueOnce([
+			{ name: "rule1.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules-test-mode" },
+		])
+		readFileMock.mockReset()
+		// Set up stat mock for checking files
+		let statCallCount = 0
+		statMock.mockImplementation((filePath) => {
+			statCallCount++
+			// Handle both Unix and Windows path separators
+			const normalizedPath = filePath.toString().replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules-test-mode/rule1.txt") {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+					isDirectory: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(false),
+				isDirectory: vi.fn().mockReturnValue(false),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules-test-mode/rule1.txt") {
+				return Promise.resolve("mode specific rule content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+		)
+		// Paths in output should be relative
+		const expectedRelativeRule1Path =
+			process.platform === "win32" ? ".roo\\rules-test-mode\\rule1.txt" : ".ali/rules-test-mode/rule1.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeRule1Path}:`)
+		expect(result).toContain("mode specific rule content")
+		expect(statCallCount).toBeGreaterThan(0)
+	})
+})
+// Test directory existence checks through loadRuleFiles
+describe("Directory existence checks", () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+	it("should detect when directory exists", async () => {
+		// Mock the stats to indicate the directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate empty directory to test that stats is called
+		readdirMock.mockResolvedValueOnce([])
+		// For loadRuleFiles to return something for testing
+		readFileMock.mockResolvedValueOnce("fallback content")
+		await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Verify stat was called to check directory existence
+		const expectedRulesDir = process.platform === "win32" ? "\\fake\\path\\.roo\\rules" : "/fake/path/.ali/rules"
+		expect(statMock).toHaveBeenCalledWith(expectedRulesDir)
+	})
+	it("should handle when directory does not exist", async () => {
+		// Mock the stats to indicate the directory doesn't exist
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock file read to verify fallback
+		readFileMock.mockResolvedValueOnce("fallback content")
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Verify it fell back to reading rule files directly
+		expect(result).toBe("\n# Rules from .alirules:\nfallback content\n")
+	})
+})
+// Indirectly test readTextFilesFromDirectory and formatDirectoryContent through loadRuleFiles
+describe("Rules directory reading", () => {
+	it.skipIf(process.platform === "win32")("should follow symbolic links in the rules directory", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files including a symlink
+		readdirMock
+			.mockResolvedValueOnce([
+				{
+					name: "regular.txt",
+					isFile: () => true,
+					isSymbolicLink: () => false,
+					parentPath: "/fake/path/.ali/rules",
+				},
+				{
+					name: "link.txt",
+					isFile: () => false,
+					isSymbolicLink: () => true,
+					parentPath: "/fake/path/.ali/rules",
+				},
+				{
+					name: "link_dir",
+					isFile: () => false,
+					isSymbolicLink: () => true,
+					parentPath: "/fake/path/.ali/rules",
+				},
+				{
+					name: "nested_link.txt",
+					isFile: () => false,
+					isSymbolicLink: () => true,
+					parentPath: "/fake/path/.ali/rules",
+				},
+			])
+			.mockResolvedValueOnce([
+				{ name: "subdir_link.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules/symlink-target-dir" },
+			])
+		// Simulate readlink response
+		readlinkMock
+			.mockResolvedValueOnce("../symlink-target.txt")
+			.mockResolvedValueOnce("../symlink-target-dir")
+			.mockResolvedValueOnce("../nested-symlink")
+			.mockResolvedValueOnce("nested-symlink-target.txt")
+		// Reset and set up the stat mock with more granular control
+		statMock.mockReset()
+		statMock.mockImplementation((path) => {
+			// For directory check
+			if (path === "/fake/path/.ali/rules" || path.endsWith("dir")) {
+				return Promise.resolve({
+					isDirectory: vi.fn().mockReturnValue(true),
+					isFile: vi.fn().mockReturnValue(false),
+				})
+			}
+			// For symlink check
+			if (path.endsWith("symlink")) {
+				return Promise.resolve({
+					isDirectory: vi.fn().mockReturnValue(false),
+					isFile: vi.fn().mockReturnValue(false),
+					isSymbolicLink: vi.fn().mockReturnValue(true),
+				})
+			}
+			// For all files
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(true),
+				isDirectory: vi.fn().mockReturnValue(false),
+			})
+		})
+		// Simulate file content reading
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules/regular.txt") {
+				return Promise.resolve("regular file content")
+			}
+			if (normalizedPath === "/fake/path/.ali/symlink-target.txt") {
+				return Promise.resolve("symlink target content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/symlink-target-dir/subdir_link.txt") {
+				return Promise.resolve("regular file content under symlink target dir")
+			}
+			if (normalizedPath === "/fake/path/.ali/nested-symlink-target.txt") {
+				return Promise.resolve("nested symlink target content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Verify both regular file and symlink target content are included (paths should be relative)
+		const expectedRelativeRegularPath =
+			process.platform === "win32" ? ".roo\\rules\\regular.txt" : ".ali/rules/regular.txt"
+		const expectedRelativeSymlinkPath =
+			process.platform === "win32" ? ".roo\\symlink-target.txt" : ".ali/symlink-target.txt"
+		const expectedRelativeSubdirPath =
+			process.platform === "win32"
+				? ".roo\\rules\\symlink-target-dir\\subdir_link.txt"
+				: ".ali/rules/symlink-target-dir/subdir_link.txt"
+		const expectedRelativeNestedPath =
+			process.platform === "win32" ? ".roo\\nested-symlink-target.txt" : ".ali/nested-symlink-target.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeRegularPath}:`)
+		expect(result).toContain("regular file content")
+		expect(result).toContain(`# Rules from ${expectedRelativeSymlinkPath}:`)
+		expect(result).toContain("symlink target content")
+		expect(result).toContain(`# Rules from ${expectedRelativeSubdirPath}:`)
+		expect(result).toContain("regular file content under symlink target dir")
+		expect(result).toContain(`# Rules from ${expectedRelativeNestedPath}:`)
+		expect(result).toContain("nested symlink target content")
+		// Verify readlink was called with the symlink path
+		expect(readlinkMock).toHaveBeenCalledWith("/fake/path/.ali/rules/link.txt")
+		expect(readlinkMock).toHaveBeenCalledWith("/fake/path/.ali/rules/link_dir")
+		// Verify both files were read
+		expect(readFileMock).toHaveBeenCalledWith("/fake/path/.ali/rules/regular.txt", "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith("/fake/path/.ali/symlink-target.txt", "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith("/fake/path/.ali/rules/symlink-target-dir/subdir_link.txt", "utf-8")
+		expect(readFileMock).toHaveBeenCalledWith("/fake/path/.ali/nested-symlink-target.txt", "utf-8")
+	})
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+	it.skipIf(process.platform === "win32")("should correctly format multiple files from directory", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files
+		readdirMock.mockResolvedValueOnce([
+			{ name: "file1.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" },
+			{ name: "file2.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" },
+			{ name: "file3.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" },
+		])
+		statMock.mockImplementation((path) => {
+			// Handle both Unix and Windows path separators
+			const normalizedPath = path.toString().replace(/\\/g, "/")
+			expect([
+				"/fake/path/.ali/rules/file1.txt",
+				"/fake/path/.ali/rules/file2.txt",
+				"/fake/path/.ali/rules/file3.txt",
+			]).toContain(normalizedPath)
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(true),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			// Handle both Unix and Windows path separators
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules/file1.txt") {
+				return Promise.resolve("content of file1")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/file2.txt") {
+				return Promise.resolve("content of file2")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/file3.txt") {
+				return Promise.resolve("content of file3")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Paths in output should be relative
+		const expectedRelativeFile1Path =
+			process.platform === "win32" ? ".roo\\rules\\file1.txt" : ".ali/rules/file1.txt"
+		const expectedRelativeFile2Path =
+			process.platform === "win32" ? ".roo\\rules\\file2.txt" : ".ali/rules/file2.txt"
+		const expectedRelativeFile3Path =
+			process.platform === "win32" ? ".roo\\rules\\file3.txt" : ".ali/rules/file3.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeFile1Path}:`)
+		expect(result).toContain("content of file1")
+		expect(result).toContain(`# Rules from ${expectedRelativeFile2Path}:`)
+		expect(result).toContain("content of file2")
+		expect(result).toContain(`# Rules from ${expectedRelativeFile3Path}:`)
+		expect(result).toContain("content of file3")
+	})
+	it("should return files in alphabetical order by filename", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files in non-alphabetical order to test sorting
+		readdirMock.mockResolvedValueOnce([
+			{ name: "zebra.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" },
+			{ name: "alpha.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" },
+			{ name: "Beta.txt", isFile: () => true, parentPath: "/fake/path/.ali/rules" }, // Test case-insensitive sorting
+		])
+		statMock.mockImplementation((path) => {
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(true),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath === "/fake/path/.ali/rules/zebra.txt") {
+				return Promise.resolve("zebra content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/alpha.txt") {
+				return Promise.resolve("alpha content")
+			}
+			if (normalizedPath === "/fake/path/.ali/rules/Beta.txt") {
+				return Promise.resolve("beta content")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Files should appear in alphabetical order: alpha.txt, Beta.txt, zebra.txt
+		const alphaIndex = result.indexOf("alpha content")
+		const betaIndex = result.indexOf("beta content")
+		const zebraIndex = result.indexOf("zebra content")
+		expect(alphaIndex).toBeLessThan(betaIndex)
+		expect(betaIndex).toBeLessThan(zebraIndex)
+		// Verify the expected file paths are in the result (should be relative)
+		const expectedRelativeAlphaPath =
+			process.platform === "win32" ? ".roo\\rules\\alpha.txt" : ".ali/rules/alpha.txt"
+		const expectedRelativeBetaPath = process.platform === "win32" ? ".roo\\rules\\Beta.txt" : ".ali/rules/Beta.txt"
+		const expectedRelativeZebraPath =
+			process.platform === "win32" ? ".roo\\rules\\zebra.txt" : ".ali/rules/zebra.txt"
+		expect(result).toContain(`# Rules from ${expectedRelativeAlphaPath}:`)
+		expect(result).toContain(`# Rules from ${expectedRelativeBetaPath}:`)
+		expect(result).toContain(`# Rules from ${expectedRelativeZebraPath}:`)
+	})
+	it("should sort symlinks by their symlink names, not target names", async () => {
+		// Reset mocks
+		statMock.mockReset()
+		readdirMock.mockReset()
+		readlinkMock.mockReset()
+		readFileMock.mockReset()
+		// First call: check if .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate listing files with symlinks that point to files with different names
+		readdirMock.mockResolvedValueOnce([
+			{
+				name: "01-first.link",
+				isFile: () => false,
+				isSymbolicLink: () => true,
+				parentPath: "/fake/path/.ali/rules",
+			},
+			{
+				name: "02-second.link",
+				isFile: () => false,
+				isSymbolicLink: () => true,
+				parentPath: "/fake/path/.ali/rules",
+			},
+			{
+				name: "03-third.link",
+				isFile: () => false,
+				isSymbolicLink: () => true,
+				parentPath: "/fake/path/.ali/rules",
+			},
+		])
+		// Mock readlink to return target paths that would sort differently than symlink names
+		readlinkMock
+			.mockResolvedValueOnce("../../targets/zzz-last.txt") // 01-first.link -> zzz-last.txt
+			.mockResolvedValueOnce("../../targets/aaa-first.txt") // 02-second.link -> aaa-first.txt
+			.mockResolvedValueOnce("../../targets/mmm-middle.txt") // 03-third.link -> mmm-middle.txt
+		// Set up stat mock for the remaining calls
+		statMock.mockImplementation((path) => {
+			const normalizedPath = path.toString().replace(/\\/g, "/")
+			// Target files exist and are files
+			if (normalizedPath.endsWith(".txt")) {
+				return Promise.resolve({
+					isFile: vi.fn().mockReturnValue(true),
+					isDirectory: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.resolve({
+				isFile: vi.fn().mockReturnValue(false),
+				isDirectory: vi.fn().mockReturnValue(false),
+			})
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			const normalizedPath = pathStr.replace(/\\/g, "/")
+			if (normalizedPath.endsWith("zzz-last.txt")) {
+				return Promise.resolve("content from zzz-last.txt")
+			}
+			if (normalizedPath.endsWith("aaa-first.txt")) {
+				return Promise.resolve("content from aaa-first.txt")
+			}
+			if (normalizedPath.endsWith("mmm-middle.txt")) {
+				return Promise.resolve("content from mmm-middle.txt")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		// Content should appear in order of symlink names (01-first, 02-second, 03-third)
+		// NOT in order of target names (aaa-first, mmm-middle, zzz-last)
+		const firstIndex = result.indexOf("content from zzz-last.txt") // from 01-first.link
+		const secondIndex = result.indexOf("content from aaa-first.txt") // from 02-second.link
+		const thirdIndex = result.indexOf("content from mmm-middle.txt") // from 03-third.link
+		// All content should be found
+		expect(firstIndex).toBeGreaterThan(-1)
+		expect(secondIndex).toBeGreaterThan(-1)
+		expect(thirdIndex).toBeGreaterThan(-1)
+		// And they should be in the order of symlink names, not target names
+		expect(firstIndex).toBeLessThan(secondIndex)
+		expect(secondIndex).toBeLessThan(thirdIndex)
+		// Verify the target paths are shown (not symlink paths)
+		expect(result).toContain("zzz-last.txt")
+		expect(result).toContain("aaa-first.txt")
+		expect(result).toContain("mmm-middle.txt")
+	})
+	it("should handle empty file list gracefully", async () => {
+		// Simulate .ali/rules directory exists
+		statMock.mockResolvedValueOnce({
+			isDirectory: vi.fn().mockReturnValue(true),
+		})
+		// Simulate empty directory
+		readdirMock.mockResolvedValueOnce([])
+		readFileMock.mockResolvedValueOnce("fallback content")
+		const result = await (0, custom_instructions_1.loadRuleFiles)("/fake/path")
+		expect(result).toBe("\n# Rules from .alirules:\nfallback content\n")
+	})
+	it("should load AGENTS.local.md alongside AGENTS.md for personal overrides", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate both AGENTS.md and AGENTS.local.md exist (not symlinks)
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md") || pathStr.endsWith("AGENTS.local.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.local.md")) {
+				return Promise.resolve("Local overrides from AGENTS.local.md")
+			}
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Base rules from AGENTS.md")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		// Should contain both AGENTS.md and AGENTS.local.md content
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Base rules from AGENTS.md")
+		expect(result).toContain("# Agent Rules Local (AGENTS.local.md):")
+		expect(result).toContain("Local overrides from AGENTS.local.md")
+	})
+	it("should load AGENTS.local.md even when base AGENTS.md does not exist", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate only AGENTS.local.md exists (no base file)
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.local.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.local.md")) {
+				return Promise.resolve("Local overrides without base file")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		// Should contain AGENTS.local.md content even without base AGENTS.md
+		expect(result).toContain("# Agent Rules Local (AGENTS.local.md):")
+		expect(result).toContain("Local overrides without base file")
+	})
+	it("should load AGENTS.md without .local.md when local file does not exist", async () => {
+		// Simulate no .ali/rules-test-mode directory
+		statMock.mockRejectedValueOnce({ code: "ENOENT" })
+		// Mock lstat to indicate only AGENTS.md exists (no local override)
+		lstatMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve({
+					isSymbolicLink: vi.fn().mockReturnValue(false),
+				})
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		readFileMock.mockImplementation((filePath) => {
+			const pathStr = filePath.toString()
+			if (pathStr.endsWith("AGENTS.md")) {
+				return Promise.resolve("Base rules from AGENTS.md only")
+			}
+			return Promise.reject({ code: "ENOENT" })
+		})
+		const result = await (0, custom_instructions_1.addCustomInstructions)(
+			"mode instructions",
+			"global instructions",
+			"/fake/path",
+			"test-mode",
+			{
+				settings: {
+					todoListEnabled: true,
+					useAgentRules: true,
+					newTaskRequireTodos: false,
+				},
+			},
+		)
+		// Should contain only AGENTS.md content
+		expect(result).toContain("# Agent Rules Standard (AGENTS.md):")
+		expect(result).toContain("Base rules from AGENTS.md only")
+		expect(result).not.toContain("AGENTS.local.md")
+	})
+})

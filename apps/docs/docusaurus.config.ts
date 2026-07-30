@@ -170,8 +170,8 @@ const config: Config = {
 						from: ["/advanced-usage/mcp", "/mcp/overview"],
 					},
 					{
-						to: "/features/mcp/using-mcp-in-roo",
-						from: ["/mcp/using-mcp-in-roo"],
+						to: "/features/mcp/using-mcp-in-ali",
+						from: ["/mcp/using-mcp-in-roo", "/mcp/using-mcp-in-ali"],
 					},
 					{
 						to: "/features/mcp/what-is-mcp",
@@ -259,8 +259,8 @@ const config: Config = {
 						from: ["/features/tools/write-to-file"],
 					},
 					{
-						to: "/advanced-usage/roo-code-nightly",
-						from: ["/advanced-usage/prerelease-build"],
+						to: "/advanced-usage/ali-code-nightly",
+						from: ["/advanced-usage/prerelease-build", "/advanced-usage/roo-code-nightly"],
 					},
 					// Redirect removed AliCode Router provider aliases
 					{

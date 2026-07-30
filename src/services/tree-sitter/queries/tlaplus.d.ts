@@ -1,0 +1,3 @@
+declare const _default: "\n; Module declarations\n(module\n  name: (identifier) @name.definition.module) @definition.module\n\n; Operator definitions with optional parameters\n(operator_definition\n  name: (identifier) @name.definition.operator\n  parameter: (identifier)?) @definition.operator\n\n; Function definitions with bounds\n(function_definition\n  name: (identifier) @name.definition.function\n  (quantifier_bound)?) @definition.function\n\n; Variable declarations\n(variable_declaration\n  (identifier) @name.definition.variable) @definition.variable\n\n; Constant declarations\n(constant_declaration\n  (identifier) @name.definition.constant) @definition.constant\n"
+export default _default
+//# sourceMappingURL=tlaplus.d.ts.map

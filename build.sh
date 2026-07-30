@@ -8,6 +8,7 @@ echo ""
 
 # Navigate to project root
 cd "$(dirname "$0")"
+ROOT_DIR=$(pwd)
 
 # Step 1: Install dependencies if needed (skipped if node_modules exists)
 if [ ! -d "node_modules" ]; then
@@ -19,15 +20,21 @@ fi
 
 # Step 2: Build the @ali-code/types package
 echo "[2/4] Building @ali-code/types package..."
-cd packages/types && pnpm build && cd ../..
+cd "$ROOT_DIR/packages/types"
+NODE_OPTIONS="--max-old-space-size=8192" pnpm build
+cd "$ROOT_DIR"
 
 # Step 3: Bundle the extension
 echo "[3/4] Bundling extension..."
-cd src && pnpm bundle && cd ..
+cd "$ROOT_DIR/src"
+pnpm bundle
+cd "$ROOT_DIR"
 
 # Step 4: Package as VSIX
 echo "[4/4] Packaging VSIX..."
-cd src && pnpm vsix && cd ..
+cd "$ROOT_DIR/src"
+pnpm vsix
+cd "$ROOT_DIR"
 
 echo ""
 echo "============================================"

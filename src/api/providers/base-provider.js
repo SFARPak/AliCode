@@ -1,0 +1,98 @@
+"use strict"
+Object.defineProperty(exports, "__esModule", { value: true })
+exports.BaseProvider = void 0
+const countTokens_1 = require("../../utils/countTokens")
+const mcp_name_1 = require("../../utils/mcp-name")
+/**
+ * Base class for API providers that implements common functionality.
+ */
+class BaseProvider {
+	/**
+	 * Converts an array of tools to be compatible with OpenAI's strict mode.
+	 * Filters for function tools, applies schema conversion to their parameters,
+	 * and ensures all tools have consistent strict: true values.
+	 */
+	convertToolsForOpenAI(tools) {
+		if (!tools) {
+			return undefined
+		}
+		return tools.map((tool) => {
+			if (tool.type !== "function") {
+				return tool
+			}
+			// MCP tools use the 'mcp--' prefix - disable strict mode for them
+			// to preserve optional parameters from the MCP server schema
+			const isMcp = (0, mcp_name_1.isMcpTool)(tool.function.name)
+			return {
+				...tool,
+				function: {
+					...tool.function,
+					strict: !isMcp,
+					parameters: isMcp
+						? tool.function.parameters
+						: this.convertToolSchemaForOpenAI(tool.function.parameters),
+				},
+			}
+		})
+	}
+	/**
+	 * Converts tool schemas to be compatible with OpenAI's strict mode by:
+	 * - Ensuring all properties are in the required array (strict mode requirement)
+	 * - Converting nullable types (["type", "null"]) to non-nullable ("type")
+	 * - Adding additionalProperties: false to all object schemas (required by OpenAI Responses API)
+	 * - Recursively processing nested objects and arrays
+	 *
+	 * This matches the behavior of ensureAllRequired in openai-native.ts
+	 */
+	convertToolSchemaForOpenAI(schema) {
+		if (!schema || typeof schema !== "object" || schema.type !== "object") {
+			return schema
+		}
+		const result = { ...schema }
+		// OpenAI Responses API requires additionalProperties: false on all object schemas
+		// Only add if not already set to false (to avoid unnecessary mutations)
+		if (result.additionalProperties !== false) {
+			result.additionalProperties = false
+		}
+		if (result.properties) {
+			const allKeys = Object.keys(result.properties)
+			// OpenAI strict mode requires ALL properties to be in required array
+			result.required = allKeys
+			// Recursively process nested objects and convert nullable types
+			const newProps = { ...result.properties }
+			for (const key of allKeys) {
+				const prop = newProps[key]
+				// Handle nullable types by removing null
+				if (prop && Array.isArray(prop.type) && prop.type.includes("null")) {
+					const nonNullTypes = prop.type.filter((t) => t !== "null")
+					prop.type = nonNullTypes.length === 1 ? nonNullTypes[0] : nonNullTypes
+				}
+				// Recursively process nested objects
+				if (prop && prop.type === "object") {
+					newProps[key] = this.convertToolSchemaForOpenAI(prop)
+				} else if (prop && prop.type === "array" && prop.items?.type === "object") {
+					newProps[key] = {
+						...prop,
+						items: this.convertToolSchemaForOpenAI(prop.items),
+					}
+				}
+			}
+			result.properties = newProps
+		}
+		return result
+	}
+	/**
+	 * Default token counting implementation using tiktoken.
+	 * Providers can override this to use their native token counting endpoints.
+	 *
+	 * @param content The content to count tokens for
+	 * @returns A promise resolving to the token count
+	 */
+	async countTokens(content) {
+		if (content.length === 0) {
+			return 0
+		}
+		return (0, countTokens_1.countTokens)(content, { useWorker: true })
+	}
+}
+exports.BaseProvider = BaseProvider

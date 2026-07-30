@@ -1,0 +1,1 @@
+{"version":3,"file":"nvidia-nim.d.ts","sourceRoot":"","sources":["nvidia-nim.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,gBAAgB,EAA4C,MAAM,iBAAiB,CAAA;AAEjG,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,kBAAkB,CAAA;AAEzD,OAAO,EAAE,4BAA4B,EAAE,MAAM,mCAAmC,CAAA;AAEhF,qBAAa,gBAAiB,SAAQ,4BAA4B,CAAC,gBAAgB,CAAC;IACnF;;;OAGG;gBACS,OAAO,EAAE,iBAAiB;IAYtC;;;OAGG;IACM,QAAQ;;;;CAMjB"}
