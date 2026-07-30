@@ -676,9 +676,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			}
 
 			setInputValue(newValue)
-			setSelectedImages([...selectedImages, ...images])
+			setSelectedImages((prev) => [...prev, ...images])
 		},
-		[inputValue, selectedImages],
+		[inputValue],
 	)
 
 	const startNewTask = useCallback(() => {
@@ -780,7 +780,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			setPrimaryButtonText(undefined)
 			setSecondaryButtonText(undefined)
 		},
-		[clineAsk, startNewTask, currentTaskItem?.parentTaskId],
+		[clineAsk, startNewTask, currentTaskItem?.parentTaskId, selectedImages],
 	)
 
 	const handleSecondaryButtonClick = useCallback(
@@ -829,7 +829,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			setClineAsk(undefined)
 			setEnableButtons(false)
 		},
-		[clineAsk, startNewTask, isStreaming, setDidClickCancel],
+		[clineAsk, startNewTask, isStreaming, setDidClickCancel, selectedImages],
 	)
 
 	const { info: model } = useSelectedModel(apiConfiguration)

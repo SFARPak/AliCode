@@ -701,18 +701,49 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					return type === "image" && acceptedTypes.includes(subtype)
 				})
 
-				if (!shouldDisableImages && imageItems.length > 0) {
+				if (imageItems.length > 0) {
 					e.preventDefault()
 
-					const imagePromises = imageItems.map((item) => {
+					if (shouldDisableImages) {
+						// Image paste attempted but model does not support images
+						vscode.postMessage({ type: "showMessage", message: t("chat:imagePasteNotSupported") })
+						return
+					}
+
+					// Validate image sizes before processing
+					const MAX_IMAGE_FILE_SIZE_MB = 5
+					const MAX_TOTAL_IMAGE_SIZE_MB = 20
+
+					const blobs = imageItems
+						.map((item) => item.getAsFile())
+						.filter((blob): blob is File => blob !== null)
+
+					const oversizedBlobs = blobs.filter((blob) => blob.size > MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024)
+					if (oversizedBlobs.length > 0) {
+						const names = oversizedBlobs.map((b) => b.name).join(", ")
+						vscode.postMessage({
+							type: "showMessage",
+							message: t("chat:imageTooLarge", {
+								files: names,
+								maxSize: MAX_IMAGE_FILE_SIZE_MB,
+							}),
+						})
+						return
+					}
+
+					const totalSize = blobs.reduce((sum, blob) => sum + blob.size, 0)
+					if (totalSize > MAX_TOTAL_IMAGE_SIZE_MB * 1024 * 1024) {
+						vscode.postMessage({
+							type: "showMessage",
+							message: t("chat:imageTotalSizeTooLarge", {
+								maxTotal: MAX_TOTAL_IMAGE_SIZE_MB,
+							}),
+						})
+						return
+					}
+
+					const imagePromises = blobs.map((blob) => {
 						return new Promise<string | null>((resolve) => {
-							const blob = item.getAsFile()
-
-							if (!blob) {
-								resolve(null)
-								return
-							}
-
 							const reader = new FileReader()
 
 							reader.onloadend = () => {
@@ -737,11 +768,6 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					} else {
 						console.warn(t("chat:noValidImages"))
 					}
-				} else if (shouldDisableImages && imageItems.length > 0) {
-					// Image paste attempted but model does not support images
-					e.preventDefault()
-					// Show a warning toast/message to the user
-					vscode.postMessage({ type: "showMessage", message: t("chat:imagePasteNotSupported") })
 				}
 			},
 			[shouldDisableImages, setSelectedImages, cursorPosition, setInputValue, inputValue, t],
@@ -867,38 +893,72 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						return type === "image" && acceptedTypes.includes(subtype)
 					})
 
-					if (!shouldDisableImages && imageFiles.length > 0) {
-						const imagePromises = imageFiles.map((file) => {
-							return new Promise<string | null>((resolve) => {
-								const reader = new FileReader()
-
-								reader.onloadend = () => {
-									if (reader.error) {
-										console.error(t("chat:errorReadingFile"), reader.error)
-										resolve(null)
-									} else {
-										const result = reader.result
-										resolve(typeof result === "string" ? result : null)
-									}
-								}
-
-								reader.readAsDataURL(file)
-							})
-						})
-
-						const imageDataArray = await Promise.all(imagePromises)
-						const dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
-
-						if (dataUrls.length > 0) {
-							setSelectedImages((prevImages) =>
-								[...prevImages, ...dataUrls].slice(0, MAX_IMAGES_PER_MESSAGE),
-							)
-
-							if (typeof vscode !== "undefined") {
-								vscode.postMessage({ type: "draggedImages", dataUrls: dataUrls })
-							}
+					if (imageFiles.length > 0) {
+						if (shouldDisableImages) {
+							// Image drop attempted but model does not support images
+							e.preventDefault()
+							vscode.postMessage({ type: "showMessage", message: t("chat:imagePasteNotSupported") })
 						} else {
-							console.warn(t("chat:noValidImages"))
+							// Validate image sizes before processing
+							const MAX_IMAGE_FILE_SIZE_MB = 5
+							const MAX_TOTAL_IMAGE_SIZE_MB = 20
+
+							const oversizedFiles = imageFiles.filter(
+								(file) => file.size > MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024,
+							)
+							if (oversizedFiles.length > 0) {
+								e.preventDefault()
+								const names = oversizedFiles.map((f) => f.name).join(", ")
+								vscode.postMessage({
+									type: "showMessage",
+									message: t("chat:imageTooLarge", {
+										files: names,
+										maxSize: MAX_IMAGE_FILE_SIZE_MB,
+									}),
+								})
+								return
+							}
+
+							const totalSize = imageFiles.reduce((sum, file) => sum + file.size, 0)
+							if (totalSize > MAX_TOTAL_IMAGE_SIZE_MB * 1024 * 1024) {
+								e.preventDefault()
+								vscode.postMessage({
+									type: "showMessage",
+									message: t("chat:imageTotalSizeTooLarge", {
+										maxTotal: MAX_TOTAL_IMAGE_SIZE_MB,
+									}),
+								})
+								return
+							}
+
+							const imagePromises = imageFiles.map((file) => {
+								return new Promise<string | null>((resolve) => {
+									const reader = new FileReader()
+
+									reader.onloadend = () => {
+										if (reader.error) {
+											console.error(t("chat:errorReadingFile"), reader.error)
+											resolve(null)
+										} else {
+											const result = reader.result
+											resolve(typeof result === "string" ? result : null)
+										}
+									}
+
+									reader.readAsDataURL(file)
+								})
+							})
+
+							const imageDataArray = await Promise.all(imagePromises)
+							const dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
+
+							if (dataUrls.length > 0) {
+								setSelectedImages((prevImages) =>
+									[...prevImages, ...dataUrls].slice(0, MAX_IMAGES_PER_MESSAGE),
+								)
+							} else {
+								console.warn(t("chat:noValidImages"))
+							}
 						}
 					}
 				}

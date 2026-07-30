@@ -168,6 +168,8 @@
 	"forNextMode": "for next mode",
 	"forPreviousMode": "for previous mode",
 	"imagePasteNotSupported": "Current model does not support images. Please switch to a vision-capable model.",
+	"imageTooLarge": "Image(s) too large: {{files}}. Maximum size per image is {{maxSize}}MB.",
+	"imageTotalSizeTooLarge": "Total image size exceeds the {{maxTotal}}MB limit. Please select fewer or smaller images.",
 	"apiRequest": {
 		"title": "API Request",
 		"failed": "API Request Failed",
