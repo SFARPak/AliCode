@@ -1876,81 +1876,107 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 	 * child task begins writing its own history (avoiding a read-modify-write
 	 * race on globalState).
 	 */
-	public start(): void {
+	public start(): Promise<void> {
 		if (this._started) {
-			return
+			return Promise.resolve()
 		}
 		this._started = true
 
 		const { task, images } = this.metadata
 
 		if (task || images) {
-			this.startTask(task ?? undefined, images ?? undefined)
+			return this.startTask(task ?? undefined, images ?? undefined)
 		}
+
+		return Promise.resolve()
 	}
 
 	private async startTask(task?: string, images?: string[]): Promise<void> {
-		try {
-			// `conversationHistory` (for API) and `clineMessages` (for webview)
-			// need to be in sync.
-			// If the extension process were killed, then on restart the
-			// `clineMessages` might not be empty, so we need to set it to [] when
-			// we create a new Cline client (otherwise webview would show stale
-			// messages from previous session).
-			this.clineMessages = []
-			this.apiConversationHistory = []
+		const MAX_STARTUP_RETRIES = 3
+		let lastError: unknown
 
-			// The todo list is already set in the constructor if initialTodos were provided
-			// No need to add any messages - the todoList property is already set
+		for (let attempt = 1; attempt <= MAX_STARTUP_RETRIES; attempt++) {
+			try {
+				// Reset state on each retry so stale messages don't accumulate.
+				if (attempt > 1) {
+					this.clineMessages = []
+					this.apiConversationHistory = []
+				}
 
-			await this.providerRef.deref()?.postStateToWebviewWithoutTaskHistory()
+				// `conversationHistory` (for API) and `clineMessages` (for webview)
+				// need to be in sync.
+				// If the extension process were killed, then on restart the
+				// `clineMessages` might not be empty, so we need to set it to [] when
+				// we create a new Cline client (otherwise webview would show stale
+				// messages from previous session).
+				this.clineMessages = []
+				this.apiConversationHistory = []
 
-			await this.say("text", task, images)
+				// The todo list is already set in the constructor if initialTodos were provided
+				// No need to add any messages - the todoList property is already set
 
-			// Check for too many MCP tools and warn the user
-			const { enabledToolCount, enabledServerCount } = await this.getEnabledMcpToolsCount()
-			if (enabledToolCount > MAX_MCP_TOOLS_THRESHOLD) {
-				await this.say(
-					"too_many_tools_warning",
-					JSON.stringify({
-						toolCount: enabledToolCount,
-						serverCount: enabledServerCount,
-						threshold: MAX_MCP_TOOLS_THRESHOLD,
-					}),
-					undefined,
-					undefined,
-					undefined,
-					undefined,
-					{ isNonInteractive: true },
-				)
-			}
-			this.isInitialized = true
+				await this.providerRef.deref()?.postStateToWebviewWithoutTaskHistory()
 
-			const imageBlocks: Anthropic.ImageBlockParam[] = formatResponse.imageBlocks(images)
+				await this.say("text", task, images)
 
-			// Task starting
-			await this.initiateTaskLoop([
-				{
-					type: "text",
-					text: `<user_message>\n${task}\n</user_message>`,
-				},
-				...imageBlocks,
-			]).catch((error) => {
+				// Check for too many MCP tools and warn the user
+				const { enabledToolCount, enabledServerCount } = await this.getEnabledMcpToolsCount()
+				if (enabledToolCount > MAX_MCP_TOOLS_THRESHOLD) {
+					await this.say(
+						"too_many_tools_warning",
+						JSON.stringify({
+							toolCount: enabledToolCount,
+							serverCount: enabledServerCount,
+							threshold: MAX_MCP_TOOLS_THRESHOLD,
+						}),
+						undefined,
+						undefined,
+						undefined,
+						undefined,
+						{ isNonInteractive: true },
+					)
+				}
+				this.isInitialized = true
+
+				const imageBlocks: Anthropic.ImageBlockParam[] = formatResponse.imageBlocks(images)
+
+				// Task starting
+				await this.initiateTaskLoop([
+					{
+						type: "text",
+						text: `<user_message>\n${task}\n</user_message>`,
+					},
+					...imageBlocks,
+				])
+
+				// Success — exit retry loop.
+				return
+			} catch (error) {
+				lastError = error
+
 				// Swallow loop rejection when the task was intentionally abandoned/aborted
 				// during delegation or user cancellation to prevent unhandled rejections.
 				if (this.abandoned === true || this.abortReason === "user_cancelled") {
 					return
 				}
-				throw error
-			})
-		} catch (error) {
-			// In tests and some UX flows, tasks can be aborted while `startTask` is still
-			// initializing. Treat abort/abandon as expected and avoid unhandled rejections.
-			if (this.abandoned === true || this.abort === true || this.abortReason === "user_cancelled") {
-				return
+
+				if (attempt < MAX_STARTUP_RETRIES) {
+					const retryDelay = Math.min(1000 * Math.pow(2, attempt - 1), 5000)
+					await this.say(
+						"error",
+						`Task startup failed (attempt ${attempt}/${MAX_STARTUP_RETRIES}). Retrying in ${retryDelay / 1000}s...\n\n${
+							error instanceof Error ? error.message : String(error)
+						}`,
+					)
+					await new Promise((resolve) => globalThis.setTimeout(resolve, retryDelay))
+				}
 			}
-			throw error
 		}
+
+		// All retries exhausted — surface the final error to the user.
+		const finalMessage = lastError instanceof Error ? lastError.message : String(lastError ?? "Unknown error")
+		await this.say("error", `Task failed to start after ${MAX_STARTUP_RETRIES} attempts.\n\n${finalMessage}`)
+		throw new Error(`Task failed to start after ${MAX_STARTUP_RETRIES} attempts: ${finalMessage}`)
 	}
 
 	private async resumeTaskFromHistory() {

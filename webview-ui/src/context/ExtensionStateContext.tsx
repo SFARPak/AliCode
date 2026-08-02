@@ -421,6 +421,15 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 					})
 					break
 				}
+				case "gitStatus": {
+					if (message.gitStatus) {
+						setState((prevState) => ({
+							...prevState,
+							gitStatus: message.gitStatus,
+						}))
+					}
+					break
+				}
 			}
 		},
 		[setListApiConfigMeta],

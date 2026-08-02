@@ -28,7 +28,7 @@ import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 import AliHero from "@src/components/welcome/AliHero"
 import AliTips from "@src/components/welcome/AliTips"
-import { StandardTooltip, Button } from "@src/components/ui"
+import { StandardTooltip, Button } from "@/components/ui"
 import VersionIndicator from "../common/VersionIndicator"
 import HistoryPreview from "../history/HistoryPreview"
 import Announcement from "./Announcement"
@@ -41,6 +41,7 @@ import { CheckpointWarning } from "./CheckpointWarning"
 import { QueuedMessages } from "./QueuedMessages"
 import { WorktreeSelector } from "./WorktreeSelector"
 import FileChangesPanel from "./FileChangesPanel"
+import SessionTabBar from "./SessionTabBar"
 import { useScrollLifecycle } from "@src/hooks/useScrollLifecycle"
 
 export interface ChatViewProps {
@@ -70,6 +71,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 	const {
 		clineMessages: messages,
+		currentTaskId,
 		currentTaskItem,
 		currentTaskTodos,
 		taskHistory,
@@ -83,6 +85,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		soundVolume,
 		messageQueue = [],
 		showWorktreesInHomeScreen,
+		gitStatus,
 	} = useExtensionState()
 
 	// Show a WarningRow when the user sends a message with a retired provider.
@@ -171,6 +174,28 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			}
 		>
 	>(new Map())
+
+	const handleSessionTabClick = useCallback(
+		(taskId: string) => {
+			if (taskId === currentTaskId) {
+				return
+			}
+			vscode.postMessage({ type: "showTaskWithId", text: taskId })
+		},
+		[currentTaskId],
+	)
+
+	const handleNewSession = useCallback(() => {
+		vscode.postMessage({ type: "newTask" })
+	}, [])
+
+	const handleCloseSession = useCallback((taskId: string) => {
+		vscode.postMessage({ type: "deleteTaskWithId", text: taskId })
+	}, [])
+
+	const recentSessions = useMemo(() => {
+		return [...taskHistory].sort((a, b) => b.ts - a.ts).slice(0, 12)
+	}, [taskHistory])
 
 	const clineAskRef = useRef(clineAsk)
 	useEffect(() => {
@@ -1575,6 +1600,14 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 					}}
 				/>
 			)}
+			<SessionTabBar
+				taskHistory={taskHistory}
+				currentTaskId={currentTaskId}
+				gitStatus={gitStatus}
+				onTabClick={handleSessionTabClick}
+				onNewSession={handleNewSession}
+				onCloseTab={handleCloseSession}
+			/>
 			{task ? (
 				<>
 					<TaskHeader

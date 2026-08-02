@@ -96,6 +96,34 @@ export async function getBinPath(vscodeAppRoot: string): Promise<string | undefi
 	)
 }
 
+/**
+ * Check if ripgrep is available in the system PATH.
+ */
+export async function isRipgrepAvailable(): Promise<boolean> {
+	const rgPath = await getBinPath(vscode.env.appRoot)
+	if (rgPath) {
+		return true
+	}
+
+	// Fallback: check if `rg` is available in PATH.
+	try {
+		await new Promise<void>((resolve, reject) => {
+			const proc = childProcess.spawn(binName, ["--version"], { stdio: ["ignore", "ignore", "ignore"] })
+			proc.on("error", reject)
+			proc.on("exit", (code) => {
+				if (code === 0) {
+					resolve()
+				} else {
+					reject(new Error(`ripgrep exited with code ${code}`))
+				}
+			})
+		})
+		return true
+	} catch {
+		return false
+	}
+}
+
 async function execRipgrep(bin: string, args: string[]): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const rgProcess = childProcess.spawn(bin, args)
@@ -147,7 +175,8 @@ export async function regexSearchFiles(
 	const rgPath = await getBinPath(vscodeAppRoot)
 
 	if (!rgPath) {
-		throw new Error("Could not find ripgrep binary")
+		console.warn("ripgrep binary not found; returning empty search results")
+		return ""
 	}
 
 	const args = ["--json", "-e", regex]
@@ -165,7 +194,7 @@ export async function regexSearchFiles(
 		output = await execRipgrep(rgPath, args)
 	} catch (error) {
 		console.error("Error executing ripgrep:", error)
-		return "No results found"
+		return ""
 	}
 
 	const results: SearchFileResult[] = []

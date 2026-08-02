@@ -81,6 +81,8 @@ export interface ExtensionMessage {
 		| "modes"
 		| "taskWithAggregatedCosts"
 		| "openAiCodexRateLimits"
+		// Git status
+		| "gitStatus"
 		// Worktree response types
 		| "worktreeList"
 		| "worktreeResult"
@@ -185,6 +187,18 @@ export interface ExtensionMessage {
 	isMultiRoot?: boolean
 	isSubfolder?: boolean
 	gitRootPath?: string
+	// Git status for current workspace
+	gitStatus?: {
+		added: number
+		deleted: number
+		modified: number
+		renamed: number
+		copied: number
+		untracked: number
+		unknown: number
+		ignored: number
+		staged: number
+	}
 	worktreeResult?: {
 		success: boolean
 		message: string
@@ -344,6 +358,16 @@ export type ExtensionState = Pick<
 	 * (captured during async getStateToPostToWebview) from overwriting newer messages.
 	 */
 	clineMessagesSeq?: number
+	gitStatus?: {
+		added: number
+		deleted: number
+		modified: number
+		renamed: number
+		copied: number
+		untracked: number
+		unknown: number
+		staged: number
+	}
 }
 
 export interface Command {
@@ -514,6 +538,7 @@ export interface WebviewMessage {
 		| "createWorktreeInclude"
 		| "checkoutBranch"
 		| "browseForWorktreePath"
+		| "getGitStatus"
 		// Skills messages
 		| "requestSkills"
 		| "createSkill"

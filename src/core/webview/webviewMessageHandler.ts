@@ -52,6 +52,7 @@ import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { fileExistsAtPath } from "../../utils/fs"
 import { playTts, setTtsEnabled, setTtsSpeed, stopTts } from "../../utils/tts"
 import { searchCommits } from "../../utils/git"
+import { getGitStatus } from "../../utils/git"
 import { exportSettings, importSettingsWithFeedback } from "../config/importExport"
 import { getOpenAiModels } from "../../api/providers/openai"
 import { getVsCodeLmModels } from "../../api/providers/vscode-lm"
@@ -3185,7 +3186,7 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 					canSelectFiles: false,
 					canSelectFolders: true,
 					canSelectMany: false,
-					openLabel: t("worktrees:selectWorktreeLocation"),
+					openLabel: t("worktrees:selectFolderForWorktree"),
 					title: t("worktrees:selectFolderForWorktree"),
 					defaultUri: vscode.workspace.workspaceFolders?.[0]?.uri
 						? vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, "..")
@@ -3202,6 +3203,77 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 			} catch (error) {
 				const errorMessage = error instanceof Error ? error.message : String(error)
 				provider.log(`Error opening folder picker: ${errorMessage}`)
+			}
+
+			break
+		}
+
+		case "getGitStatus": {
+			try {
+				const cwd = provider.cwd
+				const gitStatusText = await getGitStatus(cwd)
+
+				if (!gitStatusText) {
+					await provider.postMessageToWebview({
+						type: "gitStatus",
+						gitStatus: undefined,
+					})
+					break
+				}
+
+				const lines = gitStatusText.split("\n")
+				const branchLine = lines[0] || ""
+				const fileLines = lines.slice(1)
+
+				let added = 0
+				let deleted = 0
+				let modified = 0
+				let renamed = 0
+				let copied = 0
+				let untracked = 0
+				let unknown = 0
+				let staged = 0
+
+				for (const line of fileLines) {
+					if (!line.trim()) {
+						continue
+					}
+
+					const status = line.slice(0, 2)
+					const x = status[0]
+					const y = status[1]
+
+					if (x === "A" || y === "A") added++
+					if (x === "D" || y === "D") deleted++
+					if (x === "M" || y === "M") modified++
+					if (x === "R" || y === "R") renamed++
+					if (x === "C" || y === "C") copied++
+					if (x === "?" || y === "?") untracked++
+					if (x === "!" || y === "!") unknown++
+					if (x !== " " && x !== "?" && x !== "!") staged++
+				}
+
+				await provider.postMessageToWebview({
+					type: "gitStatus",
+					gitStatus: {
+						added,
+						deleted,
+						modified,
+						renamed,
+						copied,
+						untracked,
+						unknown,
+						staged,
+					},
+				})
+			} catch (error) {
+				const errorMessage = error instanceof Error ? error.message : String(error)
+				provider.log(`Error getting git status: ${errorMessage}`)
+				await provider.postMessageToWebview({
+					type: "gitStatus",
+					gitStatus: undefined,
+					error: errorMessage,
+				})
 			}
 
 			break

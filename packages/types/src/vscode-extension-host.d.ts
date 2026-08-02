@@ -79,6 +79,7 @@ export interface ExtensionMessage {
 		| "modes"
 		| "taskWithAggregatedCosts"
 		| "openAiCodexRateLimits"
+		| "gitStatus"
 		| "worktreeList"
 		| "worktreeResult"
 		| "worktreeCopyProgress"
@@ -223,6 +224,16 @@ export interface ExtensionMessage {
 	worktreeIncludeStatus?: WorktreeIncludeStatus
 	hasGitignore?: boolean
 	gitignoreContent?: string
+	gitStatus?: {
+		added: number
+		deleted: number
+		modified: number
+		renamed: number
+		copied: number
+		untracked: number
+		unknown: number
+		staged: number
+	}
 	branch?: string
 	hasWorktreeInclude?: boolean
 	copyProgressBytesCopied?: number
@@ -344,6 +355,16 @@ export type ExtensionState = Pick<
 	 * (captured during async getStateToPostToWebview) from overwriting newer messages.
 	 */
 	clineMessagesSeq?: number
+	gitStatus?: {
+		added: number
+		deleted: number
+		modified: number
+		renamed: number
+		copied: number
+		untracked: number
+		unknown: number
+		staged: number
+	}
 }
 export interface Command {
 	name: string
@@ -505,6 +526,7 @@ export interface WebviewMessage {
 		| "createWorktreeInclude"
 		| "checkoutBranch"
 		| "browseForWorktreePath"
+		| "getGitStatus"
 		| "requestSkills"
 		| "createSkill"
 		| "deleteSkill"

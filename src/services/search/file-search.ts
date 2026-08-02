@@ -21,7 +21,8 @@ export async function executeRipgrep({
 	const rgPath = await getBinPath(vscode.env.appRoot)
 
 	if (!rgPath) {
-		throw new Error(`ripgrep not found: ${rgPath}`)
+		console.warn("ripgrep binary not found; returning empty search results")
+		return []
 	}
 
 	return new Promise((resolve, reject) => {

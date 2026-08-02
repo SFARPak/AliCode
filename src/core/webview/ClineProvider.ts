@@ -2164,11 +2164,16 @@ export class ClineProvider
 				: "openrouter"
 
 		// Build the apiConfiguration object combining state values and secrets.
-		const providerSettings = this.contextProxy.getProviderSettings()
+		let providerSettings = this.contextProxy.getProviderSettings()
 
-		// Ensure apiProvider is set properly if not already in state
-		if (!providerSettings.apiProvider) {
-			providerSettings.apiProvider = apiProvider
+		// Ensure apiProvider is set properly, overriding retired providers.
+		// Retired providers (e.g. "ali") can no longer build a working API handler,
+		// so we silently fall back to a working provider instead of crashing task creation.
+		if (!providerSettings.apiProvider || isRetiredProvider(providerSettings.apiProvider)) {
+			providerSettings = { ...providerSettings, apiProvider }
+			this.contextProxy
+				.setProviderSettings(providerSettings)
+				.catch((error) => this.log(`Failed to migrate retired provider to ${apiProvider}: ${error}`))
 		}
 		if (providerSettings.apiProvider === "openrouter" && !providerSettings.openRouterModelId) {
 			providerSettings.openRouterModelId = openRouterDefaultModelId
@@ -2642,7 +2647,21 @@ export class ClineProvider
 		})
 
 		await this.addClineToStack(task)
-		task.start()
+		try {
+			await task.start()
+		} catch (error) {
+			// Remove the failed task from the stack so the UI isn't stuck on a dead task.
+			await this.removeClineFromStack().catch(() => {
+				// Non-fatal: the task may not have been added to history yet.
+			})
+
+			const message = error instanceof Error ? error.message : "Failed to start task. Please try again."
+			vscode.window.showErrorMessage(`Failed to start task: ${message}`)
+
+			// Reset the webview UI so the user can try again.
+			await this.postMessageToWebview({ type: "invoke", invoke: "newChat" })
+			throw error
+		}
 
 		this.log(
 			`[createTask] ${task.parentTask ? "child" : "parent"} task ${task.taskId}.${task.instanceId} instantiated`,
@@ -2925,7 +2944,15 @@ export class ClineProvider
 		}
 
 		// 6) Start the child task now that parent metadata is safely persisted.
-		child.start()
+		try {
+			await child.start()
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "Failed to start delegated task. Please try again."
+			this.log(`[delegateParentAndOpenChild] Child task failed to start: ${message}`)
+			vscode.window.showErrorMessage(`Delegated task failed to start: ${message}`)
+			// Re-throw so the caller knows the delegation did not complete.
+			throw error
+		}
 
 		// 7) Emit TaskDelegated (provider-level)
 		try {

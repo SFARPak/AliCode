@@ -46,6 +46,11 @@ export async function listFiles(dirPath: string, recursive: boolean, limit: numb
 	// Get ripgrep path
 	const rgPath = await getRipgrepPath()
 
+	if (!rgPath) {
+		// Fallback: use basic directory listing when ripgrep is unavailable.
+		return listFilesWithoutRipgrep(dirPath, recursive, limit)
+	}
+
 	if (!recursive) {
 		// For non-recursive, use the existing approach
 		const files = await listFilesWithRipgrep(rgPath, dirPath, false, limit)
@@ -183,12 +188,12 @@ async function handleSpecialDirectories(dirPath: string): Promise<[string[], boo
 /**
  * Get the path to the ripgrep binary
  */
-async function getRipgrepPath(): Promise<string> {
+async function getRipgrepPath(): Promise<string | undefined> {
 	const vscodeAppRoot = vscode.env.appRoot
 	const rgPath = await getBinPath(vscodeAppRoot)
 
 	if (!rgPath) {
-		throw new Error("Could not find ripgrep binary")
+		return undefined
 	}
 
 	return rgPath
@@ -616,6 +621,62 @@ function isDirectoryExplicitlyIgnored(dirName: string): boolean {
 	}
 
 	return false
+}
+
+/**
+ * Basic fallback directory listing when ripgrep is unavailable.
+ */
+async function listFilesWithoutRipgrep(
+	dirPath: string,
+	recursive: boolean,
+	limit: number,
+): Promise<[string[], boolean]> {
+	const results: string[] = []
+	const directories: string[] = []
+	const dirsToIgnore = new Set(DIRS_TO_IGNORE.filter((p) => p !== ".*"))
+
+	async function scan(currentPath: string): Promise<boolean> {
+		if (results.length >= limit) {
+			return true
+		}
+
+		let entries
+		try {
+			entries = await fs.promises.readdir(currentPath, { withFileTypes: true })
+		} catch {
+			return false
+		}
+
+		for (const entry of entries) {
+			if (results.length >= limit) {
+				return true
+			}
+
+			const fullPath = path.join(currentPath, entry.name)
+			const relativePath = path.relative(dirPath, fullPath)
+
+			if (entry.isDirectory()) {
+				if (dirsToIgnore.has(entry.name)) {
+					continue
+				}
+
+				directories.push(relativePath.endsWith("/") ? relativePath : `${relativePath}/`)
+
+				if (recursive) {
+					await scan(fullPath)
+				}
+			} else {
+				results.push(relativePath)
+			}
+		}
+
+		return false
+	}
+
+	await scan(dirPath)
+
+	const [combined, limitReached] = formatAndCombineResults(results, directories, limit)
+	return [combined, limitReached]
 }
 
 /**
