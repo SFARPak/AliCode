@@ -144,6 +144,17 @@
 	"lockApiConfigAcrossModes": "Lock API configuration across all modes in this workspace",
 	"unlockApiConfigAcrossModes": "API configuration is locked across all modes in this workspace (click to unlock)",
 	"enhancePrompt": "Enhance prompt with additional context",
+	"selectParallelAgents": "Select number of parallel agents",
+	"parallelAgents": {
+		"title": "Parallel Agents",
+		"description": "Maximum number of agents to run in parallel for task delegation",
+		"tooltip": "Configure parallel agent limit",
+		"label": "Parallel Agents: {{count}}",
+		"agents": "agents",
+		"increase": "Increase parallel agents",
+		"decrease": "Decrease parallel agents",
+		"settings": "Settings"
+	},
 	"modeSelector": {
 		"title": "Modes",
 		"settings": "Mode Settings",

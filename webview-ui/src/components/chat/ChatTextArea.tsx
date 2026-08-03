@@ -28,10 +28,48 @@ import Thumbnails from "../common/Thumbnails"
 import { ModeSelector } from "./ModeSelector"
 import { ApiConfigSelector } from "./ApiConfigSelector"
 import { AutoApproveDropdown } from "./AutoApproveDropdown"
+import { ParallelAgentsSelector } from "./ParallelAgentsSelector"
 import { MAX_IMAGES_PER_MESSAGE } from "./ChatView"
 import ContextMenu from "./ContextMenu"
 import { IndexingStatusBadge } from "./IndexingStatusBadge"
 import { usePromptHistory } from "./hooks/usePromptHistory"
+
+/**
+ * Converts a TIFF data URL to a PNG data URL using a canvas element.
+ * TIFF images from macOS screenshots are not natively supported in browsers,
+ * so we need to render them to a canvas and export as PNG.
+ */
+async function convertTiffToPng(tiffDataUrl: string): Promise<string | null> {
+	try {
+		return await new Promise<string | null>((resolve) => {
+			const img = new window.Image()
+			img.onload = () => {
+				try {
+					const canvas = document.createElement("canvas")
+					canvas.width = img.naturalWidth
+					canvas.height = img.naturalHeight
+					const ctx = canvas.getContext("2d")
+					if (!ctx) {
+						resolve(null)
+						return
+					}
+					ctx.drawImage(img, 0, 0)
+					resolve(canvas.toDataURL("image/png"))
+				} catch {
+					resolve(null)
+				}
+			}
+			img.onerror = () => {
+				// If the browser can't decode the TIFF, try reading it as ArrayBuffer
+				// and creating a blob URL for better compatibility
+				resolve(null)
+			}
+			img.src = tiffDataUrl
+		})
+	} catch {
+		return null
+	}
+}
 
 interface ChatTextAreaProps {
 	inputValue: string
@@ -98,6 +136,8 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			enterBehavior,
 			lockApiConfigAcrossModes,
 		} = useExtensionState()
+
+		const { maxParallelAgents, setMaxParallelAgents } = useExtensionState()
 
 		// Find the ID and display text for the currently selected API configuration.
 		const { currentConfigId, displayName } = useMemo(() => {
@@ -694,7 +734,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					return
 				}
 
-				const acceptedTypes = ["png", "jpeg", "webp"]
+				const acceptedTypes = ["png", "jpeg", "webp", "tiff", "bmp", "gif"]
 
 				const imageItems = Array.from(items).filter((item) => {
 					const [type, subtype] = item.type.split("/")
@@ -760,8 +800,21 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						})
 					})
 
-					const imageDataArray = await Promise.all(imagePromises)
-					const dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
+					let imageDataArray = await Promise.all(imagePromises)
+					let dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
+
+					// Convert TIFF data URLs to PNG since TIFF is not natively supported in browsers
+					if (dataUrls.length > 0) {
+						const convertedDataUrls = await Promise.all(
+							dataUrls.map(async (dataUrl: string) => {
+								if (dataUrl.startsWith("data:image/tiff")) {
+									return await convertTiffToPng(dataUrl)
+								}
+								return dataUrl
+							}),
+						)
+						dataUrls = convertedDataUrls.filter((url): url is string => url !== null)
+					}
 
 					if (dataUrls.length > 0) {
 						setSelectedImages((prevImages) => [...prevImages, ...dataUrls].slice(0, MAX_IMAGES_PER_MESSAGE))
@@ -886,7 +939,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				const files = Array.from(e.dataTransfer.files)
 
 				if (files.length > 0) {
-					const acceptedTypes = ["png", "jpeg", "webp"]
+					const acceptedTypes = ["png", "jpeg", "webp", "tiff", "bmp", "gif"]
 
 					const imageFiles = files.filter((file) => {
 						const [type, subtype] = file.type.split("/")
@@ -950,7 +1003,20 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							})
 
 							const imageDataArray = await Promise.all(imagePromises)
-							const dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
+							let dataUrls = imageDataArray.filter((dataUrl): dataUrl is string => dataUrl !== null)
+
+							// Convert TIFF data URLs to PNG since TIFF is not natively supported in browsers
+							if (dataUrls.length > 0) {
+								const convertedDataUrls = await Promise.all(
+									dataUrls.map(async (dataUrl: string) => {
+										if (dataUrl.startsWith("data:image/tiff")) {
+											return await convertTiffToPng(dataUrl)
+										}
+										return dataUrl
+									}),
+								)
+								dataUrls = convertedDataUrls.filter((url): url is string => url !== null)
+							}
 
 							if (dataUrls.length > 0) {
 								setSelectedImages((prevImages) =>
@@ -1307,15 +1373,12 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 											"rounded-full min-w-[28px] min-h-[28px]",
 											"text-vscode-descriptionForeground hover:text-vscode-foreground",
 											"transition-all duration-200",
-											isEditMode || isStreaming || hasInputContent
-												? "opacity-100 hover:opacity-100 pointer-events-auto"
-												: "opacity-0 pointer-events-none",
-											(isEditMode || isStreaming || hasInputContent) &&
-												"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
+											// Always visible - Stop button should always be accessible
+											"opacity-100 hover:opacity-100 pointer-events-auto",
+											"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
 											"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-											(isEditMode || isStreaming || hasInputContent) &&
-												"active:bg-[rgba(255,255,255,0.1)]",
-											(isEditMode || isStreaming || hasInputContent) && "cursor-pointer",
+											"active:bg-[rgba(255,255,255,0.1)]",
+											"cursor-pointer",
 											isStreaming &&
 												"bg-vscode-button-background hover:bg-vscode-button-background",
 										)}>
@@ -1384,6 +1447,11 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							onToggleLockApiConfig={handleToggleLockApiConfig}
 						/>
 						<AutoApproveDropdown triggerClassName="min-w-[28px] text-ellipsis overflow-hidden flex-shrink" />
+						<ParallelAgentsSelector
+							value={maxParallelAgents}
+							onChange={setMaxParallelAgents}
+							triggerClassName="min-w-[28px] text-ellipsis overflow-hidden flex-shrink"
+						/>
 					</div>
 					<div className={cn("flex flex-shrink-0 items-center gap-0.5 h-5 leading-none", "pr-2")}>
 						{isTtsPlaying && (

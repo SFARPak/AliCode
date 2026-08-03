@@ -119,6 +119,12 @@ export const globalSettingsSchema = z.object({
 	autoCondenseContextPercent: z.number().optional(),
 
 	/**
+	 * Maximum number of parallel agents to use for task delegation.
+	 * @default 1
+	 */
+	maxParallelAgents: z.number().int().min(1).max(10).optional(),
+
+	/**
 	 * Whether to include current time in the environment details
 	 * @default true
 	 */
