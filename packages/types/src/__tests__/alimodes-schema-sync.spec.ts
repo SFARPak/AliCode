@@ -3,23 +3,23 @@ import * as fs from "fs"
 import * as path from "path"
 import { fileURLToPath } from "url"
 
-import { generateRoomodesJsonSchema } from "../roomodes-schema.js"
+import { generateAlimodesJsonSchema } from "../alimodes-schema.js"
 
 /**
- * This test verifies that the checked-in schemas/roomodes.json matches what
+ * This test verifies that the checked-in schemas/alimodes.json matches what
  * would be generated from the current Zod schemas. If this test fails, run:
  *
  *   pnpm --filter @ali-code/types generate:schema
  *
  * to regenerate the schema file.
  */
-describe("roomodes schema sync", () => {
+describe("alimodes schema sync", () => {
 	it("should match the dynamically generated schema from Zod types", () => {
 		const __dirname = path.dirname(fileURLToPath(import.meta.url))
-		const schemaPath = path.resolve(__dirname, "../../../../schemas/roomodes.json")
+		const schemaPath = path.resolve(__dirname, "../../../../schemas/alimodes.json")
 		const checkedIn = JSON.parse(fs.readFileSync(schemaPath, "utf-8"))
 
-		const generated = generateRoomodesJsonSchema()
+		const generated = generateAlimodesJsonSchema()
 
 		expect(checkedIn).toEqual(generated)
 	})

@@ -1,10 +1,11 @@
-import type { z as z4 } from "zod/v4"
 import { z } from "zod"
 
 /**
- * Re-export Zod v4's JSONSchema type for convenience
+ * A generic JSON Schema representation (draft-07 / 2020-12).
+ * This replaces the previous `zod/v4` type import, since the project
+ * uses `zod@3` which does not have the `z4.core.JSONSchema.JSONSchema` type.
  */
-export type JsonSchema = z4.core.JSONSchema.JSONSchema
+export type JsonSchema = Record<string, unknown>
 
 /**
  * Set of format values supported by OpenAI's Structured Outputs (strict mode).

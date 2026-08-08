@@ -20,7 +20,7 @@ export class IpcClient extends EventEmitter<IpcClientEvents> {
 	private _isConnected = false
 	private _clientId?: string
 
-	constructor(socketPath: string, log = console.log) {
+	constructor(socketPath: string, log: (...args: unknown[]) => void = console.log) {
 		super()
 
 		this._socketPath = socketPath

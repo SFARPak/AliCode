@@ -1,8 +1,9 @@
-import type { ZodType, z } from "zod/v4"
+import { type ZodTypeAny, z } from "zod"
 import { TaskLike } from "./task.js"
-export { z as parametersSchema } from "zod/v4"
-export type CustomToolParametersSchema = ZodType
-export type SerializedCustomToolParameters = z.core.JSONSchema.JSONSchema
+export { z as parametersSchema } from "zod"
+export declare function toJSONSchema(schema: CustomToolParametersSchema): Record<string, unknown>
+export type CustomToolParametersSchema = ZodTypeAny
+export type SerializedCustomToolParameters = Record<string, unknown>
 /**
  * Context provided to tool execute functions.
  */

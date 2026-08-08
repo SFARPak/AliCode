@@ -18,7 +18,7 @@ describe("roomodes JSON schema", () => {
 
 	beforeAll(() => {
 		const __dirname = path.dirname(fileURLToPath(import.meta.url))
-		const schemaPath = path.resolve(__dirname, "../../../../schemas/roomodes.json")
+		const schemaPath = path.resolve(__dirname, "../../../../schemas/alimodes.json")
 		schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"))
 		const ajv = new Ajv.default({ strict: false })
 		validate = ajv.compile(schema)

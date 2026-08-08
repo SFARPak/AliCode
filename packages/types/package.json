@@ -17,15 +17,16 @@
 		"lint": "eslint src --ext=ts --max-warnings=0",
 		"check-types": "tsc --noEmit",
 		"test": "vitest run",
-		"build": "tsup",
-		"build:watch": "tsup --watch --outDir npm/dist --onSuccess 'echo ✅ Types rebuilt to npm/dist'",
+		"build": "NODE_OPTIONS=--max-old-space-size=8192 tsup",
+		"build:watch": "NODE_OPTIONS=--max-old-space-size=8192 tsup --watch --outDir npm/dist --onSuccess 'echo ✅ Types rebuilt to npm/dist'",
 		"npm:publish": "node scripts/publish-npm.cjs",
 		"clean": "rimraf dist .turbo",
-		"generate:schema": "tsx scripts/generate-roomodes-schema.ts"
+		"generate:schema": "tsx scripts/generate-alimodes-schema.ts"
 	},
 	"dependencies": {
 		"ai-sdk-provider-poe": "2.0.18",
-		"zod": "3.25.76"
+		"zod": "3.25.76",
+		"zod-to-json-schema": "^3.25.1"
 	},
 	"devDependencies": {
 		"@ali-code/config-eslint": "workspace:^",
@@ -34,7 +35,6 @@
 		"globals": "^16.3.0",
 		"tsup": "^8.4.0",
 		"ajv": "^8.18.0",
-		"vitest": "^3.2.3",
-		"zod-to-json-schema": "^3.25.1"
+		"vitest": "^3.2.3"
 	}
 }

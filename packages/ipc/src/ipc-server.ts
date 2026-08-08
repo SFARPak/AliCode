@@ -20,7 +20,7 @@ export class IpcServer extends EventEmitter<IpcServerEvents> implements RooCodeI
 
 	private _isListening = false
 
-	constructor(socketPath: string, log = console.log) {
+	constructor(socketPath: string, log: (...args: unknown[]) => void = console.log) {
 		super()
 
 		this._socketPath = socketPath

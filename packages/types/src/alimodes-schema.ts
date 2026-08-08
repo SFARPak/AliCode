@@ -8,7 +8,7 @@
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
-import { toolGroups, deprecatedToolGroups } from "./tool.js"
+import { deprecatedToolGroups, toolGroups } from "./tool.js"
 import { groupOptionsSchema, modeConfigSchema } from "./mode.js"
 
 // Build a ToolGroup enum that includes deprecated groups so existing configs
@@ -50,7 +50,7 @@ export function generateAlimodesJsonSchema(): Record<string, unknown> {
 		target: "jsonSchema7",
 	}) as Record<string, unknown>
 
-	jsonSchema["$id"] = "https://github.com/RooCodeInc/Roo-Code/blob/main/schemas/roomodes.json"
+	jsonSchema["$id"] = "https://github.com/RooCodeInc/Roo-Code/blob/main/schemas/alimodes.json"
 	jsonSchema["title"] = "Ali Code Custom Modes"
 	jsonSchema["description"] = "Schema for .alimodes configuration files used by Ali Code to define custom modes."
 

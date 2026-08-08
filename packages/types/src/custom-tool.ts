@@ -1,14 +1,28 @@
-import type { ZodType, z } from "zod/v4"
+import { zodToJsonSchema } from "zod-to-json-schema"
+
+import { type ZodTypeAny, z } from "zod"
 
 import { TaskLike } from "./task.js"
 
 // Re-export from Zod for convenience.
 
-export { z as parametersSchema } from "zod/v4"
+export { z as parametersSchema } from "zod"
 
-export type CustomToolParametersSchema = ZodType
+/**
+ * Converts a Zod schema to a JSON Schema (draft-07) representation.
+ * This is a thin wrapper around `zod-to-json-schema` to provide
+ * a consistent API across zod versions.
+ */
+export function toJSONSchema(schema: CustomToolParametersSchema): Record<string, unknown> {
+	return zodToJsonSchema(schema, { $refStrategy: "none" }) as Record<string, unknown>
+}
 
-export type SerializedCustomToolParameters = z.core.JSONSchema.JSONSchema
+export type CustomToolParametersSchema = ZodTypeAny
+
+// A minimal JSON Schema (draft-07) representation for serialized tool parameters.
+// In zod v3 (used by this project), zod-to-json-schema is used to convert schemas
+// to JSON Schema. This type matches the output shape.
+export type SerializedCustomToolParameters = Record<string, unknown>
 
 /**
  * Context provided to tool execute functions.

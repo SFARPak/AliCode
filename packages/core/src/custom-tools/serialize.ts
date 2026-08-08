@@ -1,4 +1,4 @@
-import { type SerializedCustomToolDefinition, parametersSchema } from "@ali-code/types"
+import { type SerializedCustomToolDefinition, toJSONSchema } from "@ali-code/types"
 
 import type { StoredCustomTool } from "./types.js"
 
@@ -11,7 +11,7 @@ export function serializeCustomTool({
 	return {
 		name,
 		description,
-		parameters: parameters ? parametersSchema.toJSONSchema(parameters) : undefined,
+		parameters: parameters ? toJSONSchema(parameters) : undefined,
 		source,
 	}
 }

@@ -1,5 +1,14 @@
 // Re-export from Zod for convenience.
-export { z as parametersSchema } from "zod/v4"
+export { z as parametersSchema } from "zod"
+import { zodToJsonSchema } from "zod-to-json-schema"
+/**
+ * Converts a Zod schema to a JSON Schema (draft-07) representation.
+ * This is a thin wrapper around `zod-to-json-schema` to provide
+ * a consistent API across zod versions.
+ */
+export function toJSONSchema(schema) {
+	return zodToJsonSchema(schema, { $refStrategy: "none" })
+}
 /**
  * Helper function to define a custom tool with proper type inference.
  *

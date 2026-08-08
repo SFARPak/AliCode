@@ -90,7 +90,7 @@
 	"required": ["customModes"],
 	"additionalProperties": false,
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://github.com/RooCodeInc/Roo-Code/blob/main/schemas/roomodes.json",
+	"$id": "https://github.com/RooCodeInc/Roo-Code/blob/main/schemas/alimodes.json",
 	"title": "Ali Code Custom Modes",
-	"description": "Schema for .roomodes configuration files used by Ali Code to define custom modes."
+	"description": "Schema for .alimodes configuration files used by Ali Code to define custom modes."
 }
