@@ -7,7 +7,7 @@ export default defineConfig({
 		// Disable worker to avoid ERR_WORKER_OUT_OF_MEMORY
 		// The main Node process has more memory available via NODE_OPTIONS
 		worker: false,
-	},
+	} as any,
 	splitting: false,
 	sourcemap: true,
 	clean: true,
