@@ -59,6 +59,11 @@ export declare class ContextProxy {
 	 * Migrates old nested openRouterImageGenerationSettings to the new flattened structure
 	 */
 	private migrateImageGenerationSettings
+	/**
+	 * Migrates provider API keys that were previously stored in global state
+	 * into secret storage now that they are recognized as secret keys.
+	 */
+	private migrateProviderApiKeysToSecrets
 	get extensionUri(): vscode.Uri
 	get extensionPath(): string
 	get globalStorageUri(): vscode.Uri

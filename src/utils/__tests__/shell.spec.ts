@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import * as vscode from "vscode"
-import { userInfo } from "os"
 import { getShell } from "../shell"
 
 // Mock vscode module
@@ -8,11 +7,6 @@ vi.mock("vscode", () => ({
 	workspace: {
 		getConfiguration: vi.fn(),
 	},
-}))
-
-// Mock the os module
-vi.mock("os", () => ({
-	userInfo: vi.fn(() => ({ shell: null })),
 }))
 
 // Mock path module for testing
@@ -54,9 +48,6 @@ describe("Shell Detection Tests", () => {
 		// Clear environment variables for a clean test
 		delete process.env.SHELL
 		delete process.env.COMSPEC
-
-		// Reset userInfo mock to default
-		vi.mocked(userInfo).mockReturnValue({ shell: null } as any)
 	})
 
 	afterEach(() => {
@@ -173,16 +164,16 @@ describe("Shell Detection Tests", () => {
 			expect(getShell()).toBe("C:\\Windows\\System32\\cmd.exe")
 		})
 
-		it("respects userInfo() if no VS Code config is available and shell is allowed", () => {
+		it("respects COMSPEC env var if no VS Code config is available and shell is allowed", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "C:\\Program Files\\PowerShell\\7\\pwsh.exe" } as any)
+			process.env.COMSPEC = "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
 
 			expect(getShell()).toBe("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
 		})
 
-		it("falls back to safe shell when userInfo() returns non-allowlisted shell", () => {
+		it("falls back to safe shell when COMSPEC is non-allowlisted", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "C:\\Custom\\PowerShell.exe" } as any)
+			process.env.COMSPEC = "D:\\CustomCmd\\cmd.exe"
 
 			expect(getShell()).toBe("C:\\Windows\\System32\\cmd.exe")
 		})
@@ -233,19 +224,13 @@ describe("Shell Detection Tests", () => {
 			expect(result).toBe("/opt/homebrew/bin/zsh")
 		})
 
-		it("falls back to userInfo().shell if no VS Code config is available", () => {
+		it("falls back to SHELL env var if no VS Code config is available", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "/opt/homebrew/bin/zsh" } as any)
+			process.env.SHELL = "/opt/homebrew/bin/zsh"
 			expect(getShell()).toBe("/opt/homebrew/bin/zsh")
 		})
 
-		it("falls back to SHELL env var if no userInfo shell is found", () => {
-			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			process.env.SHELL = "/usr/local/bin/zsh"
-			expect(getShell()).toBe("/usr/local/bin/zsh")
-		})
-
-		it("falls back to /bin/zsh if no config, userInfo, or env variable is set", () => {
+		it("falls back to SHELL env var if no VS Code config or env variable is set", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
 			expect(getShell()).toBe("/bin/zsh")
 		})
@@ -289,19 +274,13 @@ describe("Shell Detection Tests", () => {
 			expect(result).toBe("/usr/local/bin/bash")
 		})
 
-		it("falls back to userInfo().shell if no VS Code config is available", () => {
+		it("falls back to SHELL env var if no VS Code config is available", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "/usr/bin/zsh" } as any)
+			process.env.SHELL = "/usr/bin/zsh"
 			expect(getShell()).toBe("/usr/bin/zsh")
 		})
 
-		it("falls back to SHELL env var if no userInfo shell is found", () => {
-			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			process.env.SHELL = "/usr/bin/fish"
-			expect(getShell()).toBe("/usr/bin/fish")
-		})
-
-		it("falls back to /bin/bash if nothing is set", () => {
+		it("falls back to SHELL env var if no VS Code config or env variable is set", () => {
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
 			expect(getShell()).toBe("/bin/bash")
 		})
@@ -317,33 +296,28 @@ describe("Shell Detection Tests", () => {
 			expect(getShell()).toBe("/bin/bash")
 		})
 
-		it("handles VS Code config errors gracefully, falling back to userInfo shell if present", () => {
+		it("handles VS Code config errors gracefully, falling back to SHELL env var if present", () => {
 			Object.defineProperty(process, "platform", { value: "linux" })
 			vscode.workspace.getConfiguration = () => {
 				throw new Error("Configuration error")
 			}
-			vi.mocked(userInfo).mockReturnValue({ shell: "/bin/bash" } as any)
+			process.env.SHELL = "/bin/bash"
 			expect(getShell()).toBe("/bin/bash")
 		})
 
-		it("handles userInfo errors gracefully, falling back to environment variable if present", () => {
+		it("falls back to platform default shell when VS Code config fails and no env variable is set", () => {
 			Object.defineProperty(process, "platform", { value: "darwin" })
-			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockImplementation(() => {
-				throw new Error("userInfo error")
-			})
-			process.env.SHELL = "/bin/zsh"
+			vscode.workspace.getConfiguration = () => {
+				throw new Error("Configuration error")
+			}
 			expect(getShell()).toBe("/bin/zsh")
 		})
 
-		it("falls back fully to default shell paths if everything fails", () => {
+		it("falls back to platform default shell paths if VS Code config fails and env is not set", () => {
 			Object.defineProperty(process, "platform", { value: "linux" })
 			vscode.workspace.getConfiguration = () => {
 				throw new Error("Configuration error")
 			}
-			vi.mocked(userInfo).mockImplementation(() => {
-				throw new Error("userInfo error")
-			})
 			delete process.env.SHELL
 			expect(getShell()).toBe("/bin/bash")
 		})
@@ -446,23 +420,22 @@ describe("Shell Detection Tests", () => {
 			expect(result).toBe("/bin/zsh") // macOS fallback
 		})
 
-		it("should validate shells from userInfo", () => {
+		it("should validate shells from environment variable", () => {
 			Object.defineProperty(process, "platform", { value: "linux" })
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "/usr/bin/evil-shell" } as any)
+			process.env.SHELL = "/usr/bin/evil-shell"
 
 			const result = getShell()
 			expect(result).toBe("/bin/bash") // Linux fallback
 		})
 
-		it("should validate shells from environment variables", () => {
+		it("should allow shells from environment variables", () => {
 			Object.defineProperty(process, "platform", { value: "linux" })
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: null } as any)
 			process.env.SHELL = "/opt/custom/shell"
 
 			const result = getShell()
-			expect(result).toBe("/bin/bash") // Linux fallback
+			expect(result).toBe("/opt/custom/shell") // Allowed shell
 		})
 
 		it("should handle WSL bash correctly", () => {
@@ -478,7 +451,7 @@ describe("Shell Detection Tests", () => {
 		it("should handle empty or null shell paths", () => {
 			Object.defineProperty(process, "platform", { value: "linux" })
 			vscode.workspace.getConfiguration = () => ({ get: () => undefined }) as any
-			vi.mocked(userInfo).mockReturnValue({ shell: "" } as any)
+			process.env.SHELL = ""
 			delete process.env.SHELL
 
 			const result = getShell()

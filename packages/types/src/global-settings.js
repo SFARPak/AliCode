@@ -220,6 +220,8 @@ export const SECRET_STATE_KEYS = [
 	"fireworksApiKey",
 	"vercelAiGatewayApiKey",
 	"basetenApiKey",
+	"nvidiaNimApiKey",
+	"poeApiKey",
 ]
 // Global secrets that are part of GlobalSettings (not ProviderSettings)
 export const GLOBAL_SECRET_KEYS = [

@@ -5,6 +5,7 @@ import process from "process"
 import type { AliTerminal } from "./types"
 import { BaseTerminal } from "./BaseTerminal"
 import { BaseTerminalProcess } from "./BaseTerminalProcess"
+import { getShell, isShellAllowed } from "../../utils/shell"
 
 export class ExecaTerminalProcess extends BaseTerminalProcess {
 	private terminalRef: WeakRef<AliTerminal>
@@ -40,7 +41,10 @@ export class ExecaTerminalProcess extends BaseTerminalProcess {
 			this.isHot = true
 
 			this.subprocess = execa({
-				shell: BaseTerminal.getExecaShellPath() || true,
+				shell: (() => {
+					const execaShellPath = BaseTerminal.getExecaShellPath()
+					return execaShellPath && isShellAllowed(execaShellPath) ? execaShellPath : getShell()
+				})(),
 				cwd: this.terminal.getCurrentWorkingDirectory(),
 				all: true,
 				// Ignore stdin to ensure non-interactive mode and prevent hanging

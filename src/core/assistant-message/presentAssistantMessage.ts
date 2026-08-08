@@ -778,6 +778,42 @@ export async function presentAssistantMessage(cline: Task) {
 					break
 				case "new_task":
 					await checkpointSaveAndMark(cline)
+
+					// CRITICAL FIX: Save assistant message to history BEFORE executing new_task
+					// to avoid deadlock in flushPendingToolResultsToHistory().
+					// When new_task triggers delegation, it calls flushPendingToolResultsToHistory()
+					// which waits for assistantMessageSavedToHistory. But the flag is only set
+					// after the streaming loop completes (in recursivelyMakeClineRequests), creating
+					// a deadlock. We must save the assistant message (with new_task isolation
+					// truncation applied) before executing new_task.
+					const newTaskIndex = cline.assistantMessageContent.findIndex(
+						(b) => b.type === "tool_use" && b.name === "new_task",
+					)
+					let assistantContentToSave = cline.assistantMessageContent
+					if (newTaskIndex !== -1 && newTaskIndex < cline.assistantMessageContent.length - 1) {
+						// Truncate tools after new_task (new_task isolation enforcement)
+						const truncatedTools = cline.assistantMessageContent.slice(newTaskIndex + 1)
+						assistantContentToSave = cline.assistantMessageContent.slice(0, newTaskIndex + 1)
+
+						// Pre-inject error tool_results for truncated tools
+						// This ensures they have tool_result blocks in userMessageContent
+						// when flushPendingToolResultsToHistory() is called during delegation
+						for (const tool of truncatedTools) {
+							if (tool.type === "tool_use" && (tool as any).id) {
+								cline.pushToolResultToUserContent({
+									type: "tool_result",
+									tool_use_id: sanitizeToolUseId((tool as any).id),
+									content:
+										"This tool was not executed because new_task was called in the same message turn. The new_task tool must be the last tool in a message.",
+									is_error: true,
+								})
+							}
+						}
+					}
+
+					await cline.addToApiConversationHistory({ role: "assistant", content: assistantContentToSave })
+					cline.assistantMessageSavedToHistory = true
+
 					await newTaskTool.handle(cline, block as ToolUse<"new_task">, {
 						askApproval,
 						handleError,

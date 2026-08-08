@@ -714,10 +714,14 @@ export class McpHub {
 				const isAlreadyWrapped =
 					configInjected.command.toLowerCase() === "cmd.exe" || configInjected.command.toLowerCase() === "cmd"
 
+				// Escape arguments for cmd.exe to prevent interpretation of special characters
+				// (&, |, <, >, ^, %, !) as command separators or redirects.
+				const escapeCmdArg = (arg: string): string => arg.replace(/[&<>^|%!]/g, "^$&")
+
 				const command = isWindows && !isAlreadyWrapped ? "cmd.exe" : configInjected.command
 				const args =
 					isWindows && !isAlreadyWrapped
-						? ["/c", configInjected.command, ...(configInjected.args || [])]
+						? ["/c", escapeCmdArg(configInjected.command), ...(configInjected.args || []).map(escapeCmdArg)]
 						: configInjected.args
 
 				transport = new StdioClientTransport({

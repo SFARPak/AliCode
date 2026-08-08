@@ -1,1 +1,0 @@
-{"version":3,"file":"safeWriteJson.d.ts","sourceRoot":"","sources":["safeWriteJson.ts"],"names":[],"mappings":"AAMA;;GAEG;AACH,MAAM,WAAW,oBAAoB;IACpC;;;;;OAKG;IACH,WAAW,CAAC,EAAE,OAAO,CAAA;CACrB;AAED;;;;;;;;;;;;;GAaG;AAEH,iBAAe,aAAa,CAAC,QAAQ,EAAE,MAAM,EAAE,IAAI,EAAE,GAAG,EAAE,OAAO,CAAC,EAAE,oBAAoB,GAAG,OAAO,CAAC,IAAI,CAAC,CA8JvG;AA8BD,OAAO,EAAE,aAAa,EAAE,CAAA"}

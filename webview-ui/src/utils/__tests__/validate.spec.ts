@@ -147,6 +147,17 @@ describe("Model Validation Functions", () => {
 			expect(result).toBe("settings:validation.apiKey")
 		})
 
+		it("returns error for missing NVIDIA NIM API key", () => {
+			const config: ProviderSettings = {
+				apiProvider: "nvidia-nim",
+				apiModelId: "meta/llama-3.3-70b-instruct",
+				// Missing nvidiaNimApiKey
+			}
+
+			const result = validateApiConfigurationExcludingModelErrors(config, mockRouterModels, allowAllOrganization)
+			expect(result).toBe("settings:validation.apiKey")
+		})
+
 		it("excludes model-specific errors", () => {
 			const config: ProviderSettings = {
 				apiProvider: "openrouter",

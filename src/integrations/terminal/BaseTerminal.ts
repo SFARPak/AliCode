@@ -9,6 +9,8 @@ import type {
 	ExitCodeDetails,
 } from "./types"
 
+import { isShellAllowed } from "../../utils/shell"
+
 export abstract class BaseTerminal implements AliTerminal {
 	public readonly provider: AliTerminalProvider
 	public readonly id: number
@@ -297,6 +299,11 @@ export abstract class BaseTerminal implements AliTerminal {
 	}
 
 	public static setExecaShellPath(shellPath: string | undefined): void {
+		if (shellPath && !isShellAllowed(shellPath)) {
+			console.warn(`[BaseTerminal] Ignoring non-allowlisted execa shell path: ${shellPath}`)
+			BaseTerminal.execaShellPath = undefined
+			return
+		}
 		BaseTerminal.execaShellPath = shellPath
 	}
 

@@ -117,15 +117,25 @@ vi.mock("../utils/autoImportSettings", () => ({
 vi.mock("../extension/api", () => ({
 	API: vi.fn().mockImplementation(() => ({})),
 }))
-vi.mock("../activate", () => ({
-	handleUri: vi.fn(),
-	registerCommands: vi.fn(),
-	registerCodeActions: vi.fn(),
-	registerTerminalActions: vi.fn(),
-	CodeActionProvider: vi.fn().mockImplementation(() => ({
-		providedCodeActionKinds: [],
-	})),
-}))
+vi.mock("../activate", () => {
+	const commandsOrder = []
+	return {
+		handleUri: vi.fn(),
+		registerCommands: vi.fn(() => {
+			commandsOrder.push("registerCommands")
+		}),
+		registerCodeActions: vi.fn(() => {
+			commandsOrder.push("registerCodeActions")
+		}),
+		registerTerminalActions: vi.fn(() => {
+			commandsOrder.push("registerTerminalActions")
+		}),
+		CodeActionProvider: vi.fn().mockImplementation(() => ({
+			providedCodeActionKinds: [],
+		})),
+		commandsOrder,
+	}
+})
 vi.mock("../i18n", () => ({
 	initializeI18n: vi.fn(),
 	t: vi.fn((key) => key),
@@ -192,5 +202,47 @@ describe("extension.ts", () => {
 		const { activate } = await import("../extension")
 		await activate(mockContext)
 		expect(dotenvx.config).toHaveBeenCalledTimes(1)
+	})
+	test("registers commands before invoking worktree auto-open command", async () => {
+		vi.resetModules()
+		vi.clearAllMocks()
+		const fs = await import("fs")
+		vi.mocked(fs.existsSync).mockReturnValue(false)
+		const vscode = await import("vscode")
+		// Simulate a worktree auto-open path being persisted from a previous
+		// window, with the current workspace matching it.
+		const mockGlobalState = {
+			get: vi.fn().mockImplementation((key) => {
+				if (key === "worktreeAutoOpenPath") {
+					return "/fake/workspace"
+				}
+				return undefined
+			}),
+			update: vi.fn(),
+		}
+		mockContext.globalState = mockGlobalState
+		// Stub workspace folders so checkWorktreeAutoOpen finds a match.
+		const originalFolders = vscode.workspace.workspaceFolders
+		vscode.workspace.workspaceFolders = [{ uri: { fsPath: "/fake/workspace" } }]
+		// Capture executeCommand calls.
+		const executeCommandCalls = []
+		vscode.commands.executeCommand.mockImplementation(async (cmd) => {
+			executeCommandCalls.push(cmd)
+		})
+		const { activate } = await import("../extension")
+		await activate(mockContext)
+		// checkWorktreeAutoOpen schedules the plusButtonClicked command via a
+		// 500ms setTimeout, so wait for it to fire before asserting.
+		await new Promise((resolve) => setTimeout(resolve, 600))
+		// The plusButtonClicked command should be invoked with the dynamic
+		// package name prefix (not a hardcoded "alicode." string).
+		expect(executeCommandCalls).toContain("test-extension.plusButtonClicked")
+		expect(executeCommandCalls).not.toContain("alicode.plusButtonClicked")
+		// registerCommands must run before the worktree auto-open flow fires
+		// the plusButtonClicked command — otherwise the command is unregistered.
+		const { commandsOrder } = await import("../activate")
+		expect(commandsOrder).toEqual(["registerCommands", "registerCodeActions", "registerTerminalActions"])
+		// Restore.
+		vscode.workspace.workspaceFolders = originalFolders
 	})
 })

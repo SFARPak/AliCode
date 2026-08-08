@@ -66,6 +66,9 @@ class ContextProxy {
 		await this.migrateLegacyCondensingPrompt()
 		// Migration: Clear old default condensing prompt so users get the improved v2 default
 		await this.migrateOldDefaultCondensingPrompt()
+		// Migration: Move provider API keys that were previously stored in global state
+		// into secret storage now that they are recognized as secret keys.
+		await this.migrateProviderApiKeysToSecrets()
 		this._isInitialized = true
 	}
 	/**
@@ -229,6 +232,31 @@ class ContextProxy {
 		} catch (error) {
 			logging_1.logger.error(
 				`Error during image generation settings migration: ${error instanceof Error ? error.message : String(error)}`,
+			)
+		}
+	}
+
+	/**
+	 * Migrates provider API keys that were previously stored in global state
+	 * into secret storage now that they are recognized as secret keys.
+	 */
+	async migrateProviderApiKeysToSecrets() {
+		try {
+			const keysToMigrate = ["nvidiaNimApiKey", "poeApiKey"]
+			await Promise.all(
+				keysToMigrate.map(async (key) => {
+					const globalValue = this.stateCache[key]
+					if (globalValue && !this.secretCache[key]) {
+						await this.originalContext.secrets.store(key, globalValue)
+						this.secretCache[key] = globalValue
+						await this.originalContext.globalState.update(key, undefined)
+						logging_1.logger.info(`Migrated ${key} from global state to secrets`)
+					}
+				}),
+			)
+		} catch (error) {
+			logging_1.logger.error(
+				`Error during provider API keys migration: ${error instanceof Error ? error.message : String(error)}`,
 			)
 		}
 	}

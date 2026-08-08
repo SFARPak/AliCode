@@ -3441,40 +3441,46 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					// Enforce new_task isolation: if new_task is called alongside other tools,
 					// truncate any tools that come after it and inject error tool_results.
 					// This prevents orphaned tools when delegation disposes the parent task.
-					const newTaskIndex = assistantContent.findIndex(
-						(block) => block.type === "tool_use" && block.name === "new_task",
-					)
-
-					if (newTaskIndex !== -1 && newTaskIndex < assistantContent.length - 1) {
-						const truncatedTools = assistantContent.slice(newTaskIndex + 1)
-						assistantContent.length = newTaskIndex + 1
-
-						const executionNewTaskIndex = this.assistantMessageContent.findIndex(
+					// Skip if already handled in presentAssistantMessage (for new_task deadlock fix).
+					if (!this.assistantMessageSavedToHistory) {
+						const newTaskIndex = assistantContent.findIndex(
 							(block) => block.type === "tool_use" && block.name === "new_task",
 						)
-						if (executionNewTaskIndex !== -1) {
-							this.assistantMessageContent.length = executionNewTaskIndex + 1
-						}
 
-						for (const tool of truncatedTools) {
-							if (tool.type === "tool_use" && (tool as Anthropic.ToolUseBlockParam).id) {
-								this.pushToolResultToUserContent({
-									type: "tool_result",
-									tool_use_id: (tool as Anthropic.ToolUseBlockParam).id,
-									content:
-										"This tool was not executed because new_task was called in the same message turn. The new_task tool must be the last tool in a message.",
-									is_error: true,
-								})
+						if (newTaskIndex !== -1 && newTaskIndex < assistantContent.length - 1) {
+							const truncatedTools = assistantContent.slice(newTaskIndex + 1)
+							assistantContent.length = newTaskIndex + 1
+
+							const executionNewTaskIndex = this.assistantMessageContent.findIndex(
+								(block) => block.type === "tool_use" && block.name === "new_task",
+							)
+							if (executionNewTaskIndex !== -1) {
+								this.assistantMessageContent.length = executionNewTaskIndex + 1
+							}
+
+							for (const tool of truncatedTools) {
+								if (tool.type === "tool_use" && (tool as Anthropic.ToolUseBlockParam).id) {
+									this.pushToolResultToUserContent({
+										type: "tool_result",
+										tool_use_id: (tool as Anthropic.ToolUseBlockParam).id,
+										content:
+											"This tool was not executed because new_task was called in the same message turn. The new_task tool must be the last tool in a message.",
+										is_error: true,
+									})
+								}
 							}
 						}
 					}
 
 					// Save assistant message BEFORE executing tools.
-					await this.addToApiConversationHistory(
-						{ role: "assistant", content: assistantContent },
-						reasoningMessage || undefined,
-					)
-					this.assistantMessageSavedToHistory = true
+					// Skip if already saved in presentAssistantMessage (for new_task deadlock fix).
+					if (!this.assistantMessageSavedToHistory) {
+						await this.addToApiConversationHistory(
+							{ role: "assistant", content: assistantContent },
+							reasoningMessage || undefined,
+						)
+						this.assistantMessageSavedToHistory = true
+					}
 				}
 
 				// Present any partial blocks that were just completed.
@@ -4196,13 +4202,41 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		// Reset the flag after using it
 		this.skipPrevResponseIdOnce = false
 
-		// The provider accepts reasoning items alongside standard messages; cast to the expected parameter type.
-		const stream = this.api.createMessage(
-			systemPrompt,
-			cleanConversationHistory as unknown as Anthropic.Messages.MessageParam[],
-			metadata,
-		)
-		const iterator = stream[Symbol.asyncIterator]()
+		// Builds the message stream. When `forceStripImages` is set, all image
+		// content blocks are removed regardless of the model's reported
+		// capabilities. This is a safety net for models that advertise image
+		// support but actually reject image input at request time (e.g. the
+		// "this model does not support image input" error).
+		const buildStream = (forceStripImages: boolean) => {
+			if (forceStripImages) {
+				const stripped = maybeRemoveImageBlocks(
+					cleanConversationHistory as ApiMessage[],
+					{
+						getModel: () => ({ id: this.api.getModel().id, info: { supportsImages: false } }),
+					} as unknown as Parameters<typeof maybeRemoveImageBlocks>[1],
+				)
+				return this.api.createMessage(
+					systemPrompt,
+					stripped as unknown as Anthropic.Messages.MessageParam[],
+					metadata,
+				)
+			}
+			return this.api.createMessage(
+				systemPrompt,
+				cleanConversationHistory as unknown as Anthropic.Messages.MessageParam[],
+				metadata,
+			)
+		}
+
+		// Whether any message in the (cleaned) history still contains an image block.
+		const conversationHasImages = (cleanConversationHistory as ApiMessage[]).some((m) => {
+			const c = m.content
+			return Array.isArray(c) && c.some((b: any) => b?.type === "image")
+		})
+
+		let imageRetryDone = false
+		let stream = buildStream(false)
+		let iterator = stream[Symbol.asyncIterator]()
 
 		// Set up abort handling - when the signal is aborted, clean up the controller reference
 		abortSignal.addEventListener("abort", () => {
@@ -4210,12 +4244,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			this.currentRequestAbortController = undefined
 		})
 
-		try {
-			// Awaiting first chunk to see if it will throw an error.
-			this.isWaitingForFirstChunk = true
-
-			// Race between the first chunk and the abort signal
-			const firstChunkPromise = iterator.next()
+		// Awaits the first chunk, retrying once without images if the model
+		// rejected image input despite reporting support.
+		const getFirstChunk = async (): Promise<{ value: any }> => {
 			const abortPromise = new Promise<never>((_, reject) => {
 				if (abortSignal.aborted) {
 					reject(new Error("Request cancelled by user"))
@@ -4226,8 +4257,42 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				}
 			})
 
-			const firstChunk = await Promise.race([firstChunkPromise, abortPromise])
-			yield firstChunk.value
+			try {
+				const firstChunk = await Promise.race([iterator.next(), abortPromise])
+				return { value: firstChunk.value }
+			} catch (error) {
+				const errMsg = error instanceof Error ? error.message : String(error)
+				const isImageInputError =
+					/does not support image|image input|not support.*image|images? are not (supported|allowed)/i.test(
+						errMsg,
+					)
+
+				if (!imageRetryDone && conversationHasImages && isImageInputError) {
+					imageRetryDone = true
+					console.warn(
+						`[Task#${this.taskId}] Model rejected image input despite reporting support. ` +
+							`Retrying request with images stripped.`,
+					)
+					await this.say(
+						"api_req_retried",
+						"Model does not support image input. Resending request without images.",
+					)
+					stream = buildStream(true)
+					iterator = stream[Symbol.asyncIterator]()
+					const retryFirstChunk = await Promise.race([iterator.next(), abortPromise])
+					return { value: retryFirstChunk.value }
+				}
+
+				throw error
+			}
+		}
+
+		try {
+			// Awaiting first chunk to see if it will throw an error.
+			this.isWaitingForFirstChunk = true
+
+			const { value: firstChunkValue } = await getFirstChunk()
+			yield firstChunkValue
 			this.isWaitingForFirstChunk = false
 		} catch (error) {
 			this.isWaitingForFirstChunk = false

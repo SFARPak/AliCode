@@ -131,7 +131,9 @@ async function checkWorktreeAutoOpen(context, outputChannel) {
 			// Open the AliCode sidebar with a slight delay to ensure UI is ready
 			setTimeout(async () => {
 				try {
-					await vscode.commands.executeCommand("alicode.plusButtonClicked")
+					// Use the dynamically-resolved package name so the command
+					// matches the one registered via `getCommand` in registerCommands.
+					await vscode.commands.executeCommand(`${package_1.Package.name}.plusButtonClicked`)
 				} catch (error) {
 					outputChannel.appendLine(
 						`[Worktree] Error auto-opening sidebar: ${error instanceof Error ? error.message : String(error)}`,
@@ -270,8 +272,13 @@ async function activate(context) {
 			},
 		}),
 	)
-	// Check for worktree auto-open path (set when switching to a worktree)
-	await checkWorktreeAutoOpen(context, outputChannel)
+
+	// Register commands before handling worktree auto-open so that
+	// `plusButtonClicked` is guaranteed to be available when it is invoked
+	// below. Commands must be registered first to avoid a "command not found"
+	// error during early activation.
+	;(0, activate_1.registerCommands)({ context, outputChannel, provider })
+
 	// Auto-import configuration if specified in settings.
 	try {
 		await (0, autoImportSettings_1.autoImportSettings)(outputChannel, {
@@ -284,7 +291,9 @@ async function activate(context) {
 			`[AutoImport] Error during auto-import: ${error instanceof Error ? error.message : String(error)}`,
 		)
 	}
-	;(0, activate_1.registerCommands)({ context, outputChannel, provider })
+
+	// Check for worktree auto-open path (set when switching to a worktree)
+	await checkWorktreeAutoOpen(context, outputChannel)
 	/**
 	 * We use the text document content provider API to show the left side for diff
 	 * view by creating a virtual document for the original content. This makes it

@@ -1,5 +1,4 @@
 import * as vscode from "vscode"
-import { userInfo } from "os"
 import * as path from "path"
 
 // Security: Allowlist of approved shell executables to prevent arbitrary command execution
@@ -250,19 +249,6 @@ function getLinuxShellFromVSCode(): string | null {
 // 3) General Fallback Helpers
 // -----------------------------------------------------
 
-/**
- * Tries to get a user’s shell from os.userInfo() (works on Unix if the
- * underlying system call is supported). Returns null on error or if not found.
- */
-function getShellFromUserInfo(): string | null {
-	try {
-		const { shell } = userInfo()
-		return shell || null
-	} catch {
-		return null
-	}
-}
-
 /** Returns the environment-based shell variable, or null if not set. */
 function getShellFromEnv(): string | null {
 	const { env } = process
@@ -291,7 +277,7 @@ function getShellFromEnv(): string | null {
 /**
  * Validates if a shell path is in the allowlist to prevent arbitrary command execution
  */
-function isShellAllowed(shellPath: string): boolean {
+export function isShellAllowed(shellPath: string): boolean {
 	if (!shellPath) return false
 
 	const normalizedPath = path.normalize(shellPath)
@@ -346,17 +332,12 @@ export function getShell(): string {
 		shell = getLinuxShellFromVSCode()
 	}
 
-	// 2. If no shell from VS Code, try userInfo()
-	if (!shell) {
-		shell = getShellFromUserInfo()
-	}
-
-	// 3. If still nothing, try environment variable
+	// 2. If still nothing, try environment variable
 	if (!shell) {
 		shell = getShellFromEnv()
 	}
 
-	// 4. Finally, fall back to a default
+	// 3. Finally, fall back to a default
 	if (!shell) {
 		shell = getSafeFallbackShell()
 	}

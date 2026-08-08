@@ -4202,6 +4202,8 @@ export declare const SECRET_STATE_KEYS: readonly [
 	"fireworksApiKey",
 	"vercelAiGatewayApiKey",
 	"basetenApiKey",
+	"nvidiaNimApiKey",
+	"poeApiKey",
 ]
 export declare const GLOBAL_SECRET_KEYS: readonly ["openRouterImageApiKey"]
 type ProviderSecretKey = (typeof SECRET_STATE_KEYS)[number]

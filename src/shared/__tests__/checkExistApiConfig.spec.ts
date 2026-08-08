@@ -79,4 +79,12 @@ describe("checkExistKey", () => {
 		}
 		expect(checkExistKey(config)).toBe(true)
 	})
+
+	it("should return true when nvidiaNimApiKey is defined", () => {
+		const config: ProviderSettings = {
+			apiProvider: "nvidia-nim",
+			nvidiaNimApiKey: "test-nvidia-key",
+		}
+		expect(checkExistKey(config)).toBe(true)
+	})
 })
